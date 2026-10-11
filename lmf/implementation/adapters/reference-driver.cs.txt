@@ -182,6 +182,46 @@ foreach (var scenario in scenarios)
                 } : null;
                 warnings.AddRange(insertControl.kdpExaminationDelegate.messenger.Warnings);
                 break;
+            case "ui-tab-setup":
+                var setupControl = new ExtractedTabSetupControl { setDefaultTabPage = input["default"].GetValue<bool>() };
+                foreach (var key in input["keys"].AsArray())
+                    setupControl.hlxAdminTabControlKdpExamination.TabPages.Add(new(key.GetValue<string>()) { Text = "original-" + setupControl.hlxAdminTabControlKdpExamination.TabPages.Count });
+                var setupTabs = setupControl.hlxAdminTabControlKdpExamination.TabPages;
+                var originalSetupTabs = setupTabs.ToArray();
+                setupControl.currentTab = input["current"] == null ? null : setupTabs[input["current"].GetValue<int>()];
+                var originalCurrentSetupTab = setupControl.currentTab;
+                var setupKeys = new List<string[]>();
+                var setupTexts = new List<string[]>();
+                var setupSelected = new List<string>();
+                var setupIdentities = new List<bool>();
+                var exactSetupSelection = true;
+                for (var pass = 0; pass < 2; pass++) {
+                    setupControl.kdpExaminationDelegate.KdpExaminationResultDelegates = input["ids"].AsArray().Select(id => {
+                        var value = id.GetValue<long>();
+                        return new TabResultFixture(value == 0 ? 0 : value + pass * 100, "SYNTH-" + (value + pass * 100));
+                    }).ToList();
+                    setupControl.SetUpTabPages();
+                    var afterSetupTabs = setupControl.hlxAdminTabControlKdpExamination.TabPages;
+                    setupIdentities.Add(afterSetupTabs.Count == originalSetupTabs.Length && originalSetupTabs.Select((tab, index) => ReferenceEquals(tab, afterSetupTabs[index])).All(value => value));
+                    setupKeys.Add(afterSetupTabs.Select(tab => tab.Key).ToArray());
+                    setupTexts.Add(afterSetupTabs.Select(tab => tab.Text).ToArray());
+                    if (setupTabs.Count > 0) {
+                        setupSelected.Add(setupControl.hlxAdminTabControlKdpExamination.SelectedTab?.Key);
+                        var expectedSetupTab = setupControl.setDefaultTabPage ? originalSetupTabs[0] : originalCurrentSetupTab;
+                        exactSetupSelection &= ReferenceEquals(expectedSetupTab, setupControl.hlxAdminTabControlKdpExamination.SelectedTab) && ReferenceEquals(expectedSetupTab, setupControl.PreparedTabs.LastOrDefault());
+                    }
+                }
+                observed["keys"] = JsonSerializer.SerializeToNode(setupKeys);
+                observed["texts"] = JsonSerializer.SerializeToNode(setupTexts);
+                observed["selected"] = JsonSerializer.SerializeToNode(setupSelected);
+                observed["keysAtPreparation"] = JsonSerializer.SerializeToNode(setupControl.KeysAtPreparation);
+                observed["textsAtPreparation"] = JsonSerializer.SerializeToNode(setupControl.TextsAtPreparation);
+                observed["collectionIdentity"] = ReferenceEquals(setupTabs, setupControl.hlxAdminTabControlKdpExamination.TabPages);
+                observed["orderedIdentities"] = JsonSerializer.SerializeToNode(setupIdentities);
+                observed["exactSelection"] = exactSetupSelection;
+                observed["currentUnchanged"] = ReferenceEquals(originalCurrentSetupTab, setupControl.currentTab);
+                observed["defaultUnchanged"] = setupControl.setDefaultTabPage == input["default"].GetValue<bool>();
+                break;
             case "ui-tab-select":
                 var selectControl = new ExtractedSaveControl();
                 var firstSelectionTab = new SaveTabFixture("42");

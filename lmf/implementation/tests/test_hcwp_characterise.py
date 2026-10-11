@@ -41,6 +41,21 @@ class CharacteriseTests(unittest.TestCase):
             self.assertGreater(len(report['scenarios']), 20)
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
+            for name, keys, texts, selected in [
+                ('default', [['42', '99'], ['142', '199']], [['SYNTH-42', 'SYNTH-99'], ['SYNTH-142', 'SYNTH-199']], ['42', '142']),
+                ('current', [['42', '99'], ['142', '199']], [['SYNTH-42', 'SYNTH-99'], ['SYNTH-142', 'SYNTH-199']], ['99', '199']),
+                ('new', [['0', '99'], ['0', '199']], [['original-0', 'SYNTH-99'], ['original-0', 'SYNTH-199']], ['0', '0']),
+                ('null-current', [['42', '99'], ['142', '199']], [['SYNTH-42', 'SYNTH-99'], ['SYNTH-142', 'SYNTH-199']], [None, None]),
+                ('empty', [[], []], [[], []], []),
+            ]:
+                self.assertEqual({'keys': keys, 'texts': texts, 'selected': selected,
+                    'keysAtPreparation': keys if name != 'empty' else [],
+                    'textsAtPreparation': texts if name != 'empty' else [],
+                    'collectionIdentity': True, 'orderedIdentities': [True, True],
+                    'exactSelection': True, 'currentUnchanged': True, 'defaultUnchanged': True,
+                    'errors': [], 'warnings': []}, rows['KD03-ui-tab-setup-' + name])
+            self.assertIn('ResultTabText calculation/resource/recall prose is not verified',
+                          (stage / 'reference/ADAPTATIONS.md').read_text())
             for name, selected in [('default-then-current', ['42', '99']),
                                    ('current-then-default', ['99', '42']),
                                    ('null-current', [None, '42']),
@@ -607,6 +622,19 @@ class CharacteriseTests(unittest.TestCase):
                         self.assertEqual(['42', '99'], row['actual']['keys'])
             finally:
                 extracted_save_control.write_text(original_save_control)
+            extracted_setup = stage / 'reference/ExtractedTabSetupControl.cs'
+            original_setup = extracted_setup.read_text()
+            zero_guard = 'PkChildExaminationId != NewExamNumber'
+            self.assertEqual(1, original_setup.count(zero_guard))
+            try:
+                extracted_setup.write_text(original_setup.replace(zero_guard, 'PkChildExaminationId >= NewExamNumber'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-ui-tab-setup-new'},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                extracted_setup.write_text(original_setup)
             tail_removal = 'TabPages.RemoveAt(hlxAdminTabControlKdpExamination.TabPages.Count - 1);'
             self.assertEqual(1, original_save_control.count(tail_removal))
             try:

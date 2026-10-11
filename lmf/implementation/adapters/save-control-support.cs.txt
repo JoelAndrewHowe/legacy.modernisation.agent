@@ -1,6 +1,7 @@
 // UI infrastructure doubles only; SaveChanges is extracted from the supplied source.
 public record SaveTabFixture(string Key) {
  public SaveTabFixture() : this((string)null) {}
+ public string Key { get; set; } = Key;
  public string Text { get; set; }
 }
 public class SaveTabControlFixture {
