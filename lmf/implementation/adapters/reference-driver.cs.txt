@@ -40,6 +40,7 @@ foreach (var scenario in scenarios)
                 age.CheckAgeWithinScheduleRange(result.ExaminationDate);
                 warnings.AddRange(age.Messenger.Warnings);
                 break;
+            case "code-selection":
             case "decline":
             case "location":
             case "examiner":
@@ -54,6 +55,14 @@ foreach (var scenario in scenarios)
                 };
                 if (input["nullLookup"]?.GetValue<bool>() == true) { interaction.locationList = null; interaction.examinerList = null; }
                 switch (scenario["when"].GetValue<string>()) {
+                    case "code-selection":
+                        interaction.Messenger.ConfirmationResponse = input["response"]?.GetValue<bool>() ?? false;
+                        if (input["duplicate"]?.GetValue<bool>() == true)
+                            interaction.existingResults.Add(new() { ExaminationCode = "KD03", PkChildExaminationId = 42, ExaminationDate = result.ExaminationDate.AddDays(-1) });
+                        observed["valid"] = interaction.ValidateAndSetExamCode(input["code"]?.GetValue<string>() ?? "KD03");
+                        observed["selected"] = result.ExaminationCode;
+                        observed["confirmations"] = JsonSerializer.SerializeToNode(interaction.Messenger.Confirmations);
+                        break;
                     case "decline":
                         var measurement = input["measurement"].GetValue<string>();
                         var declined = input["declined"].GetValue<bool>();

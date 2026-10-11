@@ -58,6 +58,16 @@ class CharacteriseTests(unittest.TestCase):
             self.assertEqual([], rows['KD03-bmi-warning-3.025']['warnings'])
             self.assertEqual([], rows['KD03-bmi-warning-6.05']['warnings'])
             self.assertEqual(['BmiOutsidePrescribedRangeMessage'], rows['KD03-bmi-warning-6.1']['warnings'])
+            for reason, original, message in [('duplicate', '', 'KdpDuplicateExamCodeMessage'), ('change', 'OLD', 'KdpResultsExamCodeChangeConfirmationMessage')]:
+                for response in (True, False):
+                    row = rows[f'KD03-confirm-{reason}-{str(response).lower()}']
+                    self.assertEqual(response, row['valid'])
+                    self.assertEqual('KD03' if response else original, row['selected'])
+                    self.assertEqual([message], row['confirmations'])
+                    self.assertEqual([], row['errors'])
+            self.assertEqual(['KdpInvalidExamCodeMessage'], rows['KD03-code-invalid']['errors'])
+            self.assertFalse(rows['KD03-code-invalid']['valid'])
+            self.assertEqual([], rows['KD03-code-invalid']['confirmations'])
             approve = cli('approve', '--workspace', str(workspace), '--revision', state['Revision'])
             self.assertNotEqual(0, approve.returncode)
             self.assertIn('blocking gaps', approve.stderr)
