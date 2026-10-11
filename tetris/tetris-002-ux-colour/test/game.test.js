@@ -57,6 +57,74 @@ test('four-line clear earns a Tetris bonus', () => {
   assert.ok(game.board.flat().every(cell => !cell));
 });
 
+test('automatic drops fall without points, lock on the floor, and spawn the next piece', () => {
+  const game = new Game(() => 0.5);
+  game.piece = { type: 'O', x: 3, y: 17, cells: [[1, 0], [2, 0], [1, 1], [2, 1]] };
+  game.bag = ['T'];
+  game.drop();
+  assert.equal(game.piece.y, 18);
+  assert.equal(game.score, 0);
+  assert.equal(game.move(0, 1), false);
+  game.drop();
+  assert.deepEqual(game.board[18].slice(4, 6), ['O', 'O']);
+  assert.deepEqual(game.board[19].slice(4, 6), ['O', 'O']);
+  assert.equal(game.piece.type, 'T');
+  assert.equal(game.piece.y, 0);
+  assert.equal(game.score, 0);
+});
+
+test('four rotations restore each rotating tetromino and O stays unchanged', () => {
+  const game = new Game(() => 0.5);
+  const sorted = cells => cells.map(cell => cell.join(',')).sort();
+  for (let i = 0; i < 7; i++) {
+    const original = structuredClone(game.piece);
+    for (let turn = 0; turn < 4; turn++) {
+      assert.equal(game.rotate(), original.type !== 'O');
+      assert.equal(game.fits(game.piece), true);
+    }
+    assert.deepEqual(sorted(game.piece.cells), sorted(original.cells));
+    assert.equal(game.piece.x, original.x);
+    assert.equal(game.piece.y, original.y);
+    game.spawn();
+  }
+});
+
+test('rotation kicks away from walls and rejects fully blocked rotations', () => {
+  const game = new Game();
+  game.piece = { type: 'I', x: -2, y: 4, cells: [[2, 0], [2, 1], [2, 2], [2, 3]] };
+  assert.equal(game.fits(game.piece), true);
+  assert.equal(game.rotate(), true);
+  assert.equal(game.piece.x, 0);
+  assert.equal(game.fits(game.piece), true);
+
+  game.piece = { type: 'T', x: 3, y: 4, cells: [[1, 0], [0, 1], [1, 1], [2, 1]] };
+  game.board = game.board.map(row => row.map(() => 'J'));
+  for (const [dx, dy] of game.piece.cells) game.board[game.piece.y + dy][game.piece.x + dx] = null;
+  const before = structuredClone(game.piece);
+  assert.equal(game.rotate(), false);
+  assert.deepEqual(game.piece, before);
+});
+
+for (const [count, bonus] of [[2, 300], [3, 500]]) {
+  test(`${count}-line clear scores at the current level and preserves unfilled rows`, () => {
+    const game = new Game();
+    game.lines = 10;
+    game.level = 2;
+    game.board[10][0] = 'J';
+    for (let y = 20 - count; y < 20; y++) {
+      game.board[y].fill('Z');
+      game.board[y][4] = null;
+    }
+    game.piece = { type: 'I', x: 4, y: 16, cells: [[0, 0], [0, 1], [0, 2], [0, 3]] };
+    game.drop();
+    assert.equal(game.score, bonus * 2);
+    assert.equal(game.lines, 10 + count);
+    assert.equal(game.board[10 + count][0], 'J');
+    assert.equal(game.board.flat().filter(Boolean).length, 5 - count);
+    assert.ok(game.board.slice(0, count).flat().every(cell => cell === null));
+  });
+}
+
 test('blocked spawn ends game, freezes controls, and restart resets it', () => {
   const game = new Game();
   game.board[0].fill('Z');

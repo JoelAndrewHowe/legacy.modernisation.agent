@@ -98,6 +98,32 @@ test('keys drive movement, rotation, soft/hard drop and restart', () => {
   } finally { stop(); }
 });
 
+test('gravity locks pieces and stops advancing at game over until restart', t => {
+  t.mock.timers.enable({ apis: ['setInterval'] });
+  const { input, output } = terminal();
+  const game = new Game(() => 0.5);
+  game.piece = { type: 'O', x: 3, y: 17, cells: [[1, 0], [2, 0], [1, 1], [2, 1]] };
+  const stop = startTerminal(input, output, { game });
+  try {
+    t.mock.timers.tick(750);
+    assert.equal(game.piece.y, 17);
+    t.mock.timers.tick(50);
+    assert.equal(game.piece.y, 18);
+    t.mock.timers.tick(800);
+    assert.equal(game.board.flat().filter(Boolean).length, 4);
+    assert.equal(game.piece.y, 0);
+    assert.equal(game.score, 0);
+    game.over = true;
+    const before = JSON.stringify(game);
+    t.mock.timers.tick(2400);
+    assert.equal(JSON.stringify(game), before);
+    input.emit('keypress', 'r', { name: 'r' });
+    t.mock.timers.tick(800);
+    assert.equal(game.over, false);
+    assert.equal(game.piece.y, 1);
+  } finally { stop(); }
+});
+
 test('small terminals show bounded warning, pause play, and recover on resize', t => {
   t.mock.timers.enable({ apis: ['setInterval'] });
   const { input, output } = terminal();
