@@ -166,6 +166,15 @@ class CharacteriseTests(unittest.TestCase):
                     'reloadCalls': [42] if prepared else [], 'height': 55 if prepared else 99,
                     'prepared': ['99'] if prepared else [], 'reloadsAtPreparation': [1] if prepared else [],
                     'selected': selected, 'errors': [], 'warnings': []}, rows['KD03-tab-change-' + name])
+            for name, selected, cancelled in [
+                ('unchanged', '42', False), ('new-result', '0', False),
+                ('negative-key', '-1', False), ('empty-results', '42', False),
+                ('unchanged-preserves-cancel', '42', True),
+            ]:
+                self.assertEqual({'cancelled': cancelled, 'confirmations': [], 'reloadCalls': [],
+                    'height': 99, 'prepared': ['99'], 'reloadsAtPreparation': [0],
+                    'selected': selected, 'errors': [], 'warnings': []}, rows['KD03-tab-change-' + name])
+            self.assertIn('bypasses confirmation/reload', (stage / 'reference/ADAPTATIONS.md').read_text())
             self.assertIn('ChangingSelectedTab', (stage / 'reference/ExtractedSaveControl.cs').read_text())
             self.assertIn('not Windows control construction', (stage / 'reference/ADAPTATIONS.md').read_text())
             for outcome in ('success', 'optimistic-lock', 'fault', 'no-tab'):
@@ -491,6 +500,24 @@ class CharacteriseTests(unittest.TestCase):
                         self.assertEqual('N', row['actual']['flags'][5])
             finally:
                 extracted_repeat.write_text(original_repeat)
+            # Unchanged tab transitions must not prompt/reload merely because a
+            # selected result exists. Retain guards and mutate only change detection.
+            extracted_lifecycle = stage / 'reference/ExtractedLifecycle.cs'
+            original_lifecycle = extracted_lifecycle.read_text()
+            changed_guard = 'kdpExamResultDelegate.KdpExaminationResultTo.hasChanged()'
+            self.assertEqual(1, original_lifecycle.count(changed_guard))
+            try:
+                extracted_lifecycle.write_text(original_lifecycle.replace(changed_guard, 'true'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                self.assertTrue({'KD03-tab-change-unchanged',
+                    'KD03-tab-change-unchanged-preserves-cancel'}.issubset(failures))
+                self.assertTrue({'KD03-tab-change-new-result', 'KD03-tab-change-negative-key',
+                    'KD03-tab-change-empty-results'}.isdisjoint(failures))
+            finally:
+                extracted_lifecycle.write_text(original_lifecycle)
             # Save success must refresh, rather than merely report service dispatch.
             extracted_save_control = stage / 'reference/ExtractedSaveControl.cs'
             original_save_control = extracted_save_control.read_text()
