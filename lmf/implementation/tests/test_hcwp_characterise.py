@@ -50,6 +50,16 @@ class CharacteriseTests(unittest.TestCase):
             ]:
                 self.assertEqual({'stored': stored, 'displayed': displayed, 'errors': [], 'warnings': []},
                                  rows['KD03-description-' + name])
+            for outcome in ('success', 'optimistic-lock', 'fault'):
+                self.assertEqual({'allowed': outcome == 'success', 'calls': 1,
+                    'sameContext': True, 'sameResult': True, 'unrelatedUnchanged': True,
+                    'prompts': [] if outcome == 'success' else ['ExamResultsErrorSavingPrompt'],
+                    'errors': [] if outcome == 'success' else ['synthetic-' + outcome],
+                    'warnings': []}, rows['KD03-parent-save-' + outcome])
+            self.assertIn('public bool Save(long kdpChildExaminationId)',
+                          (stage / 'reference/ExtractedLifecycle.cs').read_text())
+            self.assertIn('not validation, transactions, mapping or persistence',
+                          (stage / 'reference/ADAPTATIONS.md').read_text())
             self.assertEqual({'weeks': 8, 'errors': [], 'warnings': []}, rows['KD03-weeks-truncation-positive'])
             self.assertEqual({'weeks': 0, 'errors': [], 'warnings': []}, rows['KD03-weeks-truncation-negative'])
             self.assertEqual([], rows['KD03-age-upper-fractional-day']['warnings'])

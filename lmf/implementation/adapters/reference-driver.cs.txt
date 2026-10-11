@@ -81,6 +81,21 @@ foreach (var scenario in scenarios)
                 observed["confirmations"] = JsonSerializer.SerializeToNode(creator.messenger.Confirmations);
                 warnings.AddRange(creator.messenger.Warnings);
                 break;
+            case "parent-save":
+                var saver = new ExtractedLifecycle();
+                var selected = new KdpExaminationResultTO { PkChildExaminationId = 42, Height = 55 };
+                var unrelated = new KdpExaminationResultTO { PkChildExaminationId = 99, Height = 66 };
+                saver.listOfKdpExaminationResultDelegates.Add(new() { KdpExaminationResultTo = unrelated });
+                saver.listOfKdpExaminationResultDelegates.Add(new() { KdpExaminationResultTo = selected });
+                saver.service.SaveOutcome = input["outcome"].GetValue<string>();
+                observed["allowed"] = saver.Save(42);
+                observed["calls"] = saver.service.SaveCalls.Count;
+                observed["sameContext"] = saver.service.SaveCalls.All(call => ReferenceEquals(call.Context, saver.ato));
+                observed["sameResult"] = saver.service.SaveCalls.All(call => ReferenceEquals(call.Result, selected));
+                observed["unrelatedUnchanged"] = unrelated.Height == 66 && unrelated.PkChildExaminationId == 99;
+                observed["prompts"] = JsonSerializer.SerializeToNode(saver.messenger.ErrorPrompts);
+                errors.AddRange(saver.messenger.Errors);
+                break;
             case "cancel-changes":
                 var lifecycle = new ExtractedLifecycle();
                 var edited = new KdpExaminationResultTO { PkChildExaminationId = input["id"].GetValue<long>(), Height = 99, ChangedFixture = input["changed"].GetValue<bool>() };

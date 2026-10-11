@@ -29,8 +29,19 @@ public class LifecycleFixture {
  public List<AppointmentFixture> OutstandingAppointmentsList = new();
 }
 public record AppointmentFixture(string ExaminationCode, DateTime? ExaminationDate, byte Origin);
+// WCF transport substitutes; no validation or persistence behaviour is invented.
+public class FaultException : Exception { public FaultException(string message) : base(message) {} }
+public class FaultException<T> : FaultException { public FaultException(string message) : base(message) {} }
+public class OptimisticLockFault {}
 public class ReloadFixture {
  public KdpExaminationResultTO Stored;
+ public string SaveOutcome = "success";
+ public List<(LifecycleFixture Context, KdpExaminationResultTO Result)> SaveCalls = new();
+ public void SaveKdpExaminationResult(LifecycleFixture context, KdpExaminationResultTO result) {
+  SaveCalls.Add((context, result));
+  if (SaveOutcome == "optimistic-lock") throw new FaultException<OptimisticLockFault>("synthetic-optimistic-lock");
+  if (SaveOutcome == "fault") throw new FaultException("synthetic-fault");
+ }
  public List<long> Calls = new();
  public KdpExaminationResultTO GetKdpExaminationResult(long id) { Calls.Add(id); return Stored; }
 }

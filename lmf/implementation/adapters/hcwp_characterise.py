@@ -59,7 +59,7 @@ def generate(request):
     props = re.findall(r'public\s+(string|long|decimal\?|byte\?|bool|DateTime\??)\s+(\w+)\s*\{', dto)
     if not props:
         raise ValueError('Cannot extract DTO property inventory.')
-    resources = sorted((set(re.findall(r'\b\w+(?:Message|Prompt)\b', validator)) | set(re.findall(r'Resources\.Resources\.(\w+)', method(lifecycle, 'AddNewKdpResult') + method(lifecycle, 'ConfirmCancelChanges'))) | {'ResultsRecordedButNotExamined'}) - {
+    resources = sorted((set(re.findall(r'\b\w+(?:Message|Prompt)\b', validator)) | set(re.findall(r'Resources\.Resources\.(\w+)', method(lifecycle, 'AddNewKdpResult') + method(lifecycle, 'ConfirmCancelChanges') + method(lifecycle, 'Save'))) | {'ResultsRecordedButNotExamined'}) - {
         'errorMessage', 'kdpInvalidHeightMessage', 'kdpInvalidWeightMessage', 'kdpInvalidHeadCircumferenceMessage'})
     put('reference/Compatibility.cs', '''// Generated infrastructure substitutions; no business validation here.
 namespace Orvex.TransferObjects {
@@ -123,13 +123,14 @@ public record WarningNotificationMessage(string Message, string Title, string Pr
 public class WarningSink {
  public List<string> Warnings = new();
  public List<string> Errors = new();
+ public List<string> ErrorPrompts = new();
  public List<string> Confirmations = new();
  public bool ConfirmationResponse;
  public string LookupResponse;
  public List<List<string>> LookupRequests = new();
  public void Send(ShowFormLookup value) { LookupRequests.Add(value.Rows.Select(row => row.Code).ToList()); value.Values = LookupResponse; }
  public void Send(YesNoConfirmationRequiredMessage value) { Confirmations.Add(value.Message); value.Response = ConfirmationResponse; }
- public void Send(NonFatalErrorEncountered value) => Errors.Add(value.Message);
+ public void Send(NonFatalErrorEncountered value) { Errors.Add(value.Message); ErrorPrompts.Add(value.Prompt); }
  public void Send(WarningNotificationMessage value) => Warnings.Add(value.Message);
 }
 ''')
@@ -167,7 +168,7 @@ public class WarningSink {
     symbols = sorted(set(re.findall(r'\b(?:\w+(?:Message|Prompt|Title)|KdpContactGivenBeforeMinAge|KdpContactGivenAfterMaxAge)\b', members)) - {'warningMessage', 'WarningNotificationMessage'})
     constants = '\n'.join(f' const string {s} = "{s}";' for s in symbols)
     put('reference/ExtractedInteractions.cs', (ROOT / 'delegate-support.cs.txt').read_text().replace('__MEMBERS__', constants + '\n' + members))
-    lifecycle_members = '\n'.join(method(lifecycle, n) for n in ('AddNewKdpResult', 'ConfirmCancelChanges', 'GetNewKdpExaminationResultDelegate'))
+    lifecycle_members = '\n'.join(method(lifecycle, n) for n in ('AddNewKdpResult', 'ConfirmCancelChanges', 'GetNewKdpExaminationResultDelegate', 'Save'))
     lifecycle_members = lifecycle_members.replace('FaultException<ValidationWarningFault>', 'ValidationWarningFault').replace('DateTime.Now', 'ReferenceClock.Now')
     put('reference/ExtractedLifecycle.cs', (ROOT / 'lifecycle-support.cs.txt').read_text().replace('__MEMBERS__', lifecycle_members))
     ui_members = '\n'.join(method(ui, 'hlxNumericEditBoxCustom' + field + '_Validating').replace('private void', 'public void') for field in ('Height', 'Weight', 'HeadCirc'))
@@ -343,6 +344,12 @@ public class ExtractedCodeControl {
                 confirmations=['KdpDuplicateExamCodeMessage' if duplicate else 'KdpResultsExamCodeChangeConfirmationMessage'])
     add('KD03-code-invalid', 'code-selection', {**base, 'code': 'INVALID'},
         ['KdpInvalidExamCodeMessage'], selected='KD03', valid=False, confirmations=[])
+    for outcome in ('success', 'optimistic-lock', 'fault'):
+        add('KD03-parent-save-' + outcome, 'parent-save', {'outcome': outcome},
+            [] if outcome == 'success' else ['synthetic-' + outcome],
+            allowed=outcome == 'success', calls=1, sameContext=True, sameResult=True,
+            prompts=[] if outcome == 'success' else ['ExamResultsErrorSavingPrompt'],
+            unrelatedUnchanged=True)
     for consent in (True, False):
         add('KD03-new-defaults-' + str(consent).lower(), 'new-result', {'hasConsentFixture': consent},
             warnings=[] if consent else ['NoConsentMessage'],
@@ -414,6 +421,8 @@ Examination-date Validating handler and delegate ValidateExaminationDate/CheckAg
 
 Measurement Validating handlers from `{ui_path}` and delegate ValidateHeight/ValidateWeight/ValidateHeadCircumference are source-extracted. Text/Value-only control doubles invoke handlers synchronously with CancelEventArgs and invented height 40–60/weight 3–6 deviation bands (not recovered lookup data); scenarios prove invalid-input cancellation, empty-text bypass preserving the incoming cancellation flag, and warning-only acceptance. Windows binding, automatic event delivery and designer layout remain unverified.
 
+Parent-delegate Save now executes source-extracted selection and fault routing against a recording service double. Success and synthetic optimistic-lock/generic faults assert exact context/result identity, return value and the error-saving prompt. The double does not save data or execute service rules; this is orchestration evidence only, not service/persistence parity.
+
 Resource translations are absent: errors/warnings are resource identifiers, not original displayed prose. Reference save only clones accepted input and proves validator outcomes; original service transaction, entity mapping and persistence are unverified. Windows/Oracle application cannot be built from this bundle. PostgreSQL is unverified and not connected. No target or browser implementation has been generated.
 ''')
     put('migration-plan.md', '''# Bounded migration plan
@@ -436,6 +445,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - ValidateNumericDescriptorEntered and its TYPE_OF_INPUT enum are retained verbatim alongside the source numeric position tables. Shared cases cover both position boundaries, zero/negative/out-of-range integers, stored-key versus UI-position differences, and permissive empty/nonnumeric/decimal/overflow inputs. Direct method invocation does not prove Windows key handling or binding.
 - Examination-code Validating/ButtonClick handlers from `{ui_path}` and LookUpExamCode from `{delegate_path}` retain their bodies. Text-only control and ShowFormLookup message doubles replace Windows UI/dialog infrastructure, record offered codes and supply explicit fixture responses; they do not validate or select codes themselves. Source ValidateAndSetExamCode performs validation/confirmation. Validating cancellation is observed separately from the selected code, including successful fallback lookup with cancellation still true. Original Windows event delivery remains unverified.
 - `{repeat_path}` UpdateRepeatFlags body is retained with internal -> public visibility only. RepositoryFixture supplies explicit preloaded query rows separately from local tracked rows; Include has no database side effects. Source local navigation repair and all repeat decisions execute unchanged. Synthetic rows include KD03 ties, a later same-day timestamp, KD08 family members, another patient and another prefix. Repeated execution observes idempotence. This is standalone repeat-logic evidence, not save-service/database parity; scope approval remains blocked.
+- `{lifecycle_path}` Save body is source-extracted unchanged. A recording service double observes exact context/result identity and throws explicit synthetic generic/optimistic-lock faults; shared cases assert return value, error prompt and untouched unrelated DTO. Local FaultException types replace WCF exception transport only. This proves delegate selection and error routing, not validation, transactions, mapping or persistence in the original save service.
 - `{lifecycle_path}` AddNewKdpResult and ConfirmCancelChanges bodies retained except WCF warning wrapper substitution and DateTime.Now -> ReferenceClock.Now (2025-03-01 noon). Unscheduled enum value 2 is from LookupsUtility.EXAMINATION_ORIGIN. Empty outstanding-appointment list models the excluded appointment workflow. GetNewKdpExaminationResultDelegate is source-extracted and calls extracted Populate through a synthetic dependency-injection factory. Shared new-result cases verify supplied patient context, existing-list identity, unscheduled default, description notification and lazy ranges without service requests. Windows events remain unverified; hasChanged returns an explicit fixture flag, not original change tracking. Reload double records IDs and supplies a detached stored DTO; this proves reload orchestration, not database reads. Scenarios cover accept/reject, unchanged, new and empty cancellation paths and defaults/consent/insertion order.
 - reference driver dispatches operation then serialises errors/warnings/BMI and detached accepted-input clone. It is NOT the save service and does NOT prove persistence. No random IDs are generated. No business rules supplied by database doubles.
 - `original/` retains unadapted source sections for independent inspection. `source-index.json` records original identity and bundle line for every one of 94 files.
