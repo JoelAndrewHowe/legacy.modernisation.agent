@@ -117,6 +117,22 @@ class CharacteriseTests(unittest.TestCase):
             ]:
                 self.assertEqual({'stored': stored, 'displayed': displayed, 'errors': [], 'warnings': []},
                                  rows['KD03-description-' + name])
+            for name, cancelled, confirms, prepared, selected in [
+                ('processing', False, False, False, '42'),
+                ('no-selected', True, False, False, None),
+                ('no-page', True, False, False, '42'),
+                ('empty-key', True, False, False, '42'),
+                ('reject', True, True, False, '42'),
+                ('accept', False, True, True, '42'),
+                ('accept-preserves-cancel', True, True, True, '42'),
+            ]:
+                self.assertEqual({'cancelled': cancelled,
+                    'confirmations': ['ExamResultsConfirmCancelMessage'] if confirms else [],
+                    'reloadCalls': [42] if prepared else [], 'height': 55 if prepared else 99,
+                    'prepared': ['99'] if prepared else [], 'reloadsAtPreparation': [1] if prepared else [],
+                    'selected': selected, 'errors': [], 'warnings': []}, rows['KD03-tab-change-' + name])
+            self.assertIn('ChangingSelectedTab', (stage / 'reference/ExtractedSaveControl.cs').read_text())
+            self.assertIn('not Windows control construction', (stage / 'reference/ADAPTATIONS.md').read_text())
             for outcome in ('success', 'optimistic-lock', 'fault', 'no-tab'):
                 success = outcome == 'success'
                 self.assertEqual({'allowed': success, 'calls': 0 if outcome == 'no-tab' else 1,

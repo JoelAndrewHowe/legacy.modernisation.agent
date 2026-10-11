@@ -180,7 +180,7 @@ public class WarningSink {
     lifecycle_members = '\n'.join(method(lifecycle, n) for n in ('AddNewKdpResult', 'ConfirmCancelChanges', 'GetNewKdpExaminationResultDelegate', 'Save'))
     lifecycle_members = lifecycle_members.replace('FaultException<ValidationWarningFault>', 'ValidationWarningFault').replace('DateTime.Now', 'ReferenceClock.Now')
     put('reference/ExtractedLifecycle.cs', (ROOT / 'lifecycle-support.cs.txt').read_text().replace('__MEMBERS__', lifecycle_members))
-    put('reference/ExtractedSaveControl.cs', (ROOT / 'save-control-support.cs.txt').read_text().replace('__MEMBERS__', method(save_ui, 'SaveChanges')))
+    put('reference/ExtractedSaveControl.cs', (ROOT / 'save-control-support.cs.txt').read_text().replace('__MEMBERS__', method(save_ui, 'SaveChanges') + '\n' + method(save_ui, 'hlxAdminTabControlKdpExamination_ChangingSelectedTab').replace('private void', 'public void')))
     ui_members = '\n'.join(method(ui, 'hlxNumericEditBoxCustom' + field + '_Validating').replace('private void', 'public void') for field in ('Height', 'Weight', 'HeadCirc'))
     put('reference/ExtractedMeasurementControls.cs', '''using System;
 using System.ComponentModel;
@@ -495,6 +495,25 @@ public class ExtractedDropdownControls {
             remainingResponses=1 if blocked else 0)
     add('KD03-code-invalid', 'code-selection', {**base, 'code': 'INVALID'},
         ['KdpInvalidExamCodeMessage'], selected='KD03', valid=False, confirmations=[])
+    for name, processing, selected, page, response, initial in [
+        ('processing', True, '42', '99', True, False),
+        ('no-selected', False, None, '99', True, True),
+        ('no-page', False, '42', None, True, False),
+        ('empty-key', False, '42', '', True, False),
+        ('reject', False, '42', '99', False, False),
+        ('accept', False, '42', '99', True, False),
+        ('accept-preserves-cancel', False, '42', '99', True, True),
+    ]:
+        confirms = not processing and selected is not None and bool(page)
+        prepared = confirms and response
+        add('KD03-tab-change-' + name, 'tab-change',
+            {'processing': processing, 'selected': selected, 'page': page,
+             'response': response, 'initialCancel': initial},
+            cancelled=initial if processing or selected is None or prepared else True,
+            confirmations=['ExamResultsConfirmCancelMessage'] if confirms else [],
+            reloadCalls=[42] if prepared else [], height=55 if prepared else 99,
+            prepared=[page] if prepared else [], reloadsAtPreparation=[1] if prepared else [],
+            selected=selected)
     for outcome in ('success', 'optimistic-lock', 'fault', 'no-tab'):
         success = outcome == 'success'
         add('KD03-ui-save-' + outcome, 'ui-save', {'outcome': outcome},
@@ -616,6 +635,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - ValidateNumericDescriptorEntered and its TYPE_OF_INPUT enum are retained verbatim alongside the source numeric position tables. Shared cases cover both position boundaries, zero/negative/out-of-range integers, stored-key versus UI-position differences, and permissive empty/nonnumeric/decimal/overflow inputs. Direct method invocation does not prove Windows key handling or binding.
 - Examination-code Validating/ButtonClick handlers from `{ui_path}` and LookUpExamCode from `{delegate_path}` retain their bodies. Text-only control and ShowFormLookup message doubles replace Windows UI/dialog infrastructure, record offered codes and supply explicit fixture responses; they do not validate or select codes themselves. Source ValidateAndSetExamCode performs validation/confirmation. Validating cancellation is observed separately from the selected code, including successful fallback lookup with cancellation still true. Original Windows event delivery remains unverified.
 - `{repeat_path}` UpdateRepeatFlags body is retained with internal -> public visibility only. RepositoryFixture supplies explicit preloaded query rows separately from local tracked rows; Include has no database side effects. Source local navigation repair and all repeat decisions execute unchanged. Synthetic rows include KD03 ties, a later same-day timestamp, KD08 family members, another patient and another prefix. Repeated execution observes idempotence. This is standalone repeat-logic evidence, not save-service/database parity; scope approval remains blocked.
+- `{save_ui_path}` ChangingSelectedTab handler is source-extracted with public visibility only. TabCancelEventArgs/Page and selected tabs are key-only doubles; SetUpTabPageContent records destination and reload count, not Windows control construction. Shared cases cover processing/no-selection guards, null/empty destination, rejected/accepted cancellation and incoming cancellation preservation. Extracted ConfirmCancelChanges reloads selected result 42 before preparation of destination 99; hasChanged is an explicit fixture flag. Direct invocation does not prove Windows event delivery or tab binding.
 - `{save_ui_path}` SaveChanges body is source-extracted unchanged. SelectedTab/currentTab are key-only fixtures; Populate is a recording refresh double observing ID, Editable, prior service dispatch and default-tab state. Shared cases use patient ID 1001, result key 42, stale current key 99 and Editable=false to distinguish arguments/selection; successful/faulting calls run extracted parent Save. The double does not reload results or establish persistence/read-back, tab layout, event delivery or Windows binding parity.
 - `{lifecycle_path}` Save body is source-extracted unchanged. A recording service double observes exact context/result identity and throws explicit synthetic generic/optimistic-lock faults; shared cases assert return value, error prompt and untouched unrelated DTO. Local FaultException types replace WCF exception transport only. This proves delegate selection and error routing, not validation, transactions, mapping or persistence in the original save service.
 - ReasonNotExamined, Consent, CoreComponentOffered, Reschedule, WithdrawConsent and Origin setters/getters are source-extracted unchanged. Shared cases assign changed and unchanged values, then optionally clear nullable/string fields or reset WithdrawConsent to false. Distinct initial sibling values detect cross-field writes; CoreComponentOffered maps to DTO CoreComponent. These setters do not validate values or raise delegate notifications. Synthetic text is a storage probe, not an approved lookup value. Original DTO change tracking, Windows binding, save validation and persistence are not proved by these cases.

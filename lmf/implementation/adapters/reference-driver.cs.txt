@@ -98,6 +98,26 @@ foreach (var scenario in scenarios)
                 observed["confirmations"] = JsonSerializer.SerializeToNode(creator.messenger.Confirmations);
                 warnings.AddRange(creator.messenger.Warnings);
                 break;
+            case "tab-change":
+                var tabControl = new ExtractedSaveControl { processingTabs = input["processing"].GetValue<bool>() };
+                var selectedKey = input["selected"]?.GetValue<string>();
+                tabControl.hlxAdminTabControlKdpExamination.SelectedTab = selectedKey == null ? null : new(selectedKey);
+                var tabEdited = new KdpExaminationResultTO { PkChildExaminationId = 42, Height = 99, ChangedFixture = true };
+                var tabWrapped = new KdpExaminationResultDelegate { KdpExaminationResultTo = tabEdited };
+                tabControl.kdpExaminationDelegate.listOfKdpExaminationResultDelegates.Add(tabWrapped);
+                tabControl.kdpExaminationDelegate.service.Stored = new() { PkChildExaminationId = 42, Height = 55 };
+                tabControl.kdpExaminationDelegate.messenger.ConfirmationResponse = input["response"].GetValue<bool>();
+                var pageKey = input["page"]?.GetValue<string>();
+                var tabEvent = new TabCancelEventArgs { Page = pageKey == null ? null : new(pageKey), Cancel = input["initialCancel"].GetValue<bool>() };
+                tabControl.hlxAdminTabControlKdpExamination_ChangingSelectedTab(tabControl, tabEvent);
+                observed["cancelled"] = tabEvent.Cancel;
+                observed["confirmations"] = JsonSerializer.SerializeToNode(tabControl.kdpExaminationDelegate.messenger.Confirmations);
+                observed["reloadCalls"] = JsonSerializer.SerializeToNode(tabControl.kdpExaminationDelegate.service.Calls);
+                observed["height"] = JsonSerializer.SerializeToNode(tabWrapped.KdpExaminationResultTo.Height);
+                observed["prepared"] = JsonSerializer.SerializeToNode(tabControl.PreparedTabs);
+                observed["reloadsAtPreparation"] = JsonSerializer.SerializeToNode(tabControl.ReloadsAtPreparation);
+                observed["selected"] = tabControl.hlxAdminTabControlKdpExamination.SelectedTab?.Key;
+                break;
             case "ui-save":
                 var saveControl = new ExtractedSaveControl { Editable = false, currentTab = new("99") };
                 var uiOutcome = input["outcome"].GetValue<string>();
