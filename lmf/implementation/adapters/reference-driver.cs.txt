@@ -65,6 +65,25 @@ foreach (var scenario in scenarios)
                 observed["replaced"] = !ReferenceEquals(edited, wrapped.KdpExaminationResultTo);
                 observed["confirmations"] = JsonSerializer.SerializeToNode(lifecycle.messenger.Confirmations);
                 break;
+            case "code-control":
+                var codeDelegate = new ExtractedInteractions { KdpExaminationResultTo = result };
+                codeDelegate.Messenger.LookupResponse = input["lookup"]?.GetValue<string>();
+                codeDelegate.Messenger.ConfirmationResponse = input["response"].GetValue<bool>();
+                var codeControls = new ExtractedCodeControl { kdpExaminationResultDelegate = codeDelegate };
+                codeControls.hlxTextBoxExamCode.Text = input["text"].GetValue<string>();
+                var codeCancel = new System.ComponentModel.CancelEventArgs(input["initialCancel"].GetValue<bool>());
+                if (input["button"].GetValue<bool>())
+                    codeControls.hlxTextBoxExamCode_ButtonClick(codeControls.hlxTextBoxExamCode, EventArgs.Empty);
+                else
+                    codeControls.hlxTextBoxExamCode_Validating(codeControls.hlxTextBoxExamCode, codeCancel);
+                observed["selected"] = result.ExaminationCode;
+                observed["cancelled"] = codeCancel.Cancel;
+                observed["confirmations"] = JsonSerializer.SerializeToNode(codeDelegate.Messenger.Confirmations);
+                observed["lookupRequests"] = codeDelegate.Messenger.LookupRequests.Count;
+                observed["lookupCodes"] = JsonSerializer.SerializeToNode(codeDelegate.Messenger.LookupRequests);
+                errors.AddRange(codeDelegate.Messenger.Errors);
+                warnings.AddRange(codeDelegate.Messenger.Warnings);
+                break;
             case "date-control":
                 var dateDelegate = new ExtractedInteractions {
                     KdpExaminationResultTo = result,

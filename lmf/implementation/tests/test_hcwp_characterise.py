@@ -56,6 +56,20 @@ class CharacteriseTests(unittest.TestCase):
             for name, error, warning in [('valid', None, None), ('future', 'FutureExamDateMessage', None), ('before-birth', 'ExamDateBeforeDobMessage', None), ('after-death', 'ExamDateAfterDeathMessage', None), ('duplicate', 'KdpResultAlreadyEnteredMessage', None), ('young', None, 'KdpContactGivenBeforeMinAge'), ('old', None, 'KdpContactGivenAfterMaxAge'), ('empty', None, None), ('empty-preserves-cancel', None, None)]:
                 self.assertEqual({'cancelled': bool(error) or name == 'empty-preserves-cancel',
                     'errors': [error] if error else [], 'warnings': [warning] if warning else []}, rows['KD03-date-control-' + name])
+            for name, selected, cancelled, errors, confirmations, lookups in [
+                ('valid', 'KD03', False, [], [], 0),
+                ('invalid-cancel-lookup', '', True, ['KdpInvalidExamCodeMessage'], [], 1),
+                ('invalid-select-lookup', 'KD03', True, ['KdpInvalidExamCodeMessage'], [], 1),
+                ('invalid-lookup-result', '', True, ['KdpInvalidExamCodeMessage'] * 2, [], 1),
+                ('change-accept', 'KD03', False, [], ['KdpResultsExamCodeChangeConfirmationMessage'], 0),
+                ('change-reject', 'KD08', True, [], ['KdpResultsExamCodeChangeConfirmationMessage'], 1),
+                ('button-select', 'KD03', True, [], [], 1),
+                ('button-cancel', 'KD08', True, [], [], 1),
+            ]:
+                self.assertEqual({'selected': selected, 'cancelled': cancelled, 'errors': errors,
+                    'warnings': [], 'confirmations': confirmations, 'lookupRequests': lookups,
+                    'lookupCodes': [['KD03', 'KD08']] if lookups else []}, rows['KD03-code-control-' + name])
+            self.assertIn('ShowFormLookup message doubles', (stage / 'reference/ADAPTATIONS.md').read_text())
             self.assertIn('Text/DateTime-only double', (stage / 'gaps.md').read_text())
             self.assertIn('Text/Value-only control doubles', (stage / 'gaps.md').read_text())
             self.assertEqual(['HeadCircumferenceInvalidFormatMessage'], rows['KD03-head-field-100']['errors'])

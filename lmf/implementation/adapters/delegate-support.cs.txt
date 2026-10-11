@@ -65,3 +65,9 @@ public class YesNoConfirmationRequiredMessage {
  public YesNoConfirmationRequiredMessage(string message, string title, string prompt) { Message = message; }
 }
 public record NonFatalErrorEncountered(string Message, string Title, string Prompt);
+// Dialog infrastructure double: records rows, fixture supplies response; no business logic.
+public class ShowFormLookup {
+ public List<LookupsSubTO> Rows;
+ public string Values;
+ public ShowFormLookup(List<LookupsSubTO> rows) { Rows = rows; }
+}

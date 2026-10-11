@@ -124,6 +124,9 @@ public class WarningSink {
  public List<string> Errors = new();
  public List<string> Confirmations = new();
  public bool ConfirmationResponse;
+ public string LookupResponse;
+ public List<List<string>> LookupRequests = new();
+ public void Send(ShowFormLookup value) { LookupRequests.Add(value.Rows.Select(row => row.Code).ToList()); value.Values = LookupResponse; }
  public void Send(YesNoConfirmationRequiredMessage value) { Confirmations.Add(value.Message); value.Response = ConfirmationResponse; }
  public void Send(NonFatalErrorEncountered value) => Errors.Add(value.Message);
  public void Send(WarningNotificationMessage value) => Warnings.Add(value.Message);
@@ -155,6 +158,7 @@ public class WarningSink {
     for name in ('Location', 'Examiner', 'ReasonNotExamined'):
         members += '\n' + re.search(r'        List<TypeCodePosition> ' + name + r'TypeCodePositions = .*?\n        \};', delegate, re.S).group()
     members += '\n' + '\n'.join(line for line in delegate.splitlines() if 'private const string DropDownCodeDescriptionFormat' in line)
+    members += '\n' + method(delegate, 'LookUpExamCode')
     members += '\n' + method(delegate, 'ValidateAndSetExamCode').replace('FaultException<ValidationWarningFault>', 'ValidationWarningFault').replace('FaultException<ValidationFault>', 'ValidationFault')
     symbols = sorted(set(re.findall(r'\b(?:\w+(?:Message|Prompt|Title)|KdpContactGivenBeforeMinAge|KdpContactGivenAfterMaxAge)\b', members)) - {'warningMessage', 'WarningNotificationMessage'})
     constants = '\n'.join(f' const string {s} = "{s}";' for s in symbols)
@@ -179,6 +183,14 @@ public class ExtractedDateControl {
  public ExtractedInteractions kdpExaminationResultDelegate;
  public DateControlFixture hlxDateBoxExamDate = new();
 ''' + method(ui, 'hlxDateBoxExamDate_Validating').replace('private void', 'public void') + '\n}\n')
+    put('reference/ExtractedCodeControl.cs', '''using System;
+using System.ComponentModel;
+// Text-only fixture; lookup response is supplied by the synchronous message double.
+public class CodeControlFixture { public string Text; }
+public class ExtractedCodeControl {
+ public ExtractedInteractions kdpExaminationResultDelegate;
+ public CodeControlFixture hlxTextBoxExamCode = new();
+''' + '\n'.join(method(ui, name).replace('private void', 'public void') for name in ('hlxTextBoxExamCode_Validating', 'hlxTextBoxExamCode_ButtonClick')) + '\n}\n')
     put('reference/Program.cs', (ROOT / 'reference-driver.cs.txt').read_text())
     put('verify.py', (ROOT / 'verify_reference.py').read_text())
     fixtures = {'today': '2025-03-01', 'dateOfBirth': '2025-01-01', 'clientId': 1001,
@@ -197,6 +209,20 @@ public class ExtractedDateControl {
             add(f'KD03-control-{field}-{name}', 'measurement-control', {**base, 'field': field, 'text': text, 'value': value, 'initialCancel': name == 'empty-preserves-cancel'}, errs, warns, cancelled=cancelled)
     for name, date, error, warning in [('valid', '2025-02-19', None, None), ('future', '2025-03-02', 'FutureExamDateMessage', None), ('before-birth', '2024-12-31', 'ExamDateBeforeDobMessage', None), ('after-death', '2025-02-21', 'ExamDateAfterDeathMessage', None), ('duplicate', '2025-02-19', 'KdpResultAlreadyEnteredMessage', None), ('young', '2025-02-05', None, 'KdpContactGivenBeforeMinAge'), ('old', '2025-02-27', None, 'KdpContactGivenAfterMaxAge'), ('empty', '2025-03-02', None, None), ('empty-preserves-cancel', '2025-03-02', None, None)]:
         add('KD03-date-control-' + name, 'date-control', {**base, 'value': date, 'text': '' if name.startswith('empty') else date, 'initialCancel': name == 'empty-preserves-cancel', 'deathFixture': '2025-02-20' if name == 'after-death' else None, 'duplicateFixture': name == 'duplicate'}, [error] if error else [], [warning] if warning else [], cancelled=bool(error) or name == 'empty-preserves-cancel')
+    for name, text, lookup, response, original, selected, cancelled, error, confirmation, count in [
+        ('valid', 'KD03', None, False, '', 'KD03', False, None, None, 0),
+        ('invalid-cancel-lookup', 'INVALID', None, False, '', '', True, 'KdpInvalidExamCodeMessage', None, 1),
+        ('invalid-select-lookup', 'INVALID', 'KD03', False, '', 'KD03', True, 'KdpInvalidExamCodeMessage', None, 1),
+        ('invalid-lookup-result', 'INVALID', 'INVALID', False, '', '', True, 'KdpInvalidExamCodeMessage', None, 1),
+        ('change-accept', 'KD03', None, True, 'KD08', 'KD03', False, None, 'KdpResultsExamCodeChangeConfirmationMessage', 0),
+        ('change-reject', 'KD03', None, False, 'KD08', 'KD08', True, None, 'KdpResultsExamCodeChangeConfirmationMessage', 1),
+        ('button-select', 'IGNORED', 'KD03', False, '', 'KD03', True, None, None, 1),
+        ('button-cancel', 'IGNORED', '', False, 'KD08', 'KD08', True, None, None, 1),
+    ]:
+        add('KD03-code-control-' + name, 'code-control', {**base, 'ExaminationCode': original, 'text': text, 'lookup': lookup, 'response': response, 'button': name.startswith('button'), 'initialCancel': True},
+            [error] * (2 if name == 'invalid-lookup-result' else 1) if error else [], selected=selected, cancelled=cancelled,
+            confirmations=[confirmation] if confirmation else [], lookupRequests=count,
+            lookupCodes=[['KD03', 'KD08']] if count else [])
     add('KD03-control-Height-warning', 'measurement-control', {**base, 'field': 'Height', 'text': '40', 'value': 40, 'initialCancel': False}, warnings=['OutsideExpectedRangeMessage'], cancelled=False)
     add('KD03-valid', 'save', base, saved=base)
     add('KD03-physical-optional', 'save', {**base, 'Heart': None, 'Hips': None, 'Eyes': None, 'Testes': None, 'PhysicalGeneral': None}, saved={**base, 'Heart': None, 'Hips': None, 'Eyes': None, 'Testes': None, 'PhysicalGeneral': None})
@@ -333,6 +359,8 @@ Oracle IDs, triggers, locks, EF6 mappings, schedule, centile bands, general opti
 - Repeat-flag effects require an explicit reviewed scope adjustment or implementation before approval; appointment and recall processing alone were excluded in the seed.
 - Recovered `{dates_path}` DaysBetween/WeeksBetween: elapsed days truncate toward zero before division by 7. Both bodies are extracted unchanged; fractional-day and negative-interval scenarios prevent regression to the former elapsed-days / 7 substitution.
 ## Non-blocking / review assumptions
+
+Examination-code Validating and ButtonClick handlers and delegate LookUpExamCode are source-extracted. A Text-only control double invokes handlers directly; a synchronous ShowFormLookup message double records offered synthetic codes and supplies a fixture response (including null/empty cancellation). Scenarios verify valid selection, rejected changes, invalid codes, lookup cancellation/selection and invalid returned codes. The handler retains cancellation after a successful fallback lookup; no Windows dialog, binding or automatic event delivery is verified.
 Patient 1001, male, born 2025-01-01, clock 2025-03-01 and schedule 6–8 weeks are invented fixtures. Actual schedule, examiner/location lookup rows, BMI thresholds and centile bands are absent. Interaction scenarios explicitly invent SYNTH/UNUSED lookup rows, height range 40–60 and BMI range 10–20; these are review fixtures, not recovered production limits. Null/optional is not mandatory. PhysicalGeneral omission and field/save head discrepancy remain exactly as source, not corrected.
 Examination-date Validating handler and delegate ValidateExaminationDate/CheckAgeWithinScheduleRange are source-extracted. A Text/DateTime-only double invokes the handler directly; shared cases cover future/birth/death errors, duplicate dates, warning-only age acceptance, and empty-text bypass retaining incoming cancellation. The same synthetic 6–8-week schedule and source-extracted DaysBetween/WeeksBetween methods apply; Windows binding/event delivery remain unverified.
 
@@ -357,6 +385,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - `{bmi_path}` CalculateBmi method retained verbatim in a small container.
 - `{delegate_path}` CheckAgeWithinScheduleRange body retained verbatim; visibility made public; schedule Lazy reads fixture; Messenger records resource IDs. DaysBetween/WeeksBetween bodies recovered from `{dates_path}` and retained verbatim in ExtractedDateCalculation.cs; only the containing namespace/class is replaced. Truncation toward zero, including negative fractional days, is executable.
 - ExtractedInteractions retains BMI/decline/measurement properties and lookup/deviation/BMI method bodies except private visibility. Notifications dispatch through a synchronous PropertyChanged event subscribed to extracted CheckBmi, mirroring the source constructor subscription (not Windows controls). ExaminationDate and ResetDeviations bodies are retained, with ChildMeasurementsRange renamed to the fixture record; GetExpectedRanges records the date and supplies invented height range 40–60. Shared examples check same-day no-op, time preservation, lazy range reset and weight-setter BMI warning dispatch. Lookup retrieval supplies synthetic rows or null; invented height range 40–60 and BMI range 10–20 do not claim database provenance. Display names use symbolic enum names. ValidateAndSetExamCode retains its body with WCF fault wrappers replaced by local exceptions carrying Detail.Title; synchronous confirmation responses are fixture-controlled and recorded. ExaminationCode, UpdateExamDescription, ClearDataFromHiddenFields, their field properties and ResetRecommendedAgeRange are source-extracted. Shared setter cases cover blocked/same-code no-ops and entering/leaving KD03, notifications, description, hidden-field clearing and lazy schedule reset. Synthetic descriptions and a recording schedule double returning 6–8 weeks replace lookups/services; Windows controls remain unverified. Populate, all three PrependNumericsUi description methods, GetDropDownUiPositionNumber and numeric position tables are source-extracted. Synthetic lookup lists replace lazy lookup-service retrieval; repeated Populate checks prefix idempotence, unmatched codes and already-prefixed descriptions. Context and lazy ranges are observed directly; Windows binding remains unverified; parent-delegate Populate integration executes through the extracted factory method. TransferObjectBase.Lock is a storage-only string substitution, not a concurrency implementation. ExamDescription accessor supplies the notification name only; observations read the DTO directly, not the source display accessor.
+- Examination-code Validating/ButtonClick handlers from `{ui_path}` and LookUpExamCode from `{delegate_path}` retain their bodies. Text-only control and ShowFormLookup message doubles replace Windows UI/dialog infrastructure, record offered codes and supply explicit fixture responses; they do not validate or select codes themselves. Source ValidateAndSetExamCode performs validation/confirmation. Validating cancellation is observed separately from the selected code, including successful fallback lookup with cancellation still true. Original Windows event delivery remains unverified.
 - `{lifecycle_path}` AddNewKdpResult and ConfirmCancelChanges bodies retained except WCF warning wrapper substitution and DateTime.Now -> ReferenceClock.Now (2025-03-01 noon). Unscheduled enum value 2 is from LookupsUtility.EXAMINATION_ORIGIN. Empty outstanding-appointment list models the excluded appointment workflow. GetNewKdpExaminationResultDelegate is source-extracted and calls extracted Populate through a synthetic dependency-injection factory. Shared new-result cases verify supplied patient context, existing-list identity, unscheduled default, description notification and lazy ranges without service requests. Windows events remain unverified; hasChanged returns an explicit fixture flag, not original change tracking. Reload double records IDs and supplies a detached stored DTO; this proves reload orchestration, not database reads. Scenarios cover accept/reject, unchanged, new and empty cancellation paths and defaults/consent/insertion order.
 - reference driver dispatches operation then serialises errors/warnings/BMI and detached accepted-input clone. It is NOT the save service and does NOT prove persistence. No random IDs are generated. No business rules supplied by database doubles.
 - `original/` retains unadapted source sections for independent inspection. `source-index.json` records original identity and bundle line for every one of 94 files.
