@@ -1,9 +1,9 @@
 # Iteration 001 implementation plan
 
-- [ ] Build a modern C# LMF CLI with per-migration workspaces, configurable coding-agent adapters, persisted stage state, bounded repairs, and characterise/approve/resume/status commands.
-  - [ ] Address smoke-test finding: approval invalidation must not reuse attempt directories or overwrite retained evidence; regression coverage now exercises repeated input changes.
-  - [ ] Address validator finding in tests/test_cli.py: snapshot retained evidence across repeated input changes and assert unique attempt directories with monotonically increasing attempt numbers.
-  - [ ] Address validator finding in Lmf/Program.cs: require explicit Passed, Failed and Skipped counts; reject malformed/incomplete verification results with regression tests (validator's six existing smoke tests passed in an isolated copy).
+- [x] Build a modern C# LMF CLI with per-migration workspaces, configurable coding-agent adapters, persisted stage state, bounded repairs, and characterise/approve/resume/status commands.
+  - [x] Address smoke-test finding: approval invalidation must not reuse attempt directories or overwrite retained evidence; regression coverage now exercises repeated input changes.
+  - [x] Address validator finding in tests/test_cli.py: snapshot retained evidence across repeated input changes and assert unique attempt directories with monotonically increasing attempt numbers.
+  - [x] Address validator finding in Lmf/Program.cs: require explicit Passed, Failed and Skipped counts; reject malformed/incomplete verification results with regression tests (validator's six existing smoke tests passed in an isolated copy).
 - [ ] Implement Characterise for the supplied HCWP bundle and target description: source-referenced KD03 fields/rules, dependencies, gaps, fixtures, migration plan, shared BDD scenarios, and independently inspectable extracted-reference harness with documented adaptations.
 - [ ] Execute reference verification and enforce revision-bound human approval before target generation; invalidate approval when reviewed inputs or scenarios change and stop on blocking gaps.
 - [ ] Implement Convert as a runtime/dependency port retaining legacy structure; mechanically compare shared scenario observations against the reference.
