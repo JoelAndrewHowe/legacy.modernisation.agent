@@ -229,6 +229,65 @@ test('application displays readiness, line-clear scoring, game over, and restart
   assert.equal(cancelled, 42);
 });
 
+test('raw input guides the player from readiness through gameplay and restart', () => {
+  const io = terminal();
+  const game = new Game(() => 0);
+  let tick;
+  const cancellations = [];
+  const stop = startApp({ ...io, game,
+    setInterval: (callback) => { tick = callback; return 42; },
+    clearInterval: (id) => { cancellations.push(id); },
+  });
+  const latestFrame = () => io.text().split('\x1b[H\x1b[2J').at(-1);
+  try {
+    const ready = JSON.stringify(game);
+    io.input.write('\x1b[D\x1b[C\x1b[A\x1b[B ');
+    tick();
+    assert.equal(JSON.stringify(game), ready);
+    assert.match(latestFrame(), /READY/);
+    assert.match(latestFrame(), /Enter: start/);
+    assert.match(latestFrame(), /Space: hard drop/);
+
+    io.input.write('\r\x1b[D\x1b[A\x1b[B');
+    assert.equal(game.status, 'playing');
+    assert.equal(game.piece.x, 2);
+    assert.equal(game.piece.shape.length, 4);
+    assert.equal(game.score, 1);
+    assert.match(latestFrame(), /Score: 1/);
+    assert.match(latestFrame(), /\[\]/);
+    io.input.write(' ');
+    assert.ok(game.score > 1);
+    assert.match(latestFrame(), /##/);
+
+    game.board[0][3] = 1;
+    game.spawn();
+    tick();
+    // Request a redraw through the same byte stream used by the launcher.
+    io.input.write('\x1b[D');
+    assert.equal(game.status, 'over');
+    assert.match(latestFrame(), /GAME OVER/);
+    assert.match(latestFrame(), /Enter: restart/);
+    const over = JSON.stringify(game);
+    io.input.write('\x1b[C\x1b[A\x1b[B ');
+    tick();
+    assert.equal(JSON.stringify(game), over);
+
+    io.input.write('\r');
+    assert.equal(game.status, 'playing');
+    assert.equal(game.score, 0);
+    assert.ok(game.board.every(row => row.every(cell => !cell)));
+    assert.doesNotMatch(latestFrame(), /GAME OVER|READY/);
+    const rows = latestFrame().split('\r\n');
+    assert.equal(rows.length, 24);
+    assert.ok(rows.every(row => row.length <= 22));
+    io.input.write('q');
+    assert.equal(io.input.isRaw, false);
+    assert.deepEqual(cancellations, [42]);
+  } finally {
+    stop();
+  }
+});
+
 test('termination signals restore previous raw mode', () => {
   const io = terminal();
   io.input.isRaw = true;
