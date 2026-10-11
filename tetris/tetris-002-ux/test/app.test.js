@@ -460,6 +460,57 @@ test('every undersized startup boundary waits for restoration and cleans up its 
   }
 });
 
+test('raw terminal input stays blocked while undersized and resumes after restoration', () => {
+  const io = terminal();
+  io.output.columns = 21;
+  const game = new Game(() => 0);
+  let tick;
+  let cancelled;
+  const stop = startApp({ ...io, game,
+    setInterval: (callback) => { tick = callback; return 42; },
+    clearInterval: (id) => { cancelled = id; },
+  });
+  try {
+    const ready = JSON.stringify(game);
+    io.input.write('\r\x1b[D\x1b[C\x1b[A\x1b[B ?');
+    tick();
+    assert.equal(JSON.stringify(game), ready);
+
+    io.output.columns = 22;
+    io.output.emit('resize');
+    assert.equal(io.text().split('\x1b[H\x1b[2J').at(-1), renderFrame(game));
+    io.input.write('\r');
+    assert.equal(game.status, 'playing');
+    io.input.write('\x1b[D');
+    assert.equal(game.piece.x, 2);
+    io.input.write('\x1b[B');
+    assert.equal(game.score, 1);
+
+    io.output.rows = 23;
+    io.output.emit('resize');
+    const playing = JSON.stringify(game);
+    io.input.write('\r\x1b[D\x1b[C\x1b[A\x1b[B ?');
+    tick();
+    assert.equal(JSON.stringify(game), playing);
+    io.output.rows = 24;
+    io.output.emit('resize');
+    assert.equal(io.text().split('\x1b[H\x1b[2J').at(-1), renderFrame(game));
+    tick();
+    assert.equal(game.piece.y, 2);
+
+    io.output.columns = 0;
+    io.output.emit('resize');
+    io.input.write('\x03');
+    assert.equal(cancelled, 42);
+    assert.equal(io.input.isRaw, false);
+    assert.equal(io.input.listenerCount('keypress'), 0);
+    assert.equal(io.output.listenerCount('resize'), 0);
+    assert.ok(io.text().endsWith('\x1b[?25h\x1b[?1049l'));
+  } finally {
+    stop();
+  }
+});
+
 test('rejects noninteractive terminals before changing state', () => {
   for (const change of [
     (io) => { io.input.isTTY = false; },
