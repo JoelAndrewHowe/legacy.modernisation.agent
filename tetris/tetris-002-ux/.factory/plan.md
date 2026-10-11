@@ -1,8 +1,8 @@
 # Task plan
 
 - [ ] Provide a terminal Tetris application launched with `npm start`.
-  - [ ] Verify the documented launcher in a real PTY and add noninteractive-launch regression coverage. Evidence: `npm test` passes all 25 tests; PTY smoke passed readiness, Enter-to-start, hard-drop scoring, resize prompt/restoration, quit, and terminal attribute restoration.
-  - [ ] Validation finding: the initial PTY smoke incorrectly expected a fixed hard-drop score despite random piece selection. Addressed by checking a positive score and preserving that observed score across resizing; corrected smoke passed. No application defect found.
+  - [x] Verify the documented launcher in a real PTY and add noninteractive-launch regression coverage. Evidence: `npm test` passes all 25 tests; PTY smoke passed readiness, Enter-to-start, hard-drop scoring, resize prompt/restoration, quit, and terminal attribute restoration.
+  - [x] Validation finding: the initial PTY smoke incorrectly expected a fixed hard-drop score despite random piece selection. Addressed by checking a positive score and preserving that observed score across resizing; corrected smoke passed. No application defect found.
   - [x] Verify application-level readiness instructions, line-clear score updates, game-over feedback, and Enter-to-restart behavior.
   - [ ] Validator: resizing below 22×24 redraws the full frame and clips or wraps the board and quit instructions; show a resize prompt until sufficient space is restored.
     - [x] Verify game-over feedback and restart survive resizing, and all quit controls clean up while undersized or minimized.
