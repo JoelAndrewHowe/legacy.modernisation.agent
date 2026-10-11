@@ -41,6 +41,10 @@ class CharacteriseTests(unittest.TestCase):
             self.assertGreater(len(report['scenarios']), 20)
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
+            for mode, ids in [('unordered', [42, 99, 77]), ('ties', [77, 42, 99]), ('empty', [])]:
+                self.assertEqual({'errors': [], 'warnings': [], 'ids': ids, 'refreshIds': [88],
+                    'calls': [1001, 2002], 'sameDtos': True, 'sameContext': True,
+                    'lazyRanges': True, 'replaced': True}, rows[f'KD03-get-results-{mode}'])
             for kind in ('location', 'examiner'):
                 request = 'Locations||5' if kind == 'location' else 'Examiners||18|N'
                 missing = 'NoLocationTypeMessage' if kind == 'location' else 'NoExaminerTypeMessage'
@@ -427,7 +431,9 @@ class CharacteriseTests(unittest.TestCase):
                     if omitted == 'KdpExaminationResultTo = kdpExaminationResultTo;':
                         expected.update({'KD03-new-defaults-true', 'KD03-new-defaults-false',
                                          'KD03-ui-insert-empty', 'KD03-ui-insert-existing',
-                                         'KD03-ui-insert-later-new', 'KD03-ui-insert-no-consent'})
+                                         'KD03-ui-insert-later-new', 'KD03-ui-insert-no-consent',
+                                         'KD03-get-results-unordered', 'KD03-get-results-ties',
+                                         'KD03-get-results-empty'})
                     self.assertEqual(expected, failures)
                 finally:
                     extracted.write_text(original)
@@ -510,6 +516,18 @@ class CharacteriseTests(unittest.TestCase):
             # selected result exists. Retain guards and mutate only change detection.
             extracted_lifecycle = stage / 'reference/ExtractedLifecycle.cs'
             original_lifecycle = extracted_lifecycle.read_text()
+            order_clause = '.OrderByDescending(it => it.ExaminationDate)'
+            self.assertEqual(1, original_lifecycle.count(order_clause))
+            try:
+                extracted_lifecycle.write_text(original_lifecycle.replace(order_clause, ''))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                self.assertIn('KD03-get-results-unordered', failures)
+                self.assertTrue({'KD03-get-results-ties', 'KD03-get-results-empty'}.isdisjoint(failures))
+            finally:
+                extracted_lifecycle.write_text(original_lifecycle)
             selected_lookup = 'var kdpExamResultDelegate = KdpExaminationResultDelegates.Single(er => er.PkChildExaminationId == kdpChildExaminationId);'
             self.assertEqual(1, original_lifecycle.count(selected_lookup))
             try:

@@ -34,6 +34,9 @@ public class FaultException : Exception { public FaultException(string message) 
 public class FaultException<T> : FaultException { public FaultException(string message) : base(message) {} }
 public class OptimisticLockFault {}
 public class ReloadFixture {
+ public LifecycleFixture Context = new();
+ public List<long> ContextCalls = new();
+ public LifecycleFixture GetKdpExamination(long clientId) { ContextCalls.Add(clientId); return Context; }
  public KdpExaminationResultTO Stored;
  public string SaveOutcome = "success";
  public List<(LifecycleFixture Context, KdpExaminationResultTO Result)> SaveCalls = new();

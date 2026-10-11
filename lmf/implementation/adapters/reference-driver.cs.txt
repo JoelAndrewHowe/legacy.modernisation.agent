@@ -91,6 +91,40 @@ foreach (var scenario in scenarios)
             case "weeks-between":
                 observed["weeks"] = birth.WeeksBetween(result.ExaminationDate);
                 break;
+            case "get-results":
+                var loader = new ExtractedLifecycle();
+                var loadMode = input["mode"].GetValue<string>();
+                var loadedDtos = loadMode == "empty" ? new List<KdpExaminationResultTO>() : new() {
+                    new() { PkChildExaminationId = 77, ExaminationCode = "KD03", ExaminationDate = new(2025, 1, 1) },
+                    new() { PkChildExaminationId = 42, ExaminationCode = "KD03", ExaminationDate = new(2025, 2, 19) },
+                    new() { PkChildExaminationId = 99, ExaminationCode = "KD03", ExaminationDate = new(2025, 1, 15) }
+                };
+                if (loadMode == "ties") foreach (var dto in loadedDtos) dto.ExaminationDate = new(2025, 2, 19);
+                var loadedContext = new LifecycleFixture { HcpExaminationResultToList = loadedDtos };
+                loader.service.Context = loadedContext;
+                loader.listOfKdpExaminationResultDelegates.Add(new() { KdpExaminationResultTo = new() { PkChildExaminationId = -1 } });
+                loader.GetKdpResults(1001);
+                var loadedDelegates = loader.KdpExaminationResultDelegates;
+                observed["ids"] = JsonSerializer.SerializeToNode(loadedDelegates.Select(item => item.PkChildExaminationId));
+                bool LoadContextMatches(LifecycleFixture context) => ReferenceEquals(loader.ato, context) &&
+                    loader.KdpExaminationResultDelegates.All(item => item.gender == context.Gender &&
+                        item.dateOfBirth == context.DateOfBirth && item.dateOfDeath == context.DateOfDeath &&
+                        ReferenceEquals(item.existingResults, context.HcpExaminationResultToList));
+                var sameLoadedDtos = loadedDelegates.All(item => loadedDtos.Any(dto => ReferenceEquals(dto, item.KdpExaminationResultTo)));
+                var sameLoadContext = LoadContextMatches(loadedContext);
+                var lazyLoaded = loadedDelegates.All(item => !item.deviationRanges.IsValueCreated && !item.recommendedAgeRangeInWeeks.IsValueCreated);
+                var refreshDto = new KdpExaminationResultTO { PkChildExaminationId = 88, ExaminationCode = "KD03", ExaminationDate = new(2025, 2, 20) };
+                loader.service.Context = new LifecycleFixture { Id = "2002", Gender = "M", DateOfBirth = new(2025, 1, 1), DateOfDeath = null,
+                    HcpExaminationResultToList = new() { refreshDto } };
+                loader.GetKdpResults(2002);
+                observed["refreshIds"] = JsonSerializer.SerializeToNode(loader.KdpExaminationResultDelegates.Select(item => item.PkChildExaminationId));
+                observed["calls"] = JsonSerializer.SerializeToNode(loader.service.ContextCalls);
+                observed["sameDtos"] = sameLoadedDtos && ReferenceEquals(refreshDto, loader.KdpExaminationResultDelegates.Single().KdpExaminationResultTo);
+                observed["sameContext"] = sameLoadContext && LoadContextMatches(loader.service.Context);
+                observed["lazyRanges"] = lazyLoaded && loader.KdpExaminationResultDelegates.All(item => !item.deviationRanges.IsValueCreated && !item.recommendedAgeRangeInWeeks.IsValueCreated);
+                observed["replaced"] = !ReferenceEquals(loadedDelegates, loader.KdpExaminationResultDelegates) &&
+                    !loader.KdpExaminationResultDelegates.Any(item => loadedDelegates.Contains(item));
+                break;
             case "new-result":
                 var creator = new ExtractedLifecycle();
                 creator.ato.Id = fixtures["clientId"].ToString();
