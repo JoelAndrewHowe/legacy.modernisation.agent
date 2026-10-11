@@ -368,6 +368,50 @@ test('resizing preserves the help pause until explicitly resumed', () => {
   }
 });
 
+test('every positive undersized boundary clips the prompt and preserves gameplay', () => {
+  const io = terminal();
+  const game = new Game(() => 0);
+  let tick;
+  let cancelled;
+  const stop = startApp({ ...io, game,
+    setInterval: (callback) => { tick = callback; return 42; },
+    clearInterval: (id) => { cancelled = id; },
+  });
+  try {
+    io.input.emit('keypress', '', { name: 'return' });
+    tick();
+    const before = JSON.stringify(game);
+    for (let columns = 1; columns <= 22; columns++) {
+      for (let rows = 1; rows <= 24; rows++) {
+        if (columns === 22 && rows === 24) continue;
+        io.output.columns = columns;
+        io.output.rows = rows;
+        const offset = io.text().length;
+        io.output.emit('resize');
+        const expected = ['Resize to 22x24', 'Q/Esc: quit']
+          .slice(0, rows).map(line => line.slice(0, columns)).join('\r\n');
+        assert.equal(io.text().slice(offset), '\x1b[H\x1b[2J' + expected,
+          `prompt at ${columns}x${rows}`);
+        for (const name of ['return', 'left', 'right', 'up', 'down', 'space']) {
+          io.input.emit('keypress', '', { name });
+        }
+        tick();
+        assert.equal(JSON.stringify(game), before);
+      }
+    }
+    io.output.columns = 22;
+    io.output.rows = 24;
+    const offset = io.text().length;
+    io.output.emit('resize');
+    assert.equal(io.text().slice(offset), '\x1b[H\x1b[2J' + renderFrame(game));
+    tick();
+    assert.equal(game.piece.y, 2);
+  } finally {
+    stop();
+  }
+  assert.equal(cancelled, 42);
+});
+
 test('rejects noninteractive terminals before changing state', () => {
   for (const change of [
     (io) => { io.input.isTTY = false; },
