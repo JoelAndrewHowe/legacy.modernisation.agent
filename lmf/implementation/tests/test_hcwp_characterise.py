@@ -41,6 +41,16 @@ class CharacteriseTests(unittest.TestCase):
             self.assertGreater(len(report['scenarios']), 20)
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
+            for name, selected in [('default-then-current', ['42', '99']),
+                                   ('current-then-default', ['99', '42']),
+                                   ('null-current', [None, '42']),
+                                   ('detached-current', ['77', '77'])]:
+                self.assertEqual({'selected': selected, 'exactIdentity': True,
+                    'currentUnchanged': True, 'keys': ['42', '99'], 'setupCalls': 0,
+                    'collectionIdentities': [True, True], 'orderedTabIdentities': [True, True],
+                    'errors': [], 'warnings': []}, rows['KD03-ui-tab-select-' + name])
+            self.assertIn('SelectTabPage is source-extracted',
+                          (stage / 'reference/ADAPTATIONS.md').read_text())
             for mode, ids in [('unordered', [42, 99, 77]), ('ties', [77, 42, 99]), ('empty', [])]:
                 self.assertEqual({'errors': [], 'warnings': [], 'ids': ids, 'refreshIds': [88],
                     'calls': [1001, 2002], 'sameDtos': True, 'sameContext': True,
@@ -568,6 +578,35 @@ class CharacteriseTests(unittest.TestCase):
             # Save success must refresh, rather than merely report service dispatch.
             extracted_save_control = stage / 'reference/ExtractedSaveControl.cs'
             original_save_control = extracted_save_control.read_text()
+            # Same-key replacement followed by restoration must fail even though
+            # the final ordered keys and object references match the original list.
+            selection_method = 'public void SelectTabPage()'
+            self.assertEqual(1, original_save_control.count(selection_method))
+            selection_mutation = '''public void SelectTabPage()
+        {
+            var tabs = hlxAdminTabControlKdpExamination.TabPages;
+            if (selectionOriginalTab == null) {
+                selectionOriginalTab = tabs[1];
+                tabs[1] = new SaveTabFixture(selectionOriginalTab.Key);
+            } else {
+                tabs[1] = selectionOriginalTab;
+            }
+            OriginalSelectTabPage();
+        }
+        private SaveTabFixture selectionOriginalTab;
+        public void OriginalSelectTabPage()'''
+            try:
+                extracted_save_control.write_text(original_save_control.replace(selection_method, selection_mutation))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                for row in mutant_report['scenarios']:
+                    if row['id'].startswith('KD03-ui-tab-select-'):
+                        self.assertFalse(row['matches'])
+                        self.assertEqual([False, True], row['actual']['orderedTabIdentities'])
+                        self.assertEqual(['42', '99'], row['actual']['keys'])
+            finally:
+                extracted_save_control.write_text(original_save_control)
             tail_removal = 'TabPages.RemoveAt(hlxAdminTabControlKdpExamination.TabPages.Count - 1);'
             self.assertEqual(1, original_save_control.count(tail_removal))
             try:

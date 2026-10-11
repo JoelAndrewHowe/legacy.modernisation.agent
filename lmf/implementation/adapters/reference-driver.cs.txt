@@ -182,6 +182,40 @@ foreach (var scenario in scenarios)
                 } : null;
                 warnings.AddRange(insertControl.kdpExaminationDelegate.messenger.Warnings);
                 break;
+            case "ui-tab-select":
+                var selectControl = new ExtractedSaveControl();
+                var firstSelectionTab = new SaveTabFixture("42");
+                var secondSelectionTab = new SaveTabFixture("99");
+                selectControl.hlxAdminTabControlKdpExamination.TabPages.AddRange(new[] { firstSelectionTab, secondSelectionTab });
+                var currentSelectionKey = input["current"]?.GetValue<string>();
+                var retainedCurrent = currentSelectionKey == null ? null : currentSelectionKey == "99" ? secondSelectionTab : new SaveTabFixture(currentSelectionKey);
+                selectControl.currentTab = retainedCurrent;
+                selectControl.hlxAdminTabControlKdpExamination.SelectedTab = new("stale");
+                var selections = new List<string>();
+                var retainedSelectionTabs = selectControl.hlxAdminTabControlKdpExamination.TabPages;
+                var retainedSelectionOrder = retainedSelectionTabs.ToArray();
+                var collectionIdentities = new List<bool>();
+                var orderedTabIdentities = new List<bool>();
+                var exactSelectionIdentity = true;
+                foreach (var defaultNode in input["defaults"].AsArray()) {
+                    selectControl.setDefaultTabPage = defaultNode.GetValue<bool>();
+                    selectControl.SelectTabPage();
+                    var selectionTabs = selectControl.hlxAdminTabControlKdpExamination.TabPages;
+                    collectionIdentities.Add(ReferenceEquals(retainedSelectionTabs, selectionTabs));
+                    orderedTabIdentities.Add(selectionTabs.Count == retainedSelectionOrder.Length &&
+                        retainedSelectionOrder.Select((tab, index) => ReferenceEquals(tab, selectionTabs[index])).All(value => value));
+                    selections.Add(selectControl.hlxAdminTabControlKdpExamination.SelectedTab?.Key);
+                    exactSelectionIdentity &= ReferenceEquals(selectControl.setDefaultTabPage ? firstSelectionTab : retainedCurrent,
+                        selectControl.hlxAdminTabControlKdpExamination.SelectedTab);
+                }
+                observed["selected"] = JsonSerializer.SerializeToNode(selections);
+                observed["collectionIdentities"] = JsonSerializer.SerializeToNode(collectionIdentities);
+                observed["orderedTabIdentities"] = JsonSerializer.SerializeToNode(orderedTabIdentities);
+                observed["exactIdentity"] = exactSelectionIdentity;
+                observed["currentUnchanged"] = ReferenceEquals(retainedCurrent, selectControl.currentTab);
+                observed["keys"] = JsonSerializer.SerializeToNode(selectControl.hlxAdminTabControlKdpExamination.TabPages.Select(tab => tab.Key));
+                observed["setupCalls"] = selectControl.KeysAtSetup.Count + selectControl.PreparedTabs.Count;
+                break;
             case "ui-tab-count":
                 var countControl = new ExtractedSaveControl { setDefaultTabPage = false, processingTabs = true };
                 foreach (var key in input["keys"].AsArray())
