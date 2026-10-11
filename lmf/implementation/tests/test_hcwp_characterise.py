@@ -90,6 +90,17 @@ class CharacteriseTests(unittest.TestCase):
             ]:
                 self.assertEqual({'stored': stored, 'displayed': displayed, 'errors': [], 'warnings': []},
                                  rows['KD03-description-' + name])
+            for outcome in ('success', 'optimistic-lock', 'fault', 'no-tab'):
+                success = outcome == 'success'
+                self.assertEqual({'allowed': success, 'calls': 0 if outcome == 'no-tab' else 1,
+                    'sameContext': outcome != 'no-tab', 'sameResult': outcome != 'no-tab',
+                    'currentIsSelected': True, 'defaultTab': not success,
+                    'refreshes': [{'Id': 1001, 'Editable': False, 'SaveCalls': 1, 'DefaultTab': True}] if success else [],
+                    'prompts': [] if outcome in ('success', 'no-tab') else ['ExamResultsErrorSavingPrompt'],
+                    'errors': [] if outcome in ('success', 'no-tab') else ['synthetic-' + outcome],
+                    'warnings': []}, rows['KD03-ui-save-' + outcome])
+            self.assertIn('public bool SaveChanges()', (stage / 'reference/ExtractedSaveControl.cs').read_text())
+            self.assertIn('Populate is a recording refresh double', (stage / 'reference/ADAPTATIONS.md').read_text())
             for outcome in ('success', 'optimistic-lock', 'fault'):
                 self.assertEqual({'allowed': outcome == 'success', 'calls': 1,
                     'sameContext': True, 'sameResult': True, 'unrelatedUnchanged': True,
@@ -362,6 +373,20 @@ class CharacteriseTests(unittest.TestCase):
                         self.assertEqual('N', row['actual']['flags'][5])
             finally:
                 extracted_repeat.write_text(original_repeat)
+            # Save success must refresh, rather than merely report service dispatch.
+            extracted_save_control = stage / 'reference/ExtractedSaveControl.cs'
+            original_save_control = extracted_save_control.read_text()
+            refresh_call = 'Populate(ID, Editable);'
+            self.assertEqual(1, original_save_control.count(refresh_call))
+            try:
+                extracted_save_control.write_text(original_save_control.replace(refresh_call, '// mutation: omitted UI refresh'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-ui-save-success'},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                extracted_save_control.write_text(original_save_control)
             # Verification must execute and compare, not merely return counts.
             scenarios = json.loads((stage / 'scenarios.json').read_text())
             next(s for s in scenarios if s['id'] == 'KD03-valid')['then']['saved']['Heart'] = 3

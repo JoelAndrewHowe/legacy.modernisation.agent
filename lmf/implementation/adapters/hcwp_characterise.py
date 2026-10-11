@@ -46,6 +46,7 @@ def generate(request):
     bmi_path, bmi = find('/ChildMeasurementsService.cs')
     lifecycle_path, lifecycle = find('/KdpExaminationDelegate.cs')
     ui_path, ui = find('/ucHLXKdpExaminationResult.cs')
+    save_ui_path, save_ui = find('/ucHLXKdpExaminations.cs')
     dates_path, dates = find('/DateCalculation.cs')
     repeat_path, repeat_source = find('/ExaminationsCrudManager.cs')
     out = Path(request['OutputDirectory'])
@@ -178,6 +179,7 @@ public class WarningSink {
     lifecycle_members = '\n'.join(method(lifecycle, n) for n in ('AddNewKdpResult', 'ConfirmCancelChanges', 'GetNewKdpExaminationResultDelegate', 'Save'))
     lifecycle_members = lifecycle_members.replace('FaultException<ValidationWarningFault>', 'ValidationWarningFault').replace('DateTime.Now', 'ReferenceClock.Now')
     put('reference/ExtractedLifecycle.cs', (ROOT / 'lifecycle-support.cs.txt').read_text().replace('__MEMBERS__', lifecycle_members))
+    put('reference/ExtractedSaveControl.cs', (ROOT / 'save-control-support.cs.txt').read_text().replace('__MEMBERS__', method(save_ui, 'SaveChanges')))
     ui_members = '\n'.join(method(ui, 'hlxNumericEditBoxCustom' + field + '_Validating').replace('private void', 'public void') for field in ('Height', 'Weight', 'HeadCirc'))
     put('reference/ExtractedMeasurementControls.cs', '''using System;
 using System.ComponentModel;
@@ -452,6 +454,15 @@ public class ExtractedDropdownControls {
             remainingResponses=0 if responses[0] else 1)
     add('KD03-code-invalid', 'code-selection', {**base, 'code': 'INVALID'},
         ['KdpInvalidExamCodeMessage'], selected='KD03', valid=False, confirmations=[])
+    for outcome in ('success', 'optimistic-lock', 'fault', 'no-tab'):
+        success = outcome == 'success'
+        add('KD03-ui-save-' + outcome, 'ui-save', {'outcome': outcome},
+            [] if outcome in ('success', 'no-tab') else ['synthetic-' + outcome],
+            allowed=success, calls=0 if outcome == 'no-tab' else 1,
+            sameContext=outcome != 'no-tab', sameResult=outcome != 'no-tab',
+            currentIsSelected=True, defaultTab=not success,
+            refreshes=[{'Id': 1001, 'Editable': False, 'SaveCalls': 1, 'DefaultTab': True}] if success else [],
+            prompts=[] if outcome in ('success', 'no-tab') else ['ExamResultsErrorSavingPrompt'])
     for outcome in ('success', 'optimistic-lock', 'fault'):
         add('KD03-parent-save-' + outcome, 'parent-save', {'outcome': outcome},
             [] if outcome == 'success' else ['synthetic-' + outcome],
@@ -533,6 +544,8 @@ Examination-date Validating handler and delegate ValidateExaminationDate/CheckAg
 
 Measurement Validating handlers from `{ui_path}` and delegate ValidateHeight/ValidateWeight/ValidateHeadCircumference are source-extracted. Text/Value-only control doubles invoke handlers synchronously with CancelEventArgs and invented height 40–60/weight 3–6 deviation bands (not recovered lookup data); scenarios prove invalid-input cancellation, empty-text bypass preserving the incoming cancellation flag, and warning-only acceptance. Windows binding, automatic event delivery and designer layout remain unverified.
 
+UI SaveChanges from `{save_ui_path}` now executes against extracted parent Save: successful dispatch refreshes the patient UI before disabling default-tab selection; service faults and absent selected tabs return false without refreshing. Refresh is a recording double, not read-back or Windows tab/binding evidence. Shared cases assert selected DTO/context identity, stale current-tab replacement, refresh arguments/order and preserved default-tab state on failure.
+
 Parent-delegate Save now executes source-extracted selection and fault routing against a recording service double. Success and synthetic optimistic-lock/generic faults assert exact context/result identity, return value and the error-saving prompt. The double does not save data or execute service rules; this is orchestration evidence only, not service/persistence parity.
 
 Resource translations are absent: errors/warnings are resource identifiers, not original displayed prose. Reference save only clones accepted input and proves validator outcomes; original service transaction, entity mapping and persistence are unverified. Windows/Oracle application cannot be built from this bundle. PostgreSQL is unverified and not connected. No target or browser implementation has been generated.
@@ -559,6 +572,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - ValidateNumericDescriptorEntered and its TYPE_OF_INPUT enum are retained verbatim alongside the source numeric position tables. Shared cases cover both position boundaries, zero/negative/out-of-range integers, stored-key versus UI-position differences, and permissive empty/nonnumeric/decimal/overflow inputs. Direct method invocation does not prove Windows key handling or binding.
 - Examination-code Validating/ButtonClick handlers from `{ui_path}` and LookUpExamCode from `{delegate_path}` retain their bodies. Text-only control and ShowFormLookup message doubles replace Windows UI/dialog infrastructure, record offered codes and supply explicit fixture responses; they do not validate or select codes themselves. Source ValidateAndSetExamCode performs validation/confirmation. Validating cancellation is observed separately from the selected code, including successful fallback lookup with cancellation still true. Original Windows event delivery remains unverified.
 - `{repeat_path}` UpdateRepeatFlags body is retained with internal -> public visibility only. RepositoryFixture supplies explicit preloaded query rows separately from local tracked rows; Include has no database side effects. Source local navigation repair and all repeat decisions execute unchanged. Synthetic rows include KD03 ties, a later same-day timestamp, KD08 family members, another patient and another prefix. Repeated execution observes idempotence. This is standalone repeat-logic evidence, not save-service/database parity; scope approval remains blocked.
+- `{save_ui_path}` SaveChanges body is source-extracted unchanged. SelectedTab/currentTab are key-only fixtures; Populate is a recording refresh double observing ID, Editable, prior service dispatch and default-tab state. Shared cases use patient ID 1001, result key 42, stale current key 99 and Editable=false to distinguish arguments/selection; successful/faulting calls run extracted parent Save. The double does not reload results or establish persistence/read-back, tab layout, event delivery or Windows binding parity.
 - `{lifecycle_path}` Save body is source-extracted unchanged. A recording service double observes exact context/result identity and throws explicit synthetic generic/optimistic-lock faults; shared cases assert return value, error prompt and untouched unrelated DTO. Local FaultException types replace WCF exception transport only. This proves delegate selection and error routing, not validation, transactions, mapping or persistence in the original save service.
 - ExaminerCategory/ExaminerKdpCode/ExaminerType/ExaminerName and PopulateHcpDetails are source-extracted unchanged. Shared cases prove category assignments (changed/same/null) clear type/code/name/cache; refreshed retrieval uses the new category. HCP selection matches only UsedCode=Y, obtains Description/Type from explicitly synthetic cached rows, and leaves category unchanged for nonempty codes. Empty/null code invokes the category setter, clearing code to empty, type/name/category/cache without retrieval. LookupFixture adds a synthetic Type field for these dependencies; real lookup data and Windows binding/event delivery remain unverified.
 - LocationType/LocationCode setters are source-extracted unchanged. Shared cases prove that changed, unchanged and null category assignments clear code/name/cache, and subsequent retrieval uses the assigned category rather than stale rows. Code assignments resolve exact cached descriptions, clear names for empty/null codes and yield null for unknown codes or absent cache without fetching rows. Synthetic descriptions are fixture data; Windows binding/event delivery remain unverified.

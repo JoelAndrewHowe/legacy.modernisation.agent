@@ -1,0 +1,17 @@
+// UI infrastructure doubles only; SaveChanges is extracted from the supplied source.
+public record SaveTabFixture(string Key);
+public class SaveTabControlFixture { public SaveTabFixture SelectedTab; }
+public record RefreshObservation(decimal Id, bool Editable, int SaveCalls, bool DefaultTab);
+public class ExtractedSaveControl {
+ public ExtractedLifecycle kdpExaminationDelegate = new();
+ public SaveTabControlFixture hlxAdminTabControlKdpExamination = new();
+ public SaveTabFixture currentTab;
+ public bool setDefaultTabPage = true;
+ public decimal ID = 1001;
+ public bool Editable = true;
+ public List<RefreshObservation> Refreshes = new();
+ // Records refresh dispatch only; does not load results, create tabs or persist data.
+ public void Populate(decimal id, bool editable) => Refreshes.Add(new(id, editable,
+     kdpExaminationDelegate.service.SaveCalls.Count, setDefaultTabPage));
+__MEMBERS__
+}

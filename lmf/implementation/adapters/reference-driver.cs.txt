@@ -98,6 +98,27 @@ foreach (var scenario in scenarios)
                 observed["confirmations"] = JsonSerializer.SerializeToNode(creator.messenger.Confirmations);
                 warnings.AddRange(creator.messenger.Warnings);
                 break;
+            case "ui-save":
+                var saveControl = new ExtractedSaveControl { Editable = false, currentTab = new("99") };
+                var uiOutcome = input["outcome"].GetValue<string>();
+                saveControl.hlxAdminTabControlKdpExamination.SelectedTab = uiOutcome == "no-tab" ? null : new("42");
+                var uiSelected = new KdpExaminationResultTO { PkChildExaminationId = 42 };
+                saveControl.kdpExaminationDelegate.listOfKdpExaminationResultDelegates.Add(new() {
+                    KdpExaminationResultTo = new() { PkChildExaminationId = 99 }
+                });
+                saveControl.kdpExaminationDelegate.listOfKdpExaminationResultDelegates.Add(new() { KdpExaminationResultTo = uiSelected });
+                saveControl.kdpExaminationDelegate.service.SaveOutcome = uiOutcome;
+                observed["allowed"] = saveControl.SaveChanges();
+                var uiCalls = saveControl.kdpExaminationDelegate.service.SaveCalls;
+                observed["calls"] = uiCalls.Count;
+                observed["sameContext"] = uiCalls.Count == 1 && ReferenceEquals(uiCalls[0].Context, saveControl.kdpExaminationDelegate.ato);
+                observed["sameResult"] = uiCalls.Count == 1 && ReferenceEquals(uiCalls[0].Result, uiSelected);
+                observed["currentIsSelected"] = ReferenceEquals(saveControl.currentTab, saveControl.hlxAdminTabControlKdpExamination.SelectedTab);
+                observed["defaultTab"] = saveControl.setDefaultTabPage;
+                observed["refreshes"] = JsonSerializer.SerializeToNode(saveControl.Refreshes);
+                observed["prompts"] = JsonSerializer.SerializeToNode(saveControl.kdpExaminationDelegate.messenger.ErrorPrompts);
+                errors.AddRange(saveControl.kdpExaminationDelegate.messenger.Errors);
+                break;
             case "parent-save":
                 var saver = new ExtractedLifecycle();
                 var selected = new KdpExaminationResultTO { PkChildExaminationId = 42, Height = 55 };
