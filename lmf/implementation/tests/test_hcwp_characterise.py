@@ -51,7 +51,7 @@ class CharacteriseTests(unittest.TestCase):
                 self.assertEqual({'keys': keys, 'texts': texts, 'selected': selected,
                     'keysAtPreparation': keys if name != 'empty' else [],
                     'textsAtPreparation': texts if name != 'empty' else [],
-                    'collectionIdentity': True, 'orderedIdentities': [True, True],
+                    'collectionIdentity': True, 'collectionIdentities': [True, True], 'orderedIdentities': [True, True],
                     'exactSelection': True, 'currentUnchanged': True, 'defaultUnchanged': True,
                     'errors': [], 'warnings': []}, rows['KD03-ui-tab-setup-' + name])
             self.assertIn('ResultTabText calculation/resource/recall prose is not verified',
@@ -624,6 +624,37 @@ class CharacteriseTests(unittest.TestCase):
                 extracted_save_control.write_text(original_save_control)
             extracted_setup = stage / 'reference/ExtractedTabSetupControl.cs'
             original_setup = extracted_setup.read_text()
+            # Collection replacement/restoration preserves every tab object and
+            # final collection identity, but must fail the per-call observation.
+            setup_method = 'public void SetUpTabPages()'
+            self.assertEqual(1, original_setup.count(setup_method))
+            setup_mutation = '''public void SetUpTabPages()
+        {
+            if (setupOriginalCollection == null) {
+                setupOriginalCollection = hlxAdminTabControlKdpExamination.TabPages;
+                hlxAdminTabControlKdpExamination.TabPages = new(setupOriginalCollection);
+            } else {
+                hlxAdminTabControlKdpExamination.TabPages = setupOriginalCollection;
+            }
+            OriginalSetUpTabPages();
+        }
+        private List<SaveTabFixture> setupOriginalCollection;
+        public void OriginalSetUpTabPages()'''
+            try:
+                extracted_setup.write_text(original_setup.replace(setup_method, setup_mutation))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                self.assertEqual({'KD03-ui-tab-setup-' + name for name in
+                    ('default', 'current', 'new', 'null-current', 'empty')}, failures)
+                for row in mutant_report['scenarios']:
+                    if row['id'] in failures:
+                        self.assertEqual([False, True], row['actual']['collectionIdentities'])
+                        self.assertTrue(row['actual']['collectionIdentity'])
+                        self.assertEqual([True, True], row['actual']['orderedIdentities'])
+            finally:
+                extracted_setup.write_text(original_setup)
             zero_guard = 'PkChildExaminationId != NewExamNumber'
             self.assertEqual(1, original_setup.count(zero_guard))
             try:

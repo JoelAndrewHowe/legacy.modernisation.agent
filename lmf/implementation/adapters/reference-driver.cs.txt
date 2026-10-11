@@ -194,6 +194,7 @@ foreach (var scenario in scenarios)
                 var setupTexts = new List<string[]>();
                 var setupSelected = new List<string>();
                 var setupIdentities = new List<bool>();
+                var setupCollectionIdentities = new List<bool>();
                 var exactSetupSelection = true;
                 for (var pass = 0; pass < 2; pass++) {
                     setupControl.kdpExaminationDelegate.KdpExaminationResultDelegates = input["ids"].AsArray().Select(id => {
@@ -202,6 +203,7 @@ foreach (var scenario in scenarios)
                     }).ToList();
                     setupControl.SetUpTabPages();
                     var afterSetupTabs = setupControl.hlxAdminTabControlKdpExamination.TabPages;
+                    setupCollectionIdentities.Add(ReferenceEquals(setupTabs, afterSetupTabs));
                     setupIdentities.Add(afterSetupTabs.Count == originalSetupTabs.Length && originalSetupTabs.Select((tab, index) => ReferenceEquals(tab, afterSetupTabs[index])).All(value => value));
                     setupKeys.Add(afterSetupTabs.Select(tab => tab.Key).ToArray());
                     setupTexts.Add(afterSetupTabs.Select(tab => tab.Text).ToArray());
@@ -217,6 +219,7 @@ foreach (var scenario in scenarios)
                 observed["keysAtPreparation"] = JsonSerializer.SerializeToNode(setupControl.KeysAtPreparation);
                 observed["textsAtPreparation"] = JsonSerializer.SerializeToNode(setupControl.TextsAtPreparation);
                 observed["collectionIdentity"] = ReferenceEquals(setupTabs, setupControl.hlxAdminTabControlKdpExamination.TabPages);
+                observed["collectionIdentities"] = JsonSerializer.SerializeToNode(setupCollectionIdentities);
                 observed["orderedIdentities"] = JsonSerializer.SerializeToNode(setupIdentities);
                 observed["exactSelection"] = exactSetupSelection;
                 observed["currentUnchanged"] = ReferenceEquals(originalCurrentSetupTab, setupControl.currentTab);
