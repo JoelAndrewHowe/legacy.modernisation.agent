@@ -2,6 +2,9 @@
 
 - [ ] Provide a terminal Tetris application launched with `npm start`.
   - [ ] Validator: resizing below 22×24 redraws the full frame and clips or wraps the board and quit instructions; show a resize prompt until sufficient space is restored.
+    - [ ] Verify minimized terminals emit no visible content and still allow quitting with timer cleanup.
+    - [ ] Validator: a zero-column terminal emits a blank CRLF; suppress frame content when either terminal dimension is zero.
+    - [ ] Verify resizing while help is open preserves the paused game and help display on restoration.
     - [x] Verify resizing during active gameplay clears the board, pauses controls and gravity through partial restoration, and resumes the unchanged game only when both dimensions suffice.
     - [x] Handle an initially undersized terminal with the same bounded resize prompt; verify controls and gravity remain paused until it is restored.
   - [ ] Validator: the empty board and fixed score do not communicate readiness or next steps; add explicit status or instructions beyond quitting.

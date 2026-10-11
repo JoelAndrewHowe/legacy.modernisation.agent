@@ -209,6 +209,62 @@ test('initially undersized terminals wait for resizing before starting gameplay'
   }
 });
 
+test('minimized terminals show no content and allow quitting with timer cleanup', () => {
+  for (const [columns, rows] of [[0, 24], [22, 0], [0, 0]]) {
+    const io = terminal();
+    io.output.columns = columns;
+    io.output.rows = rows;
+    let cancelled;
+    const stop = startApp({ ...io,
+      setInterval: () => 42,
+      clearInterval: (id) => { cancelled = id; },
+    });
+    try {
+      const frame = io.text().split('\x1b[H\x1b[2J').at(-1);
+      assert.equal(frame, '');
+      io.input.emit('keypress', '', { name: 'escape' });
+      assert.equal(cancelled, 42);
+      assert.equal(io.input.isRaw, false);
+      assert.equal(io.output.listenerCount('resize'), 0);
+      assert.ok(io.text().endsWith('\x1b[?25h\x1b[?1049l'));
+    } finally {
+      stop();
+    }
+  }
+});
+
+test('resizing preserves the help pause until explicitly resumed', () => {
+  const io = terminal();
+  const game = new Game(() => 0);
+  let tick;
+  const stop = startApp({ ...io, game,
+    setInterval: (callback) => { tick = callback; return 42; },
+    clearInterval: () => {},
+  });
+  try {
+    io.input.emit('keypress', '', { name: 'return' });
+    tick();
+    io.input.emit('keypress', '?', {});
+    const before = JSON.stringify(game);
+    io.output.columns = 21;
+    io.output.emit('resize');
+    io.input.emit('keypress', '?', {});
+    tick();
+    io.output.columns = 22;
+    const offset = io.text().length;
+    io.output.emit('resize');
+    assert.equal(io.text().slice(offset), '\x1b[H\x1b[2J' + renderFrame(game, true));
+    tick();
+    io.input.emit('keypress', '', { name: 'space' });
+    assert.equal(JSON.stringify(game), before);
+    io.input.emit('keypress', '?', {});
+    tick();
+    assert.equal(game.piece.y, 2);
+  } finally {
+    stop();
+  }
+});
+
 test('rejects noninteractive terminals before changing state', () => {
   for (const change of [
     (io) => { io.input.isTTY = false; },

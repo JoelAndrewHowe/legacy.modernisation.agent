@@ -40,7 +40,7 @@ export function startApp({ input = process.stdin, output = process.stdout, signa
   const tooSmall = () => output.rows < 24 || output.columns < 22;
   const draw = () => {
     const small = tooSmall();
-    const frame = small
+    const frame = output.columns <= 0 || output.rows <= 0 ? '' : small
       ? ['Resize to 22x24', 'Q/Esc: quit']
         .slice(0, Math.max(0, output.rows))
         .map((line) => line.slice(0, Math.max(0, output.columns)))
