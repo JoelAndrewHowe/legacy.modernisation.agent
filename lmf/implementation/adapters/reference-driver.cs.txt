@@ -182,6 +182,63 @@ foreach (var scenario in scenarios)
                 } : null;
                 warnings.AddRange(insertControl.kdpExaminationDelegate.messenger.Warnings);
                 break;
+            case "ui-tab-content":
+                var contentControl = new ExtractedTabContentControl();
+                var previousContentTab = new ContentTabFixture { Key = "previous" };
+                contentControl.currentTab = previousContentTab;
+                var previousChild = new ucHLXKdpExaminationResult();
+                contentControl.UcHlxKdpExaminationResult = previousChild;
+                var contentSentinel = new object();
+                var contentTab = input["nullTab"].GetValue<bool>() ? null : new ContentTabFixture { Key = input["key"]?.GetValue<string>() };
+                contentTab?.Controls.Add(contentSentinel);
+                var matchingContentResult = new TabResultFixture(input["key"]?.GetValue<string>() == "0" ? 0 : 42, "SYNTH-first");
+                contentControl.kdpExaminationDelegate.KdpExaminationResultDelegates = input["matched"].GetValue<bool>()
+                    ? new() { new(99, "SYNTH-unrelated"), matchingContentResult, new(matchingContentResult.PkChildExaminationId, "SYNTH-second") }
+                    : new() { new(99, "SYNTH-unrelated") };
+                var contentCounts = new List<int>();
+                var contentSentinels = new List<bool>();
+                var contentCreated = new List<bool>();
+                var contentResults = new List<bool>();
+                var contentCurrent = new List<bool>();
+                var contentChildren = new List<bool>();
+                var contentOrderedControls = new List<bool>();
+                ucHLXKdpExaminationResult firstContentChild = null;
+                var contentDock = new List<bool>();
+                var contentFocus = new List<int>();
+                for (var pass = 0; pass < 2; pass++) {
+                    var beforeChild = contentControl.UcHlxKdpExaminationResult;
+                    contentControl.SetUpTabPageContent(contentTab);
+                    var child = contentControl.UcHlxKdpExaminationResult;
+                    var matchedContent = input["matched"].GetValue<bool>();
+                    if (pass == 0 && matchedContent) firstContentChild = child;
+                    object[] expectedControls = contentTab == null ? Array.Empty<object>()
+                        : matchedContent ? contentTab.Key == "0"
+                            ? pass == 0 ? new object[] { contentSentinel, firstContentChild }
+                                : new object[] { contentSentinel, firstContentChild, child }
+                            : new object[] { child }
+                        : !string.IsNullOrEmpty(contentTab.Key) && contentTab.Key != "0"
+                            ? Array.Empty<object>() : new object[] { contentSentinel };
+                    contentOrderedControls.Add((contentTab?.Controls.Count ?? 0) == expectedControls.Length
+                        && expectedControls.Select((expected, index) => ReferenceEquals(contentTab.Controls[index], expected)).All(identity => identity));
+                    contentCounts.Add(contentTab?.Controls.Count ?? 0);
+                    contentSentinels.Add(contentTab?.Controls.Contains(contentSentinel) ?? false);
+                    contentCreated.Add(!ReferenceEquals(beforeChild, child));
+                    contentResults.Add(matchedContent ? ReferenceEquals(child.Result, matchingContentResult) : ReferenceEquals(child, previousChild));
+                    contentCurrent.Add(ReferenceEquals(contentControl.currentTab, matchedContent ? contentTab : previousContentTab));
+                    contentChildren.Add(matchedContent ? ReferenceEquals(contentTab.Controls.Last(), child) : ReferenceEquals(child, previousChild));
+                    contentDock.Add(!matchedContent || child.Dock == DockStyle.Fill);
+                    contentFocus.Add(child.FocusCalls);
+                }
+                observed["counts"] = JsonSerializer.SerializeToNode(contentCounts);
+                observed["sentinelRetained"] = JsonSerializer.SerializeToNode(contentSentinels);
+                observed["created"] = JsonSerializer.SerializeToNode(contentCreated);
+                observed["exactResult"] = JsonSerializer.SerializeToNode(contentResults);
+                observed["currentIdentity"] = JsonSerializer.SerializeToNode(contentCurrent);
+                observed["childIdentity"] = JsonSerializer.SerializeToNode(contentChildren);
+                observed["orderedControlsIdentities"] = JsonSerializer.SerializeToNode(contentOrderedControls);
+                observed["dockFill"] = JsonSerializer.SerializeToNode(contentDock);
+                observed["focusCalls"] = JsonSerializer.SerializeToNode(contentFocus);
+                break;
             case "ui-tab-setup":
                 var setupControl = new ExtractedTabSetupControl { setDefaultTabPage = input["default"].GetValue<bool>() };
                 foreach (var key in input["keys"].AsArray())

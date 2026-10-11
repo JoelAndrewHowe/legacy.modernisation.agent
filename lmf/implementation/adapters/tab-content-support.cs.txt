@@ -1,0 +1,19 @@
+// Recording controls only: no Windows construction, binding, layout or event delivery.
+public enum DockStyle { None, Fill }
+public class ContentTabFixture {
+ public string Key;
+ public List<object> Controls = new();
+}
+public class ucHLXKdpExaminationResult {
+ public DockStyle Dock;
+ public TabResultFixture Result;
+ public int FocusCalls;
+ public void Populate(TabResultFixture result) { Result = result; }
+ public void FocusHlxTextBoxExamCode() { FocusCalls++; }
+}
+public class ExtractedTabContentControl {
+ public TabResultsFixture kdpExaminationDelegate = new();
+ public ContentTabFixture currentTab;
+ public ucHLXKdpExaminationResult UcHlxKdpExaminationResult;
+__MEMBERS__
+}

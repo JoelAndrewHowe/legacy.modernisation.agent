@@ -41,6 +41,18 @@ class CharacteriseTests(unittest.TestCase):
             self.assertGreater(len(report['scenarios']), 20)
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
+            for name, counts, sentinel, matched in [
+                ('existing', [1, 1], False, True), ('new', [2, 3], True, True),
+                ('missing-existing', [0, 0], False, False), ('missing-new', [1, 1], True, False),
+                ('empty', [1, 1], True, False), ('null-key', [1, 1], True, False),
+                ('null-tab', [0, 0], False, False),
+            ]:
+                self.assertEqual({'counts': counts, 'sentinelRetained': [sentinel] * 2,
+                    'created': [matched] * 2, 'exactResult': [True, True],
+                    'currentIdentity': [True, True], 'childIdentity': [True, True],
+                    'orderedControlsIdentities': [True, True],
+                    'dockFill': [True, True], 'focusCalls': [1 if matched else 0] * 2,
+                    'errors': [], 'warnings': []}, rows['KD03-ui-tab-content-' + name])
             for name, keys, texts, selected in [
                 ('default', [['42', '99'], ['142', '199']], [['SYNTH-42', 'SYNTH-99'], ['SYNTH-142', 'SYNTH-199']], ['42', '142']),
                 ('current', [['42', '99'], ['142', '199']], [['SYNTH-42', 'SYNTH-99'], ['SYNTH-142', 'SYNTH-199']], ['99', '199']),
@@ -624,6 +636,39 @@ class CharacteriseTests(unittest.TestCase):
                         self.assertEqual(['42', '99'], row['actual']['keys'])
             finally:
                 extracted_save_control.write_text(original_save_control)
+            extracted_content = stage / 'reference/ExtractedTabContentControl.cs'
+            original_content = extracted_content.read_text()
+            self.assertEqual(1, original_content.count('if (tabKey != 0)'))
+            try:
+                extracted_content.write_text(original_content.replace('if (tabKey != 0)', 'if (true)'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-ui-tab-content-new', 'KD03-ui-tab-content-missing-new'},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                extracted_content.write_text(original_content)
+            # Replace the accumulated child without changing count, sentinel,
+            # newest child or any other previously observed property.
+            content_add = 'tab.Controls.Add(UcHlxKdpExaminationResult);'
+            self.assertEqual(1, original_content.count(content_add))
+            try:
+                extracted_content.write_text(original_content.replace(content_add, '''
+                    if (tabKey == 0 && tab.Controls.Count > 1)
+                        tab.Controls[1] = new ucHLXKdpExaminationResult();
+                    ''' + content_add))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-ui-tab-content-new'},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+                actual = next(row['actual'] for row in mutant_report['scenarios']
+                    if row['id'] == 'KD03-ui-tab-content-new')
+                self.assertEqual([True, False], actual['orderedControlsIdentities'])
+                self.assertEqual(rows['KD03-ui-tab-content-new'],
+                    {**actual, 'orderedControlsIdentities': [True, True]})
+            finally:
+                extracted_content.write_text(original_content)
             extracted_setup = stage / 'reference/ExtractedTabSetupControl.cs'
             original_setup = extracted_setup.read_text()
             # Collection replacement/restoration preserves every tab object and
