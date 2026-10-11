@@ -1,0 +1,27 @@
+// Infrastructure-only container for source-extracted delegate members.
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using Orvex.TransferObjects;
+public class ExtractedInteractions {
+ public KdpExaminationResultTO KdpExaminationResultTo = new();
+ public WarningSink Messenger = new();
+ public List<LookupFixture> locationList, examinerList;
+ public Lazy<List<RangeFixture>> deviationRanges, prescribedRanges;
+ public DateTime ExaminationDate;
+ const string BmiMeasurmentType = "BMI";
+ public ExtractedBmi measurementsService = new();
+ // Lookup retrieval is a double: caller supplies reviewed synthetic rows, including null.
+ void GetLocationList() {} void GetExaminerList() {}
+ void RaisePropertyChanged(string name) => CheckBmi(this, new PropertyChangedEventArgs(name));
+__MEMBERS__
+}
+public record LookupFixture(string Code, string UsedCode);
+public record RangeFixture(string MeasurementType, double LowerBound, double UpperBound);
+public static class HLXBoolean { public const string True = "Y", False = "N"; }
+public static class LookupsUtility { public enum ChildMeasurementType { Height, Weight } }
+public static class DisplayExtensions {
+ public static string GetDisplayName(this LookupsUtility.ChildMeasurementType value) => value.ToString();
+}
+public record NonFatalErrorEncountered(string Message, string Title, string Prompt);

@@ -99,6 +99,8 @@ public class ExtractedAge {
 public record WarningNotificationMessage(string Message, string Title, string Prompt);
 public class WarningSink {
  public List<string> Warnings = new();
+ public List<string> Errors = new();
+ public void Send(NonFatalErrorEncountered value) => Errors.Add(value.Message);
  public void Send(WarningNotificationMessage value) => Warnings.Add(value.Message);
 }
 public static class DateExtensions {
@@ -107,6 +109,13 @@ public static class DateExtensions {
 }
 ''')
     put('reference/Reference.csproj', '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable></PropertyGroup></Project>\n')
+    start = delegate.index('        public decimal BmiLowerBound')
+    last = re.search(r'        public decimal\? HeadCircumference\s*\{.*?\n        \}', delegate, re.S)
+    members = delegate[start:last.end()]
+    members += '\n' + '\n'.join(method(delegate, n).replace('private void', 'public void') for n in ('ValidateLocationCode', 'ValidateExaminerCode', 'CheckDeviations', 'CheckBmi'))
+    symbols = sorted(set(re.findall(r'\b\w+(?:Message|Prompt|Title)\b', members)) - {'warningMessage', 'WarningNotificationMessage'})
+    constants = '\n'.join(f' const string {s} = "{s}";' for s in symbols)
+    put('reference/ExtractedInteractions.cs', (ROOT / 'delegate-support.cs.txt').read_text().replace('__MEMBERS__', constants + '\n' + members))
     put('reference/Program.cs', (ROOT / 'reference-driver.cs.txt').read_text())
     put('verify.py', (ROOT / 'verify_reference.py').read_text())
     fixtures = {'today': '2025-03-01', 'dateOfBirth': '2025-01-01', 'clientId': 1001,
@@ -138,6 +147,19 @@ public static class DateExtensions {
     add('KD03-age-old', 'age', {**base, 'ExaminationDate': '2025-02-28'}, warnings=['KdpContactGivenAfterMaxAge'])
     add('KD03-age-boundary', 'age', {**base, 'ExaminationDate': '2025-02-12'})
     add('KD03-bmi', 'bmi', base, bmi=14.88)
+    for kind in ('Height', 'Weight', 'HeadCircumference'):
+        for declined in (True, False):
+            add('KD03-decline-' + kind + '-' + str(declined).lower(), 'decline',
+                {**base, 'measurement': kind, 'declined': declined}, value=None, flag='Y' if declined else 'N')
+    for operation in ('location', 'examiner'):
+        for code, valid, error in [('', True, None), ('SYNTH', True, None), ('MISSING', False, 'InvalidLocationCodeMessage' if operation == 'location' else 'InvalidHcpCodeMessage')]:
+            add('KD03-' + operation + '-' + (code or 'empty'), operation, {**base, 'code': code}, [error] if error else [], valid=valid)
+        add('KD03-' + operation + '-null-lookup', operation, {**base, 'code': 'MISSING', 'nullLookup': True}, valid=True)
+    add('KD03-examiner-unused', 'examiner', {**base, 'code': 'UNUSED'}, ['UnusedExaminerCodeMessage'], valid=False)
+    for value in (40, 50, 60):
+        add('KD03-deviation-' + str(value), 'deviation', {**base, 'Height': value}, warnings=[] if value == 50 else ['OutsideExpectedRangeMessage'])
+    for weight, warning in [(3.0, True), (3.025, False), (6.05, False), (6.1, True)]:
+        add('KD03-bmi-warning-' + str(weight), 'bmi-warning', {**base, 'Weight': weight}, warnings=['BmiOutsidePrescribedRangeMessage'] if warning else [])
     js('scenarios.json', scenarios)
     put('scenarios.feature', 'Feature: Parity with extracted legacy logic\n' + '\n'.join(
         f"  Scenario: {s['id']}\n    Given {s['given']}\n    When I execute {s['when']} with the input in scenarios.json\n    Then the observation equals the approved then object\n" for s in scenarios))
@@ -160,7 +182,7 @@ The complete transfer inventory includes metadata and fields excluded from KD03;
 - `ValidateExamCodeForDuplicates` warns for same code on another date; delegate confirmation can cancel code selection. `ValidateKdpConsent` warns, not a mandatory save predicate. Warning/confirmation orchestration still needs executable coverage (blocking gap).
 - `{delegate_path}` `CheckAgeWithinScheduleRange`: below minimum/above positive maximum warns, not rejects; recommendation comes from schedule, NOT the contact name. Demonstration range 6–8 is invented. Measurement deviation warnings use strict interior bounds; BMI warning uses prescribed limits. These database limits are unavailable.
 - `{bmi_path}` `CalculateBmi`: weight/(height/100)^2, round two decimals, cap 99.99.
-- `KdpExaminationDelegate.AddNewKdpResult`: new id 0; current entered time; unscheduled origin; reschedule and decline flags N. Selecting a decline flag clears its measurement. These UI defaults and interactions are source-backed but not yet exercised by the harness.
+- `KdpExaminationDelegate.AddNewKdpResult`: new id 0; current entered time; unscheduled origin; reschedule and decline flags N. Selecting a decline flag clears its measurement. Defaults remain unexercised. Extracted decline setters clear measurements both when checking and unchecking; lookup validation and BMI/deviation warnings now have executable examples with synthetic rows/ranges.
 - SQL `EXAM_NOT_EXAMINED_REASON.sql`: KD03 descriptions for codes 1–5; `KDP_LOCATION_TYPES.sql`: UI positions map to actual type keys 5,2,1,17,6,18,22. UI position is not a stored key. Examiner descriptions/locations/used codes require lookups; do not invent mandatory values.
 
 ## Examples
@@ -175,11 +197,11 @@ Oracle IDs, triggers, locks, EF6 mappings, schedule, centile bands, general opti
 ''')
     put('gaps.md', '''# Gaps and assumptions
 ## Blocking
-- Full delegate confirmation/cancellation, decline clearing, defaults, lookup validation and BMI/deviation warning paths lack executable extraction coverage. Current scenarios are validator/calculation/age evidence only.
+- Delegate confirmation/cancellation and new-result defaults still lack executable extraction coverage. Decline setters (including unchecking), lookup validation and BMI/deviation warnings now execute extracted members; full delegate lifecycle remains unverified.
 - Repeat-flag effects require an explicit reviewed scope adjustment or implementation before approval; appointment and recall processing alone were excluded in the seed.
 - The missing WeeksBetween extension is adapted to elapsed days / 7. Review or recover exact legacy rounding before claiming boundary-age parity.
 ## Non-blocking / review assumptions
-Patient 1001, male, born 2025-01-01, clock 2025-03-01 and schedule 6–8 weeks are invented fixtures. Actual schedule, examiner/location lookup rows, BMI thresholds and centile bands are absent. Null/optional is not mandatory. PhysicalGeneral omission and field/save head discrepancy remain exactly as source, not corrected.
+Patient 1001, male, born 2025-01-01, clock 2025-03-01 and schedule 6–8 weeks are invented fixtures. Actual schedule, examiner/location lookup rows, BMI thresholds and centile bands are absent. Interaction scenarios explicitly invent SYNTH/UNUSED lookup rows, height range 40–60 and BMI range 10–20; these are review fixtures, not recovered production limits. Null/optional is not mandatory. PhysicalGeneral omission and field/save head discrepancy remain exactly as source, not corrected.
 Resource translations are absent: errors/warnings are resource identifiers, not original displayed prose. Reference save only clones accepted input and proves validator outcomes; original service transaction, entity mapping and persistence are unverified. Windows/Oracle application cannot be built from this bundle. PostgreSQL is unverified and not connected. No target or browser implementation has been generated.
 ''')
     put('migration-plan.md', '''# Bounded migration plan
@@ -195,6 +217,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - Missing resource strings replaced with their symbolic names; fault wrappers replaced with Exceptions carrying those names. Aggregated numbered messages normalised only by removing numbering/newlines. Resource identifiers compared exactly in order.
 - `{bmi_path}` CalculateBmi method retained verbatim in a small container.
 - `{delegate_path}` CheckAgeWithinScheduleRange body retained verbatim; visibility made public; schedule Lazy reads fixture; Messenger records resource IDs. Missing WeeksBetween adapted as elapsed days / 7 (blocking review gap).
+- ExtractedInteractions retains BMI/decline/measurement properties and lookup/deviation/BMI method bodies except private visibility. Notifications synchronously call extracted CheckBmi. Lookup retrieval supplies synthetic rows or null; invented height range 40–60 and BMI range 10–20 do not claim database provenance. Display names use symbolic enum names; Windows event lifecycle remains unverified.
 - reference driver dispatches operation then serialises errors/warnings/BMI and detached accepted-input clone. It is NOT the save service and does NOT prove persistence. No random IDs are generated. No business rules supplied by database doubles.
 - `original/` retains unadapted source sections for independent inspection. `source-index.json` records original identity and bundle line for every one of 94 files.
 - verify.py executes the C# harness and mechanically compares every scenario then object; counts are derived from actual comparison. Report includes actual observations and limitations. Target implementation is entirely separate and not generated here.

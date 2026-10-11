@@ -44,6 +44,20 @@ class CharacteriseTests(unittest.TestCase):
             self.assertEqual(['HeadCircumferenceInvalidFormatMessage'], rows['KD03-head-field-100']['errors'])
             self.assertEqual(100, rows['KD03-head-save-100']['saved']['HeadCircumference'])
             self.assertEqual(['NoResultsEnteredMessage'], rows['KD03-general-alone']['errors'])
+            for kind in ('Height', 'Weight', 'HeadCircumference'):
+                for declined, flag in [('true', 'Y'), ('false', 'N')]:
+                    self.assertEqual({'value': None, 'flag': flag, 'errors': [], 'warnings': []}, rows[f'KD03-decline-{kind}-{declined}'])
+            self.assertFalse(rows['KD03-examiner-unused']['valid'])
+            self.assertEqual(['UnusedExaminerCodeMessage'], rows['KD03-examiner-unused']['errors'])
+            self.assertTrue(rows['KD03-location-null-lookup']['valid'])
+            self.assertTrue(rows['KD03-examiner-null-lookup']['valid'])
+            self.assertEqual([], rows['KD03-deviation-50']['warnings'])
+            for boundary in (40, 60):
+                self.assertEqual(['OutsideExpectedRangeMessage'], rows[f'KD03-deviation-{boundary}']['warnings'])
+            self.assertEqual(['BmiOutsidePrescribedRangeMessage'], rows['KD03-bmi-warning-3.0']['warnings'])
+            self.assertEqual([], rows['KD03-bmi-warning-3.025']['warnings'])
+            self.assertEqual([], rows['KD03-bmi-warning-6.05']['warnings'])
+            self.assertEqual(['BmiOutsidePrescribedRangeMessage'], rows['KD03-bmi-warning-6.1']['warnings'])
             approve = cli('approve', '--workspace', str(workspace), '--revision', state['Revision'])
             self.assertNotEqual(0, approve.returncode)
             self.assertIn('blocking gaps', approve.stderr)

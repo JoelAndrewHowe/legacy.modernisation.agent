@@ -40,6 +40,35 @@ foreach (var scenario in scenarios)
                 age.CheckAgeWithinScheduleRange(result.ExaminationDate);
                 warnings.AddRange(age.Messenger.Warnings);
                 break;
+            case "decline":
+            case "location":
+            case "examiner":
+            case "deviation":
+            case "bmi-warning":
+                var interaction = new ExtractedInteractions {
+                    KdpExaminationResultTo = result, ExaminationDate = result.ExaminationDate,
+                    locationList = new() { new("SYNTH", "Y") },
+                    examinerList = new() { new("SYNTH", "Y"), new("UNUSED", "N") },
+                    deviationRanges = new(() => new() { new("Height", 40, 60) }),
+                    prescribedRanges = new(() => new() { new("BMI", 10, 20) })
+                };
+                if (input["nullLookup"]?.GetValue<bool>() == true) { interaction.locationList = null; interaction.examinerList = null; }
+                switch (scenario["when"].GetValue<string>()) {
+                    case "decline":
+                        var measurement = input["measurement"].GetValue<string>();
+                        var declined = input["declined"].GetValue<bool>();
+                        typeof(ExtractedInteractions).GetProperty("Is" + measurement + "Declined").SetValue(interaction, declined);
+                        observed["value"] = JsonSerializer.SerializeToNode(typeof(ExtractedInteractions).GetProperty(measurement).GetValue(interaction));
+                        observed["flag"] = measurement switch { "Height" => result.HeightMeasurementDeclined, "Weight" => result.WeightMeasurementDeclined, _ => result.HeadMeasurementDeclined };
+                        break;
+                    case "location": observed["valid"] = interaction.ValidateLocationCode(input["code"].GetValue<string>()); break;
+                    case "examiner": observed["valid"] = interaction.ValidateExaminerCode(input["code"].GetValue<string>()); break;
+                    case "deviation": interaction.CheckDeviations(result.Height, LookupsUtility.ChildMeasurementType.Height); break;
+                    case "bmi-warning": interaction.CheckBmi(interaction, new System.ComponentModel.PropertyChangedEventArgs("Bmi")); break;
+                }
+                errors.AddRange(interaction.Messenger.Errors);
+                warnings.AddRange(interaction.Messenger.Warnings);
+                break;
             case "bmi": observed["bmi"] = new ExtractedBmi().CalculateBmi(result.Height.Value, result.Weight.Value); break;
             default: throw new InvalidOperationException("Unknown scenario operation");
         }
