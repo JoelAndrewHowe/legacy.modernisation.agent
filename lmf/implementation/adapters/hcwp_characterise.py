@@ -14,8 +14,9 @@ def sections(text):
         r'>>> FILE \d+/94: (.*?)   \[.*?\]\n=+\n(.*?)<<< END FILE', text, re.S)}
 
 
-def method(text, name):
-    match = re.search(r'        (?:public|private) (?:static )?[^\n]+\b' + name + r'\([^\n]*\)\s*\{', text)
+def method(text, name, parameters=None):
+    signature = r'[^\n]*' if parameters is None else re.escape(parameters)
+    match = re.search(r'        (?:public|private) (?:static )?[^\n]+\b' + name + r'\(' + signature + r'\)\s*\{', text)
     if not match:
         raise ValueError('Missing extracted method: ' + name)
     start = text.index('{', match.start())
@@ -196,6 +197,16 @@ public class ExtractedCodeControl {
  public ExtractedInteractions kdpExaminationResultDelegate;
  public CodeControlFixture hlxTextBoxExamCode = new();
 ''' + '\n'.join(method(ui, name).replace('private void', 'public void') for name in ('hlxTextBoxExamCode_Validating', 'hlxTextBoxExamCode_ButtonClick')) + '\n}\n')
+    dropdown_members = '\n'.join(method(ui, name, 'object sender, EventArgs e').replace('private void', 'public void')
+        for name in ('ValidateLocationTypeInput', 'ValidateExaminerTypeInput', 'ValidateReasonNotExaminedTypeInput'))
+    dropdown_members += '\n' + method(ui, 'ValidateExaminerTypeInput', 'object sender, CancelEventArgs e').replace('private void', 'public void')
+    put('reference/ExtractedDropdownControls.cs', '''using System;
+using System.ComponentModel;
+// Text-only sender double; no proprietary dropdown binding or event delivery.
+public class HlxDropDown { public string Text; }
+public class ExtractedDropdownControls {
+ public ExtractedInteractions kdpExaminationResultDelegate;
+''' + dropdown_members.replace('KdpExaminationResultDelegate.TYPE_OF_INPUT', 'ExtractedInteractions.TYPE_OF_INPUT') + '\n}\n')
     # Only visibility changes; query/grouping/flag decisions remain source-owned.
     repeat_member = method(repeat_source.replace('internal static void', 'public static void'), 'UpdateRepeatFlags')
     put('reference/ExtractedRepeatFlags.cs', (ROOT / 'repeat-support.cs.txt').read_text().replace('__MEMBERS__', repeat_member))
@@ -232,6 +243,14 @@ public class ExtractedCodeControl {
                                    ('whitespace', ' 1 ', True)]:
             add('KD03-numeric-descriptor-' + kind + '-' + label, 'numeric-descriptor',
                 {**base, 'descriptor': text, 'kind': kind}, valid=valid)
+            # Handlers trim for validation only: accepted text must remain verbatim.
+            add('KD03-dropdown-' + kind + '-' + label, 'dropdown-control',
+                {**base, 'descriptor': text, 'kind': kind, 'cancelOverload': False, 'initialCancel': False},
+                text=text if valid else '', cancelled=False)
+    for initial_cancel in (False, True):
+        add('KD03-dropdown-examiner-cancel-' + str(initial_cancel).lower(), 'dropdown-control',
+            {**base, 'descriptor': ' 999 ', 'kind': 'EXAMINER_TYPE', 'cancelOverload': True, 'initialCancel': initial_cancel},
+            text=' 999 ', cancelled=initial_cancel)
     repeat_rows = [
         {'id': 1, 'client': 1001, 'code': 'KD03', 'date': '2025-02-19T09:00:00', 'flag': 'Y'},
         {'id': 2, 'client': 1001, 'code': 'KD03', 'date': '2025-02-19T09:00:00', 'flag': 'Y'},
@@ -442,6 +461,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - `{bmi_path}` CalculateBmi method retained verbatim in a small container.
 - `{delegate_path}` CheckAgeWithinScheduleRange body retained verbatim; visibility made public; schedule Lazy reads fixture; Messenger records resource IDs. DaysBetween/WeeksBetween bodies recovered from `{dates_path}` and retained verbatim in ExtractedDateCalculation.cs; only the containing namespace/class is replaced. Truncation toward zero, including negative fractional days, is executable.
 - ExtractedInteractions retains BMI/decline/measurement properties and lookup/deviation/BMI method bodies except private visibility. Notifications dispatch through a synchronous PropertyChanged event subscribed to extracted CheckBmi, mirroring the source constructor subscription (not Windows controls). ExaminationDate and ResetDeviations bodies are retained, with ChildMeasurementsRange renamed to the fixture record; GetExpectedRanges records the date and supplies invented height range 40–60. Shared examples check same-day no-op, time preservation, lazy range reset and weight-setter BMI warning dispatch. Lookup retrieval supplies synthetic rows or null; invented height range 40–60 and BMI range 10–20 do not claim database provenance. Display names use symbolic enum names. ValidateAndSetExamCode retains its body with WCF fault wrappers replaced by local exceptions carrying Detail.Title; synchronous confirmation responses are fixture-controlled and recorded. ExaminationCode, UpdateExamDescription, ClearDataFromHiddenFields, their field properties and ResetRecommendedAgeRange are source-extracted. Shared setter cases cover blocked/same-code no-ops and entering/leaving KD03, notifications, description, hidden-field clearing and lazy schedule reset. Synthetic descriptions and a recording schedule double returning 6–8 weeks replace lookups/services; Windows controls remain unverified. Populate, all three PrependNumericsUi description methods, GetDropDownUiPositionNumber and numeric position tables are source-extracted. Synthetic lookup lists replace lazy lookup-service retrieval; repeated Populate checks prefix idempotence, unmatched codes and already-prefixed descriptions. Context and lazy ranges are observed directly; Windows binding remains unverified; parent-delegate Populate integration executes through the extracted factory method. TransferObjectBase.Lock is a storage-only string substitution, not a concurrency implementation. ExamDescription getter/setter are source-extracted; shared cases verify the stored description is unchanged while display appends the explicitly synthetic RecallText suffix only when IsRepeat is true and the current code equals OriginalExamCode (including null-description concatenation). Original resource prose and Windows binding remain unverified.
+- Dropdown ValidateLocationTypeInput, ValidateExaminerTypeInput and ValidateReasonNotExaminedTypeInput EventArgs handlers are source-extracted with visibility changes and the delegate type qualifier renamed. A Text-only HlxDropDown sender double proves invalid integer text is cleared and accepted text remains verbatim (Trim affects validation only). The distinct empty examiner CancelEventArgs overload is retained and invoked explicitly: invalid text and incoming cancellation remain unchanged. These shared cases do not verify proprietary binding, overload wiring or Windows event delivery.
 - ValidateNumericDescriptorEntered and its TYPE_OF_INPUT enum are retained verbatim alongside the source numeric position tables. Shared cases cover both position boundaries, zero/negative/out-of-range integers, stored-key versus UI-position differences, and permissive empty/nonnumeric/decimal/overflow inputs. Direct method invocation does not prove Windows key handling or binding.
 - Examination-code Validating/ButtonClick handlers from `{ui_path}` and LookUpExamCode from `{delegate_path}` retain their bodies. Text-only control and ShowFormLookup message doubles replace Windows UI/dialog infrastructure, record offered codes and supply explicit fixture responses; they do not validate or select codes themselves. Source ValidateAndSetExamCode performs validation/confirmation. Validating cancellation is observed separately from the selected code, including successful fallback lookup with cancellation still true. Original Windows event delivery remains unverified.
 - `{repeat_path}` UpdateRepeatFlags body is retained with internal -> public visibility only. RepositoryFixture supplies explicit preloaded query rows separately from local tracked rows; Include has no database side effects. Source local navigation repair and all repeat decisions execute unchanged. Synthetic rows include KD03 ties, a later same-day timestamp, KD08 family members, another patient and another prefix. Repeated execution observes idempotence. This is standalone repeat-logic evidence, not save-service/database parity; scope approval remains blocked.

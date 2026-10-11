@@ -128,6 +128,26 @@ foreach (var scenario in scenarios)
                 errors.AddRange(codeDelegate.Messenger.Errors);
                 warnings.AddRange(codeDelegate.Messenger.Warnings);
                 break;
+            case "dropdown-control":
+                var dropdownDelegate = new ExtractedInteractions { KdpExaminationResultTo = result };
+                var dropdownControls = new ExtractedDropdownControls { kdpExaminationResultDelegate = dropdownDelegate };
+                var dropdown = new HlxDropDown { Text = input["descriptor"].GetValue<string>() };
+                var dropdownCancel = new System.ComponentModel.CancelEventArgs(input["initialCancel"].GetValue<bool>());
+                if (input["cancelOverload"].GetValue<bool>())
+                    dropdownControls.ValidateExaminerTypeInput(dropdown, dropdownCancel);
+                else {
+                    switch (input["kind"].GetValue<string>()) {
+                        case "LOCATON_TYPE": dropdownControls.ValidateLocationTypeInput(dropdown, EventArgs.Empty); break;
+                        case "EXAMINER_TYPE": dropdownControls.ValidateExaminerTypeInput(dropdown, EventArgs.Empty); break;
+                        case "REASON_NOT_EXAMINED": dropdownControls.ValidateReasonNotExaminedTypeInput(dropdown, EventArgs.Empty); break;
+                        default: throw new InvalidOperationException("Unknown dropdown kind");
+                    }
+                }
+                observed["text"] = dropdown.Text;
+                observed["cancelled"] = dropdownCancel.Cancel;
+                errors.AddRange(dropdownDelegate.Messenger.Errors);
+                warnings.AddRange(dropdownDelegate.Messenger.Warnings);
+                break;
             case "date-control":
                 var dateDelegate = new ExtractedInteractions {
                     KdpExaminationResultTo = result,

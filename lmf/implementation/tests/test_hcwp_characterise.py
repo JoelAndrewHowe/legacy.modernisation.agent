@@ -137,6 +137,20 @@ class CharacteriseTests(unittest.TestCase):
                     self.assertEqual({'errors': [], 'warnings': [], 'valid': False},
                                      rows['KD03-numeric-descriptor-' + kind + '-' + label])
                 self.assertEqual(stored_key <= maximum, rows['KD03-numeric-descriptor-' + kind + '-stored-key']['valid'])
+            for kind, maximum, stored_key in [('LOCATON_TYPE', 7, '22'), ('EXAMINER_TYPE', 12, '28'), ('REASON_NOT_EXAMINED', 5, '5')]:
+                for label, text, accepted in [('first', '1', True), ('last', str(maximum), True),
+                        ('zero', '0', False), ('negative', '-1', False), ('above', str(maximum + 1), False),
+                        ('stored-key', stored_key, int(stored_key) <= maximum), ('empty', '', True),
+                        ('text', 'unknown', True), ('decimal', '1.5', True), ('overflow', '2147483648', True),
+                        ('whitespace', ' 1 ', True)]:
+                    self.assertEqual({'errors': [], 'warnings': [], 'text': text if accepted else '', 'cancelled': False},
+                                     rows['KD03-dropdown-' + kind + '-' + label])
+            for cancelled in (False, True):
+                self.assertEqual({'errors': [], 'warnings': [], 'text': ' 999 ', 'cancelled': cancelled},
+                                 rows['KD03-dropdown-examiner-cancel-' + str(cancelled).lower()])
+            dropdown_source = (stage / 'reference/ExtractedDropdownControls.cs').read_text()
+            self.assertIn('ValidateExaminerTypeInput(object sender, CancelEventArgs e)', dropdown_source)
+            self.assertIn('ValidateExaminerTypeInput(object sender, EventArgs e)', dropdown_source)
             self.assertIn('public bool ValidateNumericDescriptorEntered', (stage / 'reference/ExtractedInteractions.cs').read_text())
             self.assertTrue(rows['KD03-location-null-lookup']['valid'])
             self.assertTrue(rows['KD03-examiner-null-lookup']['valid'])
