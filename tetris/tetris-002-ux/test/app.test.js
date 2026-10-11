@@ -511,6 +511,56 @@ test('raw terminal input stays blocked while undersized and resumes after restor
   }
 });
 
+test('repeated undersized resizes preserve gameplay and termination signals clean up', () => {
+  for (const signal of ['SIGINT', 'SIGTERM']) {
+    const io = terminal();
+    const game = new Game(() => 0);
+    let tick;
+    const cancellations = [];
+    const stop = startApp({ ...io, game,
+      setInterval: (callback) => { tick = callback; return 42; },
+      clearInterval: (id) => { cancellations.push(id); },
+    });
+    try {
+      io.input.write('\r');
+      tick();
+      const before = JSON.stringify(game);
+      for (const [columns, rows] of [[21, 24], [0, 0], [22, 23], [1, 1], [0, 24]]) {
+        io.output.columns = columns;
+        io.output.rows = rows;
+        for (let repeat = 0; repeat < 3; repeat++) {
+          const offset = io.text().length;
+          io.output.emit('resize');
+          const expected = columns === 0 || rows === 0 ? ''
+            : ['Resize to 22x24', 'Q/Esc: quit']
+              .slice(0, rows).map(line => line.slice(0, columns)).join('\r\n');
+          assert.equal(io.text().slice(offset), '\x1b[H\x1b[2J' + expected);
+          io.input.write('\r\x1b[D\x1b[C\x1b[A\x1b[B ?');
+          tick();
+          assert.equal(JSON.stringify(game), before);
+        }
+      }
+      io.signals.emit(signal);
+      assert.deepEqual(cancellations, [42]);
+      assert.equal(io.input.isRaw, false);
+      assert.equal(io.input.listenerCount('keypress'), 0);
+      assert.equal(io.output.listenerCount('resize'), 0);
+      assert.equal(io.signals.listenerCount('SIGINT'), 0);
+      assert.equal(io.signals.listenerCount('SIGTERM'), 0);
+      assert.ok(io.text().endsWith('\x1b[?25h\x1b[?1049l'));
+      const stoppedText = io.text();
+      tick();
+      io.output.emit('resize');
+      stop();
+      assert.equal(io.text(), stoppedText);
+      assert.equal(JSON.stringify(game), before);
+      assert.deepEqual(cancellations, [42]);
+    } finally {
+      stop();
+    }
+  }
+});
+
 test('rejects noninteractive terminals before changing state', () => {
   for (const change of [
     (io) => { io.input.isTTY = false; },
