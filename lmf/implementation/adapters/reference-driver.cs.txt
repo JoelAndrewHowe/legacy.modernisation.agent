@@ -69,6 +69,8 @@ foreach (var scenario in scenarios)
                 age.CheckAgeWithinScheduleRange(result.ExaminationDate);
                 warnings.AddRange(age.Messenger.Warnings);
                 break;
+            case "date-setter":
+            case "measurement-setter":
             case "code-selection":
             case "decline":
             case "location":
@@ -76,7 +78,7 @@ foreach (var scenario in scenarios)
             case "deviation":
             case "bmi-warning":
                 var interaction = new ExtractedInteractions {
-                    KdpExaminationResultTo = result, ExaminationDate = result.ExaminationDate,
+                    KdpExaminationResultTo = result,
                     locationList = new() { new("SYNTH", "Y") },
                     examinerList = new() { new("SYNTH", "Y"), new("UNUSED", "N") },
                     deviationRanges = new(() => new() { new("Height", 40, 60) }),
@@ -84,6 +86,22 @@ foreach (var scenario in scenarios)
                 };
                 if (input["nullLookup"]?.GetValue<bool>() == true) { interaction.locationList = null; interaction.examinerList = null; }
                 switch (scenario["when"].GetValue<string>()) {
+                    case "date-setter":
+                        var priorRanges = interaction.deviationRanges;
+                        interaction.ExaminationDate = DateTime.Parse(input["newDate"].GetValue<string>());
+                        observed["date"] = interaction.ExaminationDate.ToString("yyyy-MM-ddTHH:mm:ss");
+                        observed["rangesReset"] = !ReferenceEquals(priorRanges, interaction.deviationRanges);
+                        observed["lazyBeforeRead"] = !interaction.deviationRanges.IsValueCreated;
+                        _ = interaction.deviationRanges.Value;
+                        observed["rangeRequests"] = JsonSerializer.SerializeToNode(interaction.measurementsService.RangeRequests);
+                        observed["notifications"] = JsonSerializer.SerializeToNode(interaction.Notifications);
+                        break;
+                    case "measurement-setter":
+                        interaction.Weight = input["newWeight"].GetValue<decimal>();
+                        observed["weight"] = result.Weight;
+                        observed["bmi"] = interaction.Bmi;
+                        observed["notifications"] = JsonSerializer.SerializeToNode(interaction.Notifications);
+                        break;
                     case "code-selection":
                         interaction.Messenger.ConfirmationResponse = input["response"]?.GetValue<bool>() ?? false;
                         if (input["duplicate"]?.GetValue<bool>() == true)

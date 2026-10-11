@@ -91,7 +91,15 @@ namespace Orvex.Business.Validation { public static class ReferenceClock {
  public static System.DateTime Now = new(2025, 3, 1, 12, 0, 0);
 }}
 ''')
-    put('reference/ExtractedBmi.cs', 'using System;\npublic class ExtractedBmi {\n' + method(bmi, 'CalculateBmi') + '\n}\n')
+    put('reference/ExtractedBmi.cs', '''using System;
+public class ExtractedBmi {
+ // Infrastructure double: records requests, returns explicitly synthetic ranges.
+ public System.Collections.Generic.List<DateTime> RangeRequests = new();
+ public System.Collections.Generic.List<RangeFixture> GetExpectedRanges(string gender, DateTime birth, DateTime date) {
+  RangeRequests.Add(date);
+  return new() { new("Height", 40, 60) };
+ }
+''' + method(bmi, 'CalculateBmi') + '\n}\n')
     # Retain age-warning branch verbatim; dependency fixture supplies the schedule.
     age = method(delegate, 'CheckAgeWithinScheduleRange').replace('private void', 'public void')
     put('reference/ExtractedAge.cs', '''using System;
@@ -126,6 +134,9 @@ public static class DateExtensions {
     last = re.search(r'        public decimal\? HeadCircumference\s*\{.*?\n        \}', delegate, re.S)
     members = delegate[start:last.end()]
     members += '\n' + '\n'.join(method(delegate, n).replace('private void', 'public void') for n in ('ValidateLocationCode', 'ValidateExaminerCode', 'CheckDeviations', 'CheckBmi'))
+    date_property = re.search(r'        public DateTime ExaminationDate\s*\{.*?\n        \}', delegate, re.S).group()
+    members += '\n' + date_property
+    members += '\n' + method(delegate, 'ResetDeviations').replace('ChildMeasurementsRange', 'RangeFixture')
     members += '\n' + method(delegate, 'ValidateAndSetExamCode').replace('FaultException<ValidationWarningFault>', 'ValidationWarningFault').replace('FaultException<ValidationFault>', 'ValidationFault')
     symbols = sorted(set(re.findall(r'\b\w+(?:Message|Prompt|Title)\b', members)) - {'warningMessage', 'WarningNotificationMessage'})
     constants = '\n'.join(f' const string {s} = "{s}";' for s in symbols)
@@ -164,6 +175,16 @@ public static class DateExtensions {
     add('KD03-age-old', 'age', {**base, 'ExaminationDate': '2025-02-28'}, warnings=['KdpContactGivenAfterMaxAge'])
     add('KD03-age-boundary', 'age', {**base, 'ExaminationDate': '2025-02-12'})
     add('KD03-bmi', 'bmi', base, bmi=14.88)
+    for name, new_date, reset in [('same-day', '2025-02-19T23:59:59', False),
+                                   ('changed-day', '2025-02-20T23:59:59', True)]:
+        date = '2025-02-20T09:10:11' if reset else '2025-02-19T09:10:11'
+        add('KD03-date-setter-' + name, 'date-setter',
+            {**base, 'ExaminationDate': '2025-02-19T09:10:11', 'newDate': new_date},
+            date=date, rangesReset=reset, lazyBeforeRead=True,
+            rangeRequests=[date] if reset else [], notifications=[])
+    add('KD03-weight-setter-warning', 'measurement-setter', {**base, 'newWeight': 6.1},
+        weight=6.1, bmi=20.17, notifications=['Bmi', 'IsBmiOutsideRange'],
+        warnings=['BmiOutsidePrescribedRangeMessage'])
     for kind in ('Height', 'Weight', 'HeadCircumference'):
         for declined in (True, False):
             add('KD03-decline-' + kind + '-' + str(declined).lower(), 'decline',
@@ -239,7 +260,7 @@ Oracle IDs, triggers, locks, EF6 mappings, schedule, centile bands, general opti
 ''')
     put('gaps.md', '''# Gaps and assumptions
 ## Blocking
-- Windows setter events, Populate and original DTO change tracking remain unverified. Extracted parent methods now execute new-result defaults and cancel-changes accept/reject/reload decisions, with explicit change-tracking and reload fixtures. Code-selection duplicate and change confirmations exercise both responses. Decline setters (including unchecking), lookup validation and BMI/deviation warnings now execute extracted members; full delegate lifecycle remains unverified.
+- Extracted examination-date setter now proves same-day no-op, original time preservation on day changes and lazy deviation-range reset. Extracted measurement setters dispatch PropertyChanged to CheckBmi and verify resulting BMI warnings. Windows controls, examination-code setter lifecycle, Populate and original DTO change tracking remain unverified. Extracted parent methods now execute new-result defaults and cancel-changes accept/reject/reload decisions, with explicit change-tracking and reload fixtures. Code-selection duplicate and change confirmations exercise both responses. Decline setters (including unchecking), lookup validation and BMI/deviation warnings now execute extracted members; full delegate lifecycle remains unverified.
 - Repeat-flag effects require an explicit reviewed scope adjustment or implementation before approval; appointment and recall processing alone were excluded in the seed.
 - The missing WeeksBetween extension is adapted to elapsed days / 7. Review or recover exact legacy rounding before claiming boundary-age parity.
 ## Non-blocking / review assumptions
@@ -259,7 +280,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - Missing resource strings replaced with their symbolic names; fault wrappers replaced with Exceptions carrying those names. Aggregated numbered messages normalised only by removing numbering/newlines. Resource identifiers compared exactly in order.
 - `{bmi_path}` CalculateBmi method retained verbatim in a small container.
 - `{delegate_path}` CheckAgeWithinScheduleRange body retained verbatim; visibility made public; schedule Lazy reads fixture; Messenger records resource IDs. Missing WeeksBetween adapted as elapsed days / 7 (blocking review gap).
-- ExtractedInteractions retains BMI/decline/measurement properties and lookup/deviation/BMI method bodies except private visibility. Notifications synchronously call extracted CheckBmi. Lookup retrieval supplies synthetic rows or null; invented height range 40–60 and BMI range 10–20 do not claim database provenance. Display names use symbolic enum names. ValidateAndSetExamCode retains its body with WCF fault wrappers replaced by local exceptions carrying Detail.Title; synchronous confirmation responses are fixture-controlled and recorded. ExaminationCode assignment stores the DTO value without Windows property-change events; that lifecycle remains unverified.
+- ExtractedInteractions retains BMI/decline/measurement properties and lookup/deviation/BMI method bodies except private visibility. Notifications dispatch through a synchronous PropertyChanged event subscribed to extracted CheckBmi, mirroring the source constructor subscription (not Windows controls). ExaminationDate and ResetDeviations bodies are retained, with ChildMeasurementsRange renamed to the fixture record; GetExpectedRanges records the date and supplies invented height range 40–60. Shared examples check same-day no-op, time preservation, lazy range reset and weight-setter BMI warning dispatch. Lookup retrieval supplies synthetic rows or null; invented height range 40–60 and BMI range 10–20 do not claim database provenance. Display names use symbolic enum names. ValidateAndSetExamCode retains its body with WCF fault wrappers replaced by local exceptions carrying Detail.Title; synchronous confirmation responses are fixture-controlled and recorded. ExaminationCode assignment stores the DTO value without Windows property-change events; that lifecycle remains unverified.
 - `{lifecycle_path}` AddNewKdpResult and ConfirmCancelChanges bodies retained except WCF warning wrapper substitution and DateTime.Now -> ReferenceClock.Now (2025-03-01 noon). Unscheduled enum value 2 is from LookupsUtility.EXAMINATION_ORIGIN. Empty outstanding-appointment list models the excluded appointment workflow. GetNewKdpExaminationResultDelegate stores the DTO only (Populate/Windows events unverified); hasChanged returns an explicit fixture flag, not original change tracking. Reload double records IDs and supplies a detached stored DTO; this proves reload orchestration, not database reads. Scenarios cover accept/reject, unchanged, new and empty cancellation paths and defaults/consent/insertion order.
 - reference driver dispatches operation then serialises errors/warnings/BMI and detached accepted-input clone. It is NOT the save service and does NOT prove persistence. No random IDs are generated. No business rules supplied by database doubles.
 - `original/` retains unadapted source sections for independent inspection. `source-index.json` records original identity and bundle line for every one of 94 files.

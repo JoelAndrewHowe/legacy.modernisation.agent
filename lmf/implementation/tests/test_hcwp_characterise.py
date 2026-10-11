@@ -44,6 +44,14 @@ class CharacteriseTests(unittest.TestCase):
             self.assertEqual(['HeadCircumferenceInvalidFormatMessage'], rows['KD03-head-field-100']['errors'])
             self.assertEqual(100, rows['KD03-head-save-100']['saved']['HeadCircumference'])
             self.assertEqual(['NoResultsEnteredMessage'], rows['KD03-general-alone']['errors'])
+            for name, date, reset in [('same-day', '2025-02-19T09:10:11', False),
+                                      ('changed-day', '2025-02-20T09:10:11', True)]:
+                self.assertEqual({'date': date, 'rangesReset': reset, 'lazyBeforeRead': True,
+                    'rangeRequests': [date] if reset else [], 'notifications': [],
+                    'errors': [], 'warnings': []}, rows['KD03-date-setter-' + name])
+            self.assertEqual({'weight': 6.1, 'bmi': 20.17,
+                'notifications': ['Bmi', 'IsBmiOutsideRange'], 'errors': [],
+                'warnings': ['BmiOutsidePrescribedRangeMessage']}, rows['KD03-weight-setter-warning'])
             for kind in ('Height', 'Weight', 'HeadCircumference'):
                 for declined, flag in [('true', 'Y'), ('false', 'N')]:
                     self.assertEqual({'value': None, 'flag': flag, 'errors': [], 'warnings': []}, rows[f'KD03-decline-{kind}-{declined}'])
@@ -89,6 +97,8 @@ class CharacteriseTests(unittest.TestCase):
             adaptations = (stage / 'reference/ADAPTATIONS.md').read_text()
             self.assertIn('hasChanged returns an explicit fixture flag', adaptations)
             self.assertIn('Populate/Windows events unverified', adaptations)
+            self.assertIn('ExaminationDate and ResetDeviations bodies are retained', adaptations)
+            self.assertIn('PropertyChanged event subscribed to extracted CheckBmi', adaptations)
             approve = cli('approve', '--workspace', str(workspace), '--revision', state['Revision'])
             self.assertNotEqual(0, approve.returncode)
             self.assertIn('blocking gaps', approve.stderr)

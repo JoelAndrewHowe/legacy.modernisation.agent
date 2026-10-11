@@ -11,7 +11,12 @@ public class ExtractedInteractions {
  public WarningSink Messenger = new();
  public List<LookupFixture> locationList, examinerList;
  public Lazy<List<RangeFixture>> deviationRanges, prescribedRanges;
- public DateTime ExaminationDate;
+ public string gender = "M";
+ public DateTime dateOfBirth = new(2025, 1, 1);
+ public event PropertyChangedEventHandler PropertyChanged;
+ public List<string> Notifications = new();
+ // Retain the source constructor's BMI event subscription without Windows infrastructure.
+ public ExtractedInteractions() { PropertyChanged += CheckBmi; }
  public KdpExaminationValidator validator = new();
  public List<KdpExaminationResultTO> existingResults = new();
  public List<LookupsSubTO> KdpExaminationList = new() { new() { Code = "KD03" } };
@@ -23,7 +28,10 @@ public class ExtractedInteractions {
  public ExtractedBmi measurementsService = new();
  // Lookup retrieval is a double: caller supplies reviewed synthetic rows, including null.
  void GetLocationList() {} void GetExaminerList() {}
- void RaisePropertyChanged(string name) => CheckBmi(this, new PropertyChangedEventArgs(name));
+ void RaisePropertyChanged(string name) {
+  Notifications.Add(name);
+  PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+ }
 __MEMBERS__
 }
 public record LookupFixture(string Code, string UsedCode);
