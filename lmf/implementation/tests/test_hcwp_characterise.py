@@ -41,6 +41,29 @@ class CharacteriseTests(unittest.TestCase):
             self.assertGreater(len(report['scenarios']), 20)
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
+            for kind in ('location', 'examiner'):
+                request = 'Locations||5' if kind == 'location' else 'Examiners||18|N'
+                missing = 'NoLocationTypeMessage' if kind == 'location' else 'NoExaminerTypeMessage'
+                missing_prompt = 'NoLocationTypePrompt' if kind == 'location' else 'NoExaminerTypePrompt'
+                fault_prompt = 'ErrorGettingLocationListPrompt' if kind == 'location' else 'ErrorGettingExaminerListPrompt'
+                invalid = 'InvalidLocationCodeMessage' if kind == 'location' else 'InvalidHcpCodeMessage'
+                invalid_prompt = 'InvalidLocationCodePrompt' if kind == 'location' else 'InvalidHcpCodePrompt'
+                for mode, valid, errors, prompts, requests, cached in [
+                    ('empty-code', [True, True], [], [], [], False),
+                    ('null-code', [True, True], [], [], [], False),
+                    ('missing', [True, True], [missing] * 2, [missing_prompt] * 2, [], False),
+                    ('missing-cached', [False, False], [missing, invalid] * 2,
+                     [missing_prompt, invalid_prompt] * 2, [], True),
+                    ('fault-recovery', [True, False], ['synthetic-lookup-fault', invalid],
+                     [fault_prompt, invalid_prompt], [request] * 2, True),
+                    ('empty-rows', [False, False], [invalid] * 2,
+                     [invalid_prompt] * 2, [request], True),
+                ]:
+                    self.assertEqual({'valid': valid, 'errors': errors, 'warnings': [],
+                        'prompts': prompts, 'requests': requests, 'cached': cached},
+                        rows[f'KD03-lookup-validation-{kind}-{mode}'])
+            self.assertIn('not evidence that save is safe during dependency failure',
+                          (stage / 'gaps.md').read_text())
             common_initial = {'ReasonNotExamined': 'sentinel-reason', 'Consent': 'sentinel-consent',
                               'CoreComponent': 1, 'Reschedule': 'sentinel-reschedule',
                               'WithdrawConsent': False, 'Origin': 1}
@@ -379,6 +402,21 @@ class CharacteriseTests(unittest.TestCase):
                     self.assertEqual(expected, failures)
                 finally:
                     extracted.write_text(original)
+            # Skipping validation's lookup retrieval must lose fault/retry and
+            # empty-row rejection evidence, not merely a service-double assertion.
+            retrieval_call = '            GetLocationList();'
+            self.assertEqual(1, original.count(retrieval_call))
+            try:
+                extracted.write_text(original.replace(retrieval_call, '// mutation: skipped validation retrieval'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                failures = {row['id'] for row in mutant_report['scenarios']
+                            if not row['matches'] and row['id'].startswith('KD03-lookup-validation-')}
+                self.assertEqual({f'KD03-lookup-validation-location-{mode}' for mode in
+                                  ('missing', 'missing-cached', 'fault-recovery', 'empty-rows')}, failures)
+            finally:
+                extracted.write_text(original)
             # A wrong DTO destination must be caught even when the getter is unchanged.
             core_assignment = 'set { KdpExaminationResultTo.CoreComponent = value; }'
             self.assertEqual(1, original.count(core_assignment))

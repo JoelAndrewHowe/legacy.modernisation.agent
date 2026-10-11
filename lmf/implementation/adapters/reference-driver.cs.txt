@@ -22,6 +22,26 @@ foreach (var scenario in scenarios)
     {
         switch (scenario["when"].GetValue<string>())
         {
+            case "lookup-validation-lifecycle":
+                var validationInteraction = new ExtractedInteractions { KdpExaminationResultTo = result };
+                var validationKind = input["kind"].GetValue<string>();
+                var validationMode = input["mode"].GetValue<string>();
+                if (validationMode == "missing-cached") {
+                    validationInteraction.locationList = validationInteraction.lookupsService.Rows;
+                    validationInteraction.examinerList = validationInteraction.lookupsService.Rows;
+                }
+                if (validationMode == "empty-rows") validationInteraction.lookupsService.Rows = new();
+                validationInteraction.lookupsService.Fail = validationMode == "fault-recovery";
+                var validationCode = input["code"]?.GetValue<string>();
+                var firstValid = validationKind == "location" ? validationInteraction.ValidateLocationCode(validationCode) : validationInteraction.ValidateExaminerCode(validationCode);
+                validationInteraction.lookupsService.Fail = false;
+                var secondValid = validationKind == "location" ? validationInteraction.ValidateLocationCode(validationCode) : validationInteraction.ValidateExaminerCode(validationCode);
+                observed["valid"] = JsonSerializer.SerializeToNode(new[] { firstValid, secondValid });
+                observed["requests"] = JsonSerializer.SerializeToNode(validationInteraction.lookupsService.Requests);
+                observed["prompts"] = JsonSerializer.SerializeToNode(validationInteraction.Messenger.ErrorPrompts);
+                observed["cached"] = (validationKind == "location" ? validationInteraction.locationList : validationInteraction.examinerList) != null;
+                errors.AddRange(validationInteraction.Messenger.Errors);
+                break;
             case "lookup-retrieval":
                 var lookupInteraction = new ExtractedInteractions { KdpExaminationResultTo = result };
                 var lookupKind = input["kind"].GetValue<string>();

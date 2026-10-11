@@ -232,6 +232,28 @@ public class ExtractedDropdownControls {
     def add(id, operation, data, errors=None, warnings=None, **extra):
         scenarios.append({'id': id, 'given': 'A selected synthetic patient and frozen clock',
                           'when': operation, 'input': data, 'then': {'errors': errors or [], 'warnings': warnings or [], **extra}})
+    for kind in ('location', 'examiner'):
+        request = 'Locations||5' if kind == 'location' else 'Examiners||18|N'
+        missing = 'NoLocationTypeMessage' if kind == 'location' else 'NoExaminerTypeMessage'
+        invalid = 'InvalidLocationCodeMessage' if kind == 'location' else 'InvalidHcpCodeMessage'
+        invalid_prompt = 'InvalidLocationCodePrompt' if kind == 'location' else 'InvalidHcpCodePrompt'
+        missing_prompt = 'NoLocationTypePrompt' if kind == 'location' else 'NoExaminerTypePrompt'
+        fault_prompt = 'ErrorGettingLocationListPrompt' if kind == 'location' else 'ErrorGettingExaminerListPrompt'
+        for mode, code, valid, errors, prompts, requests, cached in [
+            ('empty-code', '', [True, True], [], [], [], False),
+            ('null-code', None, [True, True], [], [], [], False),
+            ('missing', 'MISSING', [True, True], [missing] * 2, [missing_prompt] * 2, [], False),
+            ('missing-cached', 'MISSING', [False, False], [missing, invalid] * 2,
+             [missing_prompt, invalid_prompt] * 2, [], True),
+            ('fault-recovery', 'MISSING', [True, False], ['synthetic-lookup-fault', invalid],
+             [fault_prompt, invalid_prompt], [request] * 2, True),
+            ('empty-rows', 'MISSING', [False, False], [invalid] * 2,
+             [invalid_prompt] * 2, [request], True),
+        ]:
+            category = {} if mode in ('missing', 'missing-cached', 'empty-code', 'null-code') else {'LocationType': 5, 'ExaminerCategory': '18'}
+            add(f'KD03-lookup-validation-{kind}-{mode}', 'lookup-validation-lifecycle',
+                {**base, **category, 'kind': kind, 'mode': mode, 'code': code}, errors,
+                valid=valid, prompts=prompts, requests=requests, cached=cached)
     common_fields = {'ReasonNotExamined': 'ReasonNotExamined', 'Consent': 'Consent',
                      'CoreComponentOffered': 'CoreComponent', 'Reschedule': 'Reschedule',
                      'WithdrawConsent': 'WithdrawConsent', 'Origin': 'Origin'}
@@ -594,6 +616,8 @@ Measurement assignment scenarios execute each retained Height/Weight/HeadCircumf
 
 ## Non-blocking / review assumptions
 
+Lookup validation lifecycle scenarios invoke retained ValidateLocationCode/ValidateExaminerCode twice: null/empty codes bypass even missing-category prompts; missing categories with no cache accept unknown codes but report errors, whereas stale cached rows still reject them; a service fault accepts the first unknown code, then successful retry rejects it; empty retrieved rows reject and remain cached. These are source-observed permissive validation outcomes, not evidence that save is safe during dependency failure. Explicit synthetic rows/faults and direct invocation do not establish Windows binding or service/persistence parity.
+
 Lookup retrieval now executes source-extracted GetLocationList, GetExaminerList and GetUsedExaminerList: missing categories produce prompts even with cached rows, successful retrieval is cached, faults return null and retry on the next call, and examiner results filter UsedCode=Y. The recording lookup-service double returns unfiltered synthetic rows and records exact request arguments; no database or Windows dropdown binding is verified.
 
 Repeat-flag query infrastructure is an in-memory fixture, not EF6/Oracle: explicit already-loaded database rows and local tracked rows replace Include/Repository/Local; navigation repair, filtering, grouping and flag assignment execute the retained source method. No transaction, database loading, concurrency or save-service integration parity is claimed.
@@ -641,6 +665,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - ReasonNotExamined, Consent, CoreComponentOffered, Reschedule, WithdrawConsent and Origin setters/getters are source-extracted unchanged. Shared cases assign changed and unchanged values, then optionally clear nullable/string fields or reset WithdrawConsent to false. Distinct initial sibling values detect cross-field writes; CoreComponentOffered maps to DTO CoreComponent. These setters do not validate values or raise delegate notifications. Synthetic text is a storage probe, not an approved lookup value. Original DTO change tracking, Windows binding, save validation and persistence are not proved by these cases.
 - ExaminerCategory/ExaminerKdpCode/ExaminerType/ExaminerName and PopulateHcpDetails are source-extracted unchanged. Shared cases prove category assignments (changed/same/null) clear type/code/name/cache; refreshed retrieval uses the new category. HCP selection matches only UsedCode=Y, obtains Description/Type from explicitly synthetic cached rows, and leaves category unchanged for nonempty codes. Empty/null code invokes the category setter, clearing code to empty, type/name/category/cache without retrieval. LookupFixture adds a synthetic Type field for these dependencies; real lookup data and Windows binding/event delivery remain unverified.
 - LocationType/LocationCode setters are source-extracted unchanged. Shared cases prove that changed, unchanged and null category assignments clear code/name/cache, and subsequent retrieval uses the assigned category rather than stale rows. Code assignments resolve exact cached descriptions, clear names for empty/null codes and yield null for unknown codes or absent cache without fetching rows. Synthetic descriptions are fixture data; Windows binding/event delivery remain unverified.
+- Lookup validation lifecycle uses the same unfiltered recording lookup-service double, switching only its explicit fault flag between calls for recovery. Null/empty input, absent category, stale cached rows and empty service responses exercise unchanged validation and retrieval bodies; no validation rule is supplied by the double. Service transport, real lookup values, Windows delivery and save/persistence remain unverified.
 - GetLocationList/GetExaminerList/GetUsedExaminerList bodies are source-extracted; only List<LookupsSubTO> becomes List<LookupFixture> (Code/UsedCode/Description record). Recording lookup-service double returns unfiltered synthetic SYNTH/Y and UNUSED/N rows or throws the local FaultException substitute. Shared cases invoke twice and observe missing-category prompts, cache reuse, exact service arguments, used-only filtering and retry after faults. Real lookup data, service transport and Windows binding remain unverified.
 - `{lifecycle_path}` AddNewKdpResult and ConfirmCancelChanges bodies retained except WCF warning wrapper substitution and DateTime.Now -> ReferenceClock.Now (2025-03-01 noon). Unscheduled enum value 2 is from LookupsUtility.EXAMINATION_ORIGIN. Empty outstanding-appointment list models the excluded appointment workflow. GetNewKdpExaminationResultDelegate is source-extracted and calls extracted Populate through a synthetic dependency-injection factory. Shared new-result cases verify supplied patient context, existing-list identity, unscheduled default, description notification and lazy ranges without service requests. Windows events remain unverified; hasChanged returns an explicit fixture flag, not original change tracking. Reload double records IDs and supplies a detached stored DTO; this proves reload orchestration, not database reads. Scenarios cover accept/reject, unchanged, new and empty cancellation paths and defaults/consent/insertion order.
 - reference driver dispatches operation then serialises errors/warnings/BMI and detached accepted-input clone. It is NOT the save service and does NOT prove persistence. No random IDs are generated. No business rules supplied by database doubles.
