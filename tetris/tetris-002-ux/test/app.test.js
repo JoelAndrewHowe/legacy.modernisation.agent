@@ -118,6 +118,54 @@ test('active gameplay stays unchanged until both terminal dimensions are restore
   }
 });
 
+test('restored gravity locks a piece and updates line-clear scoring after resizing', () => {
+  const io = terminal();
+  const game = new Game(() => 0);
+  let tick;
+  const cancellations = [];
+  const stop = startApp({ ...io, game,
+    setInterval: (callback) => { tick = callback; return 42; },
+    clearInterval: (id) => { cancellations.push(id); },
+  });
+  try {
+    io.input.write('\r');
+    game.board[19] = [1, 1, 1, 0, 0, 0, 0, 1, 1, 1];
+    for (let step = 0; step < 19; step++) tick();
+    assert.equal(game.piece.y, 19);
+    const before = JSON.stringify(game);
+
+    for (const [columns, rows] of [[21, 24], [22, 23], [0, 0]]) {
+      io.output.columns = columns;
+      io.output.rows = rows;
+      io.output.emit('resize');
+      tick();
+      io.input.write('\x1b[B ');
+      assert.equal(JSON.stringify(game), before);
+    }
+
+    io.output.columns = 22;
+    io.output.rows = 24;
+    io.output.emit('resize');
+    assert.equal(JSON.stringify(game), before);
+    tick();
+    assert.equal(game.lines, 1);
+    assert.equal(game.score, 100);
+    assert.equal(game.piece.y, 0);
+    assert.ok(game.board.every(row => row.every(cell => !cell)));
+    const frame = io.text().split('\x1b[H\x1b[2J').at(-1);
+    assert.equal(frame, renderFrame(game));
+    assert.match(frame, /Score: 100/);
+    assert.equal(frame.split('\r\n').length, 24);
+    assert.ok(frame.split('\r\n').every(row => row.length <= 22));
+    tick();
+    assert.equal(game.piece.y, 1);
+  } finally {
+    stop();
+  }
+  assert.deepEqual(cancellations, [42]);
+  assert.equal(io.input.isRaw, false);
+});
+
 test('quit still restores the terminal while the resize prompt is displayed', () => {
   const io = terminal();
   startApp(io);
