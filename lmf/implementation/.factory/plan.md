@@ -1,0 +1,10 @@
+# Iteration 001 implementation plan
+
+- [ ] Build a modern C# LMF CLI with per-migration workspaces, configurable coding-agent adapters, persisted stage state, bounded repairs, and characterise/approve/resume/status commands.
+- [ ] Implement Characterise for the supplied HCWP bundle and target description: source-referenced KD03 fields/rules, dependencies, gaps, fixtures, migration plan, shared BDD scenarios, and independently inspectable extracted-reference harness with documented adaptations.
+- [ ] Execute reference verification and enforce revision-bound human approval before target generation; invalidate approval when reviewed inputs or scenarios change and stop on blocking gaps.
+- [ ] Implement Convert as a runtime/dependency port retaining legacy structure; mechanically compare shared scenario observations against the reference.
+- [ ] Implement Refactor generation for server-interactive Blazor and EF Core in-memory persistence; verify KD03 add/read-back through fresh contexts, validation/warnings, unsupported-contact rejection, and browser behaviour.
+- [ ] Enforce runner-owned nonempty verification gates, build/style checks, parity reports, retained failure diagnostics, and resume without discarding accepted stages or weakening approved scenarios.
+- [ ] Test orchestration with deterministic agent doubles, including approval invalidation, mismatches, failed verification, and recovery; perform and document a real-agent migration and browser demonstration, or explicitly report unavailable prerequisites as unverified.
+- [ ] Document prerequisites, agent command contract, CLI usage, reproducible synthetic seeding, launch instructions, evidence locations, exclusions, and extracted-legacy/in-memory limitations.
