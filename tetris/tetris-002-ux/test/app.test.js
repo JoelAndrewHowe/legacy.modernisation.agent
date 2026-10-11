@@ -73,6 +73,51 @@ test('resizing shows a bounded prompt until both dimensions are restored', () =>
   stop();
 });
 
+test('active gameplay stays unchanged until both terminal dimensions are restored', () => {
+  const io = terminal();
+  const game = new Game(() => 0);
+  let tick;
+  const stop = startApp({ ...io, game,
+    setInterval: (callback) => { tick = callback; return 42; },
+    clearInterval: () => {},
+  });
+  try {
+    io.input.emit('keypress', '', { name: 'return' });
+    tick();
+    const before = JSON.stringify(game);
+    for (const [columns, rows] of [[10, 10], [22, 10], [10, 24]]) {
+      io.output.columns = columns;
+      io.output.rows = rows;
+      const offset = io.text().length;
+      io.output.emit('resize');
+      const redraw = io.text().slice(offset);
+      assert.ok(redraw.startsWith('\x1b[H\x1b[2J'));
+      const frame = redraw.slice('\x1b[H\x1b[2J'.length);
+      assert.doesNotMatch(frame, /TETRIS|\[\]|\+---/);
+      assert.ok(frame.split('\r\n').length <= rows);
+      assert.ok(frame.split('\r\n').every(line => line.length <= columns));
+      for (const name of ['left', 'right', 'up', 'down', 'space', 'return']) {
+        io.input.emit('keypress', '', { name });
+      }
+      io.input.emit('keypress', '?', {});
+      tick();
+      assert.equal(JSON.stringify(game), before);
+    }
+    io.output.columns = 22;
+    io.output.rows = 24;
+    const offset = io.text().length;
+    io.output.emit('resize');
+    assert.equal(io.text().slice(offset), '\x1b[H\x1b[2J' + renderFrame(game));
+    assert.equal(JSON.stringify(game), before);
+    tick();
+    assert.equal(game.piece.y, 2);
+    io.input.emit('keypress', '', { name: 'left' });
+    assert.equal(game.piece.x, 2);
+  } finally {
+    stop();
+  }
+});
+
 test('quit still restores the terminal while the resize prompt is displayed', () => {
   const io = terminal();
   startApp(io);
