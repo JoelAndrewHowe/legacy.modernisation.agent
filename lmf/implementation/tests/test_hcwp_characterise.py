@@ -41,6 +41,16 @@ class CharacteriseTests(unittest.TestCase):
             self.assertGreater(len(report['scenarios']), 20)
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
+            for kind in ('location', 'examiner'):
+                for mode in ('missing', 'cached', 'retrieved', 'fault'):
+                    row = rows[f'KD03-lookup-retrieval-{kind}-{mode}']
+                    self.assertEqual(None if mode in ('missing', 'fault') else ['SYNTH', 'UNUSED'] if kind == 'location' else ['SYNTH'], row['codes'])
+                    request = 'Locations||5' if kind == 'location' else 'Examiners||18|N'
+                    self.assertEqual([] if mode in ('missing', 'cached') else [request] * (2 if mode == 'fault' else 1), row['requests'])
+                    self.assertEqual(mode in ('cached', 'retrieved'), row['sameRows'])
+                    self.assertEqual(2 if mode in ('missing', 'fault') else 0, len(row['prompts']))
+            self.assertIn('GetUsedExaminerList', (stage / 'reference/ExtractedInteractions.cs').read_text())
+            self.assertIn('returns unfiltered synthetic', (stage / 'reference/ADAPTATIONS.md').read_text())
             for name, stored, displayed in [
                 ('nonrepeat', 'Synthetic contact', 'Synthetic contact'),
                 ('repeat-original-code', 'Synthetic contact', 'Synthetic contact [synthetic recall text]'),

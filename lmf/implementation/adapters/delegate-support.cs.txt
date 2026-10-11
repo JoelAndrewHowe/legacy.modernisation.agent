@@ -34,8 +34,7 @@ public class ExtractedInteractions {
  public bool ExamCodeValidated;
  const string BmiMeasurmentType = "BMI";
  public ExtractedBmi measurementsService = new();
- // Lookup retrieval is a double: caller supplies reviewed synthetic rows, including null.
- void GetLocationList() {} void GetExaminerList() {}
+ public LookupServiceFixture lookupsService = new();
  void RaisePropertyChanged(string name) {
   Notifications.Add(name);
   PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -47,6 +46,23 @@ public class ScheduleFixture {
  public Tuple<double, double> GetAgeRangeFromExamSchedule(string code) { Requests.Add(code); return new(6, 8); }
 }
 public record LookupFixture(string Code, string UsedCode);
+public enum TypeOfLookup { Locations, Examiners }
+// Recording infrastructure double: returns supplied rows, never filters them.
+public class LookupServiceFixture {
+ public List<LookupFixture> Rows = new() { new("SYNTH", "Y"), new("UNUSED", "N") };
+ public bool Fail;
+ public List<string> Requests = new();
+ public List<LookupFixture> getLookups(TypeOfLookup type, string parent, string category) {
+  Requests.Add($"{type}|{parent}|{category}");
+  if (Fail) throw new FaultException("synthetic-lookup-fault");
+  return Rows;
+ }
+ public List<LookupFixture> getLookupsByUsed(TypeOfLookup type, string parent, string category, string used) {
+  Requests.Add($"{type}|{parent}|{category}|{used}");
+  if (Fail) throw new FaultException("synthetic-lookup-fault");
+  return Rows;
+ }
+}
 public record RangeFixture(string MeasurementType, double LowerBound, double UpperBound);
 public static class HLXBoolean { public const string True = "Y", False = "N"; }
 public static class LookupsUtility {

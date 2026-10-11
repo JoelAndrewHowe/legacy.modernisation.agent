@@ -164,6 +164,7 @@ public class WarningSink {
     members += '\n' + '\n'.join(line for line in delegate.splitlines() if 'private const string DropDownCodeDescriptionFormat' in line)
     members += '\n' + re.search(r'public enum TYPE_OF_INPUT[^\n]+', delegate).group()
     members += '\n' + method(delegate, 'ValidateNumericDescriptorEntered')
+    members += '\n' + '\n'.join(method(delegate, n).replace('List<LookupsSubTO>', 'List<LookupFixture>') for n in ('GetLocationList', 'GetExaminerList', 'GetUsedExaminerList'))
     members += '\n' + method(delegate, 'LookUpExamCode')
     members += '\n' + method(delegate, 'ValidateAndSetExamCode').replace('FaultException<ValidationWarningFault>', 'ValidationWarningFault').replace('FaultException<ValidationFault>', 'ValidationFault')
     symbols = sorted(set(re.findall(r'\b(?:\w+(?:Message|Prompt|Title)|KdpContactGivenBeforeMinAge|KdpContactGivenAfterMaxAge)\b', members)) - {'warningMessage', 'WarningNotificationMessage'})
@@ -275,6 +276,17 @@ public class ExtractedDropdownControls {
             add(f'KD03-control-{field}-{name}', 'measurement-control', {**base, 'field': field, 'text': text, 'value': value, 'initialCancel': name == 'empty-preserves-cancel'}, errs, warns, cancelled=cancelled)
     for name, date, error, warning in [('valid', '2025-02-19', None, None), ('future', '2025-03-02', 'FutureExamDateMessage', None), ('before-birth', '2024-12-31', 'ExamDateBeforeDobMessage', None), ('after-death', '2025-02-21', 'ExamDateAfterDeathMessage', None), ('duplicate', '2025-02-19', 'KdpResultAlreadyEnteredMessage', None), ('young', '2025-02-05', None, 'KdpContactGivenBeforeMinAge'), ('old', '2025-02-27', None, 'KdpContactGivenAfterMaxAge'), ('empty', '2025-03-02', None, None), ('empty-preserves-cancel', '2025-03-02', None, None)]:
         add('KD03-date-control-' + name, 'date-control', {**base, 'value': date, 'text': '' if name.startswith('empty') else date, 'initialCancel': name == 'empty-preserves-cancel', 'deathFixture': '2025-02-20' if name == 'after-death' else None, 'duplicateFixture': name == 'duplicate'}, [error] if error else [], [warning] if warning else [], cancelled=bool(error) or name == 'empty-preserves-cancel')
+    for kind in ('location', 'examiner'):
+        for mode in ('missing', 'cached', 'retrieved', 'fault'):
+            missing = mode == 'missing'
+            fault = mode == 'fault'
+            requests = [] if missing or mode == 'cached' else ([('Locations||5' if kind == 'location' else 'Examiners||18|N')] * (2 if fault else 1))
+            errors = [('NoLocationTypeMessage' if kind == 'location' else 'NoExaminerTypeMessage')] * 2 if missing else ['synthetic-lookup-fault'] * 2 if fault else []
+            prompts = [('NoLocationTypePrompt' if kind == 'location' else 'NoExaminerTypePrompt')] * 2 if missing else [('ErrorGettingLocationListPrompt' if kind == 'location' else 'ErrorGettingExaminerListPrompt')] * 2 if fault else []
+            add('KD03-lookup-retrieval-' + kind + '-' + mode, 'lookup-retrieval',
+                {**base, 'kind': kind, 'mode': mode, 'LocationType': None if missing else 5, 'ExaminerCategory': None if missing else '18'},
+                errors, codes=None if missing or fault else ['SYNTH', 'UNUSED'] if kind == 'location' else ['SYNTH'],
+                requests=requests, prompts=prompts, sameRows=not (missing or fault))
     for name, text, lookup, response, original, selected, cancelled, error, confirmation, count in [
         ('valid', 'KD03', None, False, '', 'KD03', False, None, None, 0),
         ('invalid-cancel-lookup', 'INVALID', None, False, '', '', True, 'KdpInvalidExamCodeMessage', None, 1),
@@ -360,9 +372,9 @@ public class ExtractedDropdownControls {
                 (['HeadCircumference'] if kind == 'HeadCircumference' else ['Bmi', 'IsBmiOutsideRange']))
     for operation in ('location', 'examiner'):
         for code, valid, error in [('', True, None), ('SYNTH', True, None), ('MISSING', False, 'InvalidLocationCodeMessage' if operation == 'location' else 'InvalidHcpCodeMessage')]:
-            add('KD03-' + operation + '-' + (code or 'empty'), operation, {**base, 'code': code}, [error] if error else [], valid=valid)
-        add('KD03-' + operation + '-null-lookup', operation, {**base, 'code': 'MISSING', 'nullLookup': True}, valid=True)
-    add('KD03-examiner-unused', 'examiner', {**base, 'code': 'UNUSED'}, ['UnusedExaminerCodeMessage'], valid=False)
+            add('KD03-' + operation + '-' + (code or 'empty'), operation, {**base, 'code': code, 'LocationType': 5, 'ExaminerCategory': '18'}, [error] if error else [], valid=valid)
+        add('KD03-' + operation + '-null-lookup', operation, {**base, 'code': 'MISSING', 'nullLookup': True, 'LocationType': 5, 'ExaminerCategory': '18'}, valid=True)
+    add('KD03-examiner-unused', 'examiner', {**base, 'code': 'UNUSED', 'ExaminerCategory': '18'}, ['UnusedExaminerCodeMessage'], valid=False)
     for value in (40, 50, 60):
         add('KD03-deviation-' + str(value), 'deviation', {**base, 'Height': value}, warnings=[] if value == 50 else ['OutsideExpectedRangeMessage'])
     for weight, warning in [(3.0, True), (3.025, False), (6.05, False), (6.1, True)]:
@@ -446,6 +458,8 @@ Measurement assignment scenarios execute each retained Height/Weight/HeadCircumf
 
 ## Non-blocking / review assumptions
 
+Lookup retrieval now executes source-extracted GetLocationList, GetExaminerList and GetUsedExaminerList: missing categories produce prompts even with cached rows, successful retrieval is cached, faults return null and retry on the next call, and examiner results filter UsedCode=Y. The recording lookup-service double returns unfiltered synthetic rows and records exact request arguments; no database or Windows dropdown binding is verified.
+
 Repeat-flag query infrastructure is an in-memory fixture, not EF6/Oracle: explicit already-loaded database rows and local tracked rows replace Include/Repository/Local; navigation repair, filtering, grouping and flag assignment execute the retained source method. No transaction, database loading, concurrency or save-service integration parity is claimed.
 
 Examination-code Validating and ButtonClick handlers and delegate LookUpExamCode are source-extracted. A Text-only control double invokes handlers directly; a synchronous ShowFormLookup message double records offered synthetic codes and supplies a fixture response (including null/empty cancellation). Scenarios verify valid selection, rejected changes, invalid codes, lookup cancellation/selection and invalid returned codes. The handler retains cancellation after a successful fallback lookup; no Windows dialog, binding or automatic event delivery is verified.
@@ -480,6 +494,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - Examination-code Validating/ButtonClick handlers from `{ui_path}` and LookUpExamCode from `{delegate_path}` retain their bodies. Text-only control and ShowFormLookup message doubles replace Windows UI/dialog infrastructure, record offered codes and supply explicit fixture responses; they do not validate or select codes themselves. Source ValidateAndSetExamCode performs validation/confirmation. Validating cancellation is observed separately from the selected code, including successful fallback lookup with cancellation still true. Original Windows event delivery remains unverified.
 - `{repeat_path}` UpdateRepeatFlags body is retained with internal -> public visibility only. RepositoryFixture supplies explicit preloaded query rows separately from local tracked rows; Include has no database side effects. Source local navigation repair and all repeat decisions execute unchanged. Synthetic rows include KD03 ties, a later same-day timestamp, KD08 family members, another patient and another prefix. Repeated execution observes idempotence. This is standalone repeat-logic evidence, not save-service/database parity; scope approval remains blocked.
 - `{lifecycle_path}` Save body is source-extracted unchanged. A recording service double observes exact context/result identity and throws explicit synthetic generic/optimistic-lock faults; shared cases assert return value, error prompt and untouched unrelated DTO. Local FaultException types replace WCF exception transport only. This proves delegate selection and error routing, not validation, transactions, mapping or persistence in the original save service.
+- GetLocationList/GetExaminerList/GetUsedExaminerList bodies are source-extracted; only List<LookupsSubTO> becomes List<LookupFixture> (Code/UsedCode-only record). Recording lookup-service double returns unfiltered synthetic SYNTH/Y and UNUSED/N rows or throws the local FaultException substitute. Shared cases invoke twice and observe missing-category prompts, cache reuse, exact service arguments, used-only filtering and retry after faults. Real lookup data, service transport and Windows binding remain unverified.
 - `{lifecycle_path}` AddNewKdpResult and ConfirmCancelChanges bodies retained except WCF warning wrapper substitution and DateTime.Now -> ReferenceClock.Now (2025-03-01 noon). Unscheduled enum value 2 is from LookupsUtility.EXAMINATION_ORIGIN. Empty outstanding-appointment list models the excluded appointment workflow. GetNewKdpExaminationResultDelegate is source-extracted and calls extracted Populate through a synthetic dependency-injection factory. Shared new-result cases verify supplied patient context, existing-list identity, unscheduled default, description notification and lazy ranges without service requests. Windows events remain unverified; hasChanged returns an explicit fixture flag, not original change tracking. Reload double records IDs and supplies a detached stored DTO; this proves reload orchestration, not database reads. Scenarios cover accept/reject, unchanged, new and empty cancellation paths and defaults/consent/insertion order.
 - reference driver dispatches operation then serialises errors/warnings/BMI and detached accepted-input clone. It is NOT the save service and does NOT prove persistence. No random IDs are generated. No business rules supplied by database doubles.
 - `original/` retains unadapted source sections for independent inspection. `source-index.json` records original identity and bundle line for every one of 94 files.

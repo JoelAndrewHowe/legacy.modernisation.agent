@@ -22,6 +22,23 @@ foreach (var scenario in scenarios)
     {
         switch (scenario["when"].GetValue<string>())
         {
+            case "lookup-retrieval":
+                var lookupInteraction = new ExtractedInteractions { KdpExaminationResultTo = result };
+                var lookupKind = input["kind"].GetValue<string>();
+                var lookupMode = input["mode"].GetValue<string>();
+                if (lookupMode == "cached" || lookupMode == "missing") {
+                    lookupInteraction.locationList = lookupInteraction.lookupsService.Rows;
+                    lookupInteraction.examinerList = lookupInteraction.lookupsService.Rows;
+                }
+                lookupInteraction.lookupsService.Fail = lookupMode == "fault";
+                var firstLookup = lookupKind == "location" ? lookupInteraction.GetLocationList() : lookupInteraction.GetUsedExaminerList();
+                var secondLookup = lookupKind == "location" ? lookupInteraction.GetLocationList() : lookupInteraction.GetUsedExaminerList();
+                observed["codes"] = secondLookup == null ? null : JsonSerializer.SerializeToNode(secondLookup.Select(row => row.Code));
+                observed["sameRows"] = firstLookup != null && secondLookup != null && firstLookup.Count == secondLookup.Count && firstLookup.Zip(secondLookup).All(pair => ReferenceEquals(pair.First, pair.Second));
+                observed["requests"] = JsonSerializer.SerializeToNode(lookupInteraction.lookupsService.Requests);
+                observed["prompts"] = JsonSerializer.SerializeToNode(lookupInteraction.Messenger.ErrorPrompts);
+                errors.AddRange(lookupInteraction.Messenger.Errors);
+                break;
             case "repeat-flags":
                 var repeatUow = new RepeatUnitOfWork();
                 foreach (var row in input["rows"].AsArray()) {
@@ -220,7 +237,7 @@ foreach (var scenario in scenarios)
                     deviationRanges = new(() => new() { new("Height", 40, 60) }),
                     prescribedRanges = new(() => new() { new("BMI", 10, 20) })
                 };
-                if (input["nullLookup"]?.GetValue<bool>() == true) { interaction.locationList = null; interaction.examinerList = null; }
+                if (input["nullLookup"]?.GetValue<bool>() == true) { interaction.locationList = null; interaction.examinerList = null; interaction.lookupsService.Rows = null; }
                 switch (scenario["when"].GetValue<string>()) {
                     case "populate":
                         // Start with a distinct sentinel so a missing DTO assignment cannot pass.
