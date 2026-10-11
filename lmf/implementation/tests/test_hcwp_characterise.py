@@ -41,6 +41,13 @@ class CharacteriseTests(unittest.TestCase):
             self.assertGreater(len(report['scenarios']), 20)
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
+            self.assertEqual({'weeks': 8, 'errors': [], 'warnings': []}, rows['KD03-weeks-truncation-positive'])
+            self.assertEqual({'weeks': 0, 'errors': [], 'warnings': []}, rows['KD03-weeks-truncation-negative'])
+            self.assertEqual([], rows['KD03-age-upper-fractional-day']['warnings'])
+            self.assertEqual(['KdpContactGivenAfterMaxAge'], rows['KD03-age-after-upper-day']['warnings'])
+            self.assertNotIn('WeeksBetween adaptation requires review', contract['blockingGaps'])
+            self.assertIn('Repeat-flag scope unresolved', contract['blockingGaps'])
+            self.assertIn('DateCalculation.cs', (stage / 'reference/ADAPTATIONS.md').read_text())
             for field, error in [('Height', 'InvalidHeightMessage'), ('Weight', 'InvalidWeightMessage'), ('HeadCirc', 'HeadCircumferenceInvalidFormatMessage')]:
                 for name in ('valid', 'invalid', 'empty', 'empty-preserves-cancel'):
                     self.assertEqual({'cancelled': name in ('invalid', 'empty-preserves-cancel'),

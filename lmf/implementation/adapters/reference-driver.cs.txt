@@ -22,6 +22,9 @@ foreach (var scenario in scenarios)
     {
         switch (scenario["when"].GetValue<string>())
         {
+            case "weeks-between":
+                observed["weeks"] = birth.WeeksBetween(result.ExaminationDate);
+                break;
             case "new-result":
                 var creator = new ExtractedLifecycle();
                 creator.ato.Id = fixtures["clientId"].ToString();

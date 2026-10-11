@@ -45,6 +45,7 @@ def generate(request):
     bmi_path, bmi = find('/ChildMeasurementsService.cs')
     lifecycle_path, lifecycle = find('/KdpExaminationDelegate.cs')
     ui_path, ui = find('/ucHLXKdpExaminationResult.cs')
+    dates_path, dates = find('/DateCalculation.cs')
     out = Path(request['OutputDirectory'])
     def put(name, content):
         path = out / name
@@ -127,11 +128,9 @@ public class WarningSink {
  public void Send(NonFatalErrorEncountered value) => Errors.Add(value.Message);
  public void Send(WarningNotificationMessage value) => Warnings.Add(value.Message);
 }
-public static class DateExtensions {
- // Adaptation: demonstration weeks are elapsed days / 7; original extension is unavailable.
- public static double WeeksBetween(this DateTime birth, DateTime exam) => (exam-birth).TotalDays/7;
-}
 ''')
+    put('reference/ExtractedDateCalculation.cs', 'using System;\npublic static class DateExtensions {\n'
+        + method(dates, 'DaysBetween') + '\n' + method(dates, 'WeeksBetween') + '\n}\n')
     put('reference/Reference.csproj', '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable></PropertyGroup></Project>\n')
     start = delegate.index('        public decimal BmiLowerBound')
     last = re.search(r'        public decimal\? HeadCircumference\s*\{.*?\n        \}', delegate, re.S)
@@ -216,6 +215,10 @@ public class ExtractedDateControl {
     add('KD03-age-young', 'age', {**base, 'ExaminationDate': '2025-02-05'}, warnings=['KdpContactGivenBeforeMinAge'])
     add('KD03-age-old', 'age', {**base, 'ExaminationDate': '2025-02-28'}, warnings=['KdpContactGivenAfterMaxAge'])
     add('KD03-age-boundary', 'age', {**base, 'ExaminationDate': '2025-02-12'})
+    add('KD03-age-upper-fractional-day', 'age', {**base, 'ExaminationDate': '2025-02-26T12:00:00'})
+    add('KD03-age-after-upper-day', 'age', {**base, 'ExaminationDate': '2025-02-27'}, warnings=['KdpContactGivenAfterMaxAge'])
+    for name, date, weeks in [('positive', '2025-02-26T12:00:00', 8), ('negative', '2024-12-31T12:00:00', 0)]:
+        add('KD03-weeks-truncation-' + name, 'weeks-between', {'ExaminationDate': date}, weeks=weeks)
     add('KD03-bmi', 'bmi', base, bmi=14.88)
     for name, code, scheduled, death in [('unscheduled', 'KD03', False, False), ('scheduled', 'KD03', True, True), ('empty-code', None, False, False)]:
         add('KD03-populate-' + name, 'populate',
@@ -328,17 +331,17 @@ Oracle IDs, triggers, locks, EF6 mappings, schedule, centile bands, general opti
 ## Blocking
 - Extracted examination-date setter now proves same-day no-op, original time preservation on day changes and lazy deviation-range reset. Extracted measurement setters dispatch PropertyChanged to CheckBmi and verify resulting BMI warnings. Measurement validation handlers execute with control doubles; real Windows controls and original DTO change tracking remain unverified. Extracted Populate now verifies context assignment, scheduled/unscheduled state, lazy range resets and repeat-safe numeric lookup descriptions with synthetic lookup rows. Examination-code setter lifecycle now executes source-extracted hidden-field clearing, notifications, description and lazy schedule reset. Extracted parent methods now execute new-result defaults and cancel-changes accept/reject/reload decisions, with explicit change-tracking and reload fixtures. Code-selection duplicate and change confirmations exercise both responses. Decline setters (including unchecking), lookup validation and BMI/deviation warnings now execute extracted members; full delegate lifecycle remains unverified.
 - Repeat-flag effects require an explicit reviewed scope adjustment or implementation before approval; appointment and recall processing alone were excluded in the seed.
-- The missing WeeksBetween extension is adapted to elapsed days / 7. Review or recover exact legacy rounding before claiming boundary-age parity.
+- Recovered `{dates_path}` DaysBetween/WeeksBetween: elapsed days truncate toward zero before division by 7. Both bodies are extracted unchanged; fractional-day and negative-interval scenarios prevent regression to the former elapsed-days / 7 substitution.
 ## Non-blocking / review assumptions
 Patient 1001, male, born 2025-01-01, clock 2025-03-01 and schedule 6–8 weeks are invented fixtures. Actual schedule, examiner/location lookup rows, BMI thresholds and centile bands are absent. Interaction scenarios explicitly invent SYNTH/UNUSED lookup rows, height range 40–60 and BMI range 10–20; these are review fixtures, not recovered production limits. Null/optional is not mandatory. PhysicalGeneral omission and field/save head discrepancy remain exactly as source, not corrected.
-Examination-date Validating handler and delegate ValidateExaminationDate/CheckAgeWithinScheduleRange are source-extracted. A Text/DateTime-only double invokes the handler directly; shared cases cover future/birth/death errors, duplicate dates, warning-only age acceptance, and empty-text bypass retaining incoming cancellation. The same synthetic 6–8-week schedule and documented unrecovered WeeksBetween substitution apply; Windows binding/event delivery remain unverified.
+Examination-date Validating handler and delegate ValidateExaminationDate/CheckAgeWithinScheduleRange are source-extracted. A Text/DateTime-only double invokes the handler directly; shared cases cover future/birth/death errors, duplicate dates, warning-only age acceptance, and empty-text bypass retaining incoming cancellation. The same synthetic 6–8-week schedule and source-extracted DaysBetween/WeeksBetween methods apply; Windows binding/event delivery remain unverified.
 
 Measurement Validating handlers from `{ui_path}` and delegate ValidateHeight/ValidateWeight/ValidateHeadCircumference are source-extracted. Text/Value-only control doubles invoke handlers synchronously with CancelEventArgs and invented height 40–60/weight 3–6 deviation bands (not recovered lookup data); scenarios prove invalid-input cancellation, empty-text bypass preserving the incoming cancellation flag, and warning-only acceptance. Windows binding, automatic event delivery and designer layout remain unverified.
 
 Resource translations are absent: errors/warnings are resource identifiers, not original displayed prose. Reference save only clones accepted input and proves validator outcomes; original service transaction, entity mapping and persistence are unverified. Windows/Oracle application cannot be built from this bundle. PostgreSQL is unverified and not connected. No target or browser implementation has been generated.
 ''')
     put('migration-plan.md', '''# Bounded migration plan
-1. Characterise: retain source identities, inspect inventory/rules, run extracted-reference scenarios. Resolve blocking coverage, repeat scope and age extension gaps with human review; do not approve current incomplete coverage by implication.
+1. Characterise: retain source identities, inspect inventory/rules, run extracted-reference scenarios. Resolve blocking coverage, repeat scope gaps with human review; do not approve current incomplete coverage by implication.
 2. Approval: runner hashes source/target/reviewed artifacts and stops. Seed acceptance is not behaviour approval.
 3. Convert after approval: modern .NET runtime/dependency port; retain validator/delegate structure, compatibility substitutions, same scenarios and observations. No Blazor or redesigned persistence yet.
 4. Refactor after conversion parity: server-interactive Blazor and EF Core in-memory. Only KD03 selection/submission, selected synthetic patient; save then read through fresh context. Add shared failure, warning/confirmation, physical assessment, lookup/default and decline examples before approving them.
@@ -346,13 +349,13 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 ''')
     put('reference/ADAPTATIONS.md', f'''# Extracted reference adaptations
 
-- `{ui_path}`: examination-date handler is retained with public visibility and a Text/DateTime-only fixture. Delegate ValidateExaminationDate and CheckAgeWithinScheduleRange execute extracted bodies with local ValidationFault substitution; synthetic date/death/existing-result fixtures and 6–8-week schedule exercise errors and warnings. WeeksBetween remains an unresolved adaptation; no original Windows event delivery is claimed.
+- `{ui_path}`: examination-date handler is retained with public visibility and a Text/DateTime-only fixture. Delegate ValidateExaminationDate and CheckAgeWithinScheduleRange execute extracted bodies with local ValidationFault substitution; synthetic date/death/existing-result fixtures and 6–8-week schedule exercise errors and warnings. WeeksBetween and DaysBetween are recovered unchanged from `{dates_path}`; no original Windows event delivery is claimed.
 - `{ui_path}`: Height, Weight and HeadCirc Validating method bodies are retained, changing only private visibility for direct invocation. Text/Value-only ControlFixture replaces proprietary numeric controls; CancelEventArgs is the runtime type. Delegate ValidateHeight/ValidateWeight/ValidateHeadCircumference bodies are extracted with local ValidationFault replacing WCF wrappers. Invented height 40–60 and weight 3–6 bands supply deviation dependencies. Shared cases assert invalid cancellation, empty-input bypass with incoming cancellation retained, and warning-only acceptance. No Windows binding, event loop, focus or layout parity is claimed.
 - Complete `{validator_path}` retained verbatim except DateTime.Today -> ReferenceClock.Today (frozen fixture).
 - DTO backing/property-change infrastructure replaced with same-named/type auto properties extracted from `{dto_path}`. No validator predicates replaced.
 - Missing resource strings replaced with their symbolic names; fault wrappers replaced with Exceptions carrying those names. Aggregated numbered messages normalised only by removing numbering/newlines. Resource identifiers compared exactly in order.
 - `{bmi_path}` CalculateBmi method retained verbatim in a small container.
-- `{delegate_path}` CheckAgeWithinScheduleRange body retained verbatim; visibility made public; schedule Lazy reads fixture; Messenger records resource IDs. Missing WeeksBetween adapted as elapsed days / 7 (blocking review gap).
+- `{delegate_path}` CheckAgeWithinScheduleRange body retained verbatim; visibility made public; schedule Lazy reads fixture; Messenger records resource IDs. DaysBetween/WeeksBetween bodies recovered from `{dates_path}` and retained verbatim in ExtractedDateCalculation.cs; only the containing namespace/class is replaced. Truncation toward zero, including negative fractional days, is executable.
 - ExtractedInteractions retains BMI/decline/measurement properties and lookup/deviation/BMI method bodies except private visibility. Notifications dispatch through a synchronous PropertyChanged event subscribed to extracted CheckBmi, mirroring the source constructor subscription (not Windows controls). ExaminationDate and ResetDeviations bodies are retained, with ChildMeasurementsRange renamed to the fixture record; GetExpectedRanges records the date and supplies invented height range 40–60. Shared examples check same-day no-op, time preservation, lazy range reset and weight-setter BMI warning dispatch. Lookup retrieval supplies synthetic rows or null; invented height range 40–60 and BMI range 10–20 do not claim database provenance. Display names use symbolic enum names. ValidateAndSetExamCode retains its body with WCF fault wrappers replaced by local exceptions carrying Detail.Title; synchronous confirmation responses are fixture-controlled and recorded. ExaminationCode, UpdateExamDescription, ClearDataFromHiddenFields, their field properties and ResetRecommendedAgeRange are source-extracted. Shared setter cases cover blocked/same-code no-ops and entering/leaving KD03, notifications, description, hidden-field clearing and lazy schedule reset. Synthetic descriptions and a recording schedule double returning 6–8 weeks replace lookups/services; Windows controls remain unverified. Populate, all three PrependNumericsUi description methods, GetDropDownUiPositionNumber and numeric position tables are source-extracted. Synthetic lookup lists replace lazy lookup-service retrieval; repeated Populate checks prefix idempotence, unmatched codes and already-prefixed descriptions. Context and lazy ranges are observed directly; Windows binding remains unverified; parent-delegate Populate integration executes through the extracted factory method. TransferObjectBase.Lock is a storage-only string substitution, not a concurrency implementation. ExamDescription accessor supplies the notification name only; observations read the DTO directly, not the source display accessor.
 - `{lifecycle_path}` AddNewKdpResult and ConfirmCancelChanges bodies retained except WCF warning wrapper substitution and DateTime.Now -> ReferenceClock.Now (2025-03-01 noon). Unscheduled enum value 2 is from LookupsUtility.EXAMINATION_ORIGIN. Empty outstanding-appointment list models the excluded appointment workflow. GetNewKdpExaminationResultDelegate is source-extracted and calls extracted Populate through a synthetic dependency-injection factory. Shared new-result cases verify supplied patient context, existing-list identity, unscheduled default, description notification and lazy ranges without service requests. Windows events remain unverified; hasChanged returns an explicit fixture flag, not original change tracking. Reload double records IDs and supplies a detached stored DTO; this proves reload orchestration, not database reads. Scenarios cover accept/reject, unchanged, new and empty cancellation paths and defaults/consent/insertion order.
 - reference driver dispatches operation then serialises errors/warnings/BMI and detached accepted-input clone. It is NOT the save service and does NOT prove persistence. No random IDs are generated. No business rules supplied by database doubles.
@@ -370,7 +373,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
     reviewed += sorted(str(p.relative_to(out)) for p in (out / 'reference').rglob('*') if p.is_file() and not any(part in ('bin', 'obj') for part in p.parts))
     # Original bundled tests/other projects must not compile into the standalone harness.
     put('reference/Reference.csproj', '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable></PropertyGroup><ItemGroup><Compile Remove="original/**/*.cs" /></ItemGroup></Project>\n')
-    js('stage.json', {'reviewFiles': reviewed, 'blockingGaps': ['Delegate interaction coverage incomplete', 'Repeat-flag scope unresolved', 'WeeksBetween adaptation requires review'],
+    js('stage.json', {'reviewFiles': reviewed, 'blockingGaps': ['Delegate interaction coverage incomplete', 'Repeat-flag scope unresolved'],
                       'checks': [{'command': {'executable': sys.executable, 'arguments': ['verify.py'], 'timeoutSeconds': 600}, 'results': 'results.json'}]})
 
 
