@@ -220,6 +220,24 @@ foreach (var scenario in scenarios)
                 errors.AddRange(controlDelegate.Messenger.Errors);
                 warnings.AddRange(controlDelegate.Messenger.Warnings);
                 break;
+            case "physical-assessment":
+                var physical = new ExtractedInteractions { KdpExaminationResultTo = result };
+                var physicalField = input["field"].GetValue<string>();
+                var physicalProperty = typeof(ExtractedInteractions).GetProperty(physicalField);
+                physicalProperty.SetValue(physical, (byte?)2);
+                physicalProperty.SetValue(physical, (byte?)2); // unchanged assignment
+                observed["assigned"] = JsonSerializer.SerializeToNode(physicalProperty.GetValue(physical));
+                if (input["clear"].GetValue<bool>()) physicalProperty.SetValue(physical, null);
+                observed["displayed"] = JsonSerializer.SerializeToNode(physicalProperty.GetValue(physical));
+                var physicalValues = new JsonObject();
+                foreach (var name in new[] { "Heart", "Hips", "Eyes", "Testes", "PhysicalGeneral" })
+                    physicalValues[name] = JsonSerializer.SerializeToNode(typeof(KdpExaminationResultTO).GetProperty(name).GetValue(result));
+                observed["stored"] = physicalValues;
+                observed["notifications"] = JsonSerializer.SerializeToNode(physical.Notifications);
+                observed["accepted"] = false;
+                validator.ValidateOnSave(result, birth, null, new());
+                observed["accepted"] = true; // validator only, not persistence
+                break;
             case "save":
                 validator.ValidateOnSave(result, birth, null, new());
                 // Detached observation only, not a claim of database read-back.

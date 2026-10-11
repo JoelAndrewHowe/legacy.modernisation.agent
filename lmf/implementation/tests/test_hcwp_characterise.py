@@ -41,6 +41,18 @@ class CharacteriseTests(unittest.TestCase):
             self.assertGreater(len(report['scenarios']), 20)
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
+            for field in ('Heart', 'Hips', 'Eyes', 'Testes', 'PhysicalGeneral'):
+                for mode, clear, reason in [('value', False, False), ('cleared', True, False),
+                                           ('reason', False, True), ('cleared-reason', True, True)]:
+                    counted = not clear and field != 'PhysicalGeneral'
+                    errors = (['ResultsRecordedButNotExamined'] if counted else []) if reason else ([] if counted else ['NoResultsEnteredMessage'])
+                    self.assertEqual({'assigned': 2, 'displayed': None if clear else 2,
+                        'stored': {name: 2 if name == field and not clear else None
+                                   for name in ('Heart', 'Hips', 'Eyes', 'Testes', 'PhysicalGeneral')},
+                        'notifications': [], 'accepted': not errors, 'errors': errors, 'warnings': []},
+                        rows[f'KD03-physical-{field}-{mode}'])
+            self.assertIn('no Windows binding, assessment lookup delivery',
+                          (stage / 'reference/ADAPTATIONS.md').read_text())
             for name, category in [('changed', 2), ('same', 5), ('null', None)]:
                 self.assertEqual({'category': category, 'code': '', 'name': '', 'cacheCleared': True,
                     'refreshedCodes': None if category is None else ['NEW'],
