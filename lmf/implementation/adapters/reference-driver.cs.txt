@@ -173,6 +173,7 @@ foreach (var scenario in scenarios)
             case "decline":
             case "location":
             case "examiner":
+            case "numeric-descriptor":
             case "deviation":
             case "bmi-warning":
                 var interaction = new ExtractedInteractions {
@@ -268,6 +269,9 @@ foreach (var scenario in scenarios)
                         typeof(ExtractedInteractions).GetProperty("Is" + measurement + "Declined").SetValue(interaction, declined);
                         observed["value"] = JsonSerializer.SerializeToNode(typeof(ExtractedInteractions).GetProperty(measurement).GetValue(interaction));
                         observed["flag"] = measurement switch { "Height" => result.HeightMeasurementDeclined, "Weight" => result.WeightMeasurementDeclined, _ => result.HeadMeasurementDeclined };
+                        break;
+                    case "numeric-descriptor":
+                        observed["valid"] = interaction.ValidateNumericDescriptorEntered(input["descriptor"].GetValue<string>(), Enum.Parse<ExtractedInteractions.TYPE_OF_INPUT>(input["kind"].GetValue<string>()));
                         break;
                     case "location": observed["valid"] = interaction.ValidateLocationCode(input["code"].GetValue<string>()); break;
                     case "examiner": observed["valid"] = interaction.ValidateExaminerCode(input["code"].GetValue<string>()); break;

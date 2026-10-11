@@ -110,6 +110,15 @@ class CharacteriseTests(unittest.TestCase):
                     self.assertEqual({'value': None, 'flag': flag, 'errors': [], 'warnings': []}, rows[f'KD03-decline-{kind}-{declined}'])
             self.assertFalse(rows['KD03-examiner-unused']['valid'])
             self.assertEqual(['UnusedExaminerCodeMessage'], rows['KD03-examiner-unused']['errors'])
+            for kind, maximum, stored_key in [('LOCATON_TYPE', 7, 22), ('EXAMINER_TYPE', 12, 28), ('REASON_NOT_EXAMINED', 5, 5)]:
+                for label in ['first', 'last', 'empty', 'text', 'decimal', 'overflow', 'whitespace']:
+                    self.assertEqual({'errors': [], 'warnings': [], 'valid': True},
+                                     rows['KD03-numeric-descriptor-' + kind + '-' + label])
+                for label in ['zero', 'negative', 'above']:
+                    self.assertEqual({'errors': [], 'warnings': [], 'valid': False},
+                                     rows['KD03-numeric-descriptor-' + kind + '-' + label])
+                self.assertEqual(stored_key <= maximum, rows['KD03-numeric-descriptor-' + kind + '-stored-key']['valid'])
+            self.assertIn('public bool ValidateNumericDescriptorEntered', (stage / 'reference/ExtractedInteractions.cs').read_text())
             self.assertTrue(rows['KD03-location-null-lookup']['valid'])
             self.assertTrue(rows['KD03-examiner-null-lookup']['valid'])
             self.assertEqual([], rows['KD03-deviation-50']['warnings'])
