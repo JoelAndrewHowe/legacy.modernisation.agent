@@ -1,7 +1,7 @@
 # Task plan
 
 - [ ] Provide a terminal Tetris application launched with `npm start`.
-  - [ ] Verify the complete raw-input readiness-to-restart flow. Doer evidence: added `test/app.test.js` regression covering readiness instructions, ignored pre-start controls, Enter, arrow movement/rotation/soft drop, hard-drop scoring, game-over feedback, blocked game-over controls, restart, 24-row rendering, and quit/timer cleanup; `npm test` passes all 28 tests. No new validator findings supplied or observed. Awaiting planner completion.
+  - [x] Verify the complete raw-input readiness-to-restart flow. Doer evidence: added `test/app.test.js` regression covering readiness instructions, ignored pre-start controls, Enter, arrow movement/rotation/soft drop, hard-drop scoring, game-over feedback, blocked game-over controls, restart, 24-row rendering, and quit/timer cleanup; `npm test` passes all 28 tests. No new validator findings supplied or observed; validated work committed.
   - [x] Verify the documented launcher in a real PTY and add noninteractive-launch regression coverage. Evidence: `npm test` passes all 25 tests; PTY smoke passed readiness, Enter-to-start, hard-drop scoring, resize prompt/restoration, quit, and terminal attribute restoration.
   - [x] Validation finding: the initial PTY smoke incorrectly expected a fixed hard-drop score despite random piece selection. Addressed by checking a positive score and preserving that observed score across resizing; corrected smoke passed. No application defect found.
   - [x] Verify application-level readiness instructions, line-clear score updates, game-over feedback, and Enter-to-restart behavior.
