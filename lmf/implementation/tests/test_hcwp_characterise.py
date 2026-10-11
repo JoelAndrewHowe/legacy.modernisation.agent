@@ -367,6 +367,12 @@ class CharacteriseTests(unittest.TestCase):
                 self.assertEqual(name == 'accept', row['replaced'])
                 self.assertEqual(None if name == 'empty' else (55 if name == 'accept' else 99), row['height'])
                 self.assertEqual(['ExamResultsConfirmCancelMessage'] if name in ('accept', 'reject') else [], row['confirmations'])
+            for name in ('accept', 'reject', 'unchanged'):
+                self.assertEqual({'allowed': name != 'reject', 'reloadCalls': [42] if name == 'accept' else [],
+                    'height': 55 if name == 'accept' else 99, 'replaced': name == 'accept',
+                    'selectedIsStored': name == 'accept', 'siblingUnchanged': True,
+                    'confirmations': [] if name == 'unchanged' else ['ExamResultsConfirmCancelMessage'],
+                    'errors': [], 'warnings': []}, rows['KD03-cancel-selected-' + name])
             for name in ('unscheduled', 'scheduled', 'empty-code'):
                 row = rows['KD03-populate-' + name]
                 # Populate starts with a distinct KD08/2000 sentinel DTO.
@@ -504,6 +510,19 @@ class CharacteriseTests(unittest.TestCase):
             # selected result exists. Retain guards and mutate only change detection.
             extracted_lifecycle = stage / 'reference/ExtractedLifecycle.cs'
             original_lifecycle = extracted_lifecycle.read_text()
+            selected_lookup = 'var kdpExamResultDelegate = KdpExaminationResultDelegates.Single(er => er.PkChildExaminationId == kdpChildExaminationId);'
+            self.assertEqual(1, original_lifecycle.count(selected_lookup))
+            try:
+                extracted_lifecycle.write_text(original_lifecycle.replace(selected_lookup,
+                    'var kdpExamResultDelegate = KdpExaminationResultDelegates.First();'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                self.assertTrue({'KD03-cancel-selected-accept', 'KD03-cancel-selected-reject',
+                    'KD03-cancel-selected-unchanged'}.issubset(failures))
+            finally:
+                extracted_lifecycle.write_text(original_lifecycle)
             changed_guard = 'kdpExamResultDelegate.KdpExaminationResultTo.hasChanged()'
             self.assertEqual(1, original_lifecycle.count(changed_guard))
             try:

@@ -211,12 +211,27 @@ foreach (var scenario in scenarios)
                 var edited = new KdpExaminationResultTO { PkChildExaminationId = input["id"].GetValue<long>(), Height = 99, ChangedFixture = input["changed"].GetValue<bool>() };
                 lifecycle.service.Stored = new() { PkChildExaminationId = 42, Height = 55 };
                 var wrapped = new KdpExaminationResultDelegate { KdpExaminationResultTo = edited };
+                KdpExaminationResultTO siblingDto = null;
+                KdpExaminationResultDelegate siblingDelegate = null;
+                if (input["siblingChanged"] != null) {
+                    // Earlier list entry deliberately differs from the selected result.
+                    siblingDto = new() { PkChildExaminationId = 77, Height = 88,
+                        ChangedFixture = input["siblingChanged"].GetValue<bool>() };
+                    siblingDelegate = new() { KdpExaminationResultTo = siblingDto };
+                    lifecycle.listOfKdpExaminationResultDelegates.Add(siblingDelegate);
+                }
                 if (!input["empty"].GetValue<bool>()) lifecycle.listOfKdpExaminationResultDelegates.Add(wrapped);
                 lifecycle.messenger.ConfirmationResponse = input["response"].GetValue<bool>();
                 observed["allowed"] = lifecycle.ConfirmCancelChanges(edited.PkChildExaminationId);
                 observed["reloadCalls"] = JsonSerializer.SerializeToNode(lifecycle.service.Calls);
                 observed["height"] = input["empty"].GetValue<bool>() ? null : JsonSerializer.SerializeToNode(wrapped.KdpExaminationResultTo.Height);
                 observed["replaced"] = !ReferenceEquals(edited, wrapped.KdpExaminationResultTo);
+                if (siblingDto != null) {
+                    observed["selectedIsStored"] = ReferenceEquals(lifecycle.service.Stored, wrapped.KdpExaminationResultTo);
+                    observed["siblingUnchanged"] = ReferenceEquals(siblingDto, siblingDelegate.KdpExaminationResultTo)
+                        && siblingDto.PkChildExaminationId == 77 && siblingDto.Height == 88
+                        && siblingDto.ChangedFixture == input["siblingChanged"].GetValue<bool>();
+                }
                 observed["confirmations"] = JsonSerializer.SerializeToNode(lifecycle.messenger.Confirmations);
                 break;
             case "code-control":
