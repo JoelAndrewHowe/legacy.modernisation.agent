@@ -96,6 +96,10 @@ class CharacteriseTests(unittest.TestCase):
                     'HeightMeasurementDeclined': 'N', 'WeightMeasurementDeclined': 'N',
                     'HeadMeasurementDeclined': 'N', 'EnabledPropChangeEvents': True,
                     'ExaminationCode': None, 'ExaminationDate': '0001-01-01T00:00:00'}, row['defaults'])
+                self.assertEqual({'gender': 'F', 'birth': '2024-12-01', 'death': '2025-02-01',
+                    'sameExisting': True, 'scheduled': False, 'unscheduled': True,
+                    'description': None, 'notifications': ['ExamDescription'],
+                    'lazyRanges': True, 'requests': 0}, row['context'])
                 self.assertTrue(row['insertedFirst'])
                 self.assertEqual(2, row['count'])
                 self.assertEqual([] if consent else ['NoConsentMessage'], row['warnings'])
@@ -133,11 +137,11 @@ class CharacteriseTests(unittest.TestCase):
                 self.assertEqual([], row['warnings'])
             adaptations = (stage / 'reference/ADAPTATIONS.md').read_text()
             self.assertIn('hasChanged returns an explicit fixture flag', adaptations)
-            self.assertIn('Populate/Windows events unverified', adaptations)
+            self.assertIn('GetNewKdpExaminationResultDelegate is source-extracted', adaptations)
             self.assertIn('ExaminationDate and ResetDeviations bodies are retained', adaptations)
             self.assertIn('ClearDataFromHiddenFields', adaptations)
             self.assertIn('numeric position tables are source-extracted', adaptations)
-            self.assertIn('parent-delegate Populate integration remain unverified', adaptations)
+            self.assertIn('parent-delegate Populate integration executes', adaptations)
             self.assertIn('recording schedule double', adaptations)
             self.assertIn('PropertyChanged event subscribed to extracted CheckBmi', adaptations)
             approve = cli('approve', '--workspace', str(workspace), '--revision', state['Revision'])
@@ -156,8 +160,11 @@ class CharacteriseTests(unittest.TestCase):
                     self.assertNotEqual(0, mutant.returncode, mutant.stdout + mutant.stderr)
                     mutant_report = json.loads((stage / 'reference-report.json').read_text())
                     failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
-                    self.assertEqual({'KD03-populate-unscheduled', 'KD03-populate-scheduled',
-                                      'KD03-populate-empty-code'}, failures)
+                    expected = {'KD03-populate-unscheduled', 'KD03-populate-scheduled',
+                                'KD03-populate-empty-code'}
+                    if omitted == 'KdpExaminationResultTo = kdpExaminationResultTo;':
+                        expected.update({'KD03-new-defaults-true', 'KD03-new-defaults-false'})
+                    self.assertEqual(expected, failures)
                 finally:
                     extracted.write_text(original)
             # Verification must execute and compare, not merely return counts.

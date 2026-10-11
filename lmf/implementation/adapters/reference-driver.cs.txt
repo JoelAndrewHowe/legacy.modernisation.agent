@@ -33,6 +33,17 @@ foreach (var scenario in scenarios)
                 foreach (var property in defaultProperties)
                     defaults[property] = JsonSerializer.SerializeToNode(typeof(KdpExaminationResultTO).GetProperty(property).GetValue(created.KdpExaminationResultTo));
                 observed["defaults"] = defaults;
+                observed["context"] = new JsonObject {
+                    ["gender"] = created.gender,
+                    ["birth"] = created.dateOfBirth.ToString("yyyy-MM-dd"),
+                    ["death"] = created.dateOfDeath?.ToString("yyyy-MM-dd"),
+                    ["sameExisting"] = ReferenceEquals(creator.ato.HcpExaminationResultToList, created.existingResults),
+                    ["scheduled"] = created.IsScheduled, ["unscheduled"] = created.IsUnscheduled,
+                    ["description"] = created.KdpExaminationResultTo.ExamDescription,
+                    ["notifications"] = JsonSerializer.SerializeToNode(created.Notifications),
+                    ["lazyRanges"] = !created.deviationRanges.IsValueCreated && !created.recommendedAgeRangeInWeeks.IsValueCreated,
+                    ["requests"] = created.measurementsService.RangeRequests.Count + created.KdpExaminationService.Requests.Count
+                };
                 observed["insertedFirst"] = ReferenceEquals(creator.listOfKdpExaminationResultDelegates[0], created);
                 observed["count"] = creator.listOfKdpExaminationResultDelegates.Count;
                 observed["confirmations"] = JsonSerializer.SerializeToNode(creator.messenger.Confirmations);

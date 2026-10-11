@@ -13,17 +13,18 @@ public class ExtractedLifecycle {
  public KdpExaminationValidator validator = new();
  public WarningSink messenger = new();
  public ReloadFixture service = new();
- // Populate/Windows wiring excluded: preserve DTO identity only.
- KdpExaminationResultDelegate GetNewKdpExaminationResultDelegate(KdpExaminationResultTO dto) => new() { KdpExaminationResultTo = dto };
+ // Factory substitutes dependency injection only; Populate executes extracted logic.
+ public Func<KdpExaminationResultDelegate> resultDelegateFactory = () => new();
 __MEMBERS__
 }
-public class KdpExaminationResultDelegate {
- public KdpExaminationResultTO KdpExaminationResultTo;
- public long PkChildExaminationId => KdpExaminationResultTo.PkChildExaminationId;
-}
+public class KdpExaminationResultDelegate : ExtractedInteractions {}
 public class LifecycleFixture {
  public string Id = "1001";
  public bool HasPreschoolConsent = true;
+ public string Gender = "F";
+ public DateTime DateOfBirth = new(2024, 12, 1);
+ public DateTime? DateOfDeath = new(2025, 2, 1);
+ public List<KdpExaminationResultTO> HcpExaminationResultToList = new() { new() { PkChildExaminationId = 42 } };
  // Empty for the bounded workflow: appointment processing is excluded.
  public List<AppointmentFixture> OutstandingAppointmentsList = new();
 }
