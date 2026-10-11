@@ -22,6 +22,35 @@ foreach (var scenario in scenarios)
     {
         switch (scenario["when"].GetValue<string>())
         {
+            case "new-result":
+                var creator = new ExtractedLifecycle();
+                creator.ato.Id = fixtures["clientId"].ToString();
+                creator.ato.HasPreschoolConsent = input["hasConsentFixture"].GetValue<bool>();
+                creator.listOfKdpExaminationResultDelegates.Add(new() { KdpExaminationResultTo = new() { PkChildExaminationId = 42 } });
+                var created = creator.AddNewKdpResult();
+                var defaultProperties = new[] { "ClientId", "PkChildExaminationId", "ResultEnteredDate", "Origin", "Reschedule", "HeightMeasurementDeclined", "WeightMeasurementDeclined", "HeadMeasurementDeclined", "EnabledPropChangeEvents", "ExaminationCode", "ExaminationDate" };
+                var defaults = new JsonObject();
+                foreach (var property in defaultProperties)
+                    defaults[property] = JsonSerializer.SerializeToNode(typeof(KdpExaminationResultTO).GetProperty(property).GetValue(created.KdpExaminationResultTo));
+                observed["defaults"] = defaults;
+                observed["insertedFirst"] = ReferenceEquals(creator.listOfKdpExaminationResultDelegates[0], created);
+                observed["count"] = creator.listOfKdpExaminationResultDelegates.Count;
+                observed["confirmations"] = JsonSerializer.SerializeToNode(creator.messenger.Confirmations);
+                warnings.AddRange(creator.messenger.Warnings);
+                break;
+            case "cancel-changes":
+                var lifecycle = new ExtractedLifecycle();
+                var edited = new KdpExaminationResultTO { PkChildExaminationId = input["id"].GetValue<long>(), Height = 99, ChangedFixture = input["changed"].GetValue<bool>() };
+                lifecycle.service.Stored = new() { PkChildExaminationId = 42, Height = 55 };
+                var wrapped = new KdpExaminationResultDelegate { KdpExaminationResultTo = edited };
+                if (!input["empty"].GetValue<bool>()) lifecycle.listOfKdpExaminationResultDelegates.Add(wrapped);
+                lifecycle.messenger.ConfirmationResponse = input["response"].GetValue<bool>();
+                observed["allowed"] = lifecycle.ConfirmCancelChanges(edited.PkChildExaminationId);
+                observed["reloadCalls"] = JsonSerializer.SerializeToNode(lifecycle.service.Calls);
+                observed["height"] = input["empty"].GetValue<bool>() ? null : JsonSerializer.SerializeToNode(wrapped.KdpExaminationResultTo.Height);
+                observed["replaced"] = !ReferenceEquals(edited, wrapped.KdpExaminationResultTo);
+                observed["confirmations"] = JsonSerializer.SerializeToNode(lifecycle.messenger.Confirmations);
+                break;
             case "save":
                 validator.ValidateOnSave(result, birth, null, new());
                 // Detached observation only, not a claim of database read-back.

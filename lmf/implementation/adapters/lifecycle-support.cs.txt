@@ -1,0 +1,35 @@
+// Infrastructure doubles around source-extracted parent-delegate methods.
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using Orvex.TransferObjects;
+using Orvex.Business.Validation;
+using Orvex.Messages.Faults;
+using Resources = Orvex.Resources;
+public class ExtractedLifecycle {
+ public LifecycleFixture ato = new();
+ public List<KdpExaminationResultDelegate> listOfKdpExaminationResultDelegates = new();
+ public List<KdpExaminationResultDelegate> KdpExaminationResultDelegates => listOfKdpExaminationResultDelegates;
+ public KdpExaminationValidator validator = new();
+ public WarningSink messenger = new();
+ public ReloadFixture service = new();
+ // Populate/Windows wiring excluded: preserve DTO identity only.
+ KdpExaminationResultDelegate GetNewKdpExaminationResultDelegate(KdpExaminationResultTO dto) => new() { KdpExaminationResultTo = dto };
+__MEMBERS__
+}
+public class KdpExaminationResultDelegate {
+ public KdpExaminationResultTO KdpExaminationResultTo;
+ public long PkChildExaminationId => KdpExaminationResultTo.PkChildExaminationId;
+}
+public class LifecycleFixture {
+ public string Id = "1001";
+ public bool HasPreschoolConsent = true;
+ // Empty for the bounded workflow: appointment processing is excluded.
+ public List<AppointmentFixture> OutstandingAppointmentsList = new();
+}
+public record AppointmentFixture(string ExaminationCode, DateTime? ExaminationDate, byte Origin);
+public class ReloadFixture {
+ public KdpExaminationResultTO Stored;
+ public List<long> Calls = new();
+ public KdpExaminationResultTO GetKdpExaminationResult(long id) { Calls.Add(id); return Stored; }
+}

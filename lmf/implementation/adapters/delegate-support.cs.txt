@@ -29,7 +29,11 @@ __MEMBERS__
 public record LookupFixture(string Code, string UsedCode);
 public record RangeFixture(string MeasurementType, double LowerBound, double UpperBound);
 public static class HLXBoolean { public const string True = "Y", False = "N"; }
-public static class LookupsUtility { public enum ChildMeasurementType { Height, Weight } }
+public static class LookupsUtility {
+ public enum ChildMeasurementType { Height, Weight }
+ // Source: LookupsUtility.EXAMINATION_ORIGIN.
+ public enum EXAMINATION_ORIGIN { UNSCHEDULED = 2 }
+}
 public static class DisplayExtensions {
  public static string GetDisplayName(this LookupsUtility.ChildMeasurementType value) => value.ToString();
 }

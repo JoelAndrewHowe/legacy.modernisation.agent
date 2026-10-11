@@ -68,6 +68,27 @@ class CharacteriseTests(unittest.TestCase):
             self.assertEqual(['KdpInvalidExamCodeMessage'], rows['KD03-code-invalid']['errors'])
             self.assertFalse(rows['KD03-code-invalid']['valid'])
             self.assertEqual([], rows['KD03-code-invalid']['confirmations'])
+            for consent in (True, False):
+                row = rows[f'KD03-new-defaults-{str(consent).lower()}']
+                self.assertEqual({'ClientId': 1001, 'PkChildExaminationId': 0,
+                    'ResultEnteredDate': '2025-03-01T12:00:00', 'Origin': 2, 'Reschedule': 'N',
+                    'HeightMeasurementDeclined': 'N', 'WeightMeasurementDeclined': 'N',
+                    'HeadMeasurementDeclined': 'N', 'EnabledPropChangeEvents': True,
+                    'ExaminationCode': None, 'ExaminationDate': '0001-01-01T00:00:00'}, row['defaults'])
+                self.assertTrue(row['insertedFirst'])
+                self.assertEqual(2, row['count'])
+                self.assertEqual([] if consent else ['NoConsentMessage'], row['warnings'])
+                self.assertEqual([], row['confirmations'])
+            for name in ('accept', 'reject', 'unchanged', 'new', 'empty'):
+                row = rows[f'KD03-cancel-{name}']
+                self.assertEqual(name != 'reject', row['allowed'])
+                self.assertEqual([42] if name == 'accept' else [], row['reloadCalls'])
+                self.assertEqual(name == 'accept', row['replaced'])
+                self.assertEqual(None if name == 'empty' else (55 if name == 'accept' else 99), row['height'])
+                self.assertEqual(['ExamResultsConfirmCancelMessage'] if name in ('accept', 'reject') else [], row['confirmations'])
+            adaptations = (stage / 'reference/ADAPTATIONS.md').read_text()
+            self.assertIn('hasChanged returns an explicit fixture flag', adaptations)
+            self.assertIn('Populate/Windows events unverified', adaptations)
             approve = cli('approve', '--workspace', str(workspace), '--revision', state['Revision'])
             self.assertNotEqual(0, approve.returncode)
             self.assertIn('blocking gaps', approve.stderr)
