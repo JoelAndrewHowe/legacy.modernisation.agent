@@ -45,6 +45,16 @@ class CharacteriseTests(unittest.TestCase):
                 self.assertEqual({'errors': [], 'warnings': [], 'ids': ids, 'refreshIds': [88],
                     'calls': [1001, 2002], 'sameDtos': True, 'sameContext': True,
                     'lazyRanges': True, 'replaced': True}, rows[f'KD03-get-results-{mode}'])
+            for name, snapshots in [('grow-shrink', [[None, None, None], [None]]),
+                                     ('shrink-grow', [['42'], ['42', None, None]]),
+                                     ('unchanged', [['42', '99'], ['42', '99']]),
+                                     ('clear', [[], []]), ('empty', [[], []])]:
+                self.assertEqual({'snapshots': snapshots, 'retainedIdentity': True,
+                    'selectedUnchanged': True, 'processingStates': [False, False],
+                    'defaultTab': False, 'setupCalls': 0, 'serviceCalls': 0,
+                    'errors': [], 'warnings': []}, rows['KD03-ui-tab-count-' + name])
+            self.assertIn('full Populate orchestration remains unverified',
+                          (stage / 'reference/ADAPTATIONS.md').read_text())
             for kind in ('location', 'examiner'):
                 request = 'Locations||5' if kind == 'location' else 'Examiners||18|N'
                 missing = 'NoLocationTypeMessage' if kind == 'location' else 'NoExaminerTypeMessage'
@@ -558,6 +568,17 @@ class CharacteriseTests(unittest.TestCase):
             # Save success must refresh, rather than merely report service dispatch.
             extracted_save_control = stage / 'reference/ExtractedSaveControl.cs'
             original_save_control = extracted_save_control.read_text()
+            tail_removal = 'TabPages.RemoveAt(hlxAdminTabControlKdpExamination.TabPages.Count - 1);'
+            self.assertEqual(1, original_save_control.count(tail_removal))
+            try:
+                extracted_save_control.write_text(original_save_control.replace(tail_removal, 'TabPages.RemoveAt(0);'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-ui-tab-count-grow-shrink', 'KD03-ui-tab-count-shrink-grow'},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                extracted_save_control.write_text(original_save_control)
             insert_call = '            kdpExaminationDelegate.AddNewKdpResult();'
             self.assertEqual(1, original_save_control.count(insert_call))
             try:

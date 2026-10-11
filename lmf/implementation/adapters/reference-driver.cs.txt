@@ -182,6 +182,34 @@ foreach (var scenario in scenarios)
                 } : null;
                 warnings.AddRange(insertControl.kdpExaminationDelegate.messenger.Warnings);
                 break;
+            case "ui-tab-count":
+                var countControl = new ExtractedSaveControl { setDefaultTabPage = false, processingTabs = true };
+                foreach (var key in input["keys"].AsArray())
+                    countControl.hlxAdminTabControlKdpExamination.TabPages.Add(new(key.GetValue<string>()));
+                var countTabs = countControl.hlxAdminTabControlKdpExamination.TabPages;
+                var countSelected = countTabs.LastOrDefault() ?? new SaveTabFixture("detached");
+                countControl.hlxAdminTabControlKdpExamination.SelectedTab = countSelected;
+                var countSnapshots = new List<string[]>();
+                var processingStates = new List<bool>();
+                var retainedIdentity = true;
+                foreach (var countNode in input["counts"].AsArray()) {
+                    var beforeTabs = countTabs.ToArray();
+                    countControl.kdpExaminationDelegate.listOfKdpExaminationResultDelegates.Clear();
+                    for (var index = 0; index < countNode.GetValue<int>(); index++)
+                        countControl.kdpExaminationDelegate.listOfKdpExaminationResultDelegates.Add(new());
+                    countControl.ProcessTabsForEachExam();
+                    retainedIdentity &= beforeTabs.Take(countTabs.Count).Select((tab, index) => ReferenceEquals(tab, countTabs[index])).All(value => value);
+                    countSnapshots.Add(countTabs.Select(tab => tab.Key).ToArray());
+                    processingStates.Add(countControl.processingTabs);
+                }
+                observed["snapshots"] = JsonSerializer.SerializeToNode(countSnapshots);
+                observed["retainedIdentity"] = retainedIdentity;
+                observed["selectedUnchanged"] = ReferenceEquals(countSelected, countControl.hlxAdminTabControlKdpExamination.SelectedTab);
+                observed["processingStates"] = JsonSerializer.SerializeToNode(processingStates);
+                observed["defaultTab"] = countControl.setDefaultTabPage;
+                observed["setupCalls"] = countControl.KeysAtSetup.Count + countControl.PreparedTabs.Count;
+                observed["serviceCalls"] = countControl.kdpExaminationDelegate.service.ContextCalls.Count + countControl.kdpExaminationDelegate.service.Calls.Count + countControl.kdpExaminationDelegate.service.SaveCalls.Count;
+                break;
             case "tab-change":
                 var tabControl = new ExtractedSaveControl { processingTabs = input["processing"].GetValue<bool>() };
                 var selectedKey = input["selected"]?.GetValue<string>();
