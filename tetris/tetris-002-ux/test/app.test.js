@@ -472,3 +472,74 @@ test('rejects noninteractive terminals before changing state', () => {
     assert.equal(io.text(), '');
   }
 });
+
+
+test('game-over feedback and restart survive resizing without resetting the game', () => {
+  const io = terminal();
+  const game = new Game(() => 0);
+  let tick;
+  const stop = startApp({ ...io, game,
+    setInterval: (callback) => { tick = callback; return 42; },
+    clearInterval: () => {},
+  });
+  try {
+    io.input.emit('keypress', '', { name: 'return' });
+    game.board[0][3] = 1;
+    game.spawn();
+    assert.equal(game.status, 'over');
+    const before = JSON.stringify(game);
+    for (const [columns, rows] of [[21, 24], [22, 23], [0, 0]]) {
+      io.output.columns = columns;
+      io.output.rows = rows;
+      const offset = io.text().length;
+      io.output.emit('resize');
+      const frame = io.text().slice(offset).slice('\x1b[H\x1b[2J'.length);
+      if (columns === 0) assert.equal(frame, '');
+      else assert.match(frame, /Resize to 22x24/);
+      io.input.emit('keypress', '', { name: 'return' });
+      tick();
+      assert.equal(JSON.stringify(game), before);
+    }
+    io.output.columns = 22;
+    io.output.rows = 24;
+    const offset = io.text().length;
+    io.output.emit('resize');
+    assert.equal(io.text().slice(offset), '\x1b[H\x1b[2J' + renderFrame(game));
+    assert.match(io.text().slice(offset), /GAME OVER/);
+    assert.match(io.text().slice(offset), /Enter: restart/);
+    io.input.emit('keypress', '', { name: 'return' });
+    assert.equal(game.status, 'playing');
+    assert.ok(game.board.every(row => row.every(cell => !cell)));
+    tick();
+    assert.equal(game.piece.y, 1);
+  } finally {
+    stop();
+  }
+});
+
+test('all quit controls clean up undersized and minimized terminals', () => {
+  for (const [columns, rows] of [[21, 24], [22, 23], [1, 1], [0, 24], [22, 0], [0, 0]]) {
+    for (const key of [{ name: 'q' }, { name: 'escape' }, { name: 'c', ctrl: true }]) {
+      const io = terminal();
+      io.output.columns = columns;
+      io.output.rows = rows;
+      let cancelled;
+      const stop = startApp({ ...io,
+        setInterval: () => 42,
+        clearInterval: (id) => { cancelled = id; },
+      });
+      try {
+        io.input.emit('keypress', '', key);
+        assert.equal(cancelled, 42);
+        assert.equal(io.input.isRaw, false);
+        assert.equal(io.input.listenerCount('keypress'), 0);
+        assert.equal(io.output.listenerCount('resize'), 0);
+        assert.equal(io.signals.listenerCount('SIGINT'), 0);
+        assert.equal(io.signals.listenerCount('SIGTERM'), 0);
+        assert.ok(io.text().endsWith('\x1b[?25h\x1b[?1049l'));
+      } finally {
+        stop();
+      }
+    }
+  }
+});
