@@ -1,11 +1,11 @@
 # Task plan
 
-- [ ] Provide a terminal Tetris application launched with `npm start`.
+- [x] Provide a terminal Tetris application launched with `npm start`.
   - [x] Verify the complete raw-input readiness-to-restart flow. Doer evidence: added `test/app.test.js` regression covering readiness instructions, ignored pre-start controls, Enter, arrow movement/rotation/soft drop, hard-drop scoring, game-over feedback, blocked game-over controls, restart, 24-row rendering, and quit/timer cleanup; `npm test` passes all 28 tests. No new validator findings supplied or observed; validated work committed.
   - [x] Verify the documented launcher in a real PTY and add noninteractive-launch regression coverage. Evidence: `npm test` passes all 25 tests; PTY smoke passed readiness, Enter-to-start, hard-drop scoring, resize prompt/restoration, quit, and terminal attribute restoration.
   - [x] Validation finding: the initial PTY smoke incorrectly expected a fixed hard-drop score despite random piece selection. Addressed by checking a positive score and preserving that observed score across resizing; corrected smoke passed. No application defect found.
   - [x] Verify application-level readiness instructions, line-clear score updates, game-over feedback, and Enter-to-restart behavior.
-  - [ ] Validator: resizing below 22×24 redraws the full frame and clips or wraps the board and quit instructions; show a resize prompt until sufficient space is restored.
+  - [x] Validator: resizing below 22×24 redraws the full frame and clips or wraps the board and quit instructions; show a resize prompt until sufficient space is restored.
     - [x] Verify gravity-driven locking and line-clear scoring resume after undersized/minimized resizing. Doer evidence: added `test/app.test.js` regression placing a falling piece one tick before a line clear, checking controls and gravity stay frozen at 21×24, 22×23, and 0×0, then verifying unchanged restoration at 22×24, automatic locking, score 100, a cleared board, subsequent gravity, 24-row rendering, and timer/raw-mode cleanup. `npm test` passes all 29 tests. No new validator findings supplied or observed; completion left to planner.
     - [x] Verify repeated undersized resize events preserve gameplay and SIGINT/SIGTERM clean up while minimized. Evidence: added regression in `test/app.test.js` covering repeated bounded prompts, raw input and gravity suppression, listener removal, terminal restoration, exactly-once timer cancellation, and no redraw after stopping; `npm test` passes all 27 tests. No new validator findings supplied or observed; validated work committed.
     - [x] Verify raw terminal input is blocked while undersized, resumes after restoration, and Ctrl-C cleans up while minimized. Evidence: added regression in `test/app.test.js` using actual Enter, arrow, space, help, and Ctrl-C bytes; `npm test` passes all 26 tests. No new validator findings; validated work committed.
@@ -18,9 +18,11 @@
     - [x] Verify resizing while help is open preserves the paused game and help display on restoration.
     - [x] Verify resizing during active gameplay clears the board, pauses controls and gravity through partial restoration, and resumes the unchanged game only when both dimensions suffice.
     - [x] Handle an initially undersized terminal with the same bounded resize prompt; verify controls and gravity remain paused until it is restored.
-  - [ ] Validator: the empty board and fixed score do not communicate readiness or next steps; add explicit status or instructions beyond quitting.
-  - [ ] Validator: src/app.js displays only an empty board and fixed score and ignores non-quit controls; implement playable movement, scoring, and game-over feedback.
-  - [ ] Validator: src/app.js labels the game 'Unfinished' without a useful next step; add readiness/start instructions and gameplay controls.
-- [ ] Implement falling pieces, movement, rotation, collision detection, line clearing, scoring, and game over.
-- [ ] Render the board, score, controls, borders, and game-over messages within 24 terminal rows.
-- [ ] Verify startup, gameplay controls, scoring, game over, and the 24-row display limit.
+  - [x] Validator: the empty board and fixed score do not communicate readiness or next steps; add explicit status or instructions beyond quitting.
+  - [x] Validator: src/app.js displays only an empty board and fixed score and ignores non-quit controls; implement playable movement, scoring, and game-over feedback.
+  - [x] Validator: src/app.js labels the game 'Unfinished' without a useful next step; add readiness/start instructions and gameplay controls.
+- [x] Implement falling pieces, movement, rotation, collision detection, line clearing, scoring, and game over.
+- [x] Render the board, score, controls, borders, and game-over messages within 24 terminal rows.
+- [x] Verify startup, gameplay controls, scoring, game over, and the 24-row display limit.
+
+Planner verification: inspected `src/app.js`, `src/game.js`, and `package.json` against the seed; `npm test` passes all 29 tests. Outstanding tasks and validator findings are resolved. No product files changed.
