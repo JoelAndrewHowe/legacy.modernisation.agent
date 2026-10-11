@@ -1,0 +1,57 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using Orvex.Business.Validation;
+using Orvex.Messages.Faults;
+using Orvex.TransferObjects;
+
+var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+var scenarios = JsonNode.Parse(File.ReadAllText(args[0])).AsArray();
+var fixtures = JsonNode.Parse(File.ReadAllText(args[1]));
+ReferenceClock.Today = DateTime.Parse(fixtures["today"].GetValue<string>());
+var birth = DateTime.Parse(fixtures["dateOfBirth"].GetValue<string>());
+var observations = new JsonArray();
+foreach (var scenario in scenarios)
+{
+    var input = scenario["input"];
+    var result = input.Deserialize<KdpExaminationResultTO>(options);
+    var errors = new List<string>();
+    var warnings = new List<string>();
+    var observed = new JsonObject();
+    var validator = new KdpExaminationValidator();
+    try
+    {
+        switch (scenario["when"].GetValue<string>())
+        {
+            case "save":
+                validator.ValidateOnSave(result, birth, null, new());
+                // Detached observation only, not a claim of database read-back.
+                observed["saved"] = input.DeepClone();
+                break;
+            case "head-field": validator.ValidateHeadCircumference(result.HeadCircumference.Value); break;
+            case "duplicate-date":
+                validator.ValidateExamCodeForDate(new() { new() { ExaminationCode = "KD03", ExaminationDate = result.ExaminationDate, PkChildExaminationId = 42 } }, 0, "KD03", result.ExaminationDate);
+                break;
+            case "duplicate-code":
+                validator.ValidateExamCodeForDuplicates(new() { new() { ExaminationCode = "KD03", PkChildExaminationId = 42 } }, "KD03", 0);
+                break;
+            case "consent": validator.ValidateKdpConsent(result.ClientId, false); break;
+            case "age":
+                var age = new ExtractedAge { dateOfBirth = birth, recommendedAgeRangeInWeeks = new(() => new(fixtures["scheduleWeeks"][0].GetValue<double>(), fixtures["scheduleWeeks"][1].GetValue<double>())) };
+                age.CheckAgeWithinScheduleRange(result.ExaminationDate);
+                warnings.AddRange(age.Messenger.Warnings);
+                break;
+            case "bmi": observed["bmi"] = new ExtractedBmi().CalculateBmi(result.Height.Value, result.Weight.Value); break;
+            default: throw new InvalidOperationException("Unknown scenario operation");
+        }
+    }
+    catch (ValidationWarningFault warning) { warnings.Add(warning.Message); }
+    catch (ValidationFault error)
+    {
+        errors.AddRange(error.Message.Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .Select(line => System.Text.RegularExpressions.Regex.Replace(line.Trim(), @"^\d+: ", "")));
+    }
+    observed["errors"] = JsonSerializer.SerializeToNode(errors);
+    observed["warnings"] = JsonSerializer.SerializeToNode(warnings);
+    observations.Add(new JsonObject { ["id"] = scenario["id"].DeepClone(), ["observation"] = observed });
+}
+File.WriteAllText(args[2], observations.ToJsonString(new() { WriteIndented = true }));

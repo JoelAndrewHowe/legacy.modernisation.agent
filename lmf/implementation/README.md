@@ -2,7 +2,7 @@
 
 Requires .NET 10 SDK. Run `./lmf help`, or publish `Lmf/Lmf.csproj` for a standalone command. Python 3 is required only for the smoke tests: `python3 tests/test_cli.py`.
 
-This implements the first plan task's orchestration foundation, **not a completed HCWP migration**. Source analysis, stack-specific agent prompts, mechanical scenario parity, style/build/browser gates and real-agent evidence remain subsequent tasks. No parity with the original Windows/Oracle application is claimed; the planned baseline is extracted legacy logic. No real-agent migration or browser demonstration has been verified here.
+This implements the orchestration foundation and a source-bound HCWP Characterise adapter, **not a completed HCWP migration**. Characterise currently verifies a validator/calculation/age subset and explicitly blocks approval on remaining delegate coverage, repeat-flag scope and age-extension gaps. Target-stage mechanical parity, style/build/browser gates and real-agent evidence remain subsequent tasks. No parity with the original Windows/Oracle application is claimed; the planned baseline is extracted legacy logic. No real-agent migration or browser demonstration has been verified here.
 
 ## Commands
 
@@ -65,6 +65,24 @@ The runner deletes each check's old result file, invokes the command itself, req
 
 Artifacts remain under `characterise/`, `convert/`, `refactor/`. Every attempt has its own numbered `attempts/NNNN/` containing the request, exact command, stdout, stderr, copied check results and failure diagnostics. Revision changes do not reset evidence numbering. Stage commands and agents are trusted local programs with normal user permissions, not sandboxed plugins. Keep real patient data out of inputs and logs.
 
+## Supplied HCWP Characterise adapter
+
+`adapters/hcwp_characterise.py` is a deterministic source-extraction adapter, not a real coding-agent run. It accepts the same appended request JSON contract, reads the actual 94-file bundle and target description, and generates the reviewed documents, complete DTO inventory, original-file index, fixtures, shared scenarios and independently inspectable C# reference. It supports Characterise only; it explicitly fails Convert/Refactor rather than fabricate implementation evidence.
+
+Create a target description containing `Blazor` and `in-memory` (for example, `Modern .NET server-interactive Blazor with EF Core in-memory persistence`) and an agent config using absolute paths:
+
+```json
+{"command":{"executable":"/usr/bin/python3","arguments":["/workspaces/legacy.modernisation.agent/lmf/implementation/adapters/hcwp_characterise.py"],"timeoutSeconds":600}}
+```
+
+Then use the Characterise command above. The runner executes the generated `verify.py`; it builds/runs extracted C#, compares actual observations against every scenario, and writes `results.json`, `observations.json` and `reference-report.json`. Read `behaviour.md`, `gaps.md`, `dependencies.md`, `migration-plan.md`, `fixtures.json` and `reference/ADAPTATIONS.md` before any approval. Unadapted sections for all 94 files remain under `reference/original/`; `source-index.json` gives banner lines and section hashes. All reference sources, original sections, scenario inputs and verification code are revision-bound review files.
+
+The examples expose head circumference 100 rejected by field validation yet accepted by direct save, and PhysicalGeneral alone not counted as a result. Do not harmonise these findings. Warnings use symbolic resource identifiers because translated resources are absent. Saved observations are detached input clones, **not persistence read-back**. Synthetic patient/date/schedule values are explicitly invented. The age extension adaptation, incomplete delegate interactions and unresolved repeat-flag scope deliberately appear as blocking gaps: the CLI reaches awaiting-approval, but approval is rejected. This is inspectable extracted-subset evidence, not a completed Characterise acceptance claim or a scope adjustment on the operator's behalf.
+
+To rerun extracted verification independently, run `python3 WORKSPACE/characterise/verify.py`. Prerequisites are Python 3 and .NET 10; no NuGet test framework or Oracle installation is required. `scenarios.feature` is the readable BDD companion; `scenarios.json` is the executable Given/When/Then suite interpreted by the reference adapter (not a Cucumber feature runner).
+
 ## Tests
+
+`python3 tests/test_hcwp_characterise.py` runs the supplied bundle through actual extraction/build/verification, checks the documented discrepancies and blocked approval, and introduces an expected-observation mismatch to ensure comparison fails.
 
 `python3 tests/test_cli.py` builds the CLI and executes subprocess-based deterministic agent doubles in temporary workspaces. Coverage includes approval stops, revision invalidation, blocking gaps, empty/skipped/failed/missing/stale verification, bounded repairs, retained diagnostics, workspace isolation and recovery without redoing accepted stages. These synthetic fixtures demonstrate orchestration only and do not represent HCWP behaviour.
