@@ -390,6 +390,14 @@ foreach (var scenario in scenarios)
                                 interaction.Messenger.ConfirmationResponses.Enqueue(response.GetValue<bool>());
                         if (input["duplicate"]?.GetValue<bool>() == true)
                             interaction.existingResults.Add(new() { ExaminationCode = "KD03", PkChildExaminationId = 42, ExaminationDate = result.ExaminationDate.AddDays(-1) });
+                        if (input["existingResult"] is JsonObject existingResult)
+                        {
+                            result.PkChildExaminationId = input["resultId"].GetValue<long>();
+                            interaction.existingResults.Add(new() {
+                                PkChildExaminationId = existingResult["id"].GetValue<long>(),
+                                ExaminationCode = existingResult["code"].GetValue<string>(),
+                                ExaminationDate = DateTime.Parse(existingResult["date"].GetValue<string>()) });
+                        }
                         // A previously valid selection must become invalid on either rejection.
                         interaction.ExamCodeValidated = true;
                         observed["valid"] = interaction.ValidateAndSetExamCode(input["code"]?.GetValue<string>() ?? "KD03");

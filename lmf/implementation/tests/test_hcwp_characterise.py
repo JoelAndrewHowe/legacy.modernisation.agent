@@ -274,6 +274,14 @@ class CharacteriseTests(unittest.TestCase):
                     'selected': 'KD03' if accepted else 'KD08', 'confirmations': prompts,
                     'remainingResponses': remaining, 'errors': [], 'warnings': []},
                     rows['KD03-confirm-sequence-' + name])
+            for name in ('same-day-other-result', 'same-day-self', 'prior-day-self', 'same-day-other-code'):
+                blocked = name == 'same-day-other-result'
+                self.assertEqual({'valid': not blocked, 'validated': not blocked,
+                    'selected': 'KD08' if blocked else 'KD03',
+                    'confirmations': [] if blocked else ['KdpResultsExamCodeChangeConfirmationMessage'],
+                    'remainingResponses': 1 if blocked else 0,
+                    'errors': ['KdpResultAlreadyEnteredMessage'] if blocked else [], 'warnings': []},
+                    rows['KD03-code-identity-' + name])
             self.assertEqual(['KdpInvalidExamCodeMessage'], rows['KD03-code-invalid']['errors'])
             self.assertFalse(rows['KD03-code-invalid']['valid'])
             self.assertEqual([], rows['KD03-code-invalid']['confirmations'])
@@ -369,7 +377,7 @@ class CharacteriseTests(unittest.TestCase):
                     {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
             finally:
                 extracted.write_text(original)
-            # Rejected confirmations must invalidate a previously valid selection.
+            # Rejected confirmations and date faults must invalidate a previously valid selection.
             reset_validation = 'ExamCodeValidated = false;'
             self.assertEqual(1, original.count(reset_validation))
             try:
@@ -379,7 +387,8 @@ class CharacteriseTests(unittest.TestCase):
                 mutant_report = json.loads((stage / 'reference-report.json').read_text())
                 failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
                 self.assertEqual({'KD03-confirm-sequence-reject-duplicate',
-                    'KD03-confirm-sequence-reject-change'}, failures)
+                    'KD03-confirm-sequence-reject-change',
+                    'KD03-code-identity-same-day-other-result'}, failures)
             finally:
                 extracted.write_text(original)
             # A same-code unused row precedes the used row: dropping the source
