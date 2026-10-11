@@ -171,6 +171,64 @@ test('controls, automatic falling, help and resize pauses, and timer cleanup', (
   assert.equal(cancelled, 42);
 });
 
+test('application displays readiness, line-clear scoring, game over, and restart', () => {
+  const io = terminal();
+  const game = new Game(() => 0);
+  let tick;
+  let cancelled;
+  const stop = startApp({ ...io, game,
+    setInterval: (callback) => { tick = callback; return 42; },
+    clearInterval: (id) => { cancelled = id; },
+  });
+  const press = (name) => io.input.emit('keypress', '', { name });
+  const latestFrame = () => io.text().split('\x1b[H\x1b[2J').at(-1);
+  try {
+    assert.match(latestFrame(), /READY/);
+    assert.match(latestFrame(), /Enter: start/);
+    assert.match(latestFrame(), /Left\/Right: move/);
+    assert.doesNotMatch(latestFrame(), /Unfinished/);
+    press('return');
+    assert.match(latestFrame(), /\[\]/);
+    game.board[19] = [1, 1, 1, 0, 0, 0, 0, 1, 1, 1];
+    press('space');
+    assert.equal(game.lines, 1);
+    assert.equal(game.score, 138);
+    assert.match(latestFrame(), /Score: 138/);
+    assert.ok(game.board.every(row => row.every(cell => !cell)));
+
+    // Block the next spawn without blocking the current piece's descent.
+    press('left');
+    press('left');
+    press('left');
+    game.board[0][3] = 1;
+    press('space');
+    assert.equal(game.status, 'over');
+    assert.match(latestFrame(), /GAME OVER/);
+    assert.match(latestFrame(), /Enter: restart/);
+    assert.match(latestFrame(), /Lines: 1/);
+    const before = JSON.stringify(game);
+    for (const name of ['left', 'right', 'up', 'down', 'space']) press(name);
+    tick();
+    assert.equal(JSON.stringify(game), before);
+    const rows = latestFrame().split('\r\n');
+    assert.equal(rows.length, 24);
+    assert.ok(rows.every(row => row.length <= 22));
+
+    press('return');
+    assert.equal(game.status, 'playing');
+    assert.equal(game.score, 0);
+    assert.equal(game.lines, 0);
+    assert.match(latestFrame(), /Score: 0/);
+    assert.doesNotMatch(latestFrame(), /GAME OVER/);
+    assert.ok(game.board.every(row => row.every(cell => !cell)));
+    tick();
+    assert.equal(game.piece.y, 1);
+  } finally {
+    stop();
+  }
+  assert.equal(cancelled, 42);
+});
+
 test('termination signals restore previous raw mode', () => {
   const io = terminal();
   io.input.isRaw = true;
