@@ -7,5 +7,5 @@
   - [x] Address validator: check terminal dimensions and show a small-terminal warning so the fixed 24-row display does not obscure controls.
   - [x] Address validator: expand the three starter-only tests to cover required colour and gameplay UX, beyond layout, restoration, and non-interactive rejection.
 - [x] Implement falling tetrominoes, movement, rotation, collision detection, line clearing, scoring, and game over.
-- [ ] Render the board, score, controls, borders, and game-over messages within 24 terminal rows.
+- [x] Render the board, score, controls, borders, and game-over messages within 24 terminal rows.
 - [ ] Verify startup, gameplay controls, line clearing, and display height.
