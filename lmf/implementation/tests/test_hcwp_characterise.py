@@ -140,6 +140,18 @@ class CharacteriseTests(unittest.TestCase):
             ]:
                 self.assertEqual({'stored': stored, 'displayed': displayed, 'errors': [], 'warnings': []},
                                  rows['KD03-description-' + name])
+            for name, keys, consent in [('empty', [], True), ('existing', ['42'], True),
+                                       ('first-new', ['0', '42'], True),
+                                       ('later-new', ['42', '0'], True), ('no-consent', ['42'], False)]:
+                inserts = not keys or keys[0] != '0'
+                final_keys = ['0'] + keys if inserts else keys
+                self.assertEqual({'keys': final_keys, 'heading': 'New Result' if inserts else None,
+                    'defaultTab': True, 'resultIds': [0, 42] if inserts else [42], 'selected': '42',
+                    'resultsAtSetup': [2] if inserts else [], 'keysAtSetup': [final_keys] if inserts else [],
+                    'confirmations': [], 'defaults': {'ClientId': 1001, 'Origin': 2, 'Reschedule': 'N'} if inserts else None,
+                    'errors': [], 'warnings': ['NoConsentMessage'] if inserts and not consent else []},
+                    rows['KD03-ui-insert-' + name])
+            self.assertIn('first-tab-only duplicate guard', (stage / 'reference/ADAPTATIONS.md').read_text())
             for name, cancelled, confirms, prepared, selected in [
                 ('processing', False, False, False, '42'),
                 ('no-selected', True, False, False, None),
@@ -398,7 +410,9 @@ class CharacteriseTests(unittest.TestCase):
                     expected = {'KD03-populate-unscheduled', 'KD03-populate-scheduled',
                                 'KD03-populate-empty-code'}
                     if omitted == 'KdpExaminationResultTo = kdpExaminationResultTo;':
-                        expected.update({'KD03-new-defaults-true', 'KD03-new-defaults-false'})
+                        expected.update({'KD03-new-defaults-true', 'KD03-new-defaults-false',
+                                         'KD03-ui-insert-empty', 'KD03-ui-insert-existing',
+                                         'KD03-ui-insert-later-new', 'KD03-ui-insert-no-consent'})
                     self.assertEqual(expected, failures)
                 finally:
                     extracted.write_text(original)
@@ -480,6 +494,18 @@ class CharacteriseTests(unittest.TestCase):
             # Save success must refresh, rather than merely report service dispatch.
             extracted_save_control = stage / 'reference/ExtractedSaveControl.cs'
             original_save_control = extracted_save_control.read_text()
+            insert_call = '            kdpExaminationDelegate.AddNewKdpResult();'
+            self.assertEqual(1, original_save_control.count(insert_call))
+            try:
+                extracted_save_control.write_text(original_save_control.replace(insert_call, '// mutation: omitted new result'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-ui-insert-empty', 'KD03-ui-insert-existing',
+                                  'KD03-ui-insert-later-new', 'KD03-ui-insert-no-consent'},
+                                 {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                extracted_save_control.write_text(original_save_control)
             refresh_call = 'Populate(ID, Editable);'
             self.assertEqual(1, original_save_control.count(refresh_call))
             try:

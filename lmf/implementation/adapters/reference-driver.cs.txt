@@ -118,6 +118,36 @@ foreach (var scenario in scenarios)
                 observed["confirmations"] = JsonSerializer.SerializeToNode(creator.messenger.Confirmations);
                 warnings.AddRange(creator.messenger.Warnings);
                 break;
+            case "ui-insert":
+                var insertControl = new ExtractedSaveControl { setDefaultTabPage = false };
+                insertControl.kdpExaminationDelegate.ato.Id = fixtures["clientId"].ToString();
+                insertControl.kdpExaminationDelegate.ato.HasPreschoolConsent = input["hasConsentFixture"].GetValue<bool>();
+                insertControl.kdpExaminationDelegate.listOfKdpExaminationResultDelegates.Add(new() {
+                    KdpExaminationResultTo = new() { PkChildExaminationId = 42 }
+                });
+                foreach (var key in input["keys"].AsArray())
+                    insertControl.hlxAdminTabControlKdpExamination.TabPages.Add(new(key.GetValue<string>()));
+                insertControl.hlxAdminTabControlKdpExamination.SelectedTab = new("42");
+                insertControl.toolStripButtonInsert_Click(insertControl, EventArgs.Empty);
+                // Repeated click must use the newly inserted first tab as the guard.
+                insertControl.setDefaultTabPage = false;
+                insertControl.toolStripButtonInsert_Click(insertControl, EventArgs.Empty);
+                observed["keys"] = JsonSerializer.SerializeToNode(insertControl.hlxAdminTabControlKdpExamination.TabPages.Select(tab => tab.Key));
+                observed["heading"] = insertControl.hlxAdminTabControlKdpExamination.TabPages[0].Text;
+                observed["defaultTab"] = insertControl.setDefaultTabPage;
+                var insertResults = insertControl.kdpExaminationDelegate.listOfKdpExaminationResultDelegates;
+                observed["resultIds"] = JsonSerializer.SerializeToNode(insertResults.Select(item => item.KdpExaminationResultTo.PkChildExaminationId));
+                observed["selected"] = insertControl.hlxAdminTabControlKdpExamination.SelectedTab.Key;
+                observed["resultsAtSetup"] = JsonSerializer.SerializeToNode(insertControl.ResultsAtSetup);
+                observed["keysAtSetup"] = JsonSerializer.SerializeToNode(insertControl.KeysAtSetup);
+                observed["confirmations"] = JsonSerializer.SerializeToNode(insertControl.kdpExaminationDelegate.messenger.Confirmations);
+                observed["defaults"] = insertResults.Count > 1 ? new JsonObject {
+                    ["ClientId"] = insertResults[0].KdpExaminationResultTo.ClientId,
+                    ["Origin"] = insertResults[0].KdpExaminationResultTo.Origin,
+                    ["Reschedule"] = insertResults[0].KdpExaminationResultTo.Reschedule
+                } : null;
+                warnings.AddRange(insertControl.kdpExaminationDelegate.messenger.Warnings);
+                break;
             case "tab-change":
                 var tabControl = new ExtractedSaveControl { processingTabs = input["processing"].GetValue<bool>() };
                 var selectedKey = input["selected"]?.GetValue<string>();

@@ -1,6 +1,12 @@
 // UI infrastructure doubles only; SaveChanges is extracted from the supplied source.
-public record SaveTabFixture(string Key);
-public class SaveTabControlFixture { public SaveTabFixture SelectedTab; }
+public record SaveTabFixture(string Key) {
+ public SaveTabFixture() : this((string)null) {}
+ public string Text { get; set; }
+}
+public class SaveTabControlFixture {
+ public SaveTabFixture SelectedTab;
+ public List<SaveTabFixture> TabPages = new();
+}
 public class TabCancelEventArgs : System.ComponentModel.CancelEventArgs { public SaveTabFixture Page; }
 public record RefreshObservation(decimal Id, bool Editable, int SaveCalls, bool DefaultTab);
 public class ExtractedSaveControl {
@@ -10,6 +16,13 @@ public class ExtractedSaveControl {
  public bool setDefaultTabPage = true;
  public bool processingTabs;
  public List<string> PreparedTabs = new();
+ public List<int> ResultsAtSetup = new();
+ public List<string[]> KeysAtSetup = new();
+ // Records tab-setup dispatch after source AddNewKdpResult; no Windows layout/binding.
+ private void SetUpTabPages() {
+     ResultsAtSetup.Add(kdpExaminationDelegate.listOfKdpExaminationResultDelegates.Count);
+     KeysAtSetup.Add(hlxAdminTabControlKdpExamination.TabPages.Select(tab => tab.Key).ToArray());
+ }
  // Records dispatch after cancellation/reload; does not construct Windows controls.
  public List<int> ReloadsAtPreparation = new();
  private void SetUpTabPageContent(SaveTabFixture tab) {
