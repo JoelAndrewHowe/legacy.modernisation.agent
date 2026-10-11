@@ -41,6 +41,15 @@ class CharacteriseTests(unittest.TestCase):
             self.assertGreater(len(report['scenarios']), 20)
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
+            for name, stored, displayed in [
+                ('nonrepeat', 'Synthetic contact', 'Synthetic contact'),
+                ('repeat-original-code', 'Synthetic contact', 'Synthetic contact [synthetic recall text]'),
+                ('repeat-changed-code', 'Synthetic contact', 'Synthetic contact'),
+                ('repeat-missing-original', 'Synthetic contact', 'Synthetic contact'),
+                ('repeat-null-description', None, ' [synthetic recall text]'),
+            ]:
+                self.assertEqual({'stored': stored, 'displayed': displayed, 'errors': [], 'warnings': []},
+                                 rows['KD03-description-' + name])
             self.assertEqual({'weeks': 8, 'errors': [], 'warnings': []}, rows['KD03-weeks-truncation-positive'])
             self.assertEqual({'weeks': 0, 'errors': [], 'warnings': []}, rows['KD03-weeks-truncation-negative'])
             self.assertEqual([], rows['KD03-age-upper-fractional-day']['warnings'])

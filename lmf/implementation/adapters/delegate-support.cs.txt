@@ -32,8 +32,6 @@ public class ExtractedInteractions {
  const string ExamCode6To8WeekContact = "KD03", RecallText = " [synthetic recall text]";
  public long PkChildExaminationId => KdpExaminationResultTo.PkChildExaminationId;
  public bool ExamCodeValidated;
- // Name-only accessor for extracted notification; DTO description is observed directly.
- public string ExamDescription => KdpExaminationResultTo.ExamDescription;
  const string BmiMeasurmentType = "BMI";
  public ExtractedBmi measurementsService = new();
  // Lookup retrieval is a double: caller supplies reviewed synthetic rows, including null.
