@@ -1,0 +1,29 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+// In-memory infrastructure only: the retained method below owns repeat decisions.
+public class ChildExamination {
+ public long PkChildExaminationId, ClientId;
+ public string FkExaminationId, IsRepeat;
+}
+public class ChildExaminationGiven {
+ public long PkFkChildExamGivenId;
+ public DateTime ExaminationDate;
+ public ChildExamination ChildExamination;
+}
+public class RepositoryFixture<T> : List<T> {
+ // Explicit loaded-query rows, separate from local tracked rows (which may lack navigation).
+ public List<T> DatabaseRows = new();
+ public IEnumerable<T> Include(Func<T, object> navigation) => DatabaseRows;
+ public List<T> Local() => this;
+}
+public interface IUnitOfWork { RepositoryFixture<T> Repository<T>(); }
+public class RepeatUnitOfWork : IUnitOfWork {
+ public RepositoryFixture<ChildExamination> Exams = new();
+ public RepositoryFixture<ChildExaminationGiven> Given = new();
+ public RepositoryFixture<T> Repository<T>() => typeof(T) == typeof(ChildExamination)
+  ? (RepositoryFixture<T>)(object)Exams : (RepositoryFixture<T>)(object)Given;
+}
+public class ExtractedRepeatFlags {
+__MEMBERS__
+}

@@ -48,6 +48,15 @@ class CharacteriseTests(unittest.TestCase):
             self.assertNotIn('WeeksBetween adaptation requires review', contract['blockingGaps'])
             self.assertIn('Repeat-flag scope unresolved', contract['blockingGaps'])
             self.assertIn('DateCalculation.cs', (stage / 'reference/ADAPTATIONS.md').read_text())
+            for name in ('family-and-date-ties', 'local-navigation-repair', 'short-prefix', 'unmatched-prefix'):
+                flags = ['Y', 'Y', 'N', 'Y', 'N', 'Y', 'Y'] if name == 'unmatched-prefix' else ['N', 'N', 'Y', 'N', 'Y', 'Y', 'Y']
+                self.assertEqual({'flags': flags, 'navigationRestored': True, 'idempotent': True,
+                    'errors': [], 'warnings': []}, rows['KD03-repeat-' + name])
+                # Other-patient KD03 must retain its original Y even though its
+                # timestamp precedes every selected-patient KD03 timestamp.
+                self.assertEqual('Y', rows['KD03-repeat-' + name]['flags'][5])
+            self.assertIn('ExaminationsCrudManager.cs', (stage / 'reference/ADAPTATIONS.md').read_text())
+            self.assertIn('KD03 calls can therefore mutate existing KD08 flags', (stage / 'dependencies.md').read_text())
             for field, error in [('Height', 'InvalidHeightMessage'), ('Weight', 'InvalidWeightMessage'), ('HeadCirc', 'HeadCircumferenceInvalidFormatMessage')]:
                 for name in ('valid', 'invalid', 'empty', 'empty-preserves-cancel'):
                     self.assertEqual({'cancelled': name in ('invalid', 'empty-preserves-cancel'),
@@ -198,6 +207,25 @@ class CharacteriseTests(unittest.TestCase):
                     self.assertEqual(expected, failures)
                 finally:
                     extracted.write_text(original)
+            # Removing only the local-query client filter must break isolation;
+            # keep the database-query filter intact to catch the specific finding.
+            extracted_repeat = stage / 'reference/ExtractedRepeatFlags.cs'
+            original_repeat = extracted_repeat.read_text()
+            local_filter = 'where exam.ChildExamination.ClientId == clientId && '
+            self.assertEqual(1, original_repeat.count(local_filter))
+            try:
+                extracted_repeat.write_text(original_repeat.replace(local_filter, 'where '))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                self.assertEqual({'KD03-repeat-family-and-date-ties',
+                    'KD03-repeat-local-navigation-repair', 'KD03-repeat-short-prefix'}, failures)
+                for row in mutant_report['scenarios']:
+                    if row['id'] in failures:
+                        self.assertEqual('N', row['actual']['flags'][5])
+            finally:
+                extracted_repeat.write_text(original_repeat)
             # Verification must execute and compare, not merely return counts.
             scenarios = json.loads((stage / 'scenarios.json').read_text())
             next(s for s in scenarios if s['id'] == 'KD03-valid')['then']['saved']['Heart'] = 3

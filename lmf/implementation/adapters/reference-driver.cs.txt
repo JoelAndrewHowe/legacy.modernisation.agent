@@ -22,6 +22,35 @@ foreach (var scenario in scenarios)
     {
         switch (scenario["when"].GetValue<string>())
         {
+            case "repeat-flags":
+                var repeatUow = new RepeatUnitOfWork();
+                foreach (var row in input["rows"].AsArray()) {
+                    var exam = new ChildExamination {
+                        PkChildExaminationId = row["id"].GetValue<long>(),
+                        ClientId = row["client"].GetValue<long>(),
+                        FkExaminationId = row["code"].GetValue<string>(),
+                        IsRepeat = row["flag"].GetValue<string>()
+                    };
+                    repeatUow.Exams.Add(exam);
+                    var given = new ChildExaminationGiven {
+                        PkFkChildExamGivenId = exam.PkChildExaminationId,
+                        ExaminationDate = DateTime.Parse(row["date"].GetValue<string>()),
+                        ChildExamination = input["detached"].GetValue<bool>() ? null : exam
+                    };
+                    repeatUow.Given.Add(given);
+                    repeatUow.Given.DatabaseRows.Add(new() {
+                        PkFkChildExamGivenId = exam.PkChildExaminationId,
+                        ExaminationDate = given.ExaminationDate, ChildExamination = exam
+                    });
+                }
+                ExtractedRepeatFlags.UpdateRepeatFlags(repeatUow, result.ClientId, input["requestedCode"].GetValue<string>());
+                var firstFlags = repeatUow.Exams.Select(exam => exam.IsRepeat).ToArray();
+                observed["flags"] = JsonSerializer.SerializeToNode(firstFlags);
+                observed["navigationRestored"] = repeatUow.Given.All(given => ReferenceEquals(given.ChildExamination,
+                    repeatUow.Exams.Single(exam => exam.PkChildExaminationId == given.PkFkChildExamGivenId)));
+                ExtractedRepeatFlags.UpdateRepeatFlags(repeatUow, result.ClientId, input["requestedCode"].GetValue<string>());
+                observed["idempotent"] = firstFlags.SequenceEqual(repeatUow.Exams.Select(exam => exam.IsRepeat));
+                break;
             case "weeks-between":
                 observed["weeks"] = birth.WeeksBetween(result.ExaminationDate);
                 break;

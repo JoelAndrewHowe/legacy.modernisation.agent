@@ -46,6 +46,7 @@ def generate(request):
     lifecycle_path, lifecycle = find('/KdpExaminationDelegate.cs')
     ui_path, ui = find('/ucHLXKdpExaminationResult.cs')
     dates_path, dates = find('/DateCalculation.cs')
+    repeat_path, repeat_source = find('/ExaminationsCrudManager.cs')
     out = Path(request['OutputDirectory'])
     def put(name, content):
         path = out / name
@@ -191,6 +192,9 @@ public class ExtractedCodeControl {
  public ExtractedInteractions kdpExaminationResultDelegate;
  public CodeControlFixture hlxTextBoxExamCode = new();
 ''' + '\n'.join(method(ui, name).replace('private void', 'public void') for name in ('hlxTextBoxExamCode_Validating', 'hlxTextBoxExamCode_ButtonClick')) + '\n}\n')
+    # Only visibility changes; query/grouping/flag decisions remain source-owned.
+    repeat_member = method(repeat_source.replace('internal static void', 'public static void'), 'UpdateRepeatFlags')
+    put('reference/ExtractedRepeatFlags.cs', (ROOT / 'repeat-support.cs.txt').read_text().replace('__MEMBERS__', repeat_member))
     put('reference/Program.cs', (ROOT / 'reference-driver.cs.txt').read_text())
     put('verify.py', (ROOT / 'verify_reference.py').read_text())
     fixtures = {'today': '2025-03-01', 'dateOfBirth': '2025-01-01', 'clientId': 1001,
@@ -204,6 +208,25 @@ public class ExtractedCodeControl {
     def add(id, operation, data, errors=None, warnings=None, **extra):
         scenarios.append({'id': id, 'given': 'A selected synthetic patient and frozen clock',
                           'when': operation, 'input': data, 'then': {'errors': errors or [], 'warnings': warnings or [], **extra}})
+    repeat_rows = [
+        {'id': 1, 'client': 1001, 'code': 'KD03', 'date': '2025-02-19T09:00:00', 'flag': 'Y'},
+        {'id': 2, 'client': 1001, 'code': 'KD03', 'date': '2025-02-19T09:00:00', 'flag': 'Y'},
+        {'id': 3, 'client': 1001, 'code': 'KD03', 'date': '2025-02-19T10:00:00', 'flag': 'N'},
+        {'id': 4, 'client': 1001, 'code': 'KD08', 'date': '2025-02-20', 'flag': 'Y'},
+        {'id': 5, 'client': 1001, 'code': 'KD08', 'date': '2025-02-21', 'flag': 'N'},
+        # Earlier than this patient's KD03 rows: losing the local client filter
+        # would change this flag to N and incorrectly mark this patient's ties Y.
+        {'id': 6, 'client': 1002, 'code': 'KD03', 'date': '2025-02-18', 'flag': 'Y'},
+        {'id': 7, 'client': 1001, 'code': 'XX03', 'date': '2025-02-20', 'flag': 'Y'},
+    ]
+    for name, code, detached, flags in [
+        ('family-and-date-ties', 'KD03', False, ['N', 'N', 'Y', 'N', 'Y', 'Y', 'Y']),
+        ('local-navigation-repair', 'KD03', True, ['N', 'N', 'Y', 'N', 'Y', 'Y', 'Y']),
+        ('short-prefix', 'K', False, ['N', 'N', 'Y', 'N', 'Y', 'Y', 'Y']),
+        ('unmatched-prefix', 'ZZ03', False, ['Y', 'Y', 'N', 'Y', 'N', 'Y', 'Y']),
+    ]:
+        add('KD03-repeat-' + name, 'repeat-flags', {**base, 'requestedCode': code, 'rows': repeat_rows, 'detached': detached},
+            flags=flags, navigationRestored=True, idempotent=True)
     for field, valid, invalid, error in [('Height', 50, 0, 'InvalidHeightMessage'), ('Weight', 4.5, 1000, 'InvalidWeightMessage'), ('HeadCirc', 38, 100, 'HeadCircumferenceInvalidFormatMessage')]:
         for name, text, value, cancelled, errs, warns in [('valid', 'value', valid, False, [], []), ('invalid', 'value', invalid, True, [error], []), ('empty', '', invalid, False, [], []), ('empty-preserves-cancel', '', invalid, True, [], [])]:
             add(f'KD03-control-{field}-{name}', 'measurement-control', {**base, 'field': field, 'text': text, 'value': value, 'initialCancel': name == 'empty-preserves-cancel'}, errs, warns, cancelled=cancelled)
@@ -350,7 +373,7 @@ See scenarios.feature and scenarios.json (same identifiers, inputs and expected 
 UI KdpResult -> KdpExaminationResultDelegate -> KdpExaminationValidator / lookup / measurement services.
 KdpExaminationDelegate.Save -> KdpExaminationService.SaveKdpExaminationResult -> validator -> unit of work -> ChildExamination, ChildExaminationGiven, ChildExaminationKdp and conditional ChildMeasurement -> Commit.
 Service insert assigns generated IDs; mappings retain patient association and assessment/measurement values. Reads use GetKdpExamResults / GetKdpResultTo; final persistence proof must use fresh contexts.
-Save also calls ExaminationsCrudManager.UpdateRepeatFlags, UpdateAppointmentStatuses, ClearProducedRecalls. Appointment/recall processing is intentionally excluded. Repeat flags are unresolved (blocking), not silently doubled. Existing-result fixtures are preserved for duplicates. This is NOT full save-service parity.
+Save also calls ExaminationsCrudManager.UpdateRepeatFlags, UpdateAppointmentStatuses, ClearProducedRecalls. Appointment/recall processing is intentionally excluded. Repeat flags remain a scope decision (blocking), not silently excluded. Extracted UpdateRepeatFlags now proves that the requested code selects its two-character family, groups by exact code and patient, marks every earliest exact timestamp N (including ties), and later timestamps Y. KD03 calls can therefore mutate existing KD08 flags; same-day different times are distinct. Shared examples also cover short/unmatched prefixes, local navigation repair and idempotence. Human review must decide whether these existing-result mutations are included in the bounded add workflow. Existing-result fixtures are preserved for duplicates. This is NOT full save-service parity.
 Oracle IDs, triggers, locks, EF6 mappings, schedule, centile bands, general options, lookup services, messenger and Windows controls are unavailable infrastructure. Source files and schema are retained for inspection, not claimed executable. Editing/locking, appointments, recall, patient search and database migration are outside scope.
 ''')
     put('gaps.md', f'''# Gaps and assumptions
@@ -359,6 +382,8 @@ Oracle IDs, triggers, locks, EF6 mappings, schedule, centile bands, general opti
 - Repeat-flag effects require an explicit reviewed scope adjustment or implementation before approval; appointment and recall processing alone were excluded in the seed.
 - Recovered `{dates_path}` DaysBetween/WeeksBetween: elapsed days truncate toward zero before division by 7. Both bodies are extracted unchanged; fractional-day and negative-interval scenarios prevent regression to the former elapsed-days / 7 substitution.
 ## Non-blocking / review assumptions
+
+Repeat-flag query infrastructure is an in-memory fixture, not EF6/Oracle: explicit already-loaded database rows and local tracked rows replace Include/Repository/Local; navigation repair, filtering, grouping and flag assignment execute the retained source method. No transaction, database loading, concurrency or save-service integration parity is claimed.
 
 Examination-code Validating and ButtonClick handlers and delegate LookUpExamCode are source-extracted. A Text-only control double invokes handlers directly; a synchronous ShowFormLookup message double records offered synthetic codes and supplies a fixture response (including null/empty cancellation). Scenarios verify valid selection, rejected changes, invalid codes, lookup cancellation/selection and invalid returned codes. The handler retains cancellation after a successful fallback lookup; no Windows dialog, binding or automatic event delivery is verified.
 Patient 1001, male, born 2025-01-01, clock 2025-03-01 and schedule 6–8 weeks are invented fixtures. Actual schedule, examiner/location lookup rows, BMI thresholds and centile bands are absent. Interaction scenarios explicitly invent SYNTH/UNUSED lookup rows, height range 40–60 and BMI range 10–20; these are review fixtures, not recovered production limits. Null/optional is not mandatory. PhysicalGeneral omission and field/save head discrepancy remain exactly as source, not corrected.
@@ -386,6 +411,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - `{delegate_path}` CheckAgeWithinScheduleRange body retained verbatim; visibility made public; schedule Lazy reads fixture; Messenger records resource IDs. DaysBetween/WeeksBetween bodies recovered from `{dates_path}` and retained verbatim in ExtractedDateCalculation.cs; only the containing namespace/class is replaced. Truncation toward zero, including negative fractional days, is executable.
 - ExtractedInteractions retains BMI/decline/measurement properties and lookup/deviation/BMI method bodies except private visibility. Notifications dispatch through a synchronous PropertyChanged event subscribed to extracted CheckBmi, mirroring the source constructor subscription (not Windows controls). ExaminationDate and ResetDeviations bodies are retained, with ChildMeasurementsRange renamed to the fixture record; GetExpectedRanges records the date and supplies invented height range 40–60. Shared examples check same-day no-op, time preservation, lazy range reset and weight-setter BMI warning dispatch. Lookup retrieval supplies synthetic rows or null; invented height range 40–60 and BMI range 10–20 do not claim database provenance. Display names use symbolic enum names. ValidateAndSetExamCode retains its body with WCF fault wrappers replaced by local exceptions carrying Detail.Title; synchronous confirmation responses are fixture-controlled and recorded. ExaminationCode, UpdateExamDescription, ClearDataFromHiddenFields, their field properties and ResetRecommendedAgeRange are source-extracted. Shared setter cases cover blocked/same-code no-ops and entering/leaving KD03, notifications, description, hidden-field clearing and lazy schedule reset. Synthetic descriptions and a recording schedule double returning 6–8 weeks replace lookups/services; Windows controls remain unverified. Populate, all three PrependNumericsUi description methods, GetDropDownUiPositionNumber and numeric position tables are source-extracted. Synthetic lookup lists replace lazy lookup-service retrieval; repeated Populate checks prefix idempotence, unmatched codes and already-prefixed descriptions. Context and lazy ranges are observed directly; Windows binding remains unverified; parent-delegate Populate integration executes through the extracted factory method. TransferObjectBase.Lock is a storage-only string substitution, not a concurrency implementation. ExamDescription accessor supplies the notification name only; observations read the DTO directly, not the source display accessor.
 - Examination-code Validating/ButtonClick handlers from `{ui_path}` and LookUpExamCode from `{delegate_path}` retain their bodies. Text-only control and ShowFormLookup message doubles replace Windows UI/dialog infrastructure, record offered codes and supply explicit fixture responses; they do not validate or select codes themselves. Source ValidateAndSetExamCode performs validation/confirmation. Validating cancellation is observed separately from the selected code, including successful fallback lookup with cancellation still true. Original Windows event delivery remains unverified.
+- `{repeat_path}` UpdateRepeatFlags body is retained with internal -> public visibility only. RepositoryFixture supplies explicit preloaded query rows separately from local tracked rows; Include has no database side effects. Source local navigation repair and all repeat decisions execute unchanged. Synthetic rows include KD03 ties, a later same-day timestamp, KD08 family members, another patient and another prefix. Repeated execution observes idempotence. This is standalone repeat-logic evidence, not save-service/database parity; scope approval remains blocked.
 - `{lifecycle_path}` AddNewKdpResult and ConfirmCancelChanges bodies retained except WCF warning wrapper substitution and DateTime.Now -> ReferenceClock.Now (2025-03-01 noon). Unscheduled enum value 2 is from LookupsUtility.EXAMINATION_ORIGIN. Empty outstanding-appointment list models the excluded appointment workflow. GetNewKdpExaminationResultDelegate is source-extracted and calls extracted Populate through a synthetic dependency-injection factory. Shared new-result cases verify supplied patient context, existing-list identity, unscheduled default, description notification and lazy ranges without service requests. Windows events remain unverified; hasChanged returns an explicit fixture flag, not original change tracking. Reload double records IDs and supplies a detached stored DTO; this proves reload orchestration, not database reads. Scenarios cover accept/reject, unchanged, new and empty cancellation paths and defaults/consent/insertion order.
 - reference driver dispatches operation then serialises errors/warnings/BMI and detached accepted-input clone. It is NOT the save service and does NOT prove persistence. No random IDs are generated. No business rules supplied by database doubles.
 - `original/` retains unadapted source sections for independent inspection. `source-index.json` records original identity and bundle line for every one of 94 files.
