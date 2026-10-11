@@ -225,6 +225,8 @@ foreach (var scenario in scenarios)
             case "code-selection":
             case "decline":
             case "location":
+            case "examiner-category":
+            case "examiner-code":
             case "location-category":
             case "location-code":
             case "examiner":
@@ -345,6 +347,32 @@ foreach (var scenario in scenarios)
                         break;
                     case "numeric-descriptor":
                         observed["valid"] = interaction.ValidateNumericDescriptorEntered(input["descriptor"].GetValue<string>(), Enum.Parse<ExtractedInteractions.TYPE_OF_INPUT>(input["kind"].GetValue<string>()));
+                        break;
+                    case "examiner-category":
+                        interaction.ExaminerCategory = input["category"]?.GetValue<string>();
+                        observed["category"] = result.ExaminerCategory;
+                        observed["type"] = result.ExaminerType;
+                        observed["code"] = result.ExaminerHcpCode;
+                        observed["name"] = result.ExaminerName;
+                        observed["cacheCleared"] = interaction.examinerList == null;
+                        interaction.lookupsService.Rows = new() { new("NEW", "Y", "Synthetic refreshed HCP", "NEW-TYPE") };
+                        observed["refreshedCodes"] = JsonSerializer.SerializeToNode(interaction.GetUsedExaminerList()?.Select(row => row.Code));
+                        observed["requests"] = JsonSerializer.SerializeToNode(interaction.lookupsService.Requests);
+                        observed["notifications"] = JsonSerializer.SerializeToNode(interaction.Notifications);
+                        break;
+                    case "examiner-code":
+                        interaction.examinerList = new() {
+                            new("SYNTH", "N", "Unused same-code HCP", "WRONG-TYPE"),
+                            new("SYNTH", "Y", "Synthetic HCP", "SYNTH-TYPE"),
+                            new("UNUSED", "N", "Unused HCP", "UNUSED-TYPE") };
+                        interaction.ExaminerKdpCode = input["code"]?.GetValue<string>();
+                        observed["code"] = result.ExaminerHcpCode;
+                        observed["category"] = result.ExaminerCategory;
+                        observed["type"] = result.ExaminerType;
+                        observed["name"] = result.ExaminerName;
+                        observed["cacheCleared"] = interaction.examinerList == null;
+                        observed["requests"] = JsonSerializer.SerializeToNode(interaction.lookupsService.Requests);
+                        observed["notifications"] = JsonSerializer.SerializeToNode(interaction.Notifications);
                         break;
                     case "location-category":
                         interaction.LocationType = input["category"]?.GetValue<byte>();

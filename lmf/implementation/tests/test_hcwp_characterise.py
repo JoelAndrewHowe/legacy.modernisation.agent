@@ -55,6 +55,22 @@ class CharacteriseTests(unittest.TestCase):
                     rows['KD03-location-code-' + name])
             self.assertIn('LocationType/LocationCode setters are source-extracted unchanged',
                           (stage / 'reference/ADAPTATIONS.md').read_text())
+            for name, category in [('changed', '19'), ('same', '18'), ('null', None)]:
+                self.assertEqual({'category': category, 'type': '', 'code': '', 'name': '',
+                    'cacheCleared': True, 'refreshedCodes': None if category is None else ['NEW'],
+                    'requests': [] if category is None else [f'Examiners||{category}|N'],
+                    'notifications': [], 'errors': ['NoExaminerTypeMessage'] if category is None else [],
+                    'warnings': []}, rows['KD03-examiner-category-' + name])
+            for name, code, category, examiner_type, description, cleared in [
+                ('matched', 'SYNTH', '18', 'SYNTH-TYPE', 'Synthetic HCP', False),
+                ('unused', 'UNUSED', '18', None, None, False),
+                ('unknown', 'MISSING', '18', None, None, False),
+                ('empty', '', '', '', '', True), ('null', '', '', '', '', True)]:
+                self.assertEqual({'code': code, 'category': category, 'type': examiner_type,
+                    'name': description, 'cacheCleared': cleared, 'requests': [],
+                    'notifications': [], 'errors': [], 'warnings': []}, rows['KD03-examiner-code-' + name])
+            self.assertIn('PopulateHcpDetails are source-extracted unchanged',
+                          (stage / 'reference/ADAPTATIONS.md').read_text())
             for kind in ('location', 'examiner'):
                 for mode in ('missing', 'cached', 'retrieved', 'fault'):
                     row = rows[f'KD03-lookup-retrieval-{kind}-{mode}']
@@ -285,6 +301,19 @@ class CharacteriseTests(unittest.TestCase):
                     self.assertEqual(expected, failures)
                 finally:
                     extracted.write_text(original)
+            # A same-code unused row precedes the used row: dropping the source
+            # used-code predicate must change both selection and unused rejection.
+            used_filter = 'ex.UsedCode == HLXBoolean.True && '
+            self.assertEqual(1, original.count(used_filter))
+            try:
+                extracted.write_text(original.replace(used_filter, ''))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                self.assertEqual({'KD03-examiner-code-matched', 'KD03-examiner-code-unused'}, failures)
+            finally:
+                extracted.write_text(original)
             # Removing only the local-query client filter must break isolation;
             # keep the database-query filter intact to catch the specific finding.
             extracted_repeat = stage / 'reference/ExtractedRepeatFlags.cs'
