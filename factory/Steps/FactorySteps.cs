@@ -25,6 +25,11 @@ public sealed class FactorySteps
     private bool prosePlan;
     private bool writeSentinel;
     private bool talkFirst;
+    private bool breakDoer;
+    private bool validatorNeverSatisfied;
+    private bool validatorFailsFirst;
+    private int attempts = 3;
+    private string lens = "testability";
     private string? statusBefore;
     private readonly Dictionary<string, string> snapshots = [];
 
@@ -62,8 +67,14 @@ public sealed class FactorySteps
     [Given("a seed describing a game of Tetris")]
     public void TetrisSeed() => File.WriteAllText(seed, "Build a game of Tetris.\n");
 
-    [Given("the agent plans the tasks alpha and beta, and does one task a pass")]
-    public void ConfigureAgent() { }
+    [Given("the planner plans the tasks alpha and beta")]
+    public void ConfigurePlanner() { }
+
+    [Given("the doer does the next task in the plan")]
+    public void ConfigureDoer() { }
+
+    [Given("the validator is always satisfied")]
+    public void ConfigureValidator() { }
 
     [Given("no harness is chosen")]
     public void NoHarness() => omitAgent = true;
@@ -71,8 +82,11 @@ public sealed class FactorySteps
     [Given("the agent is pi")]
     public void AgentIsPi() => omitAgent = true;
 
-    [Given("the agent cannot be run")]
-    public void AgentCannotRun() => agent = Path.Combine(workspace, "missing-agent");
+    [Given("the doer cannot be run")]
+    public void DoerCannotRun()
+    {
+        breakDoer = true;
+    }
 
     [Given("no plan")]
     public void NoPlan()
@@ -90,17 +104,32 @@ public sealed class FactorySteps
     [Given("a plan in which every task is done")]
     public void EveryTaskDone() => WritePlan("- [x] alpha\n- [x] beta\n");
 
-    [Given("the agent writes a file called SENTINEL")]
-    public void AgentWritesSentinel() => writeSentinel = true;
+    [Given("the doer writes a file called SENTINEL")]
+    public void DoerWritesSentinel() => writeSentinel = true;
 
-    [Given("the agent says {string} before its result")]
-    public void AgentTalks(string _) => talkFirst = true;
+    [Given("the validator says {string} before its result")]
+    public void ValidatorTalks(string _) => talkFirst = true;
 
-    [Given("the agent answers in prose, with no result")]
-    public void AgentAnswersInProse() => answerInProse = true;
+    [Given("the validator answers in prose, with no result")]
+    public void ValidatorAnswersInProse() => answerInProse = true;
 
-    [Given("the agent keeps its plan in prose")]
-    public void AgentKeepsProsePlan() => prosePlan = true;
+    [Given("the planner keeps its plan in prose")]
+    public void PlannerKeepsProsePlan() => prosePlan = true;
+
+    [Given("the doer keeps its plan in prose")]
+    public void DoerKeepsProsePlan() => prosePlan = true;
+
+    [Given("the validator is never satisfied")]
+    public void ValidatorNeverSatisfied() => validatorNeverSatisfied = true;
+
+    [Given("the validator is not satisfied the first time")]
+    public void ValidatorFailsFirst() => validatorFailsFirst = true;
+
+    [Given("the factory allows at most three attempts per pass")]
+    public void ThreeAttempts() => attempts = 3;
+
+    [Given("the validator's lens is testability")]
+    public void TestabilityLens() => lens = "testability";
 
     [Given("no seed is chosen")]
     public void NoSeedChosen() => omitSeed = true;
@@ -158,8 +187,8 @@ public sealed class FactorySteps
     [Then("pi has been called")]
     public void PiCalled() => Assert.That(CallCount("pi"), Is.GreaterThan(0));
 
-    [Then("the chosen agent has been called")]
-    public void ChosenCalled() => Assert.That(CallCount("chosen"), Is.GreaterThan(0));
+    [Then("the doer's chosen harness has been called")]
+    public void ChosenCalled() => Assert.That(RoleCallCount("chosen", "doer"), Is.GreaterThan(0));
 
     [Then("pi has not been called")]
     public void PiNotCalled() => Assert.That(CallCount("pi"), Is.Zero);
@@ -167,14 +196,23 @@ public sealed class FactorySteps
     [Then("no agent has been called")]
     public void NoAgentCalled() => Assert.That(TotalCalls(), Is.Zero);
 
-    [Then("the agent has been called once")]
-    public void AgentCalledOnce() => Assert.That(TotalCalls(), Is.EqualTo(1));
+    [Then("the doer has been called once")]
+    public void DoerCalledOnce() => Assert.That(RoleCallCount("chosen", "doer") + RoleCallCount("pi", "doer"), Is.EqualTo(1));
 
-    [Then("it reports that it could not run the agent")]
-    public void ReportsAgentFailure() => Assert.That(output, Does.Contain("Could not run the agent"));
+    [Then("the doer has been called twice")]
+    public void DoerCalledTwice() => Assert.That(RoleCallCount("chosen", "doer") + RoleCallCount("pi", "doer"), Is.EqualTo(2));
 
-    [Then("it reports that it could not read the agent's result")]
-    public void ReportsUnreadableResult() => Assert.That(output, Does.Contain("Could not read the agent's result"));
+    [Then("the doer has been called three times")]
+    public void DoerCalledThreeTimes() => Assert.That(RoleCallCount("chosen", "doer") + RoleCallCount("pi", "doer"), Is.EqualTo(3));
+
+    [Then("the doer has not been called")]
+    public void DoerNotCalled() => Assert.That(RoleCallCount("chosen", "doer") + RoleCallCount("pi", "doer"), Is.Zero);
+
+    [Then("it reports that it could not run the doer")]
+    public void ReportsDoerFailure() => Assert.That(output, Does.Contain("Could not run the doer"));
+
+    [Then("it reports that it could not read the validator's result")]
+    public void ReportsUnreadableResult() => Assert.That(output, Does.Contain("Could not read the validator's result"));
 
     [Then("it reports that there is no seed")]
     public void ReportsNoSeed() => Assert.That(output, Does.Contain("There is no seed"));
@@ -201,7 +239,9 @@ public sealed class FactorySteps
     }
 
     [Then("the plan shows every task as not done")]
-    public void EveryTaskNotDone() => Assert.That(File.ReadAllLines(PlanPath()), Has.All.Contains("[ ]"));
+    public void EveryTaskNotDone() => Assert.That(
+        File.ReadAllLines(PlanPath()).Where(line => line.StartsWith("- ")),
+        Has.All.Contains("[ ]"));
 
     [Then("the plan still has those three tasks")]
     public void StillThreeTasks() => Assert.That(File.ReadAllLines(PlanPath()), Has.Length.EqualTo(3));
@@ -251,10 +291,10 @@ public sealed class FactorySteps
         Assert.That(products, Is.EquivalentTo(new[] { "SENTINEL" }));
     }
 
-    [Then("the agent was pointed at the plan and at the seed")]
+    [Then("the doer was pointed at the plan and at the seed")]
     public void PromptHasPaths()
     {
-        var prompt = LastPrompt();
+        var prompt = LastPrompt("doer");
         Assert.Multiple(() =>
         {
             Assert.That(prompt, Does.Contain(Path.GetFullPath(seed)));
@@ -262,8 +302,29 @@ public sealed class FactorySteps
         });
     }
 
-    [Then("the agent was asked for a result with the field {string}")]
-    public void PromptAsksForField(string field) => Assert.That(LastPrompt(), Does.Contain($"field \"{field}\""));
+    [Then("the planner was asked for a result with the field {string}")]
+    public void PlannerPromptAsksForField(string field) => Assert.That(LastPrompt("planner"), Does.Contain($"field \"{field}\""));
+
+    [Then("the validator was asked for a result with the fields {string} and {string}")]
+    public void ValidatorPromptAsksForFields(string first, string second)
+    {
+        Assert.That(LastPrompt("validator"), Does.Contain($"\"{first}\"").And.Contain($"\"{second}\""));
+    }
+
+    [Then("it reports that the pass hit its limit")]
+    public void ReportsLimit() => Assert.That(output, Does.Contain("hit its limit"));
+
+    [Then("the validator was given the work for the second task")]
+    public void ValidatorGivenSecondWork() => Assert.That(LastPrompt("validator"), Does.Contain("beta.txt"));
+
+    [Then("it was not given the work for the first task")]
+    public void ValidatorNotGivenFirstWork() => Assert.That(LastPrompt("validator"), Does.Not.Contain("alpha.txt"));
+
+    [Then("the validator was given {string}")]
+    public void ValidatorGivenLens(string expected) => Assert.That(LastPrompt("validator"), Does.Contain(expected));
+
+    [Then("the doer was given the validator's findings")]
+    public void DoerGivenFindings() => Assert.That(LastPrompt("doer"), Does.Contain("needs tests"));
 
     [Then("the factory has stopped")]
     public void FactoryStopped() => Assert.That(exitCode, Is.Not.EqualTo(int.MinValue));
@@ -362,6 +423,10 @@ public sealed class FactorySteps
             start.ArgumentList.Add("--agent");
             start.ArgumentList.Add(agent);
         }
+        start.ArgumentList.Add("--attempts");
+        start.ArgumentList.Add(attempts.ToString());
+        start.ArgumentList.Add("--lens");
+        start.ArgumentList.Add(lens);
         if (all) start.ArgumentList.Add("--all");
         start.Environment["PATH"] = $"{fakeBin}:{Environment.GetEnvironmentVariable("PATH")}";
         start.Environment["FACTORY_CALLS"] = calls;
@@ -369,6 +434,9 @@ public sealed class FactorySteps
         start.Environment["FACTORY_PROSE_PLAN"] = prosePlan ? "1" : "0";
         start.Environment["FACTORY_SENTINEL"] = writeSentinel ? "1" : "0";
         start.Environment["FACTORY_TALK"] = talkFirst ? "1" : "0";
+        start.Environment["FACTORY_NEVER_SATISFIED"] = validatorNeverSatisfied ? "1" : "0";
+        start.Environment["FACTORY_FAIL_FIRST"] = validatorFailsFirst ? "1" : "0";
+        start.Environment["FACTORY_BREAK_DOER"] = breakDoer ? "1" : "0";
 
         using var process = Process.Start(start)!;
         output = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
@@ -383,34 +451,44 @@ public sealed class FactorySteps
             #!/usr/bin/env bash
             set -euo pipefail
             mkdir -p "$FACTORY_CALLS"
-            number=$(($(find "$FACTORY_CALLS" -name '{{identity}}-*.prompt' | wc -l) + 1))
-            printf '%s' "$*" > "$FACTORY_CALLS/{{identity}}-$number.prompt"
-            if [ "$FACTORY_ANSWER_PROSE" = 1 ]; then echo 'I cannot provide a result'; exit 0; fi
+            prompt="$*"
+            role=$(printf '%s' "$prompt" | sed -n 's/.*You are the \(planner\|doer\|validator\).*/\1/p' | head -1)
+            number=$(($(find "$FACTORY_CALLS" -name '{{identity}}-'"$role"'-*.prompt' | wc -l) + 1))
+            printf '%s' "$prompt" > "$FACTORY_CALLS/{{identity}}-$role-$number.prompt"
             mkdir -p .factory
             plan=.factory/plan.md
-            if [ ! -f "$plan" ]; then
-              if [ "$FACTORY_PROSE_PLAN" = 1 ]; then
-                printf 'alpha is pending\nbeta is pending\n' > "$plan"
-              else
-                printf '%s\n' '- [ ] alpha' '- [ ] beta' > "$plan"
+
+            if [ "$role" = planner ]; then
+              if [ ! -f "$plan" ]; then
+                if [ "$FACTORY_PROSE_PLAN" = 1 ]; then printf 'alpha is pending\nbeta is pending\n' > "$plan";
+                else printf '%s\n' '- [ ] alpha' '- [ ] beta' > "$plan"; fi
+                echo '{"complete":false}'; exit 0
               fi
-              echo '{"complete":false}'
+              if printf '%s' "$prompt" | grep -q 'validated work has been committed'; then
+                if grep -q '\[ \]' "$plan"; then sed -i '0,/\[ \]/{s/\[ \]/[x]/}' "$plan";
+                elif grep -q ' is pending' "$plan"; then task=$(grep ' is pending' "$plan" | head -1 | sed 's/ is pending//'); sed -i "0,/$task is pending/{s/$task is pending/$task is done/}" "$plan"; fi
+              fi
+              if grep -Eq '\[ \]| is pending' "$plan"; then echo '{"complete":false}'; else echo '{"complete":true}'; fi
               exit 0
             fi
-            if grep -q '\[ \]' "$plan"; then
-              task=$(grep '\[ \]' "$plan" | head -1 | sed 's/.*] //')
-              sed -i '0,/\[ \]/{s/\[ \]/[x]/}' "$plan"
-            elif grep -q ' is pending' "$plan"; then
-              task=$(grep ' is pending' "$plan" | head -1 | sed 's/ is pending//')
-              sed -i "0,/$task is pending/{s/$task is pending/$task is done/}" "$plan"
+
+            if [ "$role" = doer ]; then
+              [ "$FACTORY_BREAK_DOER" = 1 ] && exit 7
+              if grep -q '\[ \]' "$plan"; then task=$(grep '\[ \]' "$plan" | head -1 | sed 's/.*] //');
+              else task=$(grep ' is pending' "$plan" | head -1 | sed 's/ is pending//'); fi
+              if [ "$FACTORY_SENTINEL" = 1 ]; then touch SENTINEL; else printf '%s\n' "$task" > "$task.txt"; fi
+              if printf '%s' "$prompt" | grep -q 'needs tests'; then printf '  - validator: needs tests\n' >> "$plan"; fi
+              echo '{"worked":true}'; exit 0
+            fi
+
+            if [ "$FACTORY_ANSWER_PROSE" = 1 ]; then echo 'I cannot provide a result'; exit 0; fi
+            [ "$FACTORY_TALK" = 1 ] && echo 'looks good to me'
+            validation_number=$(find "$FACTORY_CALLS" -name '{{identity}}-validator-*.prompt' | wc -l)
+            if [ "$FACTORY_NEVER_SATISFIED" = 1 ] || { [ "$FACTORY_FAIL_FIRST" = 1 ] && [ "$validation_number" -eq 1 ]; }; then
+              echo '{"satisfied":false,"findings":["needs tests"]}'
             else
-              echo '{"complete":true}'
-              exit 0
+              echo '{"satisfied":true,"findings":[]}'
             fi
-            if [ "$FACTORY_SENTINEL" = 1 ]; then touch SENTINEL; else printf '%s\n' "$task" > "$task.txt"; fi
-            [ "$FACTORY_TALK" = 1 ] && echo 'nothing left to do'
-            if grep -Eq '\[ \]| is pending' "$plan"; then complete=false; else complete=true; fi
-            printf '{"complete":%s,"task":"%s"}\n' "$complete" "$task"
             """);
         File.SetUnixFileMode(path, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
         return path;
@@ -426,8 +504,9 @@ public sealed class FactorySteps
 
     private string PlanPath() => Path.Combine(target, ".factory", "plan.md");
     private int CallCount(string identity) => Directory.GetFiles(calls, $"{identity}-*.prompt").Length;
+    private int RoleCallCount(string identity, string role) => Directory.GetFiles(calls, $"{identity}-{role}-*.prompt").Length;
     private int TotalCalls() => Directory.GetFiles(calls, "*.prompt").Length;
-    private string LastPrompt() => File.ReadAllText(Directory.GetFiles(calls, "*.prompt").Order().Last());
+    private string LastPrompt(string role) => File.ReadAllText(Directory.GetFiles(calls, $"*-{role}-*.prompt").Order().Last());
     private int CommitCount() => int.Parse(RunGit(RepositoryForTarget(), "rev-list", "--count", "HEAD").Trim());
     private int WorkCommits() => RunGit(RepositoryForTarget(), "log", $"--format=%s", $"HEAD~{CommitCount() - commitsBefore}..HEAD")
         .Split('\n', StringSplitOptions.RemoveEmptyEntries).Count(message => message != "Factory: update plan");
