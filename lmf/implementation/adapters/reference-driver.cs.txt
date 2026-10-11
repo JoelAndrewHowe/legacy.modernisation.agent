@@ -233,6 +233,8 @@ foreach (var scenario in scenarios)
             case "numeric-descriptor":
             case "description-accessor":
             case "deviation":
+            case "deviation-guard":
+            case "bmi-event":
             case "bmi-warning":
                 var interaction = new ExtractedInteractions {
                     KdpExaminationResultTo = result,
@@ -397,6 +399,15 @@ foreach (var scenario in scenarios)
                         break;
                     case "location": observed["valid"] = interaction.ValidateLocationCode(input["code"].GetValue<string>()); break;
                     case "examiner": observed["valid"] = interaction.ValidateExaminerCode(input["code"].GetValue<string>()); break;
+                    case "deviation-guard":
+                        interaction.deviationRanges = new(() => new() { new("Height", input["lower"].GetValue<double>(), input["upper"].GetValue<double>()) });
+                        interaction.CheckDeviations(result.Height, LookupsUtility.ChildMeasurementType.Height);
+                        observed["rangeRead"] = interaction.deviationRanges.IsValueCreated;
+                        break;
+                    case "bmi-event":
+                        interaction.CheckBmi(interaction, new System.ComponentModel.PropertyChangedEventArgs(input["property"]?.GetValue<string>()));
+                        observed["rangeRead"] = interaction.prescribedRanges.IsValueCreated;
+                        break;
                     case "deviation": interaction.CheckDeviations(result.Height, LookupsUtility.ChildMeasurementType.Height); break;
                     case "bmi-warning": interaction.CheckBmi(interaction, new System.ComponentModel.PropertyChangedEventArgs("Bmi")); break;
                 }

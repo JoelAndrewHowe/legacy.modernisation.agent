@@ -206,6 +206,13 @@ class CharacteriseTests(unittest.TestCase):
             self.assertIn('public bool ValidateNumericDescriptorEntered', (stage / 'reference/ExtractedInteractions.cs').read_text())
             self.assertTrue(rows['KD03-location-null-lookup']['valid'])
             self.assertTrue(rows['KD03-examiner-null-lookup']['valid'])
+            for name in ('missing-height', 'missing-date', 'equal-band', 'reversed-band'):
+                warning = name in ('equal-band', 'reversed-band')
+                self.assertEqual(warning, rows['KD03-deviation-guard-' + name]['rangeRead'])
+                self.assertEqual(['OutsideExpectedRangeMessage'] if warning else [], rows['KD03-deviation-guard-' + name]['warnings'])
+            for name in ('bmi-outside', 'unrelated', 'range-property', 'empty-property', 'null-property', 'missing-height', 'missing-weight', 'bmi-inside'):
+                self.assertEqual(name in ('bmi-outside', 'bmi-inside'), rows['KD03-bmi-event-' + name]['rangeRead'])
+                self.assertEqual(['BmiOutsidePrescribedRangeMessage'] if name == 'bmi-outside' else [], rows['KD03-bmi-event-' + name]['warnings'])
             self.assertEqual([], rows['KD03-deviation-50']['warnings'])
             for boundary in (40, 60):
                 self.assertEqual(['OutsideExpectedRangeMessage'], rows[f'KD03-deviation-{boundary}']['warnings'])
