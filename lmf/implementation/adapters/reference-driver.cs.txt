@@ -225,6 +225,8 @@ foreach (var scenario in scenarios)
             case "code-selection":
             case "decline":
             case "location":
+            case "location-category":
+            case "location-code":
             case "examiner":
             case "numeric-descriptor":
             case "description-accessor":
@@ -343,6 +345,27 @@ foreach (var scenario in scenarios)
                         break;
                     case "numeric-descriptor":
                         observed["valid"] = interaction.ValidateNumericDescriptorEntered(input["descriptor"].GetValue<string>(), Enum.Parse<ExtractedInteractions.TYPE_OF_INPUT>(input["kind"].GetValue<string>()));
+                        break;
+                    case "location-category":
+                        interaction.LocationType = input["category"]?.GetValue<byte>();
+                        observed["category"] = result.LocationType;
+                        observed["code"] = result.LocationCode;
+                        observed["name"] = result.LocationName;
+                        observed["cacheCleared"] = interaction.locationList == null;
+                        interaction.lookupsService.Rows = new() { new("NEW", "Y", "Synthetic refreshed location") };
+                        observed["refreshedCodes"] = JsonSerializer.SerializeToNode(interaction.GetLocationList()?.Select(row => row.Code));
+                        observed["requests"] = JsonSerializer.SerializeToNode(interaction.lookupsService.Requests);
+                        observed["notifications"] = JsonSerializer.SerializeToNode(interaction.Notifications);
+                        break;
+                    case "location-code":
+                        interaction.locationList = input["noCache"].GetValue<bool>() ? null : new() { new("SYNTH", "Y", "Synthetic location description") };
+                        var originalLocationCache = interaction.locationList;
+                        interaction.LocationCode = input["code"]?.GetValue<string>();
+                        observed["code"] = result.LocationCode;
+                        observed["name"] = result.LocationName;
+                        observed["sameCache"] = ReferenceEquals(originalLocationCache, interaction.locationList);
+                        observed["requests"] = JsonSerializer.SerializeToNode(interaction.lookupsService.Requests);
+                        observed["notifications"] = JsonSerializer.SerializeToNode(interaction.Notifications);
                         break;
                     case "location": observed["valid"] = interaction.ValidateLocationCode(input["code"].GetValue<string>()); break;
                     case "examiner": observed["valid"] = interaction.ValidateExaminerCode(input["code"].GetValue<string>()); break;

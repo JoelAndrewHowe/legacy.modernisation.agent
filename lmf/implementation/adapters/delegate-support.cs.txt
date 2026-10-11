@@ -45,7 +45,7 @@ public class ScheduleFixture {
  public List<string> Requests = new();
  public Tuple<double, double> GetAgeRangeFromExamSchedule(string code) { Requests.Add(code); return new(6, 8); }
 }
-public record LookupFixture(string Code, string UsedCode);
+public record LookupFixture(string Code, string UsedCode, string Description = null);
 public enum TypeOfLookup { Locations, Examiners }
 // Recording infrastructure double: returns supplied rows, never filters them.
 public class LookupServiceFixture {

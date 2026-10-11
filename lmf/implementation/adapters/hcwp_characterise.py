@@ -149,6 +149,8 @@ public class WarningSink {
     cleared_fields = re.findall(r'^            (\w+) = null;', clearing, re.M) + re.findall(r'^                (\w+) = null;', clearing, re.M)
     for name in cleared_fields:
         members += '\n' + re.search(r'        public [^\n]+ ' + name + r'\s*\{.*?\n        \}', delegate, re.S).group()
+    for name in ('LocationType', 'LocationCode'):
+        members += '\n' + re.search(r'        public [^\n]+ ' + name + r'\s*\{.*?\n        \}', delegate, re.S).group()
     members += '\n' + code_property + '\n' + clearing
     members += '\n' + re.search(r'        public string ExamDescription\s*\{.*?\n        \}', delegate, re.S).group()
     members += '\n' + method(delegate, 'UpdateExamDescription') + '\n' + method(delegate, 'ResetRecommendedAgeRange')
@@ -224,6 +226,22 @@ public class ExtractedDropdownControls {
     def add(id, operation, data, errors=None, warnings=None, **extra):
         scenarios.append({'id': id, 'given': 'A selected synthetic patient and frozen clock',
                           'when': operation, 'input': data, 'then': {'errors': errors or [], 'warnings': warnings or [], **extra}})
+    for name, category in [('changed', 2), ('same', 5), ('null', None)]:
+        add('KD03-location-category-' + name, 'location-category',
+            {**base, 'LocationType': 5, 'LocationCode': 'SYNTH', 'LocationName': 'Stale name', 'category': category},
+            category=category, code='', name='', cacheCleared=True,
+            refreshedCodes=None if category is None else ['NEW'],
+            requests=[] if category is None else [f'Locations||{category}'],
+            errors=['NoLocationTypeMessage'] if category is None else [],
+            notifications=[])
+    for name, code, description in [('matched', 'SYNTH', 'Synthetic location description'),
+                                     ('unknown', 'MISSING', None), ('empty', '', ''), ('null', None, '')]:
+        add('KD03-location-code-' + name, 'location-code',
+            {**base, 'LocationType': 5, 'LocationName': 'Stale name', 'code': code, 'noCache': False},
+            code=code, name=description, sameCache=True, requests=[], notifications=[])
+    add('KD03-location-code-no-cache', 'location-code',
+        {**base, 'LocationType': 5, 'LocationName': 'Stale name', 'code': 'SYNTH', 'noCache': True},
+        code='SYNTH', name=None, sameCache=True, requests=[], notifications=[])
     for name, repeat, original, description, displayed in [
         ('nonrepeat', False, 'KD03', 'Synthetic contact', 'Synthetic contact'),
         ('repeat-original-code', True, 'KD03', 'Synthetic contact', 'Synthetic contact [synthetic recall text]'),
@@ -494,7 +512,8 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - Examination-code Validating/ButtonClick handlers from `{ui_path}` and LookUpExamCode from `{delegate_path}` retain their bodies. Text-only control and ShowFormLookup message doubles replace Windows UI/dialog infrastructure, record offered codes and supply explicit fixture responses; they do not validate or select codes themselves. Source ValidateAndSetExamCode performs validation/confirmation. Validating cancellation is observed separately from the selected code, including successful fallback lookup with cancellation still true. Original Windows event delivery remains unverified.
 - `{repeat_path}` UpdateRepeatFlags body is retained with internal -> public visibility only. RepositoryFixture supplies explicit preloaded query rows separately from local tracked rows; Include has no database side effects. Source local navigation repair and all repeat decisions execute unchanged. Synthetic rows include KD03 ties, a later same-day timestamp, KD08 family members, another patient and another prefix. Repeated execution observes idempotence. This is standalone repeat-logic evidence, not save-service/database parity; scope approval remains blocked.
 - `{lifecycle_path}` Save body is source-extracted unchanged. A recording service double observes exact context/result identity and throws explicit synthetic generic/optimistic-lock faults; shared cases assert return value, error prompt and untouched unrelated DTO. Local FaultException types replace WCF exception transport only. This proves delegate selection and error routing, not validation, transactions, mapping or persistence in the original save service.
-- GetLocationList/GetExaminerList/GetUsedExaminerList bodies are source-extracted; only List<LookupsSubTO> becomes List<LookupFixture> (Code/UsedCode-only record). Recording lookup-service double returns unfiltered synthetic SYNTH/Y and UNUSED/N rows or throws the local FaultException substitute. Shared cases invoke twice and observe missing-category prompts, cache reuse, exact service arguments, used-only filtering and retry after faults. Real lookup data, service transport and Windows binding remain unverified.
+- LocationType/LocationCode setters are source-extracted unchanged. Shared cases prove that changed, unchanged and null category assignments clear code/name/cache, and subsequent retrieval uses the assigned category rather than stale rows. Code assignments resolve exact cached descriptions, clear names for empty/null codes and yield null for unknown codes or absent cache without fetching rows. Synthetic descriptions are fixture data; Windows binding/event delivery remain unverified.
+- GetLocationList/GetExaminerList/GetUsedExaminerList bodies are source-extracted; only List<LookupsSubTO> becomes List<LookupFixture> (Code/UsedCode/Description record). Recording lookup-service double returns unfiltered synthetic SYNTH/Y and UNUSED/N rows or throws the local FaultException substitute. Shared cases invoke twice and observe missing-category prompts, cache reuse, exact service arguments, used-only filtering and retry after faults. Real lookup data, service transport and Windows binding remain unverified.
 - `{lifecycle_path}` AddNewKdpResult and ConfirmCancelChanges bodies retained except WCF warning wrapper substitution and DateTime.Now -> ReferenceClock.Now (2025-03-01 noon). Unscheduled enum value 2 is from LookupsUtility.EXAMINATION_ORIGIN. Empty outstanding-appointment list models the excluded appointment workflow. GetNewKdpExaminationResultDelegate is source-extracted and calls extracted Populate through a synthetic dependency-injection factory. Shared new-result cases verify supplied patient context, existing-list identity, unscheduled default, description notification and lazy ranges without service requests. Windows events remain unverified; hasChanged returns an explicit fixture flag, not original change tracking. Reload double records IDs and supplies a detached stored DTO; this proves reload orchestration, not database reads. Scenarios cover accept/reject, unchanged, new and empty cancellation paths and defaults/consent/insertion order.
 - reference driver dispatches operation then serialises errors/warnings/BMI and detached accepted-input clone. It is NOT the save service and does NOT prove persistence. No random IDs are generated. No business rules supplied by database doubles.
 - `original/` retains unadapted source sections for independent inspection. `source-index.json` records original identity and bundle line for every one of 94 files.

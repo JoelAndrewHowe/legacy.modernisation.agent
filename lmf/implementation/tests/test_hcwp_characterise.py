@@ -41,6 +41,20 @@ class CharacteriseTests(unittest.TestCase):
             self.assertGreater(len(report['scenarios']), 20)
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
+            for name, category in [('changed', 2), ('same', 5), ('null', None)]:
+                self.assertEqual({'category': category, 'code': '', 'name': '', 'cacheCleared': True,
+                    'refreshedCodes': None if category is None else ['NEW'],
+                    'requests': [] if category is None else [f'Locations||{category}'],
+                    'notifications': [], 'errors': ['NoLocationTypeMessage'] if category is None else [],
+                    'warnings': []}, rows['KD03-location-category-' + name])
+            for name, code, description in [('matched', 'SYNTH', 'Synthetic location description'),
+                                             ('unknown', 'MISSING', None), ('empty', '', ''),
+                                             ('null', None, ''), ('no-cache', 'SYNTH', None)]:
+                self.assertEqual({'code': code, 'name': description, 'sameCache': True,
+                    'requests': [], 'notifications': [], 'errors': [], 'warnings': []},
+                    rows['KD03-location-code-' + name])
+            self.assertIn('LocationType/LocationCode setters are source-extracted unchanged',
+                          (stage / 'reference/ADAPTATIONS.md').read_text())
             for kind in ('location', 'examiner'):
                 for mode in ('missing', 'cached', 'retrieved', 'fault'):
                     row = rows[f'KD03-lookup-retrieval-{kind}-{mode}']
