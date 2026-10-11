@@ -152,7 +152,8 @@ public class WarningSink {
     cleared_fields = re.findall(r'^            (\w+) = null;', clearing, re.M) + re.findall(r'^                (\w+) = null;', clearing, re.M)
     for name in cleared_fields:
         members += '\n' + re.search(r'        public [^\n]+ ' + name + r'\s*\{.*?\n        \}', delegate, re.S).group()
-    for name in ('LocationType', 'LocationCode', 'ExaminerKdpCode', 'ExaminerType', 'ExaminerCategory', 'ExaminerName'):
+    for name in ('LocationType', 'LocationCode', 'ExaminerKdpCode', 'ExaminerType', 'ExaminerCategory', 'ExaminerName',
+                 'ReasonNotExamined', 'Consent', 'CoreComponentOffered', 'Reschedule', 'WithdrawConsent', 'Origin'):
         members += '\n' + re.search(r'        public [^\n]+ ' + name + r'\s*\{.*?\n        \}', delegate, re.S).group()
     members += '\n' + method(delegate, 'PopulateHcpDetails')
     members += '\n' + code_property + '\n' + clearing
@@ -231,6 +232,21 @@ public class ExtractedDropdownControls {
     def add(id, operation, data, errors=None, warnings=None, **extra):
         scenarios.append({'id': id, 'given': 'A selected synthetic patient and frozen clock',
                           'when': operation, 'input': data, 'then': {'errors': errors or [], 'warnings': warnings or [], **extra}})
+    common_fields = {'ReasonNotExamined': 'ReasonNotExamined', 'Consent': 'Consent',
+                     'CoreComponentOffered': 'CoreComponent', 'Reschedule': 'Reschedule',
+                     'WithdrawConsent': 'WithdrawConsent', 'Origin': 'Origin'}
+    common_initial = {'ReasonNotExamined': 'sentinel-reason', 'Consent': 'sentinel-consent',
+                      'CoreComponent': 1, 'Reschedule': 'sentinel-reschedule',
+                      'WithdrawConsent': False, 'Origin': 1}
+    for field, stored_field in common_fields.items():
+        value = True if field == 'WithdrawConsent' else 2 if field in ('CoreComponentOffered', 'Origin') else 'synthetic-value'
+        for mode, clear in [('value', False), ('cleared', True)]:
+            final = (False if field == 'WithdrawConsent' else None) if clear else value
+            stored = {**common_initial, stored_field: final}
+            add(f'KD03-common-{field}-{mode}', 'common-recording',
+                {**base, **common_initial, 'field': field, 'storedField': stored_field,
+                 'value': value, 'clear': clear}, assigned=value, displayed=final,
+                stored=stored, notifications=[])
     for field in ('Heart', 'Hips', 'Eyes', 'Testes', 'PhysicalGeneral'):
         for mode, clear, reason in [('value', False, None), ('cleared', True, None),
                                     ('reason', False, '1'), ('cleared-reason', True, '1')]:
@@ -589,6 +605,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - `{repeat_path}` UpdateRepeatFlags body is retained with internal -> public visibility only. RepositoryFixture supplies explicit preloaded query rows separately from local tracked rows; Include has no database side effects. Source local navigation repair and all repeat decisions execute unchanged. Synthetic rows include KD03 ties, a later same-day timestamp, KD08 family members, another patient and another prefix. Repeated execution observes idempotence. This is standalone repeat-logic evidence, not save-service/database parity; scope approval remains blocked.
 - `{save_ui_path}` SaveChanges body is source-extracted unchanged. SelectedTab/currentTab are key-only fixtures; Populate is a recording refresh double observing ID, Editable, prior service dispatch and default-tab state. Shared cases use patient ID 1001, result key 42, stale current key 99 and Editable=false to distinguish arguments/selection; successful/faulting calls run extracted parent Save. The double does not reload results or establish persistence/read-back, tab layout, event delivery or Windows binding parity.
 - `{lifecycle_path}` Save body is source-extracted unchanged. A recording service double observes exact context/result identity and throws explicit synthetic generic/optimistic-lock faults; shared cases assert return value, error prompt and untouched unrelated DTO. Local FaultException types replace WCF exception transport only. This proves delegate selection and error routing, not validation, transactions, mapping or persistence in the original save service.
+- ReasonNotExamined, Consent, CoreComponentOffered, Reschedule, WithdrawConsent and Origin setters/getters are source-extracted unchanged. Shared cases assign changed and unchanged values, then optionally clear nullable/string fields or reset WithdrawConsent to false. Distinct initial sibling values detect cross-field writes; CoreComponentOffered maps to DTO CoreComponent. These setters do not validate values or raise delegate notifications. Synthetic text is a storage probe, not an approved lookup value. Original DTO change tracking, Windows binding, save validation and persistence are not proved by these cases.
 - ExaminerCategory/ExaminerKdpCode/ExaminerType/ExaminerName and PopulateHcpDetails are source-extracted unchanged. Shared cases prove category assignments (changed/same/null) clear type/code/name/cache; refreshed retrieval uses the new category. HCP selection matches only UsedCode=Y, obtains Description/Type from explicitly synthetic cached rows, and leaves category unchanged for nonempty codes. Empty/null code invokes the category setter, clearing code to empty, type/name/category/cache without retrieval. LookupFixture adds a synthetic Type field for these dependencies; real lookup data and Windows binding/event delivery remain unverified.
 - LocationType/LocationCode setters are source-extracted unchanged. Shared cases prove that changed, unchanged and null category assignments clear code/name/cache, and subsequent retrieval uses the assigned category rather than stale rows. Code assignments resolve exact cached descriptions, clear names for empty/null codes and yield null for unknown codes or absent cache without fetching rows. Synthetic descriptions are fixture data; Windows binding/event delivery remain unverified.
 - GetLocationList/GetExaminerList/GetUsedExaminerList bodies are source-extracted; only List<LookupsSubTO> becomes List<LookupFixture> (Code/UsedCode/Description record). Recording lookup-service double returns unfiltered synthetic SYNTH/Y and UNUSED/N rows or throws the local FaultException substitute. Shared cases invoke twice and observe missing-category prompts, cache reuse, exact service arguments, used-only filtering and retry after faults. Real lookup data, service transport and Windows binding remain unverified.

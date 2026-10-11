@@ -220,6 +220,23 @@ foreach (var scenario in scenarios)
                 errors.AddRange(controlDelegate.Messenger.Errors);
                 warnings.AddRange(controlDelegate.Messenger.Warnings);
                 break;
+            case "common-recording":
+                var common = new ExtractedInteractions { KdpExaminationResultTo = result };
+                var commonField = input["field"].GetValue<string>();
+                var commonProperty = typeof(ExtractedInteractions).GetProperty(commonField);
+                var commonValue = input["value"].Deserialize(commonProperty.PropertyType);
+                commonProperty.SetValue(common, commonValue);
+                commonProperty.SetValue(common, commonValue); // unchanged assignment
+                observed["assigned"] = JsonSerializer.SerializeToNode(commonProperty.GetValue(common));
+                if (input["clear"].GetValue<bool>())
+                    commonProperty.SetValue(common, commonField == "WithdrawConsent" ? (object)false : null);
+                observed["displayed"] = JsonSerializer.SerializeToNode(commonProperty.GetValue(common));
+                var commonValues = new JsonObject();
+                foreach (var name in new[] { "ReasonNotExamined", "Consent", "CoreComponent", "Reschedule", "WithdrawConsent", "Origin" })
+                    commonValues[name] = JsonSerializer.SerializeToNode(typeof(KdpExaminationResultTO).GetProperty(name).GetValue(result));
+                observed["stored"] = commonValues;
+                observed["notifications"] = JsonSerializer.SerializeToNode(common.Notifications);
+                break;
             case "physical-assessment":
                 var physical = new ExtractedInteractions { KdpExaminationResultTo = result };
                 var physicalField = input["field"].GetValue<string>();

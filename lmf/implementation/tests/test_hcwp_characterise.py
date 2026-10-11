@@ -41,6 +41,21 @@ class CharacteriseTests(unittest.TestCase):
             self.assertGreater(len(report['scenarios']), 20)
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
+            common_initial = {'ReasonNotExamined': 'sentinel-reason', 'Consent': 'sentinel-consent',
+                              'CoreComponent': 1, 'Reschedule': 'sentinel-reschedule',
+                              'WithdrawConsent': False, 'Origin': 1}
+            for field, stored_field in [('ReasonNotExamined', 'ReasonNotExamined'), ('Consent', 'Consent'),
+                                        ('CoreComponentOffered', 'CoreComponent'), ('Reschedule', 'Reschedule'),
+                                        ('WithdrawConsent', 'WithdrawConsent'), ('Origin', 'Origin')]:
+                value = True if field == 'WithdrawConsent' else 2 if field in ('CoreComponentOffered', 'Origin') else 'synthetic-value'
+                for mode, clear in [('value', False), ('cleared', True)]:
+                    final = (False if field == 'WithdrawConsent' else None) if clear else value
+                    self.assertEqual({'assigned': value, 'displayed': final,
+                        'stored': {**common_initial, stored_field: final},
+                        'notifications': [], 'errors': [], 'warnings': []},
+                        rows[f'KD03-common-{field}-{mode}'])
+            self.assertIn('CoreComponentOffered maps to DTO CoreComponent',
+                          (stage / 'reference/ADAPTATIONS.md').read_text())
             for field in ('Heart', 'Hips', 'Eyes', 'Testes', 'PhysicalGeneral'):
                 for mode, clear, reason in [('value', False, False), ('cleared', True, False),
                                            ('reason', False, True), ('cleared-reason', True, True)]:
@@ -340,6 +355,20 @@ class CharacteriseTests(unittest.TestCase):
                     self.assertEqual(expected, failures)
                 finally:
                     extracted.write_text(original)
+            # A wrong DTO destination must be caught even when the getter is unchanged.
+            core_assignment = 'set { KdpExaminationResultTo.CoreComponent = value; }'
+            self.assertEqual(1, original.count(core_assignment))
+            try:
+                extracted.write_text(original.replace(core_assignment,
+                    'set { KdpExaminationResultTo.Origin = value; }'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-common-CoreComponentOffered-value',
+                    'KD03-common-CoreComponentOffered-cleared'},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                extracted.write_text(original)
             # Rejected confirmations must invalidate a previously valid selection.
             reset_validation = 'ExamCodeValidated = false;'
             self.assertEqual(1, original.count(reset_validation))
