@@ -195,6 +195,8 @@ foreach (var scenario in scenarios)
                 var setupSelected = new List<string>();
                 var setupIdentities = new List<bool>();
                 var setupCollectionIdentities = new List<bool>();
+                var setupCurrentIdentities = new List<bool>();
+                var setupDefaultStates = new List<bool>();
                 var exactSetupSelection = true;
                 for (var pass = 0; pass < 2; pass++) {
                     setupControl.kdpExaminationDelegate.KdpExaminationResultDelegates = input["ids"].AsArray().Select(id => {
@@ -204,12 +206,14 @@ foreach (var scenario in scenarios)
                     setupControl.SetUpTabPages();
                     var afterSetupTabs = setupControl.hlxAdminTabControlKdpExamination.TabPages;
                     setupCollectionIdentities.Add(ReferenceEquals(setupTabs, afterSetupTabs));
+                    setupCurrentIdentities.Add(ReferenceEquals(originalCurrentSetupTab, setupControl.currentTab));
+                    setupDefaultStates.Add(setupControl.setDefaultTabPage);
                     setupIdentities.Add(afterSetupTabs.Count == originalSetupTabs.Length && originalSetupTabs.Select((tab, index) => ReferenceEquals(tab, afterSetupTabs[index])).All(value => value));
                     setupKeys.Add(afterSetupTabs.Select(tab => tab.Key).ToArray());
                     setupTexts.Add(afterSetupTabs.Select(tab => tab.Text).ToArray());
                     if (setupTabs.Count > 0) {
                         setupSelected.Add(setupControl.hlxAdminTabControlKdpExamination.SelectedTab?.Key);
-                        var expectedSetupTab = setupControl.setDefaultTabPage ? originalSetupTabs[0] : originalCurrentSetupTab;
+                        var expectedSetupTab = input["default"].GetValue<bool>() ? originalSetupTabs[0] : originalCurrentSetupTab;
                         exactSetupSelection &= ReferenceEquals(expectedSetupTab, setupControl.hlxAdminTabControlKdpExamination.SelectedTab) && ReferenceEquals(expectedSetupTab, setupControl.PreparedTabs.LastOrDefault());
                     }
                 }
@@ -221,6 +225,8 @@ foreach (var scenario in scenarios)
                 observed["collectionIdentity"] = ReferenceEquals(setupTabs, setupControl.hlxAdminTabControlKdpExamination.TabPages);
                 observed["collectionIdentities"] = JsonSerializer.SerializeToNode(setupCollectionIdentities);
                 observed["orderedIdentities"] = JsonSerializer.SerializeToNode(setupIdentities);
+                observed["currentIdentities"] = JsonSerializer.SerializeToNode(setupCurrentIdentities);
+                observed["defaultStates"] = JsonSerializer.SerializeToNode(setupDefaultStates);
                 observed["exactSelection"] = exactSetupSelection;
                 observed["currentUnchanged"] = ReferenceEquals(originalCurrentSetupTab, setupControl.currentTab);
                 observed["defaultUnchanged"] = setupControl.setDefaultTabPage == input["default"].GetValue<bool>();

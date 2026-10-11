@@ -52,7 +52,9 @@ class CharacteriseTests(unittest.TestCase):
                     'keysAtPreparation': keys if name != 'empty' else [],
                     'textsAtPreparation': texts if name != 'empty' else [],
                     'collectionIdentity': True, 'collectionIdentities': [True, True], 'orderedIdentities': [True, True],
-                    'exactSelection': True, 'currentUnchanged': True, 'defaultUnchanged': True,
+                    'exactSelection': True, 'currentIdentities': [True, True],
+                    'defaultStates': [name != 'current' and name != 'null-current'] * 2,
+                    'currentUnchanged': True, 'defaultUnchanged': True,
                     'errors': [], 'warnings': []}, rows['KD03-ui-tab-setup-' + name])
             self.assertIn('ResultTabText calculation/resource/recall prose is not verified',
                           (stage / 'reference/ADAPTATIONS.md').read_text())
@@ -653,6 +655,43 @@ class CharacteriseTests(unittest.TestCase):
                         self.assertEqual([False, True], row['actual']['collectionIdentities'])
                         self.assertTrue(row['actual']['collectionIdentity'])
                         self.assertEqual([True, True], row['actual']['orderedIdentities'])
+            finally:
+                extracted_setup.write_text(original_setup)
+            # Intermediate current-tab replacement and flag toggling must not
+            # escape detection when restored before the second source call.
+            state_mutation = '''public void SetUpTabPages()
+        {
+            if (setupStateCalls++ == 0) {
+                setupSavedCurrent = currentTab;
+                setupSavedDefault = setDefaultTabPage;
+                OriginalSetUpTabPages();
+                currentTab = new SaveTabFixture(currentTab?.Key);
+                setDefaultTabPage = !setDefaultTabPage;
+            } else {
+                currentTab = setupSavedCurrent;
+                setDefaultTabPage = setupSavedDefault;
+                OriginalSetUpTabPages();
+            }
+        }
+        private int setupStateCalls;
+        private SaveTabFixture setupSavedCurrent;
+        private bool setupSavedDefault;
+        public void OriginalSetUpTabPages()'''
+            try:
+                extracted_setup.write_text(original_setup.replace(setup_method, state_mutation))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                self.assertEqual({'KD03-ui-tab-setup-' + name for name in
+                    ('default', 'current', 'new', 'null-current', 'empty')}, failures)
+                for row in mutant_report['scenarios']:
+                    if row['id'] in failures:
+                        self.assertEqual([False, True], row['actual']['currentIdentities'])
+                        self.assertNotEqual(*row['actual']['defaultStates'])
+                        self.assertTrue(row['actual']['currentUnchanged'])
+                        self.assertTrue(row['actual']['defaultUnchanged'])
+                        self.assertTrue(row['actual']['exactSelection'])
             finally:
                 extracted_setup.write_text(original_setup)
             zero_guard = 'PkChildExaminationId != NewExamNumber'
