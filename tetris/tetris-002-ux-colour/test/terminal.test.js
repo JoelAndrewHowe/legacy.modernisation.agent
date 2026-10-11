@@ -34,6 +34,29 @@ test('playable display fits 24 rows and 64 columns, including game over', () => 
   }
 });
 
+test('full boards keep both borders and feedback within the 24-row budget', () => {
+  const game = new Game(() => 0.5);
+  game.board = Array.from({ length: 20 }, () => Array(10).fill('T'));
+  game.score = 123456789;
+  game.lines = 12345;
+  game.level = 1235;
+  for (const env of [{}, { NO_COLOR: '' }]) {
+    for (const [columns, rows] of [[64, 24], [80, 24], [120, 40]]) {
+      for (const over of [false, true]) {
+        game.over = over;
+        const display = strip(renderGame(game, { env, columns, rows })).split('\n');
+        assert.equal(display.length, 24);
+        assert.ok(display.every(line => line.length <= columns));
+        assert.match(display[0], /Score: 123456789.*Lines: 12345.*Level: 1235/);
+        assert.equal(display[1], '+--------------------+');
+        assert.equal(display[22], display[1]);
+        assert.ok(display.slice(2, 22).every(line => /^\|[IOTSZJL]{20}\|$/.test(line)));
+        assert.match(display[23], over ? /GAME OVER.*R restart.*Q\/Esc quit/ : /Left\/Right.*Up.*Down.*Space.*Q\/Esc quit/);
+      }
+    }
+  }
+});
+
 test('colour covers pieces, board, status, controls, and game-over feedback', () => {
   const game = new Game();
   game.board[19] = ['I', 'O', 'T', 'S', 'Z', 'J', 'L', null, null, null];

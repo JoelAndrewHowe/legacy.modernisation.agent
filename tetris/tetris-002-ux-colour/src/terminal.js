@@ -1,8 +1,9 @@
 import { emitKeypressEvents } from 'node:readline';
-import { Game } from './game.js';
+import { Game, HEIGHT, WIDTH } from './game.js';
 
 export const MIN_COLUMNS = 64;
-export const MIN_ROWS = 24;
+// One status row, two borders, and one controls/game-over row.
+export const MIN_ROWS = HEIGHT + 4;
 const PALETTE = { I: 96, O: 93, T: 95, S: 92, Z: 91, J: '38;5;111', L: '38;5;215' };
 
 // Bright foregrounds on an explicit black background; labels also identify pieces
@@ -14,7 +15,7 @@ export function renderGame(game, { env = process.env, columns = 80, rows = 24 } 
     const messages = ['Terminal too small', `Need ${MIN_COLUMNS}x${MIN_ROWS}; resize to play`, 'Q/Esc quits'];
     return messages.slice(0, Math.max(0, rows)).map(text => paint(text.slice(0, Math.max(0, columns)), 93)).join('\n');
   }
-  const border = paint(`+${'-'.repeat(20)}+`, 97);
+  const border = paint(`+${'-'.repeat(WIDTH * 2)}+`, 97);
   const display = [
     paint(`TETRIS | Score: ${game.score} | Lines: ${game.lines} | Level: ${game.level}`.slice(0, columns), 97),
     border,
