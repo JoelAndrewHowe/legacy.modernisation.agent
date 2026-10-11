@@ -62,6 +62,22 @@ foreach (var scenario in scenarios)
                 observed["replaced"] = !ReferenceEquals(edited, wrapped.KdpExaminationResultTo);
                 observed["confirmations"] = JsonSerializer.SerializeToNode(lifecycle.messenger.Confirmations);
                 break;
+            case "measurement-control":
+                var controlDelegate = new ExtractedInteractions {
+                    KdpExaminationResultTo = result,
+                    deviationRanges = new(() => new() { new("Height", 40, 60), new("Weight", 3, 6) })
+                };
+                var controls = new ExtractedMeasurementControls { kdpExaminationResultDelegate = controlDelegate };
+                var field = input["field"].GetValue<string>();
+                var control = (ControlFixture)typeof(ExtractedMeasurementControls).GetField("hlxNumericEditBoxCustom" + field).GetValue(controls);
+                control.Text = input["text"].GetValue<string>();
+                control.Value = input["value"].GetValue<decimal>();
+                var cancel = new System.ComponentModel.CancelEventArgs(input["initialCancel"].GetValue<bool>());
+                typeof(ExtractedMeasurementControls).GetMethod("hlxNumericEditBoxCustom" + field + "_Validating").Invoke(controls, new object[] { control, cancel });
+                observed["cancelled"] = cancel.Cancel;
+                errors.AddRange(controlDelegate.Messenger.Errors);
+                warnings.AddRange(controlDelegate.Messenger.Warnings);
+                break;
             case "save":
                 validator.ValidateOnSave(result, birth, null, new());
                 // Detached observation only, not a claim of database read-back.

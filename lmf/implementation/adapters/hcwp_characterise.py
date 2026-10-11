@@ -44,6 +44,7 @@ def generate(request):
     delegate_path, delegate = find('/KdpExaminationResultDelegate.cs')
     bmi_path, bmi = find('/ChildMeasurementsService.cs')
     lifecycle_path, lifecycle = find('/KdpExaminationDelegate.cs')
+    ui_path, ui = find('/ucHLXKdpExaminationResult.cs')
     out = Path(request['OutputDirectory'])
     def put(name, content):
         path = out / name
@@ -148,6 +149,7 @@ public static class DateExtensions {
     members += '\n' + '\n'.join(line for line in delegate.splitlines() if re.search(r'(private readonly string\[\] examCode|public bool Is(?:15Or27Month|Rsk|6To8Week|Dsk)Contact =>)', line))
     members += '\n' + method(delegate, 'ResetDeviations').replace('ChildMeasurementsRange', 'RangeFixture')
     members += '\n' + method(delegate, 'Populate')
+    members += '\n' + '\n'.join(method(delegate, n).replace('FaultException<ValidationFault>', 'ValidationFault') for n in ('ValidateHeight', 'ValidateWeight', 'ValidateHeadCircumference'))
     members += '\n' + '\n'.join(method(delegate, n) for n in ('GetDropDownUiPositionNumber', 'PrependNumericsUiLocationTypeDescriptions', 'PrependNumericsUiExaminerDescriptions', 'PrependNumericsUiReasonNotExaminedDescriptions'))
     members += '\n' + re.search(r'        private class TypeCodePosition\s*\{.*?\n        \}', delegate, re.S).group()
     for name in ('Location', 'Examiner', 'ReasonNotExamined'):
@@ -160,6 +162,15 @@ public static class DateExtensions {
     lifecycle_members = '\n'.join(method(lifecycle, n) for n in ('AddNewKdpResult', 'ConfirmCancelChanges', 'GetNewKdpExaminationResultDelegate'))
     lifecycle_members = lifecycle_members.replace('FaultException<ValidationWarningFault>', 'ValidationWarningFault').replace('DateTime.Now', 'ReferenceClock.Now')
     put('reference/ExtractedLifecycle.cs', (ROOT / 'lifecycle-support.cs.txt').read_text().replace('__MEMBERS__', lifecycle_members))
+    ui_members = '\n'.join(method(ui, 'hlxNumericEditBoxCustom' + field + '_Validating').replace('private void', 'public void') for field in ('Height', 'Weight', 'HeadCirc'))
+    put('reference/ExtractedMeasurementControls.cs', '''using System;
+using System.ComponentModel;
+// Text/Value-only control fixtures; no Windows binding or event loop is simulated.
+public class ControlFixture { public string Text; public object Value; }
+public class ExtractedMeasurementControls {
+ public ExtractedInteractions kdpExaminationResultDelegate;
+ public ControlFixture hlxNumericEditBoxCustomHeight = new(), hlxNumericEditBoxCustomWeight = new(), hlxNumericEditBoxCustomHeadCirc = new();
+''' + ui_members + '\n}\n')
     put('reference/Program.cs', (ROOT / 'reference-driver.cs.txt').read_text())
     put('verify.py', (ROOT / 'verify_reference.py').read_text())
     fixtures = {'today': '2025-03-01', 'dateOfBirth': '2025-01-01', 'clientId': 1001,
@@ -173,6 +184,10 @@ public static class DateExtensions {
     def add(id, operation, data, errors=None, warnings=None, **extra):
         scenarios.append({'id': id, 'given': 'A selected synthetic patient and frozen clock',
                           'when': operation, 'input': data, 'then': {'errors': errors or [], 'warnings': warnings or [], **extra}})
+    for field, valid, invalid, error in [('Height', 50, 0, 'InvalidHeightMessage'), ('Weight', 4.5, 1000, 'InvalidWeightMessage'), ('HeadCirc', 38, 100, 'HeadCircumferenceInvalidFormatMessage')]:
+        for name, text, value, cancelled, errs, warns in [('valid', 'value', valid, False, [], []), ('invalid', 'value', invalid, True, [error], []), ('empty', '', invalid, False, [], []), ('empty-preserves-cancel', '', invalid, True, [], [])]:
+            add(f'KD03-control-{field}-{name}', 'measurement-control', {**base, 'field': field, 'text': text, 'value': value, 'initialCancel': name == 'empty-preserves-cancel'}, errs, warns, cancelled=cancelled)
+    add('KD03-control-Height-warning', 'measurement-control', {**base, 'field': 'Height', 'text': '40', 'value': 40, 'initialCancel': False}, warnings=['OutsideExpectedRangeMessage'], cancelled=False)
     add('KD03-valid', 'save', base, saved=base)
     add('KD03-physical-optional', 'save', {**base, 'Heart': None, 'Hips': None, 'Eyes': None, 'Testes': None, 'PhysicalGeneral': None}, saved={**base, 'Heart': None, 'Hips': None, 'Eyes': None, 'Testes': None, 'PhysicalGeneral': None})
     add('KD03-empty', 'save', {'ExaminationCode': 'KD03', 'ExaminationDate': '2025-02-19'}, ['NoResultsEnteredMessage'])
@@ -298,13 +313,15 @@ Service insert assigns generated IDs; mappings retain patient association and as
 Save also calls ExaminationsCrudManager.UpdateRepeatFlags, UpdateAppointmentStatuses, ClearProducedRecalls. Appointment/recall processing is intentionally excluded. Repeat flags are unresolved (blocking), not silently doubled. Existing-result fixtures are preserved for duplicates. This is NOT full save-service parity.
 Oracle IDs, triggers, locks, EF6 mappings, schedule, centile bands, general options, lookup services, messenger and Windows controls are unavailable infrastructure. Source files and schema are retained for inspection, not claimed executable. Editing/locking, appointments, recall, patient search and database migration are outside scope.
 ''')
-    put('gaps.md', '''# Gaps and assumptions
+    put('gaps.md', f'''# Gaps and assumptions
 ## Blocking
-- Extracted examination-date setter now proves same-day no-op, original time preservation on day changes and lazy deviation-range reset. Extracted measurement setters dispatch PropertyChanged to CheckBmi and verify resulting BMI warnings. Windows controls and original DTO change tracking remain unverified. Extracted Populate now verifies context assignment, scheduled/unscheduled state, lazy range resets and repeat-safe numeric lookup descriptions with synthetic lookup rows. Examination-code setter lifecycle now executes source-extracted hidden-field clearing, notifications, description and lazy schedule reset. Extracted parent methods now execute new-result defaults and cancel-changes accept/reject/reload decisions, with explicit change-tracking and reload fixtures. Code-selection duplicate and change confirmations exercise both responses. Decline setters (including unchecking), lookup validation and BMI/deviation warnings now execute extracted members; full delegate lifecycle remains unverified.
+- Extracted examination-date setter now proves same-day no-op, original time preservation on day changes and lazy deviation-range reset. Extracted measurement setters dispatch PropertyChanged to CheckBmi and verify resulting BMI warnings. Measurement validation handlers execute with control doubles; real Windows controls and original DTO change tracking remain unverified. Extracted Populate now verifies context assignment, scheduled/unscheduled state, lazy range resets and repeat-safe numeric lookup descriptions with synthetic lookup rows. Examination-code setter lifecycle now executes source-extracted hidden-field clearing, notifications, description and lazy schedule reset. Extracted parent methods now execute new-result defaults and cancel-changes accept/reject/reload decisions, with explicit change-tracking and reload fixtures. Code-selection duplicate and change confirmations exercise both responses. Decline setters (including unchecking), lookup validation and BMI/deviation warnings now execute extracted members; full delegate lifecycle remains unverified.
 - Repeat-flag effects require an explicit reviewed scope adjustment or implementation before approval; appointment and recall processing alone were excluded in the seed.
 - The missing WeeksBetween extension is adapted to elapsed days / 7. Review or recover exact legacy rounding before claiming boundary-age parity.
 ## Non-blocking / review assumptions
 Patient 1001, male, born 2025-01-01, clock 2025-03-01 and schedule 6–8 weeks are invented fixtures. Actual schedule, examiner/location lookup rows, BMI thresholds and centile bands are absent. Interaction scenarios explicitly invent SYNTH/UNUSED lookup rows, height range 40–60 and BMI range 10–20; these are review fixtures, not recovered production limits. Null/optional is not mandatory. PhysicalGeneral omission and field/save head discrepancy remain exactly as source, not corrected.
+Measurement Validating handlers from `{ui_path}` and delegate ValidateHeight/ValidateWeight/ValidateHeadCircumference are source-extracted. Text/Value-only control doubles invoke handlers synchronously with CancelEventArgs and invented height 40–60/weight 3–6 deviation bands (not recovered lookup data); scenarios prove invalid-input cancellation, empty-text bypass preserving the incoming cancellation flag, and warning-only acceptance. Windows binding, automatic event delivery and designer layout remain unverified.
+
 Resource translations are absent: errors/warnings are resource identifiers, not original displayed prose. Reference save only clones accepted input and proves validator outcomes; original service transaction, entity mapping and persistence are unverified. Windows/Oracle application cannot be built from this bundle. PostgreSQL is unverified and not connected. No target or browser implementation has been generated.
 ''')
     put('migration-plan.md', '''# Bounded migration plan
@@ -315,6 +332,8 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 5. Gates: runner-owned nonempty tests, mechanical observation parity, build/style and browser add/read-back. Retain exact revisions/commands/diagnostics. Demonstrate lifetime-only persistence and excluded Oracle/PostgreSQL infrastructure.
 ''')
     put('reference/ADAPTATIONS.md', f'''# Extracted reference adaptations
+
+- `{ui_path}`: Height, Weight and HeadCirc Validating method bodies are retained, changing only private visibility for direct invocation. Text/Value-only ControlFixture replaces proprietary numeric controls; CancelEventArgs is the runtime type. Delegate ValidateHeight/ValidateWeight/ValidateHeadCircumference bodies are extracted with local ValidationFault replacing WCF wrappers. Invented height 40–60 and weight 3–6 bands supply deviation dependencies. Shared cases assert invalid cancellation, empty-input bypass with incoming cancellation retained, and warning-only acceptance. No Windows binding, event loop, focus or layout parity is claimed.
 - Complete `{validator_path}` retained verbatim except DateTime.Today -> ReferenceClock.Today (frozen fixture).
 - DTO backing/property-change infrastructure replaced with same-named/type auto properties extracted from `{dto_path}`. No validator predicates replaced.
 - Missing resource strings replaced with their symbolic names; fault wrappers replaced with Exceptions carrying those names. Aggregated numbered messages normalised only by removing numbering/newlines. Resource identifiers compared exactly in order.

@@ -41,6 +41,12 @@ class CharacteriseTests(unittest.TestCase):
             self.assertGreater(len(report['scenarios']), 20)
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
+            for field, error in [('Height', 'InvalidHeightMessage'), ('Weight', 'InvalidWeightMessage'), ('HeadCirc', 'HeadCircumferenceInvalidFormatMessage')]:
+                for name in ('valid', 'invalid', 'empty', 'empty-preserves-cancel'):
+                    self.assertEqual({'cancelled': name in ('invalid', 'empty-preserves-cancel'),
+                        'errors': [error] if name == 'invalid' else [], 'warnings': []}, rows[f'KD03-control-{field}-{name}'])
+            self.assertEqual({'cancelled': False, 'errors': [], 'warnings': ['OutsideExpectedRangeMessage']}, rows['KD03-control-Height-warning'])
+            self.assertIn('Text/Value-only control doubles', (stage / 'gaps.md').read_text())
             self.assertEqual(['HeadCircumferenceInvalidFormatMessage'], rows['KD03-head-field-100']['errors'])
             self.assertEqual(100, rows['KD03-head-save-100']['saved']['HeadCircumference'])
             self.assertEqual(['NoResultsEnteredMessage'], rows['KD03-general-alone']['errors'])
@@ -169,13 +175,13 @@ class CharacteriseTests(unittest.TestCase):
                     extracted.write_text(original)
             # Verification must execute and compare, not merely return counts.
             scenarios = json.loads((stage / 'scenarios.json').read_text())
-            scenarios[0]['then']['saved']['Heart'] = 3
+            next(s for s in scenarios if s['id'] == 'KD03-valid')['then']['saved']['Heart'] = 3
             (stage / 'scenarios.json').write_text(json.dumps(scenarios))
             check = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
             self.assertNotEqual(0, check.returncode)
             self.assertEqual(1, json.loads((stage / 'results.json').read_text())['failed'])
             report = json.loads((stage / 'reference-report.json').read_text())
-            self.assertFalse(report['scenarios'][0]['matches'])
+            self.assertFalse(next(row for row in report['scenarios'] if row['id'] == 'KD03-valid')['matches'])
 
     def test_adapter_rejects_unsupported_stage(self):
         with tempfile.TemporaryDirectory() as tmp:
