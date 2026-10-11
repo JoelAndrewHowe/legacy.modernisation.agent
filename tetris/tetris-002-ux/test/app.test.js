@@ -135,12 +135,39 @@ test('termination signals restore previous raw mode', () => {
   assert.equal(io.signals.listenerCount('SIGINT'), 0);
 });
 
-test('rejects noninteractive or undersized terminals before changing state', () => {
+test('initially undersized terminals wait for resizing before starting gameplay', () => {
+  for (const [columns, rows] of [[21, 24], [22, 23]]) {
+    const io = terminal();
+    io.output.columns = columns;
+    io.output.rows = rows;
+    const game = new Game(() => 0);
+    let tick;
+    const stop = startApp({ ...io, game,
+      setInterval: (callback) => { tick = callback; return 42; },
+      clearInterval: () => {},
+    });
+    assert.match(io.text(), /Resize to 22x24/);
+    assert.doesNotMatch(io.text(), /TETRIS/);
+    io.input.emit('keypress', '', { name: 'return' });
+    tick();
+    assert.equal(game.status, 'ready');
+    io.output.columns = 22;
+    io.output.rows = 24;
+    io.output.emit('resize');
+    assert.match(io.text(), /READY/);
+    io.input.emit('keypress', '', { name: 'return' });
+    tick();
+    assert.equal(game.status, 'playing');
+    assert.equal(game.piece.y, 1);
+    stop();
+    assert.equal(io.input.isRaw, false);
+  }
+});
+
+test('rejects noninteractive terminals before changing state', () => {
   for (const change of [
     (io) => { io.input.isTTY = false; },
     (io) => { io.output.isTTY = false; },
-    (io) => { io.output.rows = 23; },
-    (io) => { io.output.columns = 21; },
   ]) {
     const io = terminal();
     change(io);

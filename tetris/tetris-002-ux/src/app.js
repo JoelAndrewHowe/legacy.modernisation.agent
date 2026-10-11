@@ -32,9 +32,6 @@ export function startApp({ input = process.stdin, output = process.stdout, signa
   if (!input.isTTY || !output.isTTY) {
     throw new Error('Tetris requires an interactive terminal. Run npm start in a terminal.');
   }
-  if (output.rows < 24 || output.columns < 22) {
-    throw new Error('Tetris requires a terminal at least 22 columns wide and 24 rows high.');
-  }
 
   const wasRaw = Boolean(input.isRaw);
   let stopped = false;
