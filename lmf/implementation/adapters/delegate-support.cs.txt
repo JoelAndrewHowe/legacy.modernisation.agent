@@ -13,6 +13,13 @@ public class ExtractedInteractions {
  public Lazy<List<RangeFixture>> deviationRanges, prescribedRanges;
  public string gender = "M";
  public DateTime dateOfBirth = new(2025, 1, 1);
+ public DateTime? dateOfDeath;
+ public bool IsScheduled { get; set; }
+ public bool IsUnscheduled => !IsScheduled;
+ // Synthetic rows; source numeric position tables and prefix logic are extracted.
+ public List<LookupsSubTO> LocationTypeList = new() { new() { Code = "5", Description = "Synthetic location" }, new() { Code = "UNKNOWN", Description = "Unmapped" } };
+ public List<LookupsSubTO> ExaminerTypeList = new() { new() { Code = "18", Description = "Synthetic examiner" } };
+ public List<LookupsSubTO> NotExaminedReasonList = new() { new() { Code = "1", Description = "1 - Already prefixed" }, new() { Code = "2", Description = "Synthetic reason" } };
  public event PropertyChangedEventHandler PropertyChanged;
  public List<string> Notifications = new();
  // Retain the source constructor's BMI event subscription without Windows infrastructure.

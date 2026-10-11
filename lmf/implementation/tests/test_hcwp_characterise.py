@@ -107,16 +107,59 @@ class CharacteriseTests(unittest.TestCase):
                 self.assertEqual(name == 'accept', row['replaced'])
                 self.assertEqual(None if name == 'empty' else (55 if name == 'accept' else 99), row['height'])
                 self.assertEqual(['ExamResultsConfirmCancelMessage'] if name in ('accept', 'reject') else [], row['confirmations'])
+            for name in ('unscheduled', 'scheduled', 'empty-code'):
+                row = rows['KD03-populate-' + name]
+                # Populate starts with a distinct KD08/2000 sentinel DTO.
+                self.assertTrue(row['sameDto'])
+                self.assertEqual(None if name == 'empty-code' else 'KD03', row['selected'])
+                self.assertEqual('2025-02-19T00:00:00', row['date'])
+                self.assertTrue(row['sameExisting'])
+                self.assertEqual('F', row['gender'])
+                self.assertEqual('2024-12-01', row['birth'])
+                self.assertEqual('2025-02-01' if name == 'scheduled' else None, row['death'])
+                self.assertEqual(name == 'scheduled', row['scheduled'])
+                self.assertEqual(name != 'scheduled', row['unscheduled'])
+                self.assertEqual(None if name == 'empty-code' else 'Synthetic KD03', row['description'])
+                self.assertTrue(row['rangesReset'])
+                self.assertTrue(row['lazyBeforeRead'])
+                self.assertEqual(0, row['requestsBeforeRead'])
+                self.assertEqual(['2025-02-19T00:00:00'], row['rangeRequests'])
+                self.assertEqual([None if name == 'empty-code' else 'KD03'], row['scheduleRequests'])
+                # Both an already-prefixed and an unprefixed mapped reason survive
+                # two Populate calls with exactly one numeric prefix.
+                self.assertEqual(['1 - Synthetic location', 'Unmapped', '2 - Synthetic examiner', '1 - Already prefixed', '2 - Synthetic reason'], row['lookupDescriptions'])
+                self.assertEqual(['ExamDescription', 'ExamDescription'], row['notifications'])
+                self.assertEqual([], row['errors'])
+                self.assertEqual([], row['warnings'])
             adaptations = (stage / 'reference/ADAPTATIONS.md').read_text()
             self.assertIn('hasChanged returns an explicit fixture flag', adaptations)
             self.assertIn('Populate/Windows events unverified', adaptations)
             self.assertIn('ExaminationDate and ResetDeviations bodies are retained', adaptations)
             self.assertIn('ClearDataFromHiddenFields', adaptations)
+            self.assertIn('numeric position tables are source-extracted', adaptations)
+            self.assertIn('parent-delegate Populate integration remain unverified', adaptations)
             self.assertIn('recording schedule double', adaptations)
             self.assertIn('PropertyChanged event subscribed to extracted CheckBmi', adaptations)
             approve = cli('approve', '--workspace', str(workspace), '--revision', state['Revision'])
             self.assertNotEqual(0, approve.returncode)
             self.assertIn('blocking gaps', approve.stderr)
+            # Regression evidence: each validator's proposed omission must fail
+            # the shared Populate scenarios, not merely a harness-local assertion.
+            extracted = stage / 'reference/ExtractedInteractions.cs'
+            original = extracted.read_text()
+            for omitted in ('KdpExaminationResultTo = kdpExaminationResultTo;',
+                            'PrependNumericsUiReasonNotExaminedDescriptions();'):
+                self.assertEqual(1, original.count(omitted))
+                try:
+                    extracted.write_text(original.replace(omitted, '// mutation: omitted'))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertNotEqual(0, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                    failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                    self.assertEqual({'KD03-populate-unscheduled', 'KD03-populate-scheduled',
+                                      'KD03-populate-empty-code'}, failures)
+                finally:
+                    extracted.write_text(original)
             # Verification must execute and compare, not merely return counts.
             scenarios = json.loads((stage / 'scenarios.json').read_text())
             scenarios[0]['then']['saved']['Heart'] = 3

@@ -69,6 +69,7 @@ foreach (var scenario in scenarios)
                 age.CheckAgeWithinScheduleRange(result.ExaminationDate);
                 warnings.AddRange(age.Messenger.Warnings);
                 break;
+            case "populate":
             case "code-setter":
             case "date-setter":
             case "measurement-setter":
@@ -87,6 +88,43 @@ foreach (var scenario in scenarios)
                 };
                 if (input["nullLookup"]?.GetValue<bool>() == true) { interaction.locationList = null; interaction.examinerList = null; }
                 switch (scenario["when"].GetValue<string>()) {
+                    case "populate":
+                        // Start with a distinct sentinel so a missing DTO assignment cannot pass.
+                        interaction.KdpExaminationResultTo = new() {
+                            ExaminationCode = "KD08", ExaminationDate = new DateTime(2000, 1, 1)
+                        };
+                        var populateBirth = new DateTime(2024, 12, 1);
+                        DateTime? death = input["withDeath"].GetValue<bool>() ? new DateTime(2025, 2, 1) : null;
+                        var populateExisting = new List<KdpExaminationResultTO> { new() { PkChildExaminationId = 42 } };
+                        var oldDeviation = interaction.deviationRanges;
+                        interaction.recommendedAgeRangeInWeeks = new(() => new(0, 0));
+                        var oldSchedule = interaction.recommendedAgeRangeInWeeks;
+                        for (var repeat = 0; repeat < 2; repeat++) {
+                            if (input["scheduled"].GetValue<bool>())
+                                interaction.Populate(result, "F", populateBirth, death, populateExisting, true);
+                            else
+                                interaction.Populate(result, "F", populateBirth, death, populateExisting);
+                        }
+                        observed["sameDto"] = ReferenceEquals(result, interaction.KdpExaminationResultTo);
+                        observed["sameExisting"] = ReferenceEquals(populateExisting, interaction.existingResults);
+                        observed["gender"] = interaction.gender;
+                        observed["birth"] = interaction.dateOfBirth.ToString("yyyy-MM-dd");
+                        observed["death"] = interaction.dateOfDeath?.ToString("yyyy-MM-dd");
+                        observed["scheduled"] = interaction.IsScheduled;
+                        observed["unscheduled"] = interaction.IsUnscheduled;
+                        observed["description"] = interaction.KdpExaminationResultTo.ExamDescription;
+                        observed["selected"] = interaction.ExaminationCode;
+                        observed["date"] = interaction.ExaminationDate.ToString("yyyy-MM-ddTHH:mm:ss");
+                        observed["rangesReset"] = !ReferenceEquals(oldDeviation, interaction.deviationRanges) && !ReferenceEquals(oldSchedule, interaction.recommendedAgeRangeInWeeks);
+                        observed["lazyBeforeRead"] = !interaction.deviationRanges.IsValueCreated && !interaction.recommendedAgeRangeInWeeks.IsValueCreated;
+                        observed["requestsBeforeRead"] = interaction.measurementsService.RangeRequests.Count + interaction.KdpExaminationService.Requests.Count;
+                        _ = interaction.deviationRanges.Value;
+                        _ = interaction.recommendedAgeRangeInWeeks.Value;
+                        observed["rangeRequests"] = JsonSerializer.SerializeToNode(interaction.measurementsService.RangeRequests);
+                        observed["scheduleRequests"] = JsonSerializer.SerializeToNode(interaction.KdpExaminationService.Requests);
+                        observed["lookupDescriptions"] = JsonSerializer.SerializeToNode(interaction.LocationTypeList.Concat(interaction.ExaminerTypeList).Concat(interaction.NotExaminedReasonList).Select(row => row.Description));
+                        observed["notifications"] = JsonSerializer.SerializeToNode(interaction.Notifications);
+                        break;
                     case "code-setter":
                         interaction.recommendedAgeRangeInWeeks = new(() => interaction.KdpExaminationService.GetAgeRangeFromExamSchedule(interaction.ExaminationCode));
                         var priorSchedule = interaction.recommendedAgeRangeInWeeks;
