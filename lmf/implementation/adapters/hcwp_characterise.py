@@ -149,14 +149,15 @@ public static class DateExtensions {
     members += '\n' + '\n'.join(line for line in delegate.splitlines() if re.search(r'(private readonly string\[\] examCode|public bool Is(?:15Or27Month|Rsk|6To8Week|Dsk)Contact =>)', line))
     members += '\n' + method(delegate, 'ResetDeviations').replace('ChildMeasurementsRange', 'RangeFixture')
     members += '\n' + method(delegate, 'Populate')
-    members += '\n' + '\n'.join(method(delegate, n).replace('FaultException<ValidationFault>', 'ValidationFault') for n in ('ValidateHeight', 'ValidateWeight', 'ValidateHeadCircumference'))
+    members += '\n' + age
+    members += '\n' + '\n'.join(method(delegate, n).replace('FaultException<ValidationFault>', 'ValidationFault') for n in ('ValidateHeight', 'ValidateWeight', 'ValidateHeadCircumference', 'ValidateExaminationDate'))
     members += '\n' + '\n'.join(method(delegate, n) for n in ('GetDropDownUiPositionNumber', 'PrependNumericsUiLocationTypeDescriptions', 'PrependNumericsUiExaminerDescriptions', 'PrependNumericsUiReasonNotExaminedDescriptions'))
     members += '\n' + re.search(r'        private class TypeCodePosition\s*\{.*?\n        \}', delegate, re.S).group()
     for name in ('Location', 'Examiner', 'ReasonNotExamined'):
         members += '\n' + re.search(r'        List<TypeCodePosition> ' + name + r'TypeCodePositions = .*?\n        \};', delegate, re.S).group()
     members += '\n' + '\n'.join(line for line in delegate.splitlines() if 'private const string DropDownCodeDescriptionFormat' in line)
     members += '\n' + method(delegate, 'ValidateAndSetExamCode').replace('FaultException<ValidationWarningFault>', 'ValidationWarningFault').replace('FaultException<ValidationFault>', 'ValidationFault')
-    symbols = sorted(set(re.findall(r'\b\w+(?:Message|Prompt|Title)\b', members)) - {'warningMessage', 'WarningNotificationMessage'})
+    symbols = sorted(set(re.findall(r'\b(?:\w+(?:Message|Prompt|Title)|KdpContactGivenBeforeMinAge|KdpContactGivenAfterMaxAge)\b', members)) - {'warningMessage', 'WarningNotificationMessage'})
     constants = '\n'.join(f' const string {s} = "{s}";' for s in symbols)
     put('reference/ExtractedInteractions.cs', (ROOT / 'delegate-support.cs.txt').read_text().replace('__MEMBERS__', constants + '\n' + members))
     lifecycle_members = '\n'.join(method(lifecycle, n) for n in ('AddNewKdpResult', 'ConfirmCancelChanges', 'GetNewKdpExaminationResultDelegate'))
@@ -171,6 +172,14 @@ public class ExtractedMeasurementControls {
  public ExtractedInteractions kdpExaminationResultDelegate;
  public ControlFixture hlxNumericEditBoxCustomHeight = new(), hlxNumericEditBoxCustomWeight = new(), hlxNumericEditBoxCustomHeadCirc = new();
 ''' + ui_members + '\n}\n')
+    put('reference/ExtractedDateControl.cs', '''using System;
+using System.ComponentModel;
+// Text/DateTime-only fixture; direct invocation does not prove Windows event delivery.
+public class DateControlFixture { public string Text; public DateTime Value; }
+public class ExtractedDateControl {
+ public ExtractedInteractions kdpExaminationResultDelegate;
+ public DateControlFixture hlxDateBoxExamDate = new();
+''' + method(ui, 'hlxDateBoxExamDate_Validating').replace('private void', 'public void') + '\n}\n')
     put('reference/Program.cs', (ROOT / 'reference-driver.cs.txt').read_text())
     put('verify.py', (ROOT / 'verify_reference.py').read_text())
     fixtures = {'today': '2025-03-01', 'dateOfBirth': '2025-01-01', 'clientId': 1001,
@@ -187,6 +196,8 @@ public class ExtractedMeasurementControls {
     for field, valid, invalid, error in [('Height', 50, 0, 'InvalidHeightMessage'), ('Weight', 4.5, 1000, 'InvalidWeightMessage'), ('HeadCirc', 38, 100, 'HeadCircumferenceInvalidFormatMessage')]:
         for name, text, value, cancelled, errs, warns in [('valid', 'value', valid, False, [], []), ('invalid', 'value', invalid, True, [error], []), ('empty', '', invalid, False, [], []), ('empty-preserves-cancel', '', invalid, True, [], [])]:
             add(f'KD03-control-{field}-{name}', 'measurement-control', {**base, 'field': field, 'text': text, 'value': value, 'initialCancel': name == 'empty-preserves-cancel'}, errs, warns, cancelled=cancelled)
+    for name, date, error, warning in [('valid', '2025-02-19', None, None), ('future', '2025-03-02', 'FutureExamDateMessage', None), ('before-birth', '2024-12-31', 'ExamDateBeforeDobMessage', None), ('after-death', '2025-02-21', 'ExamDateAfterDeathMessage', None), ('duplicate', '2025-02-19', 'KdpResultAlreadyEnteredMessage', None), ('young', '2025-02-05', None, 'KdpContactGivenBeforeMinAge'), ('old', '2025-02-27', None, 'KdpContactGivenAfterMaxAge'), ('empty', '2025-03-02', None, None), ('empty-preserves-cancel', '2025-03-02', None, None)]:
+        add('KD03-date-control-' + name, 'date-control', {**base, 'value': date, 'text': '' if name.startswith('empty') else date, 'initialCancel': name == 'empty-preserves-cancel', 'deathFixture': '2025-02-20' if name == 'after-death' else None, 'duplicateFixture': name == 'duplicate'}, [error] if error else [], [warning] if warning else [], cancelled=bool(error) or name == 'empty-preserves-cancel')
     add('KD03-control-Height-warning', 'measurement-control', {**base, 'field': 'Height', 'text': '40', 'value': 40, 'initialCancel': False}, warnings=['OutsideExpectedRangeMessage'], cancelled=False)
     add('KD03-valid', 'save', base, saved=base)
     add('KD03-physical-optional', 'save', {**base, 'Heart': None, 'Hips': None, 'Eyes': None, 'Testes': None, 'PhysicalGeneral': None}, saved={**base, 'Heart': None, 'Hips': None, 'Eyes': None, 'Testes': None, 'PhysicalGeneral': None})
@@ -320,6 +331,8 @@ Oracle IDs, triggers, locks, EF6 mappings, schedule, centile bands, general opti
 - The missing WeeksBetween extension is adapted to elapsed days / 7. Review or recover exact legacy rounding before claiming boundary-age parity.
 ## Non-blocking / review assumptions
 Patient 1001, male, born 2025-01-01, clock 2025-03-01 and schedule 6–8 weeks are invented fixtures. Actual schedule, examiner/location lookup rows, BMI thresholds and centile bands are absent. Interaction scenarios explicitly invent SYNTH/UNUSED lookup rows, height range 40–60 and BMI range 10–20; these are review fixtures, not recovered production limits. Null/optional is not mandatory. PhysicalGeneral omission and field/save head discrepancy remain exactly as source, not corrected.
+Examination-date Validating handler and delegate ValidateExaminationDate/CheckAgeWithinScheduleRange are source-extracted. A Text/DateTime-only double invokes the handler directly; shared cases cover future/birth/death errors, duplicate dates, warning-only age acceptance, and empty-text bypass retaining incoming cancellation. The same synthetic 6–8-week schedule and documented unrecovered WeeksBetween substitution apply; Windows binding/event delivery remain unverified.
+
 Measurement Validating handlers from `{ui_path}` and delegate ValidateHeight/ValidateWeight/ValidateHeadCircumference are source-extracted. Text/Value-only control doubles invoke handlers synchronously with CancelEventArgs and invented height 40–60/weight 3–6 deviation bands (not recovered lookup data); scenarios prove invalid-input cancellation, empty-text bypass preserving the incoming cancellation flag, and warning-only acceptance. Windows binding, automatic event delivery and designer layout remain unverified.
 
 Resource translations are absent: errors/warnings are resource identifiers, not original displayed prose. Reference save only clones accepted input and proves validator outcomes; original service transaction, entity mapping and persistence are unverified. Windows/Oracle application cannot be built from this bundle. PostgreSQL is unverified and not connected. No target or browser implementation has been generated.
@@ -333,6 +346,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 ''')
     put('reference/ADAPTATIONS.md', f'''# Extracted reference adaptations
 
+- `{ui_path}`: examination-date handler is retained with public visibility and a Text/DateTime-only fixture. Delegate ValidateExaminationDate and CheckAgeWithinScheduleRange execute extracted bodies with local ValidationFault substitution; synthetic date/death/existing-result fixtures and 6–8-week schedule exercise errors and warnings. WeeksBetween remains an unresolved adaptation; no original Windows event delivery is claimed.
 - `{ui_path}`: Height, Weight and HeadCirc Validating method bodies are retained, changing only private visibility for direct invocation. Text/Value-only ControlFixture replaces proprietary numeric controls; CancelEventArgs is the runtime type. Delegate ValidateHeight/ValidateWeight/ValidateHeadCircumference bodies are extracted with local ValidationFault replacing WCF wrappers. Invented height 40–60 and weight 3–6 bands supply deviation dependencies. Shared cases assert invalid cancellation, empty-input bypass with incoming cancellation retained, and warning-only acceptance. No Windows binding, event loop, focus or layout parity is claimed.
 - Complete `{validator_path}` retained verbatim except DateTime.Today -> ReferenceClock.Today (frozen fixture).
 - DTO backing/property-change infrastructure replaced with same-named/type auto properties extracted from `{dto_path}`. No validator predicates replaced.

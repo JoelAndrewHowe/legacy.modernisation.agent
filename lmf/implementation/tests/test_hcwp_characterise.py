@@ -46,6 +46,10 @@ class CharacteriseTests(unittest.TestCase):
                     self.assertEqual({'cancelled': name in ('invalid', 'empty-preserves-cancel'),
                         'errors': [error] if name == 'invalid' else [], 'warnings': []}, rows[f'KD03-control-{field}-{name}'])
             self.assertEqual({'cancelled': False, 'errors': [], 'warnings': ['OutsideExpectedRangeMessage']}, rows['KD03-control-Height-warning'])
+            for name, error, warning in [('valid', None, None), ('future', 'FutureExamDateMessage', None), ('before-birth', 'ExamDateBeforeDobMessage', None), ('after-death', 'ExamDateAfterDeathMessage', None), ('duplicate', 'KdpResultAlreadyEnteredMessage', None), ('young', None, 'KdpContactGivenBeforeMinAge'), ('old', None, 'KdpContactGivenAfterMaxAge'), ('empty', None, None), ('empty-preserves-cancel', None, None)]:
+                self.assertEqual({'cancelled': bool(error) or name == 'empty-preserves-cancel',
+                    'errors': [error] if error else [], 'warnings': [warning] if warning else []}, rows['KD03-date-control-' + name])
+            self.assertIn('Text/DateTime-only double', (stage / 'gaps.md').read_text())
             self.assertIn('Text/Value-only control doubles', (stage / 'gaps.md').read_text())
             self.assertEqual(['HeadCircumferenceInvalidFormatMessage'], rows['KD03-head-field-100']['errors'])
             self.assertEqual(100, rows['KD03-head-save-100']['saved']['HeadCircumference'])

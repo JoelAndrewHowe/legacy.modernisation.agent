@@ -62,6 +62,24 @@ foreach (var scenario in scenarios)
                 observed["replaced"] = !ReferenceEquals(edited, wrapped.KdpExaminationResultTo);
                 observed["confirmations"] = JsonSerializer.SerializeToNode(lifecycle.messenger.Confirmations);
                 break;
+            case "date-control":
+                var dateDelegate = new ExtractedInteractions {
+                    KdpExaminationResultTo = result,
+                    dateOfBirth = birth,
+                    dateOfDeath = input["deathFixture"] == null ? null : DateTime.Parse(input["deathFixture"].GetValue<string>()),
+                    recommendedAgeRangeInWeeks = new(() => new(6, 8))
+                };
+                if (input["duplicateFixture"].GetValue<bool>())
+                    dateDelegate.existingResults.Add(new() { PkChildExaminationId = 42, ExaminationCode = "KD03", ExaminationDate = result.ExaminationDate });
+                var dateControls = new ExtractedDateControl { kdpExaminationResultDelegate = dateDelegate };
+                dateControls.hlxDateBoxExamDate.Text = input["text"].GetValue<string>();
+                dateControls.hlxDateBoxExamDate.Value = DateTime.Parse(input["value"].GetValue<string>());
+                var dateCancel = new System.ComponentModel.CancelEventArgs(input["initialCancel"].GetValue<bool>());
+                dateControls.hlxDateBoxExamDate_Validating(dateControls.hlxDateBoxExamDate, dateCancel);
+                observed["cancelled"] = dateCancel.Cancel;
+                errors.AddRange(dateDelegate.Messenger.Errors);
+                warnings.AddRange(dateDelegate.Messenger.Warnings);
+                break;
             case "measurement-control":
                 var controlDelegate = new ExtractedInteractions {
                     KdpExaminationResultTo = result,
