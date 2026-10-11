@@ -206,7 +206,11 @@ internal sealed record MachineResult(JsonElement? Root, string Json)
         values = [];
         if (Root is not { } root || !root.TryGetProperty(name, out var element) || element.ValueKind != JsonValueKind.Array)
             return false;
-        values = element.EnumerateArray().Select(item => item.GetString() ?? "").ToArray();
+        values = element.EnumerateArray()
+            .Select(item => item.ValueKind == JsonValueKind.String
+                ? item.GetString() ?? ""
+                : item.GetRawText())
+            .ToArray();
         return true;
     }
 }
