@@ -227,6 +227,15 @@ class CharacteriseTests(unittest.TestCase):
                     self.assertEqual('KD03' if response else original, row['selected'])
                     self.assertEqual([message], row['confirmations'])
                     self.assertEqual([], row['errors'])
+            for name, accepted, prompts, remaining in [
+                ('reject-duplicate', False, ['KdpDuplicateExamCodeMessage'], 1),
+                ('reject-change', False, ['KdpDuplicateExamCodeMessage', 'KdpResultsExamCodeChangeConfirmationMessage'], 0),
+                ('accept-both', True, ['KdpDuplicateExamCodeMessage', 'KdpResultsExamCodeChangeConfirmationMessage'], 0),
+            ]:
+                self.assertEqual({'valid': accepted, 'validated': accepted,
+                    'selected': 'KD03' if accepted else 'KD08', 'confirmations': prompts,
+                    'remainingResponses': remaining, 'errors': [], 'warnings': []},
+                    rows['KD03-confirm-sequence-' + name])
             self.assertEqual(['KdpInvalidExamCodeMessage'], rows['KD03-code-invalid']['errors'])
             self.assertFalse(rows['KD03-code-invalid']['valid'])
             self.assertEqual([], rows['KD03-code-invalid']['confirmations'])
@@ -308,6 +317,19 @@ class CharacteriseTests(unittest.TestCase):
                     self.assertEqual(expected, failures)
                 finally:
                     extracted.write_text(original)
+            # Rejected confirmations must invalidate a previously valid selection.
+            reset_validation = 'ExamCodeValidated = false;'
+            self.assertEqual(1, original.count(reset_validation))
+            try:
+                extracted.write_text(original.replace(reset_validation, '// mutation: omitted validation reset'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                self.assertEqual({'KD03-confirm-sequence-reject-duplicate',
+                    'KD03-confirm-sequence-reject-change'}, failures)
+            finally:
+                extracted.write_text(original)
             # A same-code unused row precedes the used row: dropping the source
             # used-code predicate must change both selection and unused rejection.
             used_filter = 'ex.UsedCode == HLXBoolean.True && '

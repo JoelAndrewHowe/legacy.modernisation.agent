@@ -223,6 +223,7 @@ foreach (var scenario in scenarios)
             case "measurement-setter":
             case "measurement-assignment":
             case "code-selection":
+            case "code-selection-sequence":
             case "decline":
             case "location":
             case "examiner-category":
@@ -326,10 +327,20 @@ foreach (var scenario in scenarios)
                         observed["notifications"] = JsonSerializer.SerializeToNode(interaction.Notifications);
                         break;
                     case "code-selection":
+                    case "code-selection-sequence":
                         interaction.Messenger.ConfirmationResponse = input["response"]?.GetValue<bool>() ?? false;
+                        if (input["responses"] is JsonArray responses)
+                            foreach (var response in responses)
+                                interaction.Messenger.ConfirmationResponses.Enqueue(response.GetValue<bool>());
                         if (input["duplicate"]?.GetValue<bool>() == true)
                             interaction.existingResults.Add(new() { ExaminationCode = "KD03", PkChildExaminationId = 42, ExaminationDate = result.ExaminationDate.AddDays(-1) });
+                        // A previously valid selection must become invalid on either rejection.
+                        interaction.ExamCodeValidated = true;
                         observed["valid"] = interaction.ValidateAndSetExamCode(input["code"]?.GetValue<string>() ?? "KD03");
+                        if (scenario["when"].GetValue<string>() == "code-selection-sequence") {
+                            observed["validated"] = interaction.ExamCodeValidated;
+                            observed["remainingResponses"] = interaction.Messenger.ConfirmationResponses.Count;
+                        }
                         observed["selected"] = result.ExaminationCode;
                         observed["confirmations"] = JsonSerializer.SerializeToNode(interaction.Messenger.Confirmations);
                         break;
