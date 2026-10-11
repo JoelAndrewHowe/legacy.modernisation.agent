@@ -2,7 +2,7 @@
 
 - [ ] Provide a terminal Tetris application launched with `npm start`.
   - [ ] Validator: resizing below 22×24 redraws the full frame and clips or wraps the board and quit instructions; show a resize prompt until sufficient space is restored.
-    - [ ] Handle an initially undersized terminal with the same bounded resize prompt; verify controls and gravity remain paused until it is restored.
+    - [x] Handle an initially undersized terminal with the same bounded resize prompt; verify controls and gravity remain paused until it is restored.
   - [ ] Validator: the empty board and fixed score do not communicate readiness or next steps; add explicit status or instructions beyond quitting.
   - [ ] Validator: src/app.js displays only an empty board and fixed score and ignores non-quit controls; implement playable movement, scoring, and game-over feedback.
   - [ ] Validator: src/app.js labels the game 'Unfinished' without a useful next step; add readiness/start instructions and gameplay controls.
