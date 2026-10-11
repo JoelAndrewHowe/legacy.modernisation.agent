@@ -5,7 +5,7 @@
   - [x] Validation finding: the initial PTY smoke incorrectly expected a fixed hard-drop score despite random piece selection. Addressed by checking a positive score and preserving that observed score across resizing; corrected smoke passed. No application defect found.
   - [x] Verify application-level readiness instructions, line-clear score updates, game-over feedback, and Enter-to-restart behavior.
   - [ ] Validator: resizing below 22×24 redraws the full frame and clips or wraps the board and quit instructions; show a resize prompt until sufficient space is restored.
-    - [ ] Verify raw terminal input is blocked while undersized, resumes after restoration, and Ctrl-C cleans up while minimized. Evidence: added regression in `test/app.test.js` using actual Enter, arrow, space, help, and Ctrl-C bytes; `npm test` passes all 26 tests. No new validator findings; completion remains with the planner.
+    - [x] Verify raw terminal input is blocked while undersized, resumes after restoration, and Ctrl-C cleans up while minimized. Evidence: added regression in `test/app.test.js` using actual Enter, arrow, space, help, and Ctrl-C bytes; `npm test` passes all 26 tests. No new validator findings; validated work committed.
     - [x] Verify game-over feedback and restart survive resizing, and all quit controls clean up while undersized or minimized.
     - [x] Verify startup at every undersized boundary, including zero dimensions, suppresses gameplay until restoration and cleans up the timer on exit.
     - [x] Verify every positive undersized boundary fits its prompt, freezes gameplay, and restores the unchanged frame at 22×24.
