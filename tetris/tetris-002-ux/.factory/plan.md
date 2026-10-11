@@ -1,7 +1,7 @@
 # Task plan
 
 - [ ] Provide a terminal Tetris application launched with `npm start`.
-  - [ ] Verify application-level readiness instructions, line-clear score updates, game-over feedback, and Enter-to-restart behavior.
+  - [x] Verify application-level readiness instructions, line-clear score updates, game-over feedback, and Enter-to-restart behavior.
   - [ ] Validator: resizing below 22×24 redraws the full frame and clips or wraps the board and quit instructions; show a resize prompt until sufficient space is restored.
     - [x] Verify minimized terminals emit no visible content and still allow quitting with timer cleanup.
     - [x] Validator: a zero-column terminal emits a blank CRLF; suppress frame content when either terminal dimension is zero.
