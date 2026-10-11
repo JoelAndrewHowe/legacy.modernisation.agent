@@ -62,12 +62,14 @@ def generate(request):
 namespace Orvex.TransferObjects {
  public class KdpExaminationResultTO {
 ''' + '\n'.join(f'  public {t} {n} {{ get; set; }}' for t, n in props) + '''
+  // TransferObjectBase lock token: storage only, no concurrency infrastructure.
+  public string Lock { get; set; }
   public bool EnabledPropChangeEvents { get; set; }
   // Explicit change-tracking fixture; original TransferObjectBase/Windows events are not executed.
   public bool ChangedFixture;
   public bool hasChanged() => ChangedFixture;
  }
- public class LookupsSubTO { public string Code { get; set; } }
+ public class LookupsSubTO { public string Code { get; set; } public string Description { get; set; } }
 }
 namespace Orvex.Resources { public static class Resources {
 ''' + '\n'.join(f' public const string {r} = "{r}";' for r in resources) + '''
@@ -136,6 +138,14 @@ public static class DateExtensions {
     members += '\n' + '\n'.join(method(delegate, n).replace('private void', 'public void') for n in ('ValidateLocationCode', 'ValidateExaminerCode', 'CheckDeviations', 'CheckBmi'))
     date_property = re.search(r'        public DateTime ExaminationDate\s*\{.*?\n        \}', delegate, re.S).group()
     members += '\n' + date_property
+    code_property = re.search(r'        public string ExaminationCode\s*\{.*?\n        \}', delegate, re.S).group()
+    clearing = method(delegate, 'ClearDataFromHiddenFields')
+    cleared_fields = re.findall(r'^            (\w+) = null;', clearing, re.M) + re.findall(r'^                (\w+) = null;', clearing, re.M)
+    for name in cleared_fields:
+        members += '\n' + re.search(r'        public [^\n]+ ' + name + r'\s*\{.*?\n        \}', delegate, re.S).group()
+    members += '\n' + code_property + '\n' + clearing
+    members += '\n' + method(delegate, 'UpdateExamDescription') + '\n' + method(delegate, 'ResetRecommendedAgeRange')
+    members += '\n' + '\n'.join(line for line in delegate.splitlines() if re.search(r'(private readonly string\[\] examCode|public bool Is(?:15Or27Month|Rsk|6To8Week|Dsk)Contact =>)', line))
     members += '\n' + method(delegate, 'ResetDeviations').replace('ChildMeasurementsRange', 'RangeFixture')
     members += '\n' + method(delegate, 'ValidateAndSetExamCode').replace('FaultException<ValidationWarningFault>', 'ValidationWarningFault').replace('FaultException<ValidationFault>', 'ValidationFault')
     symbols = sorted(set(re.findall(r'\b\w+(?:Message|Prompt|Title)\b', members)) - {'warningMessage', 'WarningNotificationMessage'})
@@ -185,6 +195,16 @@ public static class DateExtensions {
     add('KD03-weight-setter-warning', 'measurement-setter', {**base, 'newWeight': 6.1},
         weight=6.1, bmi=20.17, notifications=['Bmi', 'IsBmiOutsideRange'],
         warnings=['BmiOutsidePrescribedRangeMessage'])
+    for name, current, code, validated in [('blocked', 'KD03', 'KD08', False), ('unchanged', 'KD03', 'KD03', True), ('enter', 'KD08', 'KD03', True), ('leave', 'KD03', 'KD08', True)]:
+        changed = validated and current != code
+        add('KD03-code-setter-' + name, 'code-setter',
+            {**base, 'ExaminationCode': current, 'code': code, 'validated': validated, 'Development': 1, 'DskLocomotor': '1', 'RskEngagement': 1},
+            selected=code if changed else current, heart=None if changed and code != 'KD03' else 1,
+            development=None if changed and code == 'KD03' else 1,
+            dsk=None if changed and code == 'KD03' else '1', rsk=None if changed and code == 'KD03' else 1,
+            description=('Synthetic ' + code) if changed else None,
+            rangesReset=changed, lazyBeforeRead=True, scheduleRequests=[code if changed else current],
+            notifications=['ExamDescription', 'Is15Or27MonthContact', 'Is6To8WeekContact', 'IsDskContact', 'IsRskContact'] if changed else [])
     for kind in ('Height', 'Weight', 'HeadCircumference'):
         for declined in (True, False):
             add('KD03-decline-' + kind + '-' + str(declined).lower(), 'decline',
@@ -260,7 +280,7 @@ Oracle IDs, triggers, locks, EF6 mappings, schedule, centile bands, general opti
 ''')
     put('gaps.md', '''# Gaps and assumptions
 ## Blocking
-- Extracted examination-date setter now proves same-day no-op, original time preservation on day changes and lazy deviation-range reset. Extracted measurement setters dispatch PropertyChanged to CheckBmi and verify resulting BMI warnings. Windows controls, examination-code setter lifecycle, Populate and original DTO change tracking remain unverified. Extracted parent methods now execute new-result defaults and cancel-changes accept/reject/reload decisions, with explicit change-tracking and reload fixtures. Code-selection duplicate and change confirmations exercise both responses. Decline setters (including unchecking), lookup validation and BMI/deviation warnings now execute extracted members; full delegate lifecycle remains unverified.
+- Extracted examination-date setter now proves same-day no-op, original time preservation on day changes and lazy deviation-range reset. Extracted measurement setters dispatch PropertyChanged to CheckBmi and verify resulting BMI warnings. Windows controls, Populate and original DTO change tracking remain unverified. Examination-code setter lifecycle now executes source-extracted hidden-field clearing, notifications, description and lazy schedule reset. Extracted parent methods now execute new-result defaults and cancel-changes accept/reject/reload decisions, with explicit change-tracking and reload fixtures. Code-selection duplicate and change confirmations exercise both responses. Decline setters (including unchecking), lookup validation and BMI/deviation warnings now execute extracted members; full delegate lifecycle remains unverified.
 - Repeat-flag effects require an explicit reviewed scope adjustment or implementation before approval; appointment and recall processing alone were excluded in the seed.
 - The missing WeeksBetween extension is adapted to elapsed days / 7. Review or recover exact legacy rounding before claiming boundary-age parity.
 ## Non-blocking / review assumptions
@@ -280,7 +300,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - Missing resource strings replaced with their symbolic names; fault wrappers replaced with Exceptions carrying those names. Aggregated numbered messages normalised only by removing numbering/newlines. Resource identifiers compared exactly in order.
 - `{bmi_path}` CalculateBmi method retained verbatim in a small container.
 - `{delegate_path}` CheckAgeWithinScheduleRange body retained verbatim; visibility made public; schedule Lazy reads fixture; Messenger records resource IDs. Missing WeeksBetween adapted as elapsed days / 7 (blocking review gap).
-- ExtractedInteractions retains BMI/decline/measurement properties and lookup/deviation/BMI method bodies except private visibility. Notifications dispatch through a synchronous PropertyChanged event subscribed to extracted CheckBmi, mirroring the source constructor subscription (not Windows controls). ExaminationDate and ResetDeviations bodies are retained, with ChildMeasurementsRange renamed to the fixture record; GetExpectedRanges records the date and supplies invented height range 40–60. Shared examples check same-day no-op, time preservation, lazy range reset and weight-setter BMI warning dispatch. Lookup retrieval supplies synthetic rows or null; invented height range 40–60 and BMI range 10–20 do not claim database provenance. Display names use symbolic enum names. ValidateAndSetExamCode retains its body with WCF fault wrappers replaced by local exceptions carrying Detail.Title; synchronous confirmation responses are fixture-controlled and recorded. ExaminationCode assignment stores the DTO value without Windows property-change events; that lifecycle remains unverified.
+- ExtractedInteractions retains BMI/decline/measurement properties and lookup/deviation/BMI method bodies except private visibility. Notifications dispatch through a synchronous PropertyChanged event subscribed to extracted CheckBmi, mirroring the source constructor subscription (not Windows controls). ExaminationDate and ResetDeviations bodies are retained, with ChildMeasurementsRange renamed to the fixture record; GetExpectedRanges records the date and supplies invented height range 40–60. Shared examples check same-day no-op, time preservation, lazy range reset and weight-setter BMI warning dispatch. Lookup retrieval supplies synthetic rows or null; invented height range 40–60 and BMI range 10–20 do not claim database provenance. Display names use symbolic enum names. ValidateAndSetExamCode retains its body with WCF fault wrappers replaced by local exceptions carrying Detail.Title; synchronous confirmation responses are fixture-controlled and recorded. ExaminationCode, UpdateExamDescription, ClearDataFromHiddenFields, their field properties and ResetRecommendedAgeRange are source-extracted. Shared setter cases cover blocked/same-code no-ops and entering/leaving KD03, notifications, description, hidden-field clearing and lazy schedule reset. Synthetic descriptions and a recording schedule double returning 6–8 weeks replace lookups/services; Windows controls remain unverified. TransferObjectBase.Lock is a storage-only string substitution, not a concurrency implementation. ExamDescription accessor supplies the notification name only; observations read the DTO directly, not the source display accessor.
 - `{lifecycle_path}` AddNewKdpResult and ConfirmCancelChanges bodies retained except WCF warning wrapper substitution and DateTime.Now -> ReferenceClock.Now (2025-03-01 noon). Unscheduled enum value 2 is from LookupsUtility.EXAMINATION_ORIGIN. Empty outstanding-appointment list models the excluded appointment workflow. GetNewKdpExaminationResultDelegate stores the DTO only (Populate/Windows events unverified); hasChanged returns an explicit fixture flag, not original change tracking. Reload double records IDs and supplies a detached stored DTO; this proves reload orchestration, not database reads. Scenarios cover accept/reject, unchanged, new and empty cancellation paths and defaults/consent/insertion order.
 - reference driver dispatches operation then serialises errors/warnings/BMI and detached accepted-input clone. It is NOT the save service and does NOT prove persistence. No random IDs are generated. No business rules supplied by database doubles.
 - `original/` retains unadapted source sections for independent inspection. `source-index.json` records original identity and bundle line for every one of 94 files.

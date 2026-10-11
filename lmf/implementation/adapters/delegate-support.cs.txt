@@ -19,11 +19,14 @@ public class ExtractedInteractions {
  public ExtractedInteractions() { PropertyChanged += CheckBmi; }
  public KdpExaminationValidator validator = new();
  public List<KdpExaminationResultTO> existingResults = new();
- public List<LookupsSubTO> KdpExaminationList = new() { new() { Code = "KD03" } };
+ public List<LookupsSubTO> KdpExaminationList = new() { new() { Code = "KD03", Description = "Synthetic KD03" }, new() { Code = "KD08", Description = "Synthetic KD08" } };
+ public Lazy<Tuple<double, double>> recommendedAgeRangeInWeeks;
+ public ScheduleFixture KdpExaminationService = new();
+ const string ExamCode6To8WeekContact = "KD03", RecallText = " [synthetic recall text]";
  public long PkChildExaminationId => KdpExaminationResultTo.PkChildExaminationId;
  public bool ExamCodeValidated;
- // Storage-only substitution: Windows property-change lifecycle is not exercised.
- public string ExaminationCode { get => KdpExaminationResultTo.ExaminationCode; set => KdpExaminationResultTo.ExaminationCode = value; }
+ // Name-only accessor for extracted notification; DTO description is observed directly.
+ public string ExamDescription => KdpExaminationResultTo.ExamDescription;
  const string BmiMeasurmentType = "BMI";
  public ExtractedBmi measurementsService = new();
  // Lookup retrieval is a double: caller supplies reviewed synthetic rows, including null.
@@ -33,6 +36,10 @@ public class ExtractedInteractions {
   PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
  }
 __MEMBERS__
+}
+public class ScheduleFixture {
+ public List<string> Requests = new();
+ public Tuple<double, double> GetAgeRangeFromExamSchedule(string code) { Requests.Add(code); return new(6, 8); }
 }
 public record LookupFixture(string Code, string UsedCode);
 public record RangeFixture(string MeasurementType, double LowerBound, double UpperBound);

@@ -69,6 +69,7 @@ foreach (var scenario in scenarios)
                 age.CheckAgeWithinScheduleRange(result.ExaminationDate);
                 warnings.AddRange(age.Messenger.Warnings);
                 break;
+            case "code-setter":
             case "date-setter":
             case "measurement-setter":
             case "code-selection":
@@ -86,6 +87,23 @@ foreach (var scenario in scenarios)
                 };
                 if (input["nullLookup"]?.GetValue<bool>() == true) { interaction.locationList = null; interaction.examinerList = null; }
                 switch (scenario["when"].GetValue<string>()) {
+                    case "code-setter":
+                        interaction.recommendedAgeRangeInWeeks = new(() => interaction.KdpExaminationService.GetAgeRangeFromExamSchedule(interaction.ExaminationCode));
+                        var priorSchedule = interaction.recommendedAgeRangeInWeeks;
+                        interaction.ExamCodeValidated = input["validated"].GetValue<bool>();
+                        interaction.ExaminationCode = input["code"].GetValue<string>();
+                        observed["selected"] = result.ExaminationCode;
+                        observed["heart"] = result.Heart;
+                        observed["development"] = result.Development;
+                        observed["dsk"] = result.DskLocomotor;
+                        observed["rsk"] = result.RskEngagement;
+                        observed["description"] = result.ExamDescription;
+                        observed["rangesReset"] = !ReferenceEquals(priorSchedule, interaction.recommendedAgeRangeInWeeks);
+                        observed["lazyBeforeRead"] = !interaction.recommendedAgeRangeInWeeks.IsValueCreated;
+                        _ = interaction.recommendedAgeRangeInWeeks.Value;
+                        observed["scheduleRequests"] = JsonSerializer.SerializeToNode(interaction.KdpExaminationService.Requests);
+                        observed["notifications"] = JsonSerializer.SerializeToNode(interaction.Notifications);
+                        break;
                     case "date-setter":
                         var priorRanges = interaction.deviationRanges;
                         interaction.ExaminationDate = DateTime.Parse(input["newDate"].GetValue<string>());

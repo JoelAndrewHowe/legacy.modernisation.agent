@@ -52,6 +52,19 @@ class CharacteriseTests(unittest.TestCase):
             self.assertEqual({'weight': 6.1, 'bmi': 20.17,
                 'notifications': ['Bmi', 'IsBmiOutsideRange'], 'errors': [],
                 'warnings': ['BmiOutsidePrescribedRangeMessage']}, rows['KD03-weight-setter-warning'])
+            for name in ('blocked', 'unchanged', 'enter', 'leave'):
+                row = rows['KD03-code-setter-' + name]
+                changed = name in ('enter', 'leave')
+                self.assertEqual('KD08' if name == 'leave' else 'KD03', row['selected'])
+                self.assertEqual(changed, row['rangesReset'])
+                self.assertTrue(row['lazyBeforeRead'])
+                self.assertEqual([row['selected']], row['scheduleRequests'])
+                self.assertEqual(None if name == 'leave' else 1, row['heart'])
+                self.assertEqual(None if name == 'enter' else 1, row['development'])
+                self.assertEqual(None if name == 'enter' else '1', row['dsk'])
+                self.assertEqual(None if name == 'enter' else 1, row['rsk'])
+                self.assertEqual('Synthetic ' + row['selected'] if changed else None, row['description'])
+                self.assertEqual(['ExamDescription', 'Is15Or27MonthContact', 'Is6To8WeekContact', 'IsDskContact', 'IsRskContact'] if changed else [], row['notifications'])
             for kind in ('Height', 'Weight', 'HeadCircumference'):
                 for declined, flag in [('true', 'Y'), ('false', 'N')]:
                     self.assertEqual({'value': None, 'flag': flag, 'errors': [], 'warnings': []}, rows[f'KD03-decline-{kind}-{declined}'])
@@ -98,6 +111,8 @@ class CharacteriseTests(unittest.TestCase):
             self.assertIn('hasChanged returns an explicit fixture flag', adaptations)
             self.assertIn('Populate/Windows events unverified', adaptations)
             self.assertIn('ExaminationDate and ResetDeviations bodies are retained', adaptations)
+            self.assertIn('ClearDataFromHiddenFields', adaptations)
+            self.assertIn('recording schedule double', adaptations)
             self.assertIn('PropertyChanged event subscribed to extracted CheckBmi', adaptations)
             approve = cli('approve', '--workspace', str(workspace), '--revision', state['Revision'])
             self.assertNotEqual(0, approve.returncode)
