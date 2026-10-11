@@ -121,6 +121,30 @@ test('keys drive movement, rotation, soft/hard drop and restart', () => {
   } finally { stop(); }
 });
 
+test('hard-drop key clears a line and redraws progression within 24 rows', () => {
+  const { input, output } = terminal();
+  const game = new Game(() => 0.5);
+  game.lines = 9;
+  game.board[19].fill('J');
+  game.board[19][4] = null;
+  game.board[19][5] = null;
+  game.piece = { type: 'O', x: 3, y: 18, cells: [[1, 0], [2, 0], [1, 1], [2, 1]] };
+  const stop = startTerminal(input, output, { game, env: { NO_COLOR: '' } });
+  try {
+    output.written = '';
+    input.emit('keypress', ' ', { name: 'space' });
+    assert.equal(game.lines, 10);
+    assert.equal(game.score, 100);
+    assert.equal(game.level, 2);
+    assert.equal(game.board.flat().filter(Boolean).length, 2);
+    const frame = output.written.replace(/^\x1b\[H\x1b\[2J/, '').split('\n');
+    assert.equal(frame.length, 24);
+    assert.ok(frame.every(row => row.length <= output.columns));
+    assert.match(frame[0], /Score: 100.*Lines: 10.*Level: 2/);
+    assert.match(frame[23], /Space.*quit/);
+  } finally { stop(); }
+});
+
 test('gravity locks pieces and stops advancing at game over until restart', t => {
   t.mock.timers.enable({ apis: ['setInterval'] });
   const { input, output } = terminal();
