@@ -342,10 +342,22 @@ public class ExtractedDropdownControls {
             description=('Synthetic ' + code) if changed else None,
             rangesReset=changed, lazyBeforeRead=True, scheduleRequests=[code if changed else current],
             notifications=['ExamDescription', 'Is15Or27MonthContact', 'Is6To8WeekContact', 'IsDskContact', 'IsRskContact'] if changed else [])
+    for field, value, bmi_value, outside in [
+        ('Height', 40, 28.12, True), ('Height', 55, 14.88, False), ('Height', None, None, False),
+        ('Weight', 3, 9.92, True), ('Weight', 4.5, 14.88, False), ('Weight', None, None, False),
+        ('HeadCircumference', 40, 14.88, False), ('HeadCircumference', None, 14.88, False),
+    ]:
+        notifications = ['HeadCircumference'] if field == 'HeadCircumference' else ['Bmi', 'IsBmiOutsideRange']
+        add('KD03-assignment-' + field + '-' + str(value), 'measurement-assignment',
+            {**base, 'field': field, 'value': value},
+            warnings=['BmiOutsidePrescribedRangeMessage'] * 2 if outside else [],
+            value=value, bmi=bmi_value, outside=outside, notifications=notifications * 2)
     for kind in ('Height', 'Weight', 'HeadCircumference'):
         for declined in (True, False):
             add('KD03-decline-' + kind + '-' + str(declined).lower(), 'decline',
-                {**base, 'measurement': kind, 'declined': declined}, value=None, flag='Y' if declined else 'N')
+                {**base, 'measurement': kind, 'declined': declined}, value=None, flag='Y' if declined else 'N',
+                required=not declined, notifications=['Is' + kind + 'Required'] +
+                (['HeadCircumference'] if kind == 'HeadCircumference' else ['Bmi', 'IsBmiOutsideRange']))
     for operation in ('location', 'examiner'):
         for code, valid, error in [('', True, None), ('SYNTH', True, None), ('MISSING', False, 'InvalidLocationCodeMessage' if operation == 'location' else 'InvalidHcpCodeMessage')]:
             add('KD03-' + operation + '-' + (code or 'empty'), operation, {**base, 'code': code}, [error] if error else [], valid=valid)
@@ -430,6 +442,8 @@ Oracle IDs, triggers, locks, EF6 mappings, schedule, centile bands, general opti
 - Extracted examination-date setter now proves same-day no-op, original time preservation on day changes and lazy deviation-range reset. Extracted measurement setters dispatch PropertyChanged to CheckBmi and verify resulting BMI warnings. Measurement validation handlers execute with control doubles; real Windows controls and original DTO change tracking remain unverified. Extracted Populate now verifies context assignment, scheduled/unscheduled state, lazy range resets and repeat-safe numeric lookup descriptions with synthetic lookup rows. Examination-code setter lifecycle now executes source-extracted hidden-field clearing, notifications, description and lazy schedule reset. Extracted parent methods now execute new-result defaults and cancel-changes accept/reject/reload decisions, with explicit change-tracking and reload fixtures. Code-selection duplicate and change confirmations exercise both responses. Decline setters (including unchecking), lookup validation and BMI/deviation warnings now execute extracted members; full delegate lifecycle remains unverified.
 - Repeat-flag effects require an explicit reviewed scope adjustment or implementation before approval; appointment and recall processing alone were excluded in the seed.
 - Recovered `{dates_path}` DaysBetween/WeeksBetween: elapsed days truncate toward zero before division by 7. Both bodies are extracted unchanged; fractional-day and negative-interval scenarios prevent regression to the former elapsed-days / 7 substitution.
+Measurement assignment scenarios execute each retained Height/Weight/HeadCircumference setter twice, including unchanged and null values. They observe DTO values, calculated BMI, range status, ordered notifications and repeated warning dispatch. Decline scenarios also observe required-state and ordered notifications on both checking and unchecking; either action clears the measurement. These are synchronous delegate observations, not Windows event/binding evidence.
+
 ## Non-blocking / review assumptions
 
 Repeat-flag query infrastructure is an in-memory fixture, not EF6/Oracle: explicit already-loaded database rows and local tracked rows replace Include/Repository/Local; navigation repair, filtering, grouping and flag assignment execute the retained source method. No transaction, database loading, concurrency or save-service integration parity is claimed.

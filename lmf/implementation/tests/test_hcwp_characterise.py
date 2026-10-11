@@ -124,9 +124,21 @@ class CharacteriseTests(unittest.TestCase):
                 self.assertEqual(None if name == 'enter' else 1, row['rsk'])
                 self.assertEqual('Synthetic ' + row['selected'] if changed else None, row['description'])
                 self.assertEqual(['ExamDescription', 'Is15Or27MonthContact', 'Is6To8WeekContact', 'IsDskContact', 'IsRskContact'] if changed else [], row['notifications'])
+            for field, value, bmi, outside in [
+                ('Height', 40, 28.12, True), ('Height', 55, 14.88, False), ('Height', None, None, False),
+                ('Weight', 3, 9.92, True), ('Weight', 4.5, 14.88, False), ('Weight', None, None, False),
+                ('HeadCircumference', 40, 14.88, False), ('HeadCircumference', None, 14.88, False),
+            ]:
+                notifications = ['HeadCircumference'] if field == 'HeadCircumference' else ['Bmi', 'IsBmiOutsideRange']
+                self.assertEqual({'value': value, 'bmi': bmi, 'outside': outside,
+                    'notifications': notifications * 2, 'errors': [],
+                    'warnings': ['BmiOutsidePrescribedRangeMessage'] * 2 if outside else []},
+                    rows[f'KD03-assignment-{field}-{value}'])
             for kind in ('Height', 'Weight', 'HeadCircumference'):
                 for declined, flag in [('true', 'Y'), ('false', 'N')]:
-                    self.assertEqual({'value': None, 'flag': flag, 'errors': [], 'warnings': []}, rows[f'KD03-decline-{kind}-{declined}'])
+                    notifications = ['Is' + kind + 'Required'] + (['HeadCircumference'] if kind == 'HeadCircumference' else ['Bmi', 'IsBmiOutsideRange'])
+                    self.assertEqual({'value': None, 'flag': flag, 'required': declined == 'false',
+                        'notifications': notifications, 'errors': [], 'warnings': []}, rows[f'KD03-decline-{kind}-{declined}'])
             self.assertFalse(rows['KD03-examiner-unused']['valid'])
             self.assertEqual(['UnusedExaminerCodeMessage'], rows['KD03-examiner-unused']['errors'])
             for kind, maximum, stored_key in [('LOCATON_TYPE', 7, 22), ('EXAMINER_TYPE', 12, 28), ('REASON_NOT_EXAMINED', 5, 5)]:

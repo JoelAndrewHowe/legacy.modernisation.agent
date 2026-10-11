@@ -204,6 +204,7 @@ foreach (var scenario in scenarios)
             case "code-setter":
             case "date-setter":
             case "measurement-setter":
+            case "measurement-assignment":
             case "code-selection":
             case "decline":
             case "location":
@@ -291,6 +292,16 @@ foreach (var scenario in scenarios)
                         observed["bmi"] = interaction.Bmi;
                         observed["notifications"] = JsonSerializer.SerializeToNode(interaction.Notifications);
                         break;
+                    case "measurement-assignment":
+                        var assignedField = input["field"].GetValue<string>();
+                        var assignedValue = input["value"]?.GetValue<decimal>();
+                        for (var assignment = 0; assignment < 2; assignment++)
+                            typeof(ExtractedInteractions).GetProperty(assignedField).SetValue(interaction, assignedValue);
+                        observed["value"] = JsonSerializer.SerializeToNode(typeof(ExtractedInteractions).GetProperty(assignedField).GetValue(interaction));
+                        observed["bmi"] = interaction.Bmi;
+                        observed["outside"] = interaction.IsBmiOutsideRange;
+                        observed["notifications"] = JsonSerializer.SerializeToNode(interaction.Notifications);
+                        break;
                     case "code-selection":
                         interaction.Messenger.ConfirmationResponse = input["response"]?.GetValue<bool>() ?? false;
                         if (input["duplicate"]?.GetValue<bool>() == true)
@@ -305,6 +316,8 @@ foreach (var scenario in scenarios)
                         typeof(ExtractedInteractions).GetProperty("Is" + measurement + "Declined").SetValue(interaction, declined);
                         observed["value"] = JsonSerializer.SerializeToNode(typeof(ExtractedInteractions).GetProperty(measurement).GetValue(interaction));
                         observed["flag"] = measurement switch { "Height" => result.HeightMeasurementDeclined, "Weight" => result.WeightMeasurementDeclined, _ => result.HeadMeasurementDeclined };
+                        observed["required"] = JsonSerializer.SerializeToNode(typeof(ExtractedInteractions).GetProperty("Is" + measurement + "Required").GetValue(interaction));
+                        observed["notifications"] = JsonSerializer.SerializeToNode(interaction.Notifications);
                         break;
                     case "description-accessor":
                         interaction.ExamDescription = input["description"]?.GetValue<string>();
