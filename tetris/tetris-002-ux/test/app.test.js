@@ -291,6 +291,51 @@ test('minimized terminals show no content and allow quitting with timer cleanup'
   }
 });
 
+test('minimizing active gameplay pauses it until the exact minimum size is restored', () => {
+  for (const [columns, rows] of [[0, 24], [22, 0], [0, 0]]) {
+    const io = terminal();
+    const game = new Game(() => 0);
+    let tick;
+    let cancelled;
+    const stop = startApp({ ...io, game,
+      setInterval: (callback) => { tick = callback; return 42; },
+      clearInterval: (id) => { cancelled = id; },
+    });
+    try {
+      io.input.emit('keypress', '', { name: 'return' });
+      tick();
+      const before = JSON.stringify(game);
+      io.output.columns = columns;
+      io.output.rows = rows;
+      const offset = io.text().length;
+      io.output.emit('resize');
+      assert.equal(io.text().slice(offset), '\x1b[H\x1b[2J');
+      for (const name of ['left', 'right', 'up', 'down', 'space', 'return']) {
+        io.input.emit('keypress', '', { name });
+      }
+      tick();
+      assert.equal(JSON.stringify(game), before);
+
+      io.output.columns = 22;
+      io.output.rows = 24;
+      const restoredOffset = io.text().length;
+      io.output.emit('resize');
+      const restored = io.text().slice(restoredOffset);
+      assert.equal(restored, '\x1b[H\x1b[2J' + renderFrame(game));
+      const lines = restored.slice('\x1b[H\x1b[2J'.length).split('\r\n');
+      assert.equal(lines.length, 24);
+      assert.ok(lines.every(line => line.length <= 22));
+      assert.equal(JSON.stringify(game), before);
+      tick();
+      assert.equal(game.piece.y, 2);
+    } finally {
+      stop();
+    }
+    assert.equal(cancelled, 42);
+    assert.equal(io.input.isRaw, false);
+  }
+});
+
 test('resizing preserves the help pause until explicitly resumed', () => {
   const io = terminal();
   const game = new Game(() => 0);
