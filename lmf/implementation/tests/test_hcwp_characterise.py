@@ -61,6 +61,7 @@ class CharacteriseTests(unittest.TestCase):
                 ('empty', [[], []], [[], []], []),
             ]:
                 self.assertEqual({'keys': keys, 'texts': texts, 'selected': selected,
+                    'preparationCounts': [1, 1] if name != 'empty' else [0, 0],
                     'controlIdentities': [True, True],
                     'controlIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
                     'resultCollectionIdentities': [True, True], 'resultOrderedIdentities': [True, True],
@@ -957,6 +958,27 @@ class CharacteriseTests(unittest.TestCase):
                             self.assertEqual(rows[row['id']], {**actual,
                                 'controlIdentities': [True, True],
                                 'controlIdentitiesAtPreparation': rows[row['id']]['controlIdentitiesAtPreparation']})
+                finally:
+                    extracted_setup.write_text(original_setup)
+            # Assert per-invocation cardinality directly, including null selection;
+            # a last-dispatched-tab check alone is not a dispatch count.
+            preparation_call = 'SetUpTabPageContent(hlxAdminTabControlKdpExamination.SelectedTab);'
+            self.assertEqual(1, original_setup.count(preparation_call))
+            for replacement, count in [('// mutation: omitted preparation', 0),
+                                       (preparation_call + '\n' + preparation_call, 2)]:
+                try:
+                    extracted_setup.write_text(original_setup.replace(preparation_call, replacement))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                    failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                    self.assertEqual({'KD03-ui-tab-setup-' + name for name in
+                                      ('default', 'current', 'new', 'null-current')}, failures)
+                    for row in mutant_report['scenarios']:
+                        if row['id'] in failures:
+                            self.assertEqual([count, count], row['actual']['preparationCounts'])
+                        elif row['id'] == 'KD03-ui-tab-setup-empty':
+                            self.assertEqual([0, 0], row['actual']['preparationCounts'])
                 finally:
                     extracted_setup.write_text(original_setup)
             zero_guard = 'PkChildExaminationId != NewExamNumber'

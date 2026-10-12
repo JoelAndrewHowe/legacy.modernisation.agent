@@ -248,6 +248,7 @@ foreach (var scenario in scenarios)
                 var originalSetupTabs = setupTabs.ToArray();
                 setupControl.currentTab = input["current"] == null ? null : setupTabs[input["current"].GetValue<int>()];
                 var originalCurrentSetupTab = setupControl.currentTab;
+                var setupPreparationCounts = new List<int>();
                 var setupKeys = new List<string[]>();
                 var setupTexts = new List<string[]>();
                 var setupSelected = new List<string>();
@@ -270,6 +271,7 @@ foreach (var scenario in scenarios)
                     var originalSetupResultRows = originalSetupResults.ToArray();
                     var preparationStart = setupControl.PreparedTabs.Count;
                     setupControl.SetUpTabPages();
+                    setupPreparationCounts.Add(setupControl.PreparedTabs.Count - preparationStart);
                     setupResultCollectionIdentitiesAtPreparation.AddRange(setupControl.ResultCollectionsAtPreparation.Skip(preparationStart)
                         .Select(results => ReferenceEquals(originalSetupResults, results)));
                     setupResultOrderedIdentitiesAtPreparation.AddRange(setupControl.ResultRowsAtPreparation.Skip(preparationStart)
@@ -291,6 +293,7 @@ foreach (var scenario in scenarios)
                         exactSetupSelection &= ReferenceEquals(expectedSetupTab, setupControl.hlxAdminTabControlKdpExamination.SelectedTab) && ReferenceEquals(expectedSetupTab, setupControl.PreparedTabs.LastOrDefault());
                     }
                 }
+                observed["preparationCounts"] = JsonSerializer.SerializeToNode(setupPreparationCounts);
                 observed["controlIdentities"] = JsonSerializer.SerializeToNode(setupControlIdentities);
                 observed["controlIdentitiesAtPreparation"] = JsonSerializer.SerializeToNode(setupControl.ControlsAtPreparation.Select(control => ReferenceEquals(originalSetupControl, control)));
                 observed["resultCollectionIdentitiesAtPreparation"] = JsonSerializer.SerializeToNode(setupResultCollectionIdentitiesAtPreparation);
