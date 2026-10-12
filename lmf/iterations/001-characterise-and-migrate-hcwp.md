@@ -73,6 +73,8 @@ When the only remaining action is human review or a scope decision, stop at the 
 
 Once the Characterise gate passes, stop in an explicit awaiting-approval state. The operator reviews the behaviour specification, scope exclusions, assumptions, and plan. Blocking gaps require resolution or an explicit scope adjustment. Approval must refer to the exact reviewed revision. A change to the source, target description, approved behaviour, or scenarios invalidates that approval.
 
+The approval command is the operator's attestation that this review occurred. For planning and resume decisions, a retained workspace in `approved` state whose approved revision equals its current calculated revision is authoritative evidence that the human gate is satisfied. Do not require a second statement of the operator's identity or approval provenance, and do not create inspection or confirmation tasks around an already-current approval. This does not permit an agent to approve on the operator's behalf; stale or absent approval must still stop for human review.
+
 ### 2. Convert
 
 After approval, move the included extracted business logic to modern .NET while retaining its legacy structure and behaviour. Both source and target are C#, so this stage is a runtime/dependency port rather than a language translation. Document necessary compatibility substitutions.
