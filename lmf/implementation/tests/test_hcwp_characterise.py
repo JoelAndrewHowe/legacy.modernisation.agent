@@ -41,6 +41,25 @@ class CharacteriseTests(unittest.TestCase):
             self.assertGreater(len(report['scenarios']), 20)
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
+            for name, exceptions in [('success', [False, False]), ('fault-retry', [True, False])]:
+                self.assertEqual({'saveCounts': [1, 2], 'exceptionIdentity': exceptions,
+                    'errors': [], 'warnings': []}, rows['KD03-save-button-' + name])
+            button_source = stage / 'reference/ExtractedSaveButton.cs'
+            original_button = button_source.read_text()
+            self.assertEqual(1, original_button.count('            Save();'))
+            for replacement, failures in [
+                ('            // omitted Save', {'KD03-save-button-success', 'KD03-save-button-fault-retry'}),
+                ('            Save(); Save();', {'KD03-save-button-success', 'KD03-save-button-fault-retry'}),
+                ('            try { Save(); } catch (InvalidOperationException) {}', {'KD03-save-button-fault-retry'}),
+            ]:
+                try:
+                    button_source.write_text(original_button.replace('            Save();', replacement))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                    self.assertEqual(failures, {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+                finally:
+                    button_source.write_text(original_button)
             for name, counts, sentinel, matched in [
                 ('existing', [1, 1], False, True), ('negative', [1, 1], False, True), ('new', [2, 3], True, True),
                 ('missing-existing', [0, 0], False, False), ('missing-new', [1, 1], True, False),

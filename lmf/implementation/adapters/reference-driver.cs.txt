@@ -95,6 +95,24 @@ foreach (var scenario in scenarios)
                 observed["sourceSame"] = JsonSerializer.SerializeToNode(sources);
                 break;
             }
+            case "save-button":
+            {
+                var button = new ExtractedSaveButton();
+                var counts = new List<int>();
+                var exceptions = new List<bool>();
+                for (var call = 0; call < 2; call++) {
+                    button.ThrowOnSave = call == 0 && input["failFirst"].GetValue<bool>();
+                    Exception failure = null;
+                    try {
+                        button.toolStripButtonSave_Click(call == 0 ? null : new object(), call == 0 ? null : EventArgs.Empty);
+                    } catch (InvalidOperationException error) { failure = error; }
+                    counts.Add(button.SaveCalls);
+                    exceptions.Add(ReferenceEquals(failure, button.Failure));
+                }
+                observed["saveCounts"] = JsonSerializer.SerializeToNode(counts);
+                observed["exceptionIdentity"] = JsonSerializer.SerializeToNode(exceptions);
+                break;
+            }
             case "ui-load":
             {
                 var loadControl = new ExtractedUiLoad();

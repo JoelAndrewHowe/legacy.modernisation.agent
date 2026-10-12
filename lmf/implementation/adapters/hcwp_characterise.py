@@ -246,6 +246,14 @@ public class ExtractedDropdownSelection {
     put('reference/ExtractedDropdownRefresh.cs', 'public class ExtractedDropdownRefresh : ExtractedDropdownSelection {\n'
         + '\n'.join(' public SelectionDropdownFixture ' + name + ' = new();' for name in refresh_fields)
         + '\n' + refresh + '\n}\n')
+    put('reference/ExtractedSaveButton.cs', '''using System;
+// Recording Save dispatch only; no Windows events or persistence.
+public class ExtractedSaveButton {
+ public int SaveCalls;
+ public bool ThrowOnSave;
+ public readonly InvalidOperationException Failure = new("SYNTH save failure");
+ public void Save() { SaveCalls++; if (ThrowOnSave) throw Failure; }
+''' + method(save_ui, 'toolStripButtonSave_Click').replace('private void', 'public void') + '\n}\n')
     put('reference/ExtractedUiLoad.cs', '''using System;
 // Direct load-handler invocation only; no Windows lifecycle/event delivery.
 public class ExtractedUiLoad {
@@ -362,6 +370,10 @@ public class ExtractedChildPopulate {
                 'dsk': code in ('KD11', 'KD08', 'KD09'),
                 'rsk': code in ('KD01', 'KD04', 'KD07', 'KD08', 'KD09', 'KD10')
             } for code in codes])
+    for fail_first in (False, True):
+        add('KD03-save-button-' + ('fault-retry' if fail_first else 'success'), 'save-button',
+            {**base, 'failFirst': fail_first},
+            saveCounts=[1, 2], exceptionIdentity=[fail_first, False])
     for initial in (False, True):
         add('KD03-ui-load-' + str(initial).lower(), 'ui-load',
             {**base, 'defaultStates': [initial, not initial]}, defaultStates=[False, False])
@@ -976,6 +988,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - ValidateNumericDescriptorEntered and its TYPE_OF_INPUT enum are retained verbatim alongside the source numeric position tables. Shared cases cover both position boundaries, zero/negative/out-of-range integers, stored-key versus UI-position differences, and permissive empty/nonnumeric/decimal/overflow inputs. Direct method invocation does not prove Windows key handling or binding.
 - Examination-code Validating/ButtonClick handlers from `{ui_path}` and LookUpExamCode from `{delegate_path}` retain their bodies. Text-only control and ShowFormLookup message doubles replace Windows UI/dialog infrastructure, record offered codes and supply explicit fixture responses; they do not validate or select codes themselves. Source ValidateAndSetExamCode performs validation/confirmation. Validating cancellation is observed separately from the selected code, including successful fallback lookup with cancellation still true. Original Windows event delivery remains unverified.
 - `{repeat_path}` UpdateRepeatFlags body is retained with internal -> public visibility only. RepositoryFixture supplies explicit preloaded query rows separately from local tracked rows; Include has no database side effects. Source local navigation repair and all repeat decisions execute unchanged. Synthetic rows include KD03 ties, a later same-day timestamp, KD08 family members, another patient and another prefix. Repeated execution observes idempotence. This is standalone repeat-logic evidence, not save-service/database parity; scope approval remains blocked.
+- `{save_ui_path}` toolStripButtonSave_Click is retained with public visibility in ExtractedSaveButton.cs. Two shared cases invoke twice with null then non-null sender/EventArgs. A recording Save double counts dispatches and optionally throws an explicit synthetic exception on the first call; observations verify exactly one Save call per invocation and propagation of the same exception object, followed by successful retry. Omission, duplicate-dispatch and exception-swallowing mutations exercise this contract. This is direct handler dispatch evidence, not execution of the real Save workflow, Windows event wiring or persistence; existing save orchestration evidence and approval blockers remain unchanged.
 - `{save_ui_path}` ucHLXKdpExaminations_Load is retained with public visibility in ExtractedUiLoad.cs. Two shared cases invoke it twice, explicitly resetting the default-tab flag before each invocation to cover both incoming states in both orders. The source resets the flag to false regardless of sender/EventArgs; omission and toggle mutations fail both cases. This verifies direct handler execution only, not Windows load-event registration/delivery or subsequent tab selection, and does not resolve existing approval blockers.
 - `{dropdown_path}` both dictionary Populate overloads are retained in ExtractedDropdownDictionary.cs with only UIComboBox renamed to the existing storage-only fixture. Six shared cases invoke each overload twice: empty controls populate once, preseeded controls preserve existing entries, and an empty first dictionary permits later population. Synthetic ordered keys include whitespace/empty text; byte values include 0/255/null and string values include empty/verbatim/null. Per-call item content, collection identity, retained item identities and unchanged input dictionary entries are observed. Removing or inverting the count guard is detected. Modern Dictionary enumeration is used, not proof of original framework ordering; Windows binding/event delivery and child integration remain unverified. Approval blockers unchanged.
 - `{dropdown_path}` list Populate overload is retained in ExtractedDropdownList.cs with UIComboBox/LookupsSubTO renamed to storage-only fixtures. Three shared cases invoke twice on a sentinel-seeded control, checking replacement/clearing, ordered duplicate codes, verbatim descriptions, nullable codes and optional trailing blank/null row. Per-call item values, Items collection identity and unchanged supplied row collection/ordered row references/values are observed. Clear-omission and null-row omission mutations exercise the contract. Synthetic rows are not real lookup data; Janus selection/binding/event delivery and integration with child Populate remain unverified. Approval blockers unchanged.
