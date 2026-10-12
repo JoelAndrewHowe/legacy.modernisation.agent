@@ -2,7 +2,7 @@
 
 Requires .NET 10 SDK. Run `./lmf help`, or publish `Lmf/Lmf.csproj` for a standalone command. Python 3 is required only for the smoke tests: `python3 tests/test_cli.py`.
 
-This implements the orchestration foundation and a source-bound HCWP Characterise adapter, **not a completed HCWP migration**. Characterise now produces approval-ready extracted-reference evidence for the bounded KD03 workflow, including the agreed repeat-flag behaviour. Windows lifecycle, excluded infrastructure and unsupported-contact behaviour remain documented limitations. Convert now builds a standalone .NET 10 port and mechanically compares approved scenarios with the extracted reference. Refactor, style/browser gates and real-agent evidence remain subsequent tasks. No parity with the original Windows/Oracle application is claimed; the baseline is extracted legacy logic. No real-agent migration or browser demonstration has been verified here.
+This implements the orchestration foundation and a source-bound HCWP Characterise adapter, **not a completed HCWP migration**. Characterise now produces approval-ready extracted-reference evidence for the bounded KD03 workflow, including the agreed repeat-flag behaviour. Windows lifecycle, excluded infrastructure and unsupported-contact behaviour remain documented limitations. Convert now builds a standalone .NET 10 port and mechanically compares approved scenarios with the extracted reference. Refactor now generates server-interactive Blazor with EF Core in-memory persistence and runs build, C# formatting, approved kernel parity, fresh-context persistence and actual Chromium browser gates. Runner hardening and real-agent evidence remain subsequent tasks. No parity with the original Windows/Oracle application is claimed; the baseline is extracted legacy logic. No real-agent migration has been verified here.
 
 ## Commands
 
@@ -67,7 +67,7 @@ Artifacts remain under `characterise/`, `convert/`, `refactor/`. Every attempt h
 
 ## Supplied HCWP Characterise adapter
 
-`adapters/hcwp_characterise.py` is a deterministic source-extraction adapter, not a real coding-agent run. It accepts the same appended request JSON contract, reads the actual 94-file bundle and target description, and generates the reviewed documents, complete DTO inventory, original-file index, fixtures, shared scenarios and independently inspectable C# reference. It dispatches Convert to `adapters/hcwp_convert.py`; Refactor explicitly fails rather than fabricate implementation evidence. Convert retains approved extracted source and dependency substitutions in a separate assembly (no reference assembly dependency), with a source/hash manifest and `PORT.md`. Its runner-executed `verify.py` builds/runs both assemblies using the approved scenarios/fixtures, requires ordered scenario identities and full observation equality with approved expectations, and emits `parity-report.json`. This is a runtime port, not persistence or browser evidence.
+`adapters/hcwp_characterise.py` is a deterministic source-extraction adapter, not a real coding-agent run. It accepts the same appended request JSON contract, reads the actual 94-file bundle and target description, and generates the reviewed documents, complete DTO inventory, original-file index, fixtures, shared scenarios and independently inspectable C# reference. It dispatches Convert to `adapters/hcwp_convert.py` and Refactor to `adapters/hcwp_refactor.py`. Convert retains approved extracted source and dependency substitutions in a separate assembly (no reference assembly dependency), with a source/hash manifest and `PORT.md`. Its runner-executed `verify.py` builds/runs both assemblies using the approved scenarios/fixtures, requires ordered scenario identities and full observation equality with approved expectations, and emits `parity-report.json`. This is a runtime port, not persistence or browser evidence.
 
 Create a target description containing `Blazor` and `in-memory` (for example, `Modern .NET server-interactive Blazor with EF Core in-memory persistence`) and an agent config using absolute paths:
 
@@ -83,7 +83,9 @@ To rerun extracted verification independently, run `python3 WORKSPACE/characteri
 
 ## Tests
 
-The retained supplied-bundle approval checkpoint is documented in [`docs/hcwp-approval-gate.md`](docs/hcwp-approval-gate.md); its current revision is operator-approved. The retained migration has accepted Convert evidence; resume currently stops at the unimplemented Refactor stage without discarding accepted lines.
+The retained supplied-bundle approval checkpoint is documented in [`docs/hcwp-approval-gate.md`](docs/hcwp-approval-gate.md); its current revision is operator-approved. The retained migration has accepted Convert evidence. Refactor prerequisites are NuGet access for EF Core InMemory 10.0.0 and Python Playwright/Chromium (`python3 -m pip install playwright`, `python3 -m playwright install --with-deps chromium`). Missing prerequisites fail the gate. Launch the generated synthetic app with `dotnet run --project workspaces/hcwp/migration/refactor/app/Hcwp.csproj -- --urls http://127.0.0.1:5080`. Its `REFACTOR.md` documents source/default adaptations, synthetic fixtures, read-back and temporary-storage limitations. See [`docs/hcwp-refactor.md`](docs/hcwp-refactor.md) for evidence and scope.
+
+`python3 tests/test_hcwp_refactor.py` checks final-assembly parity, EF fresh-context read-back, browser add/reload/invalid/warning paths, calculation mismatch, persistence defect, unavailable-browser failure, changed-input invalidation and recovery.
 
 `python3 tests/test_hcwp_convert.py` checks standalone port parity, changed-calculation mismatch reporting, malformed observations, reviewed-input protection and recovery.
 

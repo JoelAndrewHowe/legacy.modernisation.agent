@@ -1,0 +1,106 @@
+@page "/"
+@inject RecordingService Service
+
+<h1>KD03 — 6–8-week contact</h1>
+<p>Synthetic patient 1001, boy, born 2025-01-01. Demonstration clock: 2025-03-01.</p>
+<p>Extracted-legacy parity only. Temporary in-memory storage; no clinical use.</p>
+<form data-interactive="@interactive.ToString()" @onsubmit="Submit" @onsubmit:preventDefault>
+    <label>Contact <select id="contact" disabled><option>KD03</option></select></label>
+    <label>Examination date <input id="ExaminationDate" type="date" @bind="draft.ExaminationDate" @bind:after="DraftChanged" /></label>
+    @foreach (var name in TextFields)
+    {
+        var field = name;
+        <p><label>@field <input id="@field" value="@Get(field)" @onchange="e => Set(field, e.Value?.ToString())" /></label></p>
+    }
+    @foreach (var name in NumberFields)
+    {
+        var field = name;
+        <p><label>@field <input id="@field" type="number" step="any" value="@Get(field)" @onchange="e => Set(field, e.Value?.ToString())" /></label></p>
+    }
+    @foreach (var name in DictionaryFields)
+    {
+        var field = name;
+        <p><label>@field <select id="@field" value="@Get(field)" @onchange="e => Set(field, e.Value?.ToString())">
+            @foreach (var option in Options(field))
+            {
+                <option value="@option.Value" selected="@(Get(field) == option.Value?.ToString())">@option.Key</option>
+            }
+        </select></label></p>
+    }
+    @foreach (var name in DeclineFields)
+    {
+        var field = name;
+        <p><label>@field <input id="@field" type="checkbox" checked="@(Get(field) == "Y")" @onchange="e => SetDeclined(field, (bool)e.Value)" /></label></p>
+    }
+    <p><label>WithdrawConsent <input id="WithdrawConsent" type="checkbox" @bind="draft.WithdrawConsent" @bind:after="DraftChanged" /></label></p>
+    <button id="save" type="submit">Save result</button>
+</form>
+<div id="outcome" role="status">
+    @foreach (var error in inputErrors.Values) { <p>@error</p> }
+    @if (outcome is not null)
+    {
+        @foreach (var error in outcome.Errors) { <p>@error</p> }
+        @foreach (var warning in outcome.Warnings) { <p>@warning</p> }
+        @if (!outcome.Saved && outcome.Errors.Length == 0 && outcome.Warnings.Length > 0)
+        {
+            <button id="confirm" @onclick="Confirm">Confirm warnings and save</button>
+            <button id="cancel" @onclick="Cancel">Cancel submission</button>
+        }
+        @if (outcome.Saved) { <p>Saved and read back through a fresh context.</p> }
+    }
+</div>
+<h2>Saved results (persistence read-back)</h2>
+<div id="saved">
+    @foreach (var row in saved)
+    {
+        <article data-id="@row.PkChildExaminationId">
+            <p>Patient @row.ClientId — @row.ExaminationCode — @row.ExaminationDate.ToString("yyyy-MM-dd") — Repeat: @row.IsRepeat</p>
+            <pre>@System.Text.Json.JsonSerializer.Serialize(row, new System.Text.Json.JsonSerializerOptions { WriteIndented = true })</pre>
+        </article>
+    }
+</div>
+
+@code {
+    // Applicable KD03/common fields only; dictionary labels/codes come from the supplied source.
+    public static readonly string[] TextFields = ["Consent", "ReasonNotExamined", "Reschedule", "LocationCode", "ExaminerCategory", "ExaminerType", "ExaminerHcpCode", "OnwardReferralsMade", "ReceivingBoostSchemeService", "LookedAfterChild", "OnChildProtectionRegister", "Sector"];
+    public static readonly string[] NumberFields = ["Height", "Weight", "HeadCircumference", "LocationType", "CoreComponent", "Origin"];
+    public static readonly string[] DictionaryFields = ["Heart", "Hips", "Eyes", "Testes", "PhysicalGeneral", "EvidenceOfXgm", "DomesticViolenceConcern"];
+    private static Dictionary<string, byte?> Options(string field) => field switch
+    {
+        "EvidenceOfXgm" => RecordingOptions.EvidenceOfXgm(),
+        "DomesticViolenceConcern" => RecordingOptions.DomesticViolenceConcern(),
+        _ => RecordingOptions.PhysicalAssessment6To8Weeks()
+    };
+    public static readonly string[] DeclineFields = ["HeightMeasurementDeclined", "WeightMeasurementDeclined", "HeadMeasurementDeclined"];
+    private bool interactive;
+    protected override void OnAfterRender(bool firstRender) { if (firstRender) { interactive = true; StateHasChanged(); } }
+    private KdpExaminationResultTO draft;
+    private List<KdpExaminationResultTO> saved = [];
+    private SaveOutcome outcome;
+    private Dictionary<string, string> inputErrors = new();
+    protected override void OnInitialized() { draft = Service.New(); saved = Service.Read(); }
+    private string Get(string name) => typeof(KdpExaminationResultTO).GetProperty(name).GetValue(draft)?.ToString();
+    private void DraftChanged() { outcome = null; }
+    private void SetDeclined(string name, bool value) => Set(name, value ? "Y" : "N");
+    private void Set(string name, string value)
+    {
+        inputErrors.Remove(name);
+        outcome = null; // a changed draft must be reviewed again before confirmation
+        var property = typeof(KdpExaminationResultTO).GetProperty(name);
+        try
+        {
+            var type = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+            property.SetValue(draft, string.IsNullOrEmpty(value) ? null : Convert.ChangeType(value, type, System.Globalization.CultureInfo.InvariantCulture));
+        }
+        catch (Exception) { inputErrors[name] = "Invalid value: " + name; }
+    }
+    private void Submit() { if (inputErrors.Count == 0) Save(false); }
+    private void Confirm() { if (inputErrors.Count == 0) Save(true); }
+    private void Cancel() { outcome = null; }
+    private void Save(bool confirmed)
+    {
+        outcome = Service.Save(draft, confirmed);
+        saved = Service.Read();
+        if (outcome.Saved) draft = Service.New();
+    }
+}

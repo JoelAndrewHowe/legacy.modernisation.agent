@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
+    <Using Include="System.Text.Json" />
+    <Using Include="System.Text.Json.Nodes" />
+    <Using Include="Orvex.TransferObjects" />
+    <Using Include="Orvex.Business.Validation" />
+    <Using Include="Orvex.Messages.Faults" />
+  </ItemGroup>
+</Project>

@@ -1405,10 +1405,10 @@ class CharacteriseTests(unittest.TestCase):
     def test_adapter_rejects_unsupported_stage(self):
         with tempfile.TemporaryDirectory() as tmp:
             request = Path(tmp) / 'request.json'
-            request.write_text(json.dumps({'Stage': 'refactor'}))
+            request.write_text(json.dumps({'Stage': 'unsupported'}))
             run = subprocess.run([sys.executable, str(ROOT / 'adapters/hcwp_characterise.py'), str(request)], capture_output=True, text=True)
             self.assertNotEqual(0, run.returncode)
-            self.assertIn('Refactor is not implemented', run.stderr)
+            self.assertIn('Unsupported HCWP stage', run.stderr)
 
 
 if __name__ == '__main__':

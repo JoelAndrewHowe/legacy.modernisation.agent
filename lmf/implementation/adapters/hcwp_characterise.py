@@ -32,8 +32,11 @@ def generate(request):
     if request['Stage'] == 'convert':
         from hcwp_convert import generate as convert
         return convert(request)
+    if request['Stage'] == 'refactor':
+        from hcwp_refactor import generate as refactor
+        return refactor(request)
     if request['Stage'] != 'characterise':
-        raise ValueError('HCWP Refactor is not implemented; Convert evidence is retained.')
+        raise ValueError('Unsupported HCWP stage: ' + request['Stage'])
     source = Path(request['Source']).read_text()
     target = Path(request['Target']).read_text()
     if not all(word in target.lower() for word in ('blazor', 'in-memory')):
