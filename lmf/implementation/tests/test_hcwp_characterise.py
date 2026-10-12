@@ -415,6 +415,31 @@ class CharacteriseTests(unittest.TestCase):
                 self.assertEqual({'errors': [], 'warnings': [], 'indices': indices,
                     'collectionSame': [True, True], 'itemIdentitiesSame': [True, True],
                     'selectedValuesSame': [True, True]}, rows['KD03-dropdown-selection-' + name])
+            list_items = {
+                'replace': [[{'text': 'SYNTH first', 'value': 'A'}, {'text': 'SYNTH duplicate', 'value': 'A'}, {'text': '', 'value': None}], [{'text': 'SYNTH second', 'value': 'B'}]],
+                'clear': [[{'text': '', 'value': None}], []],
+                'empty-null': [[{'text': '', 'value': None}], [{'text': '', 'value': None}]],
+            }
+            for name, items in list_items.items():
+                self.assertEqual({'errors': [], 'warnings': [], 'items': items,
+                    'collectionSame': [True, True], 'sourceSame': [True, True]},
+                    rows['KD03-dropdown-list-' + name])
+            list_source = stage / 'reference/ExtractedDropdownList.cs'
+            original_list = list_source.read_text()
+            try:
+                for statement, failed in [
+                    ('combBox.Items.Clear();', set(list_items)),
+                    ('if (addNullRow) combBox.Items.Add("", null);', {'replace', 'empty-null'}),
+                ]:
+                    self.assertEqual(1, original_list.count(statement))
+                    list_source.write_text(original_list.replace(statement, ''))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                    self.assertEqual({'KD03-dropdown-list-' + name for name in failed},
+                        {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                list_source.write_text(original_list)
             for initial in ('false', 'true'):
                 self.assertEqual({'errors': [], 'warnings': [], 'defaultStates': [False, False]},
                                  rows['KD03-ui-load-' + initial])

@@ -47,6 +47,7 @@ def generate(request):
     lifecycle_path, lifecycle = find('/KdpExaminationDelegate.cs')
     ui_path, ui = find('/ucHLXKdpExaminationResult.cs')
     save_ui_path, save_ui = find('/ucHLXKdpExaminations.cs')
+    dropdown_path, dropdown_source = find('/PopulateDropDown.cs')
     dates_path, dates = find('/DateCalculation.cs')
     repeat_path, repeat_source = find('/ExaminationsCrudManager.cs')
     out = Path(request['OutputDirectory'])
@@ -250,6 +251,17 @@ public class ExtractedDropdownSelection {
 public class ExtractedUiLoad {
  public bool setDefaultTabPage;
 ''' + method(save_ui, 'ucHLXKdpExaminations_Load').replace('private void', 'public void') + '\n}\n')
+    dropdown_list = method(dropdown_source, 'Populate', 'UIComboBox combBox, List<LookupsSubTO> _list, bool addNullRow')
+    put('reference/ExtractedDropdownList.cs', '''using System.Collections.Generic;
+// Storage-only Items.Add/Clear, not Janus selection or binding.
+public record DropdownRowFixture(string Description, string Code);
+public record DropdownListItemFixture(string Text, object Value);
+public class DropdownItemsFixture : List<DropdownListItemFixture> {
+ public void Add(string text, object value) { Add(new(text, value)); }
+}
+public class DropdownListFixture { public DropdownItemsFixture Items = new(); }
+public static class ExtractedDropdownList {
+''' + dropdown_list.replace('UIComboBox', 'DropdownListFixture').replace('LookupsSubTO', 'DropdownRowFixture') + '\n}\n')
     put('reference/ExtractedChildFocus.cs', '''// Text storage and recording Focus only; no Windows focus/event delivery.
 public class FocusTextFixture {
  public string Text = "";
@@ -304,6 +316,16 @@ public class ExtractedChildPopulate {
     def add(id, operation, data, errors=None, warnings=None, **extra):
         scenarios.append({'id': id, 'given': 'A selected synthetic patient and frozen clock',
                           'when': operation, 'input': data, 'then': {'errors': errors or [], 'warnings': warnings or [], **extra}})
+    for name, calls in [
+        ('replace', [{'rows': [{'Description': 'SYNTH first', 'Code': 'A'}, {'Description': 'SYNTH duplicate', 'Code': 'A'}], 'addNull': True},
+                     {'rows': [{'Description': 'SYNTH second', 'Code': 'B'}], 'addNull': False}]),
+        ('clear', [{'rows': [{'Description': '', 'Code': None}], 'addNull': False}, {'rows': [], 'addNull': False}]),
+        ('empty-null', [{'rows': [], 'addNull': True}, {'rows': [], 'addNull': True}]),
+    ]:
+        add('KD03-dropdown-list-' + name, 'dropdown-list', {**base, 'calls': calls},
+            items=[[{'text': row['Description'], 'value': row['Code']} for row in call['rows']]
+                   + ([{'text': '', 'value': None}] if call['addNull'] else []) for call in calls],
+            collectionSame=[True, True], sourceSame=[True, True])
     for initial in (False, True):
         add('KD03-ui-load-' + str(initial).lower(), 'ui-load',
             {**base, 'defaultStates': [initial, not initial]}, defaultStates=[False, False])
@@ -910,6 +932,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - Examination-code Validating/ButtonClick handlers from `{ui_path}` and LookUpExamCode from `{delegate_path}` retain their bodies. Text-only control and ShowFormLookup message doubles replace Windows UI/dialog infrastructure, record offered codes and supply explicit fixture responses; they do not validate or select codes themselves. Source ValidateAndSetExamCode performs validation/confirmation. Validating cancellation is observed separately from the selected code, including successful fallback lookup with cancellation still true. Original Windows event delivery remains unverified.
 - `{repeat_path}` UpdateRepeatFlags body is retained with internal -> public visibility only. RepositoryFixture supplies explicit preloaded query rows separately from local tracked rows; Include has no database side effects. Source local navigation repair and all repeat decisions execute unchanged. Synthetic rows include KD03 ties, a later same-day timestamp, KD08 family members, another patient and another prefix. Repeated execution observes idempotence. This is standalone repeat-logic evidence, not save-service/database parity; scope approval remains blocked.
 - `{save_ui_path}` ucHLXKdpExaminations_Load is retained with public visibility in ExtractedUiLoad.cs. Two shared cases invoke it twice, explicitly resetting the default-tab flag before each invocation to cover both incoming states in both orders. The source resets the flag to false regardless of sender/EventArgs; omission and toggle mutations fail both cases. This verifies direct handler execution only, not Windows load-event registration/delivery or subsequent tab selection, and does not resolve existing approval blockers.
+- `{dropdown_path}` list Populate overload is retained in ExtractedDropdownList.cs with UIComboBox/LookupsSubTO renamed to storage-only fixtures. Three shared cases invoke twice on a sentinel-seeded control, checking replacement/clearing, ordered duplicate codes, verbatim descriptions, nullable codes and optional trailing blank/null row. Per-call item values, Items collection identity and unchanged supplied row collection/ordered row references/values are observed. Clear-omission and null-row omission mutations exercise the contract. Synthetic rows are not real lookup data; dictionary overloads, Janus selection/binding/event delivery and integration with child Populate remain unverified. Approval blockers unchanged.
 - `{ui_path}` FocusHlxTextBoxExamCode is retained in ExtractedChildFocus.cs with a Text-storage/recording-Focus control double. Five shared scenarios invoke twice for empty, filled, whitespace, cleared and filled-after-empty text, asserting cumulative Focus calls and unchanged text/control identity per call. Whitespace is nonempty in the source. Guard inversion mutation detects all five scenarios. This establishes dispatch decisions only, not Windows focus, binding/event delivery or full child lifecycle parity; approval blockers remain unchanged.
 - `{save_ui_path}` SetUpTabPageContent is retained in an independently inspectable harness with UITabPage renamed to ContentTabFixture. Seven shared scenarios invoke twice, verifying existing-tab clearing, zero-key accumulation, missing-result clearing, null/empty bypass, exact first matching result identity, fresh child creation, complete ordered Controls object identities after each call (retaining the first child reference for zero-key accumulation), current-tab assignment, Fill docking and focus dispatch. A mutation replacing the accumulated first child is detected despite unchanged counts, sentinel and newest-child identity. The child Populate/Focus and list Controls are recording doubles, not Windows binding/control construction/layout/event delivery or full child Populate parity. These limitations and existing approval blockers remain.
 - `{save_ui_path}` SetUpTabPages is source-extracted in a separate independently inspectable setup harness, together with SelectTabPage. Shared cases invoke twice with changed synthetic result IDs/texts, including negative nonzero IDs in the current-selection fixture (remaining negative on both calls), proving that the guard is inequality with zero rather than positivity, positional key/text assignment, zero-ID tab preservation, preservation of trailing tab keys/text when the result list is shorter than the tab list (the default-selection fixture deliberately supplies three tabs and two results on both calls), default/current/null selection, empty-list bypass, exact selected and ordered tab identities, collection identity, current-tab object identity and default-selection flag after every call and preparation after assignment. Recording snapshots also assert current-tab object identity (including null) and the fixture-derived default-selection flag at content dispatch, detecting temporary replacement/toggling restored before return. They assert selected-tab object identity (including null current selection), collection object identity and complete ordered tab object identities at every content-preparation dispatch, detecting temporary replacement of the collection or a nonselected tab even when restored before return. The recording double retains the dispatched collection reference as well as a copied ordered-tab snapshot; same-tab collection replacement cannot hide behind unchanged tab identities. Expected selection is computed from the input fixture, not the observed mutable flag; replacement/toggle then restoration is detected even when final state is unchanged. Per-call observations also retain the supplied result collection and its complete ordered row object identities; setup must not replace the collection or substitute value-equal result records, including empty-list collection replacement. Dispatch-time snapshots also retain the supplied result collection reference and complete ordered result row references, detecting temporary same-row collection replacement or value-equal row substitution restored before return. The supplied tab-control wrapper is also retained and compared by object identity after each call and at each preparation dispatch; substituting a wrapper with identical tab collection and selection is detected even if restored before return. Per-call preparation counts explicitly require exactly one content dispatch for nonempty tabs (even with null selection) and none for empty tabs; counts are not inferred from the final dispatched tab. Omission and duplicate-dispatch mutations exercise this contract. These observations cover dispatch and post-return boundaries, not every transient state within the method. TabResultFixture supplies explicit IDs and SYNTH labels only; ResultTabText calculation/resource/recall prose is not verified by this double. SetUpTabPageContent records dispatch and snapshots, not control creation or currentTab updates; Windows layout/binding/event delivery and full UI Populate remain unverified. Existing insert/save handler harnesses retain their recording SetUpTabPages double.

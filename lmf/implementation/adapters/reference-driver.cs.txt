@@ -22,6 +22,30 @@ foreach (var scenario in scenarios)
     {
         switch (scenario["when"].GetValue<string>())
         {
+            case "dropdown-list":
+            {
+                var listDropdown = new DropdownListFixture();
+                var itemsCollection = listDropdown.Items;
+                listDropdown.Items.Add("SENTINEL", "stale");
+                var itemSnapshots = new List<object>();
+                var collectionSame = new List<bool>();
+                var sourceSame = new List<bool>();
+                foreach (var call in input["calls"].AsArray()) {
+                    var rows = call["rows"].Deserialize<List<DropdownRowFixture>>(options);
+                    var supplied = rows;
+                    var originals = rows.ToArray();
+                    var values = rows.Select(row => (row.Description, row.Code)).ToArray();
+                    ExtractedDropdownList.Populate(listDropdown, rows, call["addNull"].GetValue<bool>());
+                    itemSnapshots.Add(listDropdown.Items.Select(item => new { text = item.Text, value = item.Value }).ToArray());
+                    collectionSame.Add(ReferenceEquals(itemsCollection, listDropdown.Items));
+                    sourceSame.Add(ReferenceEquals(rows, supplied) && rows.Count == originals.Length &&
+                        rows.Select((row, i) => ReferenceEquals(row, originals[i]) && (row.Description, row.Code) == values[i]).All(same => same));
+                }
+                observed["items"] = JsonSerializer.SerializeToNode(itemSnapshots);
+                observed["collectionSame"] = JsonSerializer.SerializeToNode(collectionSame);
+                observed["sourceSame"] = JsonSerializer.SerializeToNode(sourceSame);
+                break;
+            }
             case "ui-load":
             {
                 var loadControl = new ExtractedUiLoad();
