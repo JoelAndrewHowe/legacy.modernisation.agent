@@ -55,7 +55,7 @@ class CharacteriseTests(unittest.TestCase):
                     'errors': [], 'warnings': []}, rows['KD03-ui-tab-content-' + name])
             for name, keys, texts, selected in [
                 ('default', [['42', '99'], ['142', '199']], [['SYNTH-42', 'SYNTH-99'], ['SYNTH-142', 'SYNTH-199']], ['42', '142']),
-                ('current', [['42', '99'], ['142', '199']], [['SYNTH-42', 'SYNTH-99'], ['SYNTH-142', 'SYNTH-199']], ['99', '199']),
+                ('current', [['-142', '-199'], ['-42', '-99']], [['SYNTH--142', 'SYNTH--199'], ['SYNTH--42', 'SYNTH--99']], ['-199', '-99']),
                 ('new', [['0', '99'], ['0', '199']], [['original-0', 'SYNTH-99'], ['original-0', 'SYNTH-199']], ['0', '0']),
                 ('null-current', [['42', '99'], ['142', '199']], [['SYNTH-42', 'SYNTH-99'], ['SYNTH-142', 'SYNTH-199']], [None, None]),
                 ('empty', [[], []], [[], []], []),
@@ -961,15 +961,25 @@ class CharacteriseTests(unittest.TestCase):
                     extracted_setup.write_text(original_setup)
             zero_guard = 'PkChildExaminationId != NewExamNumber'
             self.assertEqual(1, original_setup.count(zero_guard))
-            try:
-                extracted_setup.write_text(original_setup.replace(zero_guard, 'PkChildExaminationId >= NewExamNumber'))
-                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
-                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
-                mutant_report = json.loads((stage / 'reference-report.json').read_text())
-                self.assertEqual({'KD03-ui-tab-setup-new'},
-                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
-            finally:
-                extracted_setup.write_text(original_setup)
+            # Negative synthetic IDs are not new-result IDs. Positivity is not
+            # equivalent to the retained source's inequality with zero.
+            for operator, names in [('>=', ('new', 'current')), ('>', ('current',))]:
+                try:
+                    extracted_setup.write_text(original_setup.replace(zero_guard,
+                        'PkChildExaminationId ' + operator + ' NewExamNumber'))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                    failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                    self.assertEqual({'KD03-ui-tab-setup-' + name for name in names}, failures)
+                    negative = next(row['actual'] for row in mutant_report['scenarios']
+                                    if row['id'] == 'KD03-ui-tab-setup-current')
+                    self.assertEqual([['stale', 'old']] * 2, negative['keys'])
+                    self.assertEqual([['original-0', 'original-1']] * 2, negative['texts'])
+                    self.assertEqual(['old', 'old'], negative['selected'])
+                    self.assertTrue(negative['exactSelection'])
+                finally:
+                    extracted_setup.write_text(original_setup)
             tail_removal = 'TabPages.RemoveAt(hlxAdminTabControlKdpExamination.TabPages.Count - 1);'
             self.assertEqual(1, original_save_control.count(tail_removal))
             try:
