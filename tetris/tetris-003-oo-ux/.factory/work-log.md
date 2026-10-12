@@ -67,3 +67,19 @@ Continued the first unfinished task, terminal-game setup. Left
 Validation: `npm test` passes all 25 tests, including npm startup, gameplay,
 gravity, terminal input/cleanup, encapsulation, and display checks.
 
+## Follow-up: startup lifecycle regression checks
+
+Continued the first unchecked task: terminal-game setup launched with
+`npm start`. The application already implements that task, so added targeted
+regression coverage in `test/startup.test.js` rather than replacing it.
+
+- Verify repeated interactive startup creates no duplicate timer, input handler,
+  signal handlers, or screen output.
+- Verify startup with either stdin or stdout redirected prints a plain-text
+  preview without enabling raw mode, starting timers, or registering handlers.
+- Verify stopping after redirected startup leaves the preview unchanged.
+- Validator findings supplied with this request: none; nothing to address.
+
+Validation: `npm test` passes all 28 tests. Left `.factory/plan.md` unchanged;
+no task was marked done.
+

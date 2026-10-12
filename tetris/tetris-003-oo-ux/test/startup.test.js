@@ -39,6 +39,51 @@ test('npm start prints the initial display when not attached to a terminal', () 
   assert.equal((result.stdout.match(/\[\]/g) || []).length, 4);
 });
 
+test('starting twice does not duplicate timers or terminal handlers', () => {
+  const { input, terminal, output } = fixture();
+  const signals = ['SIGINT', 'SIGTERM'].map(s => process.listenerCount(s));
+  try {
+    terminal.start();
+    const timer = terminal.timer;
+    const firstOutput = output();
+    terminal.start();
+    assert.equal(terminal.timer, timer);
+    assert.equal(output(), firstOutput);
+    assert.equal(input.listenerCount('keypress'), 1);
+    assert.deepEqual(
+      ['SIGINT', 'SIGTERM'].map(s => process.listenerCount(s)),
+      signals.map(count => count + 1),
+    );
+  } finally {
+    terminal.stop();
+  }
+});
+
+for (const inputTTY of [false, true]) {
+  test(`redirected startup does not enable raw mode or timers (input TTY ${inputTTY})`, () => {
+    const { input, terminal, output } = fixture();
+    input.isTTY = inputTTY;
+    terminal.output.isTTY = !inputTTY;
+    const signals = ['SIGINT', 'SIGTERM'].map(s => process.listenerCount(s));
+    try {
+      terminal.start();
+      assert.equal(terminal.running, false);
+      assert.equal(terminal.timer, undefined);
+      assert.equal(input.isRaw, false);
+      assert.equal(input.paused, undefined);
+      assert.equal(input.listenerCount('keypress'), 0);
+      assert.deepEqual(['SIGINT', 'SIGTERM'].map(s => process.listenerCount(s)), signals);
+      assert.equal(output(), `${renderGame(terminal.game.snapshot())}\n`);
+      assert.ok(!output().includes('\x1b'));
+      const preview = output();
+      terminal.stop();
+      assert.equal(output(), preview);
+    } finally {
+      terminal.stop();
+    }
+  });
+}
+
 for (const wasRaw of [false, true]) {
   for (const exit of ['q', 'ctrl-c', 'SIGINT', 'SIGTERM']) {
     test(`${exit} restores terminal state (initial raw mode ${wasRaw})`, () => {
