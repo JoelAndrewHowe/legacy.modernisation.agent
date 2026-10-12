@@ -279,6 +279,8 @@ foreach (var scenario in scenarios)
                 observed["selected"] = JsonSerializer.SerializeToNode(setupSelected);
                 observed["keysAtPreparation"] = JsonSerializer.SerializeToNode(setupControl.KeysAtPreparation);
                 observed["textsAtPreparation"] = JsonSerializer.SerializeToNode(setupControl.TextsAtPreparation);
+                observed["orderedIdentitiesAtPreparation"] = JsonSerializer.SerializeToNode(setupControl.TabsAtPreparation.Select(tabs =>
+                    tabs.Length == originalSetupTabs.Length && originalSetupTabs.Select((tab, index) => ReferenceEquals(tab, tabs[index])).All(value => value)));
                 observed["collectionIdentity"] = ReferenceEquals(setupTabs, setupControl.hlxAdminTabControlKdpExamination.TabPages);
                 observed["collectionIdentities"] = JsonSerializer.SerializeToNode(setupCollectionIdentities);
                 observed["orderedIdentities"] = JsonSerializer.SerializeToNode(setupIdentities);
