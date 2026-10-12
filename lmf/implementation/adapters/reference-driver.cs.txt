@@ -611,6 +611,7 @@ foreach (var scenario in scenarios)
             case "examiner":
             case "numeric-descriptor":
             case "description-accessor":
+            case "tab-heading":
             case "deviation":
             case "deviation-guard":
             case "bmi-event":
@@ -743,6 +744,21 @@ foreach (var scenario in scenarios)
                         interaction.ExamDescription = input["description"]?.GetValue<string>();
                         observed["displayed"] = interaction.ExamDescription;
                         observed["stored"] = result.ExamDescription;
+                        break;
+                    case "tab-heading":
+                        var headings = new List<string> { interaction.ResultTabText };
+                        var headingCodes = new List<string> { result.ExaminationCode };
+                        var headingRepeats = new List<bool> { result.IsRepeat };
+                        // Direct DTO updates isolate getter behaviour from code-setter rules.
+                        result.ExaminationCode = input["nextCode"]?.GetValue<string>();
+                        result.IsRepeat = input["nextRepeat"].GetValue<bool>();
+                        headings.Add(interaction.ResultTabText);
+                        headingCodes.Add(result.ExaminationCode);
+                        headingRepeats.Add(result.IsRepeat);
+                        observed["headings"] = JsonSerializer.SerializeToNode(headings);
+                        observed["codes"] = JsonSerializer.SerializeToNode(headingCodes);
+                        observed["repeats"] = JsonSerializer.SerializeToNode(headingRepeats);
+                        observed["notifications"] = JsonSerializer.SerializeToNode(interaction.Notifications);
                         break;
                     case "numeric-descriptor":
                         observed["valid"] = interaction.ValidateNumericDescriptorEntered(input["descriptor"].GetValue<string>(), Enum.Parse<ExtractedInteractions.TYPE_OF_INPUT>(input["kind"].GetValue<string>()));

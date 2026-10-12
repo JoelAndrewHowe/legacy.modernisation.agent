@@ -204,6 +204,34 @@ class CharacteriseTests(unittest.TestCase):
             ]:
                 self.assertEqual({'stored': stored, 'displayed': displayed, 'errors': [], 'warnings': []},
                                  rows['KD03-description-' + name])
+            for name, codes, repeats, headings in [
+                ('nonrepeat-to-repeat', ['KD03', 'KD03'], [False, True], ['KD03', 'KD03 [synthetic recall flag]']),
+                ('repeat-to-nonrepeat', ['KD03', 'KD03'], [True, False], ['KD03 [synthetic recall flag]', 'KD03']),
+                ('changed-code', ['KD03', 'KD08'], [True, True], ['KD03 [synthetic recall flag]', 'KD08 [synthetic recall flag]']),
+                ('missing-original', ['KD03', 'KD03'], [True, True], ['KD03 [synthetic recall flag]'] * 2),
+                ('null-code', [None, None], [True, False], [' [synthetic recall flag]', '']),
+                ('empty-code', ['', ''], [False, True], ['', ' [synthetic recall flag]']),
+            ]:
+                self.assertEqual({'codes': codes, 'repeats': repeats, 'headings': headings,
+                    'notifications': [], 'errors': [], 'warnings': []}, rows['KD03-tab-heading-' + name])
+            self.assertIn('RecallFlag is explicitly synthetic', (stage / 'reference/ADAPTATIONS.md').read_text())
+            heading_source = stage / 'reference/ExtractedInteractions.cs'
+            original_heading_source = heading_source.read_text()
+            heading_expression = 'public string ResultTabText => ExaminationCode + (KdpExaminationResultTo.IsRepeat ? RecallFlag : string.Empty);'
+            self.assertEqual(1, original_heading_source.count(heading_expression))
+            try:
+                # Incorrectly reuse ExamDescription's original-code guard.
+                heading_source.write_text(original_heading_source.replace(heading_expression,
+                    heading_expression.replace('KdpExaminationResultTo.IsRepeat ?',
+                        'KdpExaminationResultTo.IsRepeat && ExaminationCode == KdpExaminationResultTo.OriginalExamCode ?')))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-tab-heading-changed-code', 'KD03-tab-heading-missing-original',
+                                  'KD03-tab-heading-null-code', 'KD03-tab-heading-empty-code'},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                heading_source.write_text(original_heading_source)
             for name, keys, consent in [('empty', [], True), ('existing', ['42'], True),
                                        ('first-new', ['0', '42'], True),
                                        ('later-new', ['42', '0'], True), ('no-consent', ['42'], False)]:

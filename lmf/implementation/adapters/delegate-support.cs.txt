@@ -29,7 +29,7 @@ public class ExtractedInteractions {
  public List<LookupsSubTO> KdpExaminationList = new() { new() { Code = "KD03", Description = "Synthetic KD03" }, new() { Code = "KD08", Description = "Synthetic KD08" } };
  public Lazy<Tuple<double, double>> recommendedAgeRangeInWeeks;
  public ScheduleFixture KdpExaminationService = new();
- const string ExamCode6To8WeekContact = "KD03", RecallText = " [synthetic recall text]";
+ const string ExamCode6To8WeekContact = "KD03", RecallText = " [synthetic recall text]", RecallFlag = " [synthetic recall flag]";
  public long PkChildExaminationId => KdpExaminationResultTo.PkChildExaminationId;
  public bool ExamCodeValidated;
  const string BmiMeasurmentType = "BMI";
