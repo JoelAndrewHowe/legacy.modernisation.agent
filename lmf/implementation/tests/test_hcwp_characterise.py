@@ -163,6 +163,15 @@ class CharacteriseTests(unittest.TestCase):
                     self.assertEqual({'valid': valid, 'errors': errors, 'warnings': [],
                         'prompts': prompts, 'requests': requests, 'cached': cached},
                         rows[f'KD03-lookup-validation-{kind}-{mode}'])
+            for kind in ('location', 'examiner'):
+                invalid = 'InvalidLocationCode' if kind == 'location' else 'InvalidHcpCode'
+                self.assertEqual({'valid': [True, False, False, False, False, True, True,
+                    kind == 'location', True], 'cacheSame': [True] * 9,
+                    'requests': ['Locations||5' if kind == 'location' else 'Examiners||18|N'],
+                    'prompts': [invalid + 'Prompt'] * 4 + (['UnusedExaminerCodePrompt'] if kind == 'examiner' else []),
+                    'errors': [invalid + 'Message'] * 4 + (['UnusedExaminerCodeMessage'] if kind == 'examiner' else []),
+                    'warnings': []}, rows['KD03-lookup-exact-' + kind])
+            self.assertIn('Lookup exact-match sequences', (stage / 'reference/ADAPTATIONS.md').read_text())
             self.assertIn('not evidence that save is safe during dependency failure',
                           (stage / 'gaps.md').read_text())
             common_initial = {'ReasonNotExamined': 'sentinel-reason', 'Consent': 'sentinel-consent',
@@ -798,6 +807,21 @@ class CharacteriseTests(unittest.TestCase):
                                   ('missing', 'missing-cached', 'fault-recovery', 'empty-rows')}, failures)
             finally:
                 extracted.write_text(original)
+            # Exact lookup predicates must reject case/whitespace near-matches.
+            for old, new, kind in [
+                ('loc.Code != code', '!string.Equals(loc.Code.Trim(), code.Trim(), StringComparison.OrdinalIgnoreCase)', 'location'),
+                ('ex.Code == code', 'string.Equals(ex.Code.Trim(), code.Trim(), StringComparison.OrdinalIgnoreCase)', 'examiner'),
+            ]:
+                self.assertEqual(1, original.count(old))
+                try:
+                    extracted.write_text(original.replace(old, new))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutated_rows = json.loads((stage / 'reference-report.json').read_text())['scenarios']
+                    self.assertEqual({'KD03-lookup-exact-' + kind},
+                        {row['id'] for row in mutated_rows if not row['matches']})
+                finally:
+                    extracted.write_text(original)
             # A wrong DTO destination must be caught even when the getter is unchanged.
             core_assignment = 'set { KdpExaminationResultTo.CoreComponent = value; }'
             self.assertEqual(1, original.count(core_assignment))

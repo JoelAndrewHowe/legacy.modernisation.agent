@@ -153,6 +153,26 @@ foreach (var scenario in scenarios)
                 observed["populated"] = child.dropDownsPopulated;
                 break;
             }
+            case "lookup-validation-exact": {
+                var exactInteraction = new ExtractedInteractions { KdpExaminationResultTo = result };
+                var exactKind = input["kind"].GetValue<string>();
+                var suppliedRows = exactInteraction.lookupsService.Rows;
+                var suppliedItems = suppliedRows.ToArray();
+                var validity = new List<bool>();
+                var cacheIdentity = new List<bool>();
+                foreach (var codeNode in input["codes"].AsArray()) {
+                    var code = codeNode?.GetValue<string>();
+                    validity.Add(exactKind == "location" ? exactInteraction.ValidateLocationCode(code) : exactInteraction.ValidateExaminerCode(code));
+                    var cache = exactKind == "location" ? exactInteraction.locationList : exactInteraction.examinerList;
+                    cacheIdentity.Add(ReferenceEquals(cache, suppliedRows) && cache.Count == suppliedItems.Length && cache.Zip(suppliedItems).All(pair => ReferenceEquals(pair.First, pair.Second)));
+                }
+                observed["valid"] = JsonSerializer.SerializeToNode(validity);
+                observed["cacheSame"] = JsonSerializer.SerializeToNode(cacheIdentity);
+                observed["requests"] = JsonSerializer.SerializeToNode(exactInteraction.lookupsService.Requests);
+                observed["prompts"] = JsonSerializer.SerializeToNode(exactInteraction.Messenger.ErrorPrompts);
+                errors.AddRange(exactInteraction.Messenger.Errors);
+                break;
+            }
             case "lookup-validation-lifecycle":
                 var validationInteraction = new ExtractedInteractions { KdpExaminationResultTo = result };
                 var validationKind = input["kind"].GetValue<string>();
