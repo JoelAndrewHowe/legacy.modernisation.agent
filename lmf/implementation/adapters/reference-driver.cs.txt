@@ -22,6 +22,26 @@ foreach (var scenario in scenarios)
     {
         switch (scenario["when"].GetValue<string>())
         {
+            case "child-focus":
+            {
+                var focusChild = new ExtractedChildFocus();
+                var focusControl = focusChild.hlxTextBoxExamCode;
+                var counts = new List<int>();
+                var textSame = new List<bool>();
+                var controlSame = new List<bool>();
+                foreach (var text in input["texts"].AsArray()) {
+                    var suppliedText = text.GetValue<string>();
+                    focusControl.Text = suppliedText;
+                    focusChild.FocusHlxTextBoxExamCode();
+                    counts.Add(focusControl.Calls);
+                    textSame.Add(focusControl.Text == suppliedText);
+                    controlSame.Add(ReferenceEquals(focusChild.hlxTextBoxExamCode, focusControl));
+                }
+                observed["focusCounts"] = JsonSerializer.SerializeToNode(counts);
+                observed["textSame"] = JsonSerializer.SerializeToNode(textSame);
+                observed["controlSame"] = JsonSerializer.SerializeToNode(controlSame);
+                break;
+            }
             case "child-populate":
             {
                 var child = new ExtractedChildPopulate { dropDownsPopulated = input["populated"].GetValue<bool>() };

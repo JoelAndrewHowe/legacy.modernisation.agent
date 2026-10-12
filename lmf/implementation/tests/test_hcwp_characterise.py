@@ -415,6 +415,24 @@ class CharacteriseTests(unittest.TestCase):
                 self.assertEqual({'errors': [], 'warnings': [], 'indices': indices,
                     'collectionSame': [True, True], 'itemIdentitiesSame': [True, True],
                     'selectedValuesSame': [True, True]}, rows['KD03-dropdown-selection-' + name])
+            focus_counts = {'empty': [1, 2], 'filled': [0, 0], 'whitespace': [0, 0],
+                            'cleared': [0, 1], 'filled-after-empty': [1, 1]}
+            for name, counts in focus_counts.items():
+                self.assertEqual({'errors': [], 'warnings': [], 'focusCounts': counts,
+                    'textSame': [True, True], 'controlSame': [True, True]},
+                    rows['KD03-child-focus-' + name])
+            focus_source = stage / 'reference/ExtractedChildFocus.cs'
+            original_focus = focus_source.read_text()
+            try:
+                self.assertEqual(1, original_focus.count('Text.Length == 0'))
+                focus_source.write_text(original_focus.replace('Text.Length == 0', 'Text.Length != 0'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-child-focus-' + name for name in focus_counts},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                focus_source.write_text(original_focus)
             fresh_child = rows['KD03-child-populate-fresh']
             self.assertEqual([True, True], fresh_child['bindings'])
             self.assertEqual(33, len(fresh_child['calls']))
