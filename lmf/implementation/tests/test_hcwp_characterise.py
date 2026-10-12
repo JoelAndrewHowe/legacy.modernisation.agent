@@ -424,6 +424,34 @@ class CharacteriseTests(unittest.TestCase):
                 self.assertEqual({'errors': [], 'warnings': [], 'items': items,
                     'collectionSame': [True, True], 'sourceSame': [True, True]},
                     rows['KD03-dropdown-list-' + name])
+            dictionary_ids = set()
+            for kind in ('byte', 'string'):
+                first = [{'text': ' SYNTH first ', 'value': 0 if kind == 'byte' else ''},
+                         {'text': '', 'value': None},
+                         {'text': 'SYNTH last', 'value': 255 if kind == 'byte' else ' verbatim '}]
+                for name, items in [('populate-once', [first, first]),
+                        ('preseeded', [[{'text': 'SENTINEL', 'value': 'stale'}]] * 2),
+                        ('empty-then-fill', [[], first])]:
+                    scenario_id = 'KD03-dropdown-dictionary-' + kind + '-' + name
+                    dictionary_ids.add(scenario_id)
+                    self.assertEqual({'errors': [], 'warnings': [], 'items': items,
+                        'collectionSame': [True, True], 'itemIdentitiesSame': [True, True],
+                        'sourceSame': [True, True]}, rows[scenario_id])
+            dictionary_source = stage / 'reference/ExtractedDropdownDictionary.cs'
+            original_dictionary = dictionary_source.read_text()
+            try:
+                guard = 'if (combBox.Items.Count == 0)'
+                self.assertEqual(2, original_dictionary.count(guard))
+                for replacement in ('', 'if (combBox.Items.Count != 0)'):
+                    dictionary_source.write_text(original_dictionary.replace(guard, replacement))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                    expected = dictionary_ids if replacement else {
+                        id for id in dictionary_ids if not id.endswith('empty-then-fill')}
+                    self.assertEqual(expected, {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                dictionary_source.write_text(original_dictionary)
             list_source = stage / 'reference/ExtractedDropdownList.cs'
             original_list = list_source.read_text()
             try:

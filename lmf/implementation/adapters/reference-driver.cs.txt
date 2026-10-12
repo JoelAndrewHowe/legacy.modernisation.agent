@@ -46,6 +46,42 @@ foreach (var scenario in scenarios)
                 observed["sourceSame"] = JsonSerializer.SerializeToNode(sourceSame);
                 break;
             }
+            case "dropdown-dictionary":
+            {
+                var dictionaryDropdown = new DropdownListFixture();
+                foreach (var item in input["initialItems"].AsArray())
+                    dictionaryDropdown.Items.Add(item["text"].GetValue<string>(), item["value"]?.GetValue<string>());
+                var collection = dictionaryDropdown.Items;
+                var snapshots = new List<object>();
+                var collections = new List<bool>();
+                var identities = new List<bool>();
+                var sources = new List<bool>();
+                foreach (var call in input["calls"].AsArray()) {
+                    var retained = dictionaryDropdown.Items.ToArray();
+                    if (input["kind"].GetValue<string>() == "byte") {
+                        var values = call.AsArray().ToDictionary(row => row["text"].GetValue<string>(),
+                            row => row["value"] == null ? (byte?)null : (byte)row["value"].GetValue<int>());
+                        var entries = values.ToArray();
+                        ExtractedDropdownDictionary.Populate(dictionaryDropdown, values);
+                        sources.Add(values.SequenceEqual(entries));
+                    } else {
+                        var values = call.AsArray().ToDictionary(row => row["text"].GetValue<string>(),
+                            row => row["value"]?.GetValue<string>());
+                        var entries = values.ToArray();
+                        ExtractedDropdownDictionary.Populate(dictionaryDropdown, values);
+                        sources.Add(values.SequenceEqual(entries));
+                    }
+                    snapshots.Add(dictionaryDropdown.Items.Select(item => new { text = item.Text, value = item.Value }).ToArray());
+                    collections.Add(ReferenceEquals(collection, dictionaryDropdown.Items));
+                    identities.Add(retained.Length == 0 || (dictionaryDropdown.Items.Count == retained.Length &&
+                        retained.Select((item, i) => ReferenceEquals(item, dictionaryDropdown.Items[i])).All(same => same)));
+                }
+                observed["items"] = JsonSerializer.SerializeToNode(snapshots);
+                observed["collectionSame"] = JsonSerializer.SerializeToNode(collections);
+                observed["itemIdentitiesSame"] = JsonSerializer.SerializeToNode(identities);
+                observed["sourceSame"] = JsonSerializer.SerializeToNode(sources);
+                break;
+            }
             case "ui-load":
             {
                 var loadControl = new ExtractedUiLoad();
