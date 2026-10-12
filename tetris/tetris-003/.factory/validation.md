@@ -2,6 +2,14 @@
 
 ## Current doer pass
 
+- No new validator findings were supplied in this request. The previously recorded physical-row/wrapping findings remain covered by regression tests.
+- Worked on the next unchecked task: rendering within 24 terminal rows. Left `.factory/plan.md` unchanged and did not mark the task done.
+- Updated `src/game.js` to choose progressively compact status text, retaining score and line counts when space allows. When score and game-over text cannot share a row, the score is shown in the existing top border; very large scores use scientific notation. No extra display row is added.
+- Added `test/render.test.js` covering narrow game-over score visibility, large scores, compact line counts, borders, active-piece overlay, and render immutability.
+- Verification: `npm test` passes all 20 tests, including physical-height coverage across widths 1–100 and startup via npm.
+
+## Earlier keyboard-control doer pass
+
 - No new validator findings were supplied in this request; previous findings remain recorded below and their regression tests still pass.
 - Worked on the next unchecked task (keyboard controls and terminal cleanup), without marking it done or changing `.factory/plan.md`.
 - Hardened `src/index.js` to restore the terminal on process exit and on keyboard-action, gravity, or redraw failures before propagating errors. Cleanup removes the exit listener and remains idempotent.

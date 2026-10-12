@@ -103,17 +103,30 @@ export function render(game, columns = 80) {
   }));
   const wideCells = columns >= WIDTH * 2 + 2;
   const border = `+${'-'.repeat(WIDTH * (wideCells ? 2 : 1))}+`;
-  const status = `${game.over ? 'GAME OVER' : 'Tetris'} | Score: ${game.score} | Lines: ${game.lines}`;
+  const title = game.over ? 'GAME OVER' : 'Tetris';
+  const status = [
+    `${title} | Score: ${game.score} | Lines: ${game.lines}`,
+    `${title} S:${game.score} L:${game.lines}`,
+    `${title} S:${game.score}`,
+  ].find(line => line.length <= columns);
+  // On very narrow screens, keep the game-over message intact and put the
+  // score in the existing top border instead of adding a 25th row.
+  const borderWidth = border.length - 2;
+  const scoreLabel = `S:${game.score}`;
+  const compactScore = scoreLabel.length <= borderWidth ? scoreLabel
+    : `S:${game.score.toExponential(1)}`;
+  const topBorder = status ? border
+    : `+${compactScore.padEnd(borderWidth, '-')}+`;
   const controls = columns >= 45
     ? '←→/AD move ↑/W rotate ↓/S down Space drop Q quit'
     : columns >= 40 ? 'AD move W rotate S down Space drop Q quit'
     : columns >= 34 ? 'AD:move W:turn S:down Sp:drop Q:quit'
     : 'AD W S Sp Q';
   return [
-    border,
+    topBorder,
     ...cells.map(row => `|${row.map(cell => wideCells ? (cell ? '[]' : '  ') : (cell ? '#' : ' ')).join('')}|`),
     border,
-    status.length <= columns ? status : `${game.over ? 'GAME OVER' : 'Tetris'} S:${game.score}`,
+    status ?? title,
     controls,
   ].map(line => line.slice(0, columns)).join('\n');
 }
