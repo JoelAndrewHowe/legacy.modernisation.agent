@@ -114,6 +114,38 @@ for (const [lines, score] of [[1, 100], [2, 300], [3, 500], [4, 800]]) {
   });
 }
 
+test('scores accumulate across separate clears and play continues on an empty board', () => {
+  const game = new Game(() => 0);
+  for (let round = 1; round <= 3; round++) {
+    for (const x of [0, 2, 4, 6, 8]) {
+      moveTo(game, x);
+      game.drop();
+    }
+    assert.equal(game.score, round * 300);
+    assert.ok(game.board.every(row => row.every(cell => !cell)));
+    assert.equal(game.gameOver, false);
+    assert.equal(game.piece.y, 0);
+  }
+});
+
+test('soft drop locks on a stack and hard drop locks only the current piece', () => {
+  const game = new Game(() => 0);
+  game.drop();
+  const base = game.board;
+  for (let i = 0; i < 16; i++) assert.equal(game.tick(), true);
+  assert.equal(game.piece.y, 16);
+  assert.deepEqual(game.board, base);
+  assert.equal(game.tick(), false);
+  assert.equal(game.board.flat().filter(Boolean).length, 8);
+  assert.equal(game.piece.y, 0);
+  game.drop();
+  assert.equal(game.board.flat().filter(Boolean).length, 12);
+  assert.equal(game.piece.y, 0);
+  assert.ok(game.board.slice(0, 14).every(row => row.every(cell => !cell)));
+  assert.ok(game.board.slice(14).every(row => row[4] && row[5]));
+  assert.equal(game.score, 0);
+});
+
 test('blocked spawn ends the game and freezes all gameplay operations', () => {
   const game = new Game(() => 0);
   for (let i = 0; i < 10; i++) game.drop();

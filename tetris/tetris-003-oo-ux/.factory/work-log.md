@@ -83,3 +83,18 @@ regression coverage in `test/startup.test.js` rather than replacing it.
 Validation: `npm test` passes all 28 tests. Left `.factory/plan.md` unchanged;
 no task was marked done.
 
+## Follow-up: gameplay mechanics regression checks
+
+Continued the next unfinished task: movement, rotation, falling, collision,
+line clearing, scoring, and game over. These mechanics already exist in
+`src/game.js`; added regression coverage in `test/game.test.js`.
+
+- Verified cumulative scoring over three separate double-line clears, with an
+  empty board and playable fresh piece after each clear.
+- Verified soft dropping onto a stack locks without overwriting existing cells,
+  and hard dropping locks exactly one piece while leaving its successor at spawn.
+- Validator findings supplied with this request: none; nothing to address.
+
+Validation: `npm test` passes all 30 tests. Left `.factory/plan.md` unchanged;
+no task was marked done.
+
