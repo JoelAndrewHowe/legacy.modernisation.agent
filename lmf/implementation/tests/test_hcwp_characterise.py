@@ -64,6 +64,8 @@ class CharacteriseTests(unittest.TestCase):
                     'keysAtPreparation': keys if name != 'empty' else [],
                     'textsAtPreparation': texts if name != 'empty' else [],
                     'selectedIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
+                    'currentIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
+                    'defaultStatesAtPreparation': [name not in ('current', 'null-current')] * 2 if name != 'empty' else [],
                     'orderedIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
                     'collectionIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
                     'collectionIdentity': True, 'collectionIdentities': [True, True], 'orderedIdentities': [True, True],
@@ -826,6 +828,36 @@ class CharacteriseTests(unittest.TestCase):
                             {**actual, 'selectedIdentitiesAtPreparation': [True, True]})
             finally:
                 extracted_setup.write_text(original_setup)
+            # Dispatch-time current/flag corruption restored before return must
+            # fail even though selection and every previous observation match.
+            for field, expected, replacement in [
+                ('currentIdentitiesAtPreparation', [False, False],
+                 'currentTab = new SaveTabFixture(currentTab?.Key);'),
+                ('defaultStatesAtPreparation', None,
+                 'setDefaultTabPage = !setDefaultTabPage;'),
+            ]:
+                dispatch_state_mutation = '''var savedCurrent = currentTab;
+                var savedDefault = setDefaultTabPage;
+                ''' + replacement + '''
+                SetUpTabPageContent(hlxAdminTabControlKdpExamination.SelectedTab);
+                currentTab = savedCurrent;
+                setDefaultTabPage = savedDefault;'''
+                try:
+                    extracted_setup.write_text(original_setup.replace(preparation_call, dispatch_state_mutation))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                    failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                    self.assertEqual({'KD03-ui-tab-setup-' + name for name in
+                        ('default', 'current', 'new', 'null-current')}, failures)
+                    for row in mutant_report['scenarios']:
+                        if row['id'] in failures:
+                            actual = row['actual']
+                            wanted = rows[row['id']][field]
+                            self.assertEqual(expected if expected is not None else [not value for value in wanted], actual[field])
+                            self.assertEqual(rows[row['id']], {**actual, field: wanted})
+                finally:
+                    extracted_setup.write_text(original_setup)
             zero_guard = 'PkChildExaminationId != NewExamNumber'
             self.assertEqual(1, original_setup.count(zero_guard))
             try:

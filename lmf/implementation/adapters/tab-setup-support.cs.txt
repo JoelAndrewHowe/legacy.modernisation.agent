@@ -11,6 +11,8 @@ public class ExtractedTabSetupControl {
  public SaveTabFixture currentTab;
  public List<SaveTabFixture> PreparedTabs = new();
  public List<SaveTabFixture> SelectedTabsAtPreparation = new();
+ public List<SaveTabFixture> CurrentTabsAtPreparation = new();
+ public List<bool> DefaultStatesAtPreparation = new();
  public List<string[]> KeysAtPreparation = new();
  public List<string[]> TextsAtPreparation = new();
  public List<SaveTabFixture[]> TabsAtPreparation = new();
@@ -18,6 +20,8 @@ public class ExtractedTabSetupControl {
  // Dispatch observation only: does not create/bind controls or change currentTab.
  private void SetUpTabPageContent(SaveTabFixture tab) {
   PreparedTabs.Add(tab);
+  CurrentTabsAtPreparation.Add(currentTab);
+  DefaultStatesAtPreparation.Add(setDefaultTabPage);
   SelectedTabsAtPreparation.Add(hlxAdminTabControlKdpExamination.SelectedTab);
   CollectionsAtPreparation.Add(hlxAdminTabControlKdpExamination.TabPages);
   TabsAtPreparation.Add(hlxAdminTabControlKdpExamination.TabPages.ToArray());
