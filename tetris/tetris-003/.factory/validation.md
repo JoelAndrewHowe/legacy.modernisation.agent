@@ -2,11 +2,17 @@
 
 ## Current doer pass
 
-- No new validator findings were supplied in this request; previous findings remain recorded below.
-- Worked on the next unchecked task (the gameplay engine), without marking it done or changing `.factory/plan.md`.
+- No new validator findings were supplied in this request; previous findings remain recorded below and their regression tests still pass.
+- Worked on the next unchecked task (keyboard controls and terminal cleanup), without marking it done or changing `.factory/plan.md`.
+- Hardened `src/index.js` to restore the terminal on process exit and on keyboard-action, gravity, or redraw failures before propagating errors. Cleanup removes the exit listener and remains idempotent.
+- Added regression tests for remaining control aliases, Escape, ignored keys, no updates after quit, process exit, and error-path restoration with timer/listener cleanup.
+- Verification: `npm test` passes all 17 tests, including startup through npm, gameplay, controls, cleanup, and physical display-height checks.
+
+## Previous doer pass
+
 - Guarded `Game.lock()` after game over so it cannot mutate the board, score, or active piece once play ends.
 - Added deterministic coverage for all four line-clear scores, board dimensions, locking on stacked blocks, and rejected rotations preserving state. Extended game-over immutability coverage to direct locking.
-- Verification: `npm test` passes all 15 tests, including startup, gameplay, controls, cleanup, and physical display-height checks.
+- Verification: all 15 tests passed.
 
 ## Findings supplied
 

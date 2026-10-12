@@ -212,13 +212,62 @@ test('interactive controls and timer drive gameplay; quit restores terminal', ()
 });
 
 test('signals, EOF, and Ctrl-C clean up terminal', () => {
-  for (const event of ['SIGINT', 'SIGTERM', 'end', 'ctrl-c']) {
+  for (const event of ['SIGINT', 'SIGTERM', 'exit', 'end', 'ctrl-c']) {
     const t = terminal();
     if (event === 'end') t.input.emit('end');
     else if (event === 'ctrl-c') t.input.emit('keypress', '', { name: 'c', ctrl: true });
     else t.signals.emit(event);
     assert.deepEqual(t.raw, [true, false]);
     assert.equal(t.clears(), 1);
+  }
+});
+
+test('all control aliases work and Escape quits without further updates', () => {
+  const game = new Game(() => 0);
+  const t = terminal(game);
+  const key = name => t.input.emit('keypress', '', { name });
+  key('a'); assert.equal(game.x, 2);
+  key('right'); assert.equal(game.x, 3);
+  key('w'); assert.equal(game.piece.length, 4);
+  key('down'); assert.equal(game.y, 1);
+  const snapshot = JSON.stringify(game);
+  key('unknown'); assert.equal(JSON.stringify(game), snapshot);
+  key('escape');
+  t.tick(); key('left');
+  assert.equal(JSON.stringify(game), snapshot);
+  assert.deepEqual(t.raw, [true, false]);
+  assert.equal(t.clears(), 1);
+  for (const event of ['SIGINT', 'SIGTERM', 'exit']) {
+    assert.equal(t.signals.listenerCount(event), 0);
+  }
+});
+
+test('keyboard, gravity, and resize failures restore the terminal before propagating', () => {
+  for (const source of ['keyboard', 'gravity', 'resize']) {
+    const game = square();
+    const t = terminal(game);
+    const failure = new Error(`${source} failed`);
+    let trigger;
+    if (source === 'resize') {
+      const write = t.output.write;
+      t.output.write = function (text) {
+        if (text.includes('Tetris')) throw failure;
+        write.call(this, text);
+      };
+      trigger = () => t.output.emit('resize');
+    } else {
+      game.down = () => { throw failure; };
+      trigger = source === 'gravity' ? t.tick
+        : () => t.input.emit('keypress', '', { name: 'down' });
+    }
+    assert.throws(trigger, error => error === failure);
+    t.stop();
+    assert.deepEqual(t.raw, [true, false]);
+    assert.equal(t.clears(), 1);
+    assert.equal(t.input.listenerCount('keypress'), 0);
+    assert.equal(t.output.listenerCount('resize'), 0);
+    assert.equal(t.signals.listenerCount('exit'), 0);
+    assert.ok(t.output.text.endsWith('\x1b[?25h\x1b[?1049l'));
   }
 });
 

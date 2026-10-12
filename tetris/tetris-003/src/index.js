@@ -8,7 +8,14 @@ export function run({ input = process.stdin, output = process.stdout, signals = 
   const interactive = Boolean(input.isTTY && output.isTTY);
   let timer;
   let stopped = false;
-  const draw = () => output.write(`${interactive ? '\x1b[H\x1b[2J' : ''}${render(game, output.columns)}${interactive ? '' : '\n'}`);
+  const draw = () => {
+    try {
+      output.write(`${interactive ? '\x1b[H\x1b[2J' : ''}${render(game, output.columns)}${interactive ? '' : '\n'}`);
+    } catch (error) {
+      cleanup();
+      throw error;
+    }
+  };
   const cleanup = () => {
     if (stopped) return;
     stopped = true;
@@ -18,6 +25,7 @@ export function run({ input = process.stdin, output = process.stdout, signals = 
     output.removeListener?.('resize', draw);
     signals.removeListener('SIGINT', cleanup);
     signals.removeListener('SIGTERM', cleanup);
+    signals.removeListener('exit', cleanup);
     if (interactive) {
       input.setRawMode(false);
       input.pause();
@@ -26,11 +34,16 @@ export function run({ input = process.stdin, output = process.stdout, signals = 
   };
   const update = action => {
     if (stopped || game.over) return;
-    action();
-    draw();
-    if (game.over && timer !== undefined) {
-      clearTimer(timer);
-      timer = undefined;
+    try {
+      action();
+      draw();
+      if (game.over && timer !== undefined) {
+        clearTimer(timer);
+        timer = undefined;
+      }
+    } catch (error) {
+      cleanup();
+      throw error;
     }
   };
   function onKey(text, key = {}) {
@@ -55,11 +68,10 @@ export function run({ input = process.stdin, output = process.stdout, signals = 
     output.on?.('resize', draw);
     signals.on('SIGINT', cleanup);
     signals.on('SIGTERM', cleanup);
+    signals.on('exit', cleanup);
     input.resume();
     draw();
-    timer = setTimer(() => {
-      try { update(() => game.down()); } catch (error) { cleanup(); throw error; }
-    }, 650);
+    timer = setTimer(() => update(() => game.down()), 650);
   } catch (error) {
     cleanup();
     throw error;
