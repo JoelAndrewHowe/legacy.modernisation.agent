@@ -415,6 +415,38 @@ class CharacteriseTests(unittest.TestCase):
                 self.assertEqual({'errors': [], 'warnings': [], 'indices': indices,
                     'collectionSame': [True, True], 'itemIdentitiesSame': [True, True],
                     'selectedValuesSame': [True, True]}, rows['KD03-dropdown-selection-' + name])
+            refresh_source = stage / 'reference/ExtractedDropdownRefresh.cs'
+            original_refresh = refresh_source.read_text()
+            import re
+            refresh_fields = sorted(set(re.findall(r'hlxDropDown\w+', original_refresh)))
+            self.assertEqual(33, len(refresh_fields))
+            expected_indices = [list(range(33)), list(reversed(range(33)))]
+            for call in range(2):
+                expected_indices[call][refresh_fields.index('hlxDropDownEngagement')] = expected_indices[call][refresh_fields.index('hlxDropDownDomesticViolence')]
+            self.assertEqual({'errors': [], 'warnings': [], 'indices': expected_indices,
+                'inputsSame': [True, True]}, rows['KD03-dropdown-refresh-distinct'])
+            for name in ('missing', 'empty'):
+                self.assertEqual({'errors': [], 'warnings': [], 'indices': [[-1] * 33, [-1] * 33],
+                    'inputsSame': [True, True]}, rows['KD03-dropdown-refresh-' + name])
+            try:
+                discrepancy = 'hlxDropDownEngagement.SelectedIndex = getSelectedIndexOfSelectedValue(hlxDropDownDomesticViolence);'
+                self.assertEqual(1, original_refresh.count(discrepancy))
+                # An apparently corrective wiring change must not silently change the baseline.
+                refresh_source.write_text(original_refresh.replace(discrepancy,
+                    'hlxDropDownEngagement.SelectedIndex = getSelectedIndexOfSelectedValue(hlxDropDownEngagement);'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-dropdown-refresh-distinct'},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+                refresh_source.write_text(original_refresh.replace(discrepancy, '// mutation: omitted Engagement refresh'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-dropdown-refresh-' + name for name in ('distinct', 'missing', 'empty')},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                refresh_source.write_text(original_refresh)
             selection_source = stage / 'reference/ExtractedDropdownSelection.cs'
             original_selection = selection_source.read_text()
             self.assertIn('item.Value.ToString() == dropDownBox.SelectedValue.ToString()', original_selection)

@@ -233,12 +233,18 @@ public class ExtractedDropdownControls {
 public class SelectionItemFixture { public object Value; }
 public class SelectionDropdownFixture {
  public object SelectedValue;
+ public int SelectedIndex = 999;
  public List<SelectionItemFixture> Items = new();
 }
 public class ExtractedDropdownSelection {
 ''' + method(ui, 'getSelectedIndexOfSelectedValue').replace('private int', 'public int')
         .replace('HlxDropDown', 'SelectionDropdownFixture')
         .replace('Janus.Windows.EditControls.UIComboBoxItem', 'SelectionItemFixture') + '\n}\n')
+    refresh = method(ui, 'manuallyRefreshSelectedDropdownValues').replace('private void', 'public void')
+    refresh_fields = sorted(set(re.findall(r'hlxDropDown\w+', refresh)))
+    put('reference/ExtractedDropdownRefresh.cs', 'public class ExtractedDropdownRefresh : ExtractedDropdownSelection {\n'
+        + '\n'.join(' public SelectionDropdownFixture ' + name + ' = new();' for name in refresh_fields)
+        + '\n' + refresh + '\n}\n')
     # Only visibility changes; query/grouping/flag decisions remain source-owned.
     repeat_member = method(repeat_source.replace('internal static void', 'public static void'), 'UpdateRepeatFlags')
     put('reference/ExtractedRepeatFlags.cs', (ROOT / 'repeat-support.cs.txt').read_text().replace('__MEMBERS__', repeat_member))
@@ -405,6 +411,15 @@ public class ExtractedDropdownSelection {
         add('KD03-dropdown-selection-' + name, 'dropdown-selection',
             {**base, 'items': items, 'selectedValues': selected}, indices=indices,
             collectionSame=[True, True], itemIdentitiesSame=[True, True], selectedValuesSame=[True, True])
+    for name in ('distinct', 'missing', 'empty'):
+        values = [[i, 32 - i] for i in range(33)] if name == 'distinct' else [[None, 'unknown'] for _ in range(33)]
+        expected = [[i, 32 - i] for i in range(33)] if name == 'distinct' else [[-1, -1] for _ in range(33)]
+        # Preserve the supplied source discrepancy, not the apparent intended wiring.
+        expected[refresh_fields.index('hlxDropDownEngagement')] = expected[refresh_fields.index('hlxDropDownDomesticViolence')][:]
+        add('KD03-dropdown-refresh-' + name, 'dropdown-refresh',
+            {**base, 'fields': refresh_fields, 'values': values, 'emptyItems': name == 'empty'},
+            indices=[[row[call] for row in expected] for call in range(2)],
+            inputsSame=[True, True])
     repeat_rows = [
         {'id': 1, 'client': 1001, 'code': 'KD03', 'date': '2025-02-19T09:00:00', 'flag': 'Y'},
         {'id': 2, 'client': 1001, 'code': 'KD03', 'date': '2025-02-19T09:00:00', 'flag': 'Y'},
@@ -781,6 +796,8 @@ Measurement assignment scenarios execute each retained Height/Weight/HeadCircumf
 
 ## Non-blocking / review assumptions
 
+Source discrepancy: `{ui_path}` manuallyRefreshSelectedDropdownValues assigns Engagement.SelectedIndex from DomesticViolence's selection rather than Engagement's. Three extracted orchestration scenarios preserve this wiring across repeated calls (distinct indices, null/unknown values, empty lists). This is UI refresh evidence, not a new recording rule; any correction requires reviewed behavioural adjustment. The storage-only dropdown doubles do not establish Windows binding or automatic event delivery.
+
 GetKdpResults is source-extracted: shared cases check descending examination timestamps, stable equal-date ordering, empty lists and a second patient refresh replacing stale delegates. Recording GetKdpExamination returns explicit synthetic context/list objects without sorting; DTO identity, patient context, existing-list identity and lazy ranges are observed after source Populate. Real service retrieval, Windows binding and persistence remain unverified.
 
 Lookup validation lifecycle scenarios invoke retained ValidateLocationCode/ValidateExaminerCode twice: null/empty codes bypass even missing-category prompts; missing categories with no cache accept unknown codes but report errors, whereas stale cached rows still reject them; a service fault accepts the first unknown code, then successful retry rejects it; empty retrieved rows reject and remain cached. These are source-observed permissive validation outcomes, not evidence that save is safe during dependency failure. Explicit synthetic rows/faults and direct invocation do not establish Windows binding or service/persistence parity.
@@ -811,6 +828,8 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 5. Gates: runner-owned nonempty tests, mechanical observation parity, build/style and browser add/read-back. Retain exact revisions/commands/diagnostics. Demonstrate lifetime-only persistence and excluded Oracle/PostgreSQL infrastructure.
 ''')
     put('reference/ADAPTATIONS.md', f'''# Extracted reference adaptations
+
+- `{ui_path}` manuallyRefreshSelectedDropdownValues retains its body with public visibility. A separate harness reuses the extracted selection helper and supplies storage-only dropdowns. Three shared scenarios invoke twice with distinct per-control indices, null/unknown values and empty lists; all 33 destination indices and unchanged control/item/value references are observed. Engagement reads DomesticViolence's selected index in the supplied source; this discrepancy is preserved and explicitly tested, not corrected. Synthetic 33-item lists are not lookup data. SelectedIndex assignment does not simulate Windows binding, selection events or automatic refresh delivery. Full child Populate and approval blockers remain unverified/unchanged.
 
 - `{ui_path}`: examination-date handler is retained with public visibility and a Text/DateTime-only fixture. Delegate ValidateExaminationDate and CheckAgeWithinScheduleRange execute extracted bodies with local ValidationFault substitution; synthetic date/death/existing-result fixtures and 6–8-week schedule exercise errors and warnings. WeeksBetween and DaysBetween are recovered unchanged from `{dates_path}`; no original Windows event delivery is claimed.
 - `{ui_path}`: Height, Weight and HeadCirc Validating method bodies are retained, changing only private visibility for direct invocation. Text/Value-only ControlFixture replaces proprietary numeric controls; CancelEventArgs is the runtime type. Delegate ValidateHeight/ValidateWeight/ValidateHeadCircumference bodies are extracted with local ValidationFault replacing WCF wrappers. Invented height 40–60 and weight 3–6 bands supply deviation dependencies. Shared cases assert invalid cancellation, empty-input bypass with incoming cancellation retained, and warning-only acceptance. No Windows binding, event loop, focus or layout parity is claimed.

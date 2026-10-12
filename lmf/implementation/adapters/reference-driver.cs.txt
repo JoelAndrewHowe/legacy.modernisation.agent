@@ -553,6 +553,37 @@ foreach (var scenario in scenarios)
                 observed["itemIdentitiesSame"] = JsonSerializer.SerializeToNode(selectionItemIdentitiesSame);
                 observed["selectedValuesSame"] = JsonSerializer.SerializeToNode(selectionValuesSame);
                 break;
+            case "dropdown-refresh":
+                var refreshControl = new ExtractedDropdownRefresh();
+                var refreshNames = input["fields"].AsArray().Select(node => node.GetValue<string>()).ToArray();
+                var refreshDropdowns = refreshNames.Select(name => (SelectionDropdownFixture)
+                    typeof(ExtractedDropdownRefresh).GetField(name).GetValue(refreshControl)).ToArray();
+                foreach (var dropdownFixture in refreshDropdowns)
+                    if (!input["emptyItems"].GetValue<bool>())
+                        for (int i = 0; i < 33; i++) dropdownFixture.Items.Add(new SelectionItemFixture { Value = i.ToString() });
+                var refreshCollections = refreshDropdowns.Select(dropdownFixture => dropdownFixture.Items).ToArray();
+                var refreshItems = refreshCollections.Select(items => items.ToArray()).ToArray();
+                var refreshIndices = new List<int[]>();
+                var refreshInputsSame = new List<bool>();
+                for (int call = 0; call < 2; call++) {
+                    for (int i = 0; i < refreshDropdowns.Length; i++) {
+                        var value = input["values"][i][call];
+                        refreshDropdowns[i].SelectedValue = value == null ? null : value.ToString();
+                        refreshDropdowns[i].SelectedIndex = 999;
+                    }
+                    var refreshValues = refreshDropdowns.Select(dropdownFixture => dropdownFixture.SelectedValue).ToArray();
+                    refreshControl.manuallyRefreshSelectedDropdownValues();
+                    refreshIndices.Add(refreshDropdowns.Select(dropdownFixture => dropdownFixture.SelectedIndex).ToArray());
+                    refreshInputsSame.Add(refreshNames.Select((name, i) =>
+                        ReferenceEquals(typeof(ExtractedDropdownRefresh).GetField(name).GetValue(refreshControl), refreshDropdowns[i]) &&
+                        ReferenceEquals(refreshDropdowns[i].SelectedValue, refreshValues[i]) &&
+                        ReferenceEquals(refreshDropdowns[i].Items, refreshCollections[i]) &&
+                        refreshDropdowns[i].Items.Count == refreshItems[i].Length &&
+                        refreshDropdowns[i].Items.Select((item, index) => ReferenceEquals(item, refreshItems[i][index])).All(same => same)).All(same => same));
+                }
+                observed["indices"] = JsonSerializer.SerializeToNode(refreshIndices);
+                observed["inputsSame"] = JsonSerializer.SerializeToNode(refreshInputsSame);
+                break;
             case "dropdown-control":
                 var dropdownDelegate = new ExtractedInteractions { KdpExaminationResultTo = result };
                 var dropdownControls = new ExtractedDropdownControls { kdpExaminationResultDelegate = dropdownDelegate };
