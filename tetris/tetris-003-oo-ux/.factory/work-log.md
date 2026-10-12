@@ -98,3 +98,20 @@ line clearing, scoring, and game over. These mechanics already exist in
 Validation: `npm test` passes all 30 tests. Left `.factory/plan.md` unchanged;
 no task was marked done.
 
+## Follow-up: complete 24-row display layout
+
+Worked on the next unfinished task: render the board, score, controls, borders,
+and game-over messages within 24 terminal rows. The existing renderer already
+implements the layout, so added focused regressions in `test/renderer.test.js`.
+
+- Checked both borders, all 20 board rows, exact cell positions at opposite
+  corners and in the active piece, and the controls row within a 24-row frame.
+- Checked that game over preserves settled cells, hides the active piece, and
+  replaces the title and controls without adding rows.
+- Checked all seven pieces in all four rotations for 24-row/22-column bounds
+  and four visible cells.
+- Validator findings supplied with this request: none; nothing to address.
+
+Validation: `npm test` passes all 32 tests. Left `.factory/plan.md` unchanged;
+no task was marked done.
+
