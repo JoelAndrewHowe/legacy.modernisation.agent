@@ -256,6 +256,8 @@ foreach (var scenario in scenarios)
                 var setupDefaultStates = new List<bool>();
                 var setupResultCollectionIdentities = new List<bool>();
                 var setupResultOrderedIdentities = new List<bool>();
+                var setupResultCollectionIdentitiesAtPreparation = new List<bool>();
+                var setupResultOrderedIdentitiesAtPreparation = new List<bool>();
                 var exactSetupSelection = true;
                 for (var pass = 0; pass < 2; pass++) {
                     setupControl.kdpExaminationDelegate.KdpExaminationResultDelegates = input["ids"].AsArray().Select(id => {
@@ -264,7 +266,12 @@ foreach (var scenario in scenarios)
                     }).ToList();
                     var originalSetupResults = setupControl.kdpExaminationDelegate.KdpExaminationResultDelegates;
                     var originalSetupResultRows = originalSetupResults.ToArray();
+                    var preparationStart = setupControl.PreparedTabs.Count;
                     setupControl.SetUpTabPages();
+                    setupResultCollectionIdentitiesAtPreparation.AddRange(setupControl.ResultCollectionsAtPreparation.Skip(preparationStart)
+                        .Select(results => ReferenceEquals(originalSetupResults, results)));
+                    setupResultOrderedIdentitiesAtPreparation.AddRange(setupControl.ResultRowsAtPreparation.Skip(preparationStart)
+                        .Select(results => results.Length == originalSetupResultRows.Length && originalSetupResultRows.Select((row, index) => ReferenceEquals(row, results[index])).All(value => value)));
                     var afterSetupResults = setupControl.kdpExaminationDelegate.KdpExaminationResultDelegates;
                     setupResultCollectionIdentities.Add(ReferenceEquals(originalSetupResults, afterSetupResults));
                     setupResultOrderedIdentities.Add(afterSetupResults.Count == originalSetupResultRows.Length && originalSetupResultRows.Select((row, index) => ReferenceEquals(row, afterSetupResults[index])).All(value => value));
@@ -281,6 +288,8 @@ foreach (var scenario in scenarios)
                         exactSetupSelection &= ReferenceEquals(expectedSetupTab, setupControl.hlxAdminTabControlKdpExamination.SelectedTab) && ReferenceEquals(expectedSetupTab, setupControl.PreparedTabs.LastOrDefault());
                     }
                 }
+                observed["resultCollectionIdentitiesAtPreparation"] = JsonSerializer.SerializeToNode(setupResultCollectionIdentitiesAtPreparation);
+                observed["resultOrderedIdentitiesAtPreparation"] = JsonSerializer.SerializeToNode(setupResultOrderedIdentitiesAtPreparation);
                 observed["resultCollectionIdentities"] = JsonSerializer.SerializeToNode(setupResultCollectionIdentities);
                 observed["resultOrderedIdentities"] = JsonSerializer.SerializeToNode(setupResultOrderedIdentities);
                 observed["keys"] = JsonSerializer.SerializeToNode(setupKeys);

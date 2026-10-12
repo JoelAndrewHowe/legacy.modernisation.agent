@@ -62,6 +62,8 @@ class CharacteriseTests(unittest.TestCase):
             ]:
                 self.assertEqual({'keys': keys, 'texts': texts, 'selected': selected,
                     'resultCollectionIdentities': [True, True], 'resultOrderedIdentities': [True, True],
+                    'resultCollectionIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
+                    'resultOrderedIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
                     'keysAtPreparation': keys if name != 'empty' else [],
                     'textsAtPreparation': texts if name != 'empty' else [],
                     'selectedIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
@@ -887,6 +889,40 @@ class CharacteriseTests(unittest.TestCase):
                             wanted = rows[row['id']][field]
                             self.assertEqual(expected if expected is not None else [not value for value in wanted], actual[field])
                             self.assertEqual(rows[row['id']], {**actual, field: wanted})
+                finally:
+                    extracted_setup.write_text(original_setup)
+            # Temporary result substitutions restored after dispatch preserve all
+            # post-return identities and every earlier tab/dispatch observation.
+            for field, substitution, restoration in [
+                ('resultCollectionIdentitiesAtPreparation',
+                 'kdpExaminationDelegate.KdpExaminationResultDelegates = new(originalResults);',
+                 'kdpExaminationDelegate.KdpExaminationResultDelegates = originalResults;'),
+                ('resultOrderedIdentitiesAtPreparation',
+                 'for (var i = 0; i < originalResults.Count; i++) { var row = originalResults[i]; originalResults[i] = new(row.PkChildExaminationId, row.ResultTabText); }',
+                 'for (var i = 0; i < originalRows.Length; i++) originalResults[i] = originalRows[i];'),
+            ]:
+                transient_results_mutation = '''public void SetUpTabPages()
+        {
+            var originalResults = kdpExaminationDelegate.KdpExaminationResultDelegates;
+            var originalRows = originalResults.ToArray();
+            ''' + substitution + '''
+            OriginalSetUpTabPages();
+            ''' + restoration + '''
+        }
+        public void OriginalSetUpTabPages()'''
+                try:
+                    extracted_setup.write_text(original_setup.replace(setup_method, transient_results_mutation))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                    failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                    self.assertEqual({'KD03-ui-tab-setup-' + name for name in
+                        ('default', 'current', 'new', 'null-current')}, failures)
+                    for row in mutant_report['scenarios']:
+                        if row['id'] in failures:
+                            actual = row['actual']
+                            self.assertEqual([False, False], actual[field])
+                            self.assertEqual(rows[row['id']], {**actual, field: [True, True]})
                 finally:
                     extracted_setup.write_text(original_setup)
             zero_guard = 'PkChildExaminationId != NewExamNumber'
