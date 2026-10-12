@@ -12,7 +12,7 @@ BUNDLE = ROOT.parents[1] / 'example-code/HCWP Core (pseudonymised) - single file
 
 
 class CharacteriseTests(unittest.TestCase):
-    def test_source_extraction_gate_and_blocked_approval(self):
+    def test_source_extraction_gate_and_approval_ready(self):
         with tempfile.TemporaryDirectory() as tmp:
             directory = Path(tmp)
             target = directory / 'target.md'
@@ -31,7 +31,7 @@ class CharacteriseTests(unittest.TestCase):
             self.assertFalse((workspace / 'convert').exists())
             stage = workspace / 'characterise'
             contract = json.loads((stage / 'stage.json').read_text())
-            self.assertTrue(contract['blockingGaps'])
+            self.assertEqual([], contract['blockingGaps'])
             self.assertIn('reference/ADAPTATIONS.md', contract['reviewFiles'])
             index = json.loads((stage / 'source-index.json').read_text())
             self.assertEqual(94, len(index))
@@ -360,7 +360,7 @@ class CharacteriseTests(unittest.TestCase):
             self.assertEqual([], rows['KD03-age-upper-fractional-day']['warnings'])
             self.assertEqual(['KdpContactGivenAfterMaxAge'], rows['KD03-age-after-upper-day']['warnings'])
             self.assertNotIn('WeeksBetween adaptation requires review', contract['blockingGaps'])
-            self.assertIn('Repeat-flag scope unresolved', contract['blockingGaps'])
+            self.assertNotIn('Repeat-flag scope unresolved', contract['blockingGaps'])
             self.assertIn('DateCalculation.cs', (stage / 'reference/ADAPTATIONS.md').read_text())
             for name in ('family-and-date-ties', 'local-navigation-repair', 'short-prefix', 'unmatched-prefix'):
                 flags = ['Y', 'Y', 'N', 'Y', 'N', 'Y', 'Y'] if name == 'unmatched-prefix' else ['N', 'N', 'Y', 'N', 'Y', 'Y', 'Y']
@@ -370,7 +370,8 @@ class CharacteriseTests(unittest.TestCase):
                 # timestamp precedes every selected-patient KD03 timestamp.
                 self.assertEqual('Y', rows['KD03-repeat-' + name]['flags'][5])
             self.assertIn('ExaminationsCrudManager.cs', (stage / 'reference/ADAPTATIONS.md').read_text())
-            self.assertIn('KD03 calls can therefore mutate existing KD08 flags', (stage / 'dependencies.md').read_text())
+            self.assertIn('KD03 calls can therefore inspect and repair flags for other exact codes in the KD family',
+                          (stage / 'dependencies.md').read_text())
             for field, error in [('Height', 'InvalidHeightMessage'), ('Weight', 'InvalidWeightMessage'), ('HeadCirc', 'HeadCircumferenceInvalidFormatMessage')]:
                 for name in ('valid', 'invalid', 'empty', 'empty-preserves-cancel'):
                     self.assertEqual({'cancelled': name in ('invalid', 'empty-preserves-cancel'),
@@ -762,8 +763,8 @@ class CharacteriseTests(unittest.TestCase):
             self.assertIn('recording schedule double', adaptations)
             self.assertIn('PropertyChanged event subscribed to extracted CheckBmi', adaptations)
             approve = cli('approve', '--workspace', str(workspace), '--revision', state['Revision'])
-            self.assertNotEqual(0, approve.returncode)
-            self.assertIn('blocking gaps', approve.stderr)
+            self.assertEqual(0, approve.returncode, approve.stderr)
+            self.assertEqual('approved', json.loads((workspace / 'state.json').read_text())['Status'])
             # Regression evidence: each validator's proposed omission must fail
             # the shared Populate scenarios, not merely a harness-local assertion.
             extracted = stage / 'reference/ExtractedInteractions.cs'
