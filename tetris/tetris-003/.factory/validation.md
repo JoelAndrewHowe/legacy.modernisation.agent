@@ -1,6 +1,16 @@
 # Validation record
 
-## Current doer pass
+## Verification doer pass
+
+- No new validator findings were supplied. Rechecked the previously recorded gameplay, npm-start, cleanup, and physical-row/wrapping findings; existing regression coverage passes.
+- Worked on the next unchecked task: verify startup, gameplay, controls, and the display height limit. Left `.factory/plan.md` unchanged; did not mark the task done.
+- `npm test`: all 20 tests passed, including deterministic line clearing/scoring, collision/rotation, lifecycle cleanup, and startup/gameplay/game-over physical-height checks at widths 1–100.
+- Real pseudo-terminal checks launched `npm --silent start` at 24x80, 24x40, and 24x12. Verified arrow movement, soft drop, WASD/up-arrow input, timed gravity, hard drops through game over, stopped gravity after game over, and resizing to widths 1/12/40/80. All captured frames stayed within 24 physical rows and their terminal width.
+- Verified Q, Ctrl-C, and Escape exits respectively: successful process exit, cursor/alternate-screen restoration sequences, and exact restoration of original terminal settings.
+- Two initial smoke-check assertions were harness issues, not game defects: a PTY without a controlling terminal needed explicit SIGWINCH delivery for resize; standalone Escape needed a longer capture window for readline's escape-sequence timeout. Corrected those checks and reran successfully.
+- No game-code changes were needed.
+
+## Earlier rendering doer pass
 
 - No new validator findings were supplied in this request. The previously recorded physical-row/wrapping findings remain covered by regression tests.
 - Worked on the next unchecked task: rendering within 24 terminal rows. Left `.factory/plan.md` unchanged and did not mark the task done.
