@@ -91,6 +91,23 @@ class CharacteriseTests(unittest.TestCase):
                     'errors': [], 'warnings': []}, rows['KD03-ui-tab-select-' + name])
             self.assertIn('SelectTabPage is source-extracted',
                           (stage / 'reference/ADAPTATIONS.md').read_text())
+            for name, counts, visible, at_setup in [
+                ('ordinary', [3, 1], [True, True], [True, True]),
+                ('summary-then-ordinary', [3, 1], [False, False], [True, False]),
+                ('ordinary-then-summary', [3, 1], [True, False], [True, True]),
+                ('empty-summary', [0, 0], [False, False], [True, False]),
+            ]:
+                self.assertEqual({'errors': [], 'warnings': [], 'ids': [1001.5, 2002.5],
+                    'editable': [False, True], 'calls': [1002, 2002],
+                    'resultIds': [[42 + i for i in range(count)] for count in counts],
+                    'tabCounts': counts, 'visible': visible, 'sameDtos': [True, True],
+                    'setups': [{'Id': ident, 'Editable': editable, 'Loads': i + 1,
+                                'Results': counts[i], 'Tabs': counts[i], 'Processing': False,
+                                'NavigatorVisible': at_setup[i]}
+                               for i, (ident, editable) in enumerate([(1001.5, False), (2002.5, True)])]},
+                    rows['KD03-ui-populate-' + name])
+            self.assertIn('Populate and ProcessTabsForEachExam also execute together',
+                          (stage / 'reference/ADAPTATIONS.md').read_text())
             for mode, ids in [('unordered', [42, 99, 77]), ('ties', [77, 42, 99]), ('empty', [])]:
                 self.assertEqual({'errors': [], 'warnings': [], 'ids': ids, 'refreshIds': [88],
                     'calls': [1001, 2002], 'sameDtos': True, 'sameContext': True,
@@ -521,10 +538,33 @@ class CharacteriseTests(unittest.TestCase):
                                          'KD03-ui-insert-empty', 'KD03-ui-insert-existing',
                                          'KD03-ui-insert-later-new', 'KD03-ui-insert-no-consent',
                                          'KD03-get-results-unordered', 'KD03-get-results-ties',
-                                         'KD03-get-results-empty'})
+                                         'KD03-get-results-empty', 'KD03-ui-populate-ordinary',
+                                         'KD03-ui-populate-summary-then-ordinary',
+                                         'KD03-ui-populate-ordinary-then-summary'})
                     self.assertEqual(expected, failures)
                 finally:
                     extracted.write_text(original)
+            populate_source = stage / 'reference/ExtractedPopulateControl.cs'
+            original_populate = populate_source.read_text()
+            sequence = '            ProcessTabsForEachExam();\n            SetUpTabPages();'
+            hide = 'bindingNavigatorKdpExamination.Visible = false;'
+            self.assertEqual(1, original_populate.count(sequence))
+            self.assertEqual(1, original_populate.count(hide))
+            for old, new, expected_names in [
+                (sequence, '            SetUpTabPages();\n            ProcessTabsForEachExam();',
+                 ['ordinary', 'summary-then-ordinary', 'ordinary-then-summary', 'empty-summary']),
+                (hide, 'bindingNavigatorKdpExamination.Visible = true;',
+                 ['summary-then-ordinary', 'ordinary-then-summary', 'empty-summary']),
+            ]:
+                try:
+                    populate_source.write_text(original_populate.replace(old, new))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutated_rows = json.loads((stage / 'reference-report.json').read_text())['scenarios']
+                    self.assertEqual({'KD03-ui-populate-' + name for name in expected_names},
+                                     {row['id'] for row in mutated_rows if not row['matches']})
+                finally:
+                    populate_source.write_text(original_populate)
             # Skipping validation's lookup retrieval must lose fault/retry and
             # empty-row rejection evidence, not merely a service-double assertion.
             retrieval_call = '            GetLocationList();'

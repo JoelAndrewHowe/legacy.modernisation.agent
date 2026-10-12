@@ -1,0 +1,23 @@
+// Source UI Populate/ProcessTabsForEachExam with recording presentation infrastructure.
+using System;
+using System.Collections.Generic;
+using System.Linq;
+public class NavigatorFixture { public bool Visible = true; }
+public record PopulateSetupObservation(decimal Id, bool Editable, int Loads, int Results, int Tabs, bool Processing, bool NavigatorVisible);
+public class ExtractedPopulateControl {
+ public ExtractedLifecycle kdpExaminationDelegate = new();
+ public SaveTabControlFixture hlxAdminTabControlKdpExamination = new();
+ public NavigatorFixture bindingNavigatorKdpExamination = new();
+ public bool IsPopulatedFromContactsSummary;
+ public bool Editable;
+ public decimal ID;
+ public bool processingTabs;
+ public List<PopulateSetupObservation> Setups = new();
+ // No Windows binding/layout, selection or child control construction is simulated.
+ private void SetUpTabPages() => Setups.Add(new(ID, Editable,
+     kdpExaminationDelegate.service.ContextCalls.Count,
+     kdpExaminationDelegate.KdpExaminationResultDelegates.Count,
+     hlxAdminTabControlKdpExamination.TabPages.Count, processingTabs,
+     bindingNavigatorKdpExamination.Visible));
+__MEMBERS__
+}

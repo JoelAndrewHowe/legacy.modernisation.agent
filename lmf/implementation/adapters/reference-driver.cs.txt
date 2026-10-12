@@ -91,6 +91,41 @@ foreach (var scenario in scenarios)
             case "weeks-between":
                 observed["weeks"] = birth.WeeksBetween(result.ExaminationDate);
                 break;
+            case "ui-populate":
+                var populateControl = new ExtractedPopulateControl();
+                populateControl.hlxAdminTabControlKdpExamination.TabPages.Add(new("stale"));
+                populateControl.hlxAdminTabControlKdpExamination.TabPages.Add(new("stale-2"));
+                var populateIds = new List<decimal>();
+                var populateEditable = new List<bool>();
+                var populateTabCounts = new List<int>();
+                var populateVisibility = new List<bool>();
+                var populateDtoIdentities = new List<bool>();
+                var populateResultIds = new List<long[]>();
+                for (var call = 0; call < 2; call++) {
+                    var populateDtos = Enumerable.Range(0, input["counts"][call].GetValue<int>())
+                        .Select(index => new KdpExaminationResultTO { PkChildExaminationId = 42 + index,
+                            ExaminationCode = "KD03", ExaminationDate = new(2025, 2, 19) }).ToList();
+                    populateControl.kdpExaminationDelegate.service.Context = new() { HcpExaminationResultToList = populateDtos };
+                    populateControl.IsPopulatedFromContactsSummary = input["summaries"][call].GetValue<bool>();
+                    populateControl.Populate(call == 0 ? 1001.5m : 2002.5m, call != 0);
+                    populateIds.Add(populateControl.ID);
+                    populateEditable.Add(populateControl.Editable);
+                    populateTabCounts.Add(populateControl.hlxAdminTabControlKdpExamination.TabPages.Count);
+                    populateVisibility.Add(populateControl.bindingNavigatorKdpExamination.Visible);
+                    var populateResults = populateControl.kdpExaminationDelegate.KdpExaminationResultDelegates;
+                    populateDtoIdentities.Add(populateResults.Count == populateDtos.Count &&
+                        populateDtos.Select((dto, index) => ReferenceEquals(dto, populateResults[index].KdpExaminationResultTo)).All(value => value));
+                    populateResultIds.Add(populateResults.Select(item => item.PkChildExaminationId).ToArray());
+                }
+                observed["ids"] = JsonSerializer.SerializeToNode(populateIds);
+                observed["editable"] = JsonSerializer.SerializeToNode(populateEditable);
+                observed["calls"] = JsonSerializer.SerializeToNode(populateControl.kdpExaminationDelegate.service.ContextCalls);
+                observed["resultIds"] = JsonSerializer.SerializeToNode(populateResultIds);
+                observed["tabCounts"] = JsonSerializer.SerializeToNode(populateTabCounts);
+                observed["visible"] = JsonSerializer.SerializeToNode(populateVisibility);
+                observed["sameDtos"] = JsonSerializer.SerializeToNode(populateDtoIdentities);
+                observed["setups"] = JsonSerializer.SerializeToNode(populateControl.Setups);
+                break;
             case "get-results":
                 var loader = new ExtractedLifecycle();
                 var loadMode = input["mode"].GetValue<string>();
