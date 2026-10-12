@@ -54,7 +54,7 @@ class CharacteriseTests(unittest.TestCase):
                     'dockFill': [True, True], 'focusCalls': [1 if matched else 0] * 2,
                     'errors': [], 'warnings': []}, rows['KD03-ui-tab-content-' + name])
             for name, keys, texts, selected in [
-                ('default', [['42', '99'], ['142', '199']], [['SYNTH-42', 'SYNTH-99'], ['SYNTH-142', 'SYNTH-199']], ['42', '142']),
+                ('default', [['42', '99', 'trailing'], ['142', '199', 'trailing']], [['SYNTH-42', 'SYNTH-99', 'original-2'], ['SYNTH-142', 'SYNTH-199', 'original-2']], ['42', '142']),
                 ('current', [['-142', '-199'], ['-42', '-99']], [['SYNTH--142', 'SYNTH--199'], ['SYNTH--42', 'SYNTH--99']], ['-199', '-99']),
                 ('new', [['0', '99'], ['0', '199']], [['original-0', 'SYNTH-99'], ['original-0', 'SYNTH-199']], ['0', '0']),
                 ('null-current', [['42', '99'], ['142', '199']], [['SYNTH-42', 'SYNTH-99'], ['SYNTH-142', 'SYNTH-199']], [None, None]),
@@ -682,6 +682,32 @@ class CharacteriseTests(unittest.TestCase):
                 extracted_content.write_text(original_content)
             extracted_setup = stage / 'reference/ExtractedTabSetupControl.cs'
             original_setup = extracted_setup.read_text()
+            # Setup iterates results, not tabs: trailing tabs must retain their
+            # keys/text at dispatch and return even across repeated calls.
+            preparation_call = 'SetUpTabPageContent(hlxAdminTabControlKdpExamination.SelectedTab);'
+            self.assertEqual(1, original_setup.count(preparation_call))
+            trailing_mutation = '''for (var i = kdpExaminationDelegate.KdpExaminationResultDelegates.Count;
+                     i < hlxAdminTabControlKdpExamination.TabPages.Count; i++) {
+                    hlxAdminTabControlKdpExamination.TabPages[i].Key = null;
+                    hlxAdminTabControlKdpExamination.TabPages[i].Text = null;
+                }
+                ''' + preparation_call
+            try:
+                extracted_setup.write_text(original_setup.replace(preparation_call, trailing_mutation))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                self.assertEqual({'KD03-ui-tab-setup-default'}, failures)
+                actual = next(row['actual'] for row in mutant_report['scenarios']
+                              if row['id'] == 'KD03-ui-tab-setup-default')
+                for field in ('keys', 'texts', 'keysAtPreparation', 'textsAtPreparation'):
+                    self.assertEqual([None, None], [values[-1] for values in actual[field]])
+                self.assertEqual(rows['KD03-ui-tab-setup-default'], {**actual,
+                    **{field: rows['KD03-ui-tab-setup-default'][field]
+                       for field in ('keys', 'texts', 'keysAtPreparation', 'textsAtPreparation')}})
+            finally:
+                extracted_setup.write_text(original_setup)
             # Value-equal result rows and same-row result lists must not be
             # substituted even when all tab/dispatch observations still match.
             for field, assignment, names in [
