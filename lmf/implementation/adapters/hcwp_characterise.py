@@ -352,6 +352,16 @@ public class ExtractedChildPopulate {
                 {**base, 'kind': kind, 'initialItems': initial_items, 'calls': calls},
                 items=snapshots, collectionSame=[True, True], itemIdentitiesSame=[True, True],
                 sourceSame=[True, True])
+    for name, codes in [('supported', ['KD03', 'KD03']),
+                        ('other-contacts', ['KD08', 'KD09', 'KD11', 'KD01', 'KD04', 'KD07', 'KD10']),
+                        ('near-matches', ['KD03', 'kd03', 'KD03 ', ' KD03', 'KD030', '', None, 'UNKNOWN', 'KD03'])]:
+        add('KD03-contact-classification-' + name, 'contact-classification',
+            {**base, 'codes': codes}, classifications=[{
+                'sixToEight': code == 'KD03',
+                'fifteenOrTwentySeven': code in ('KD08', 'KD09'),
+                'dsk': code in ('KD11', 'KD08', 'KD09'),
+                'rsk': code in ('KD01', 'KD04', 'KD07', 'KD08', 'KD09', 'KD10')
+            } for code in codes])
     for initial in (False, True):
         add('KD03-ui-load-' + str(initial).lower(), 'ui-load',
             {**base, 'defaultStates': [initial, not initial]}, defaultStates=[False, False])
@@ -973,6 +983,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - `{lifecycle_path}` GetKdpResults body is source-extracted unchanged. Recording GetKdpExamination logs client IDs and returns an explicit synthetic LifecycleFixture context with unsorted DTOs (including equal-date ties) or an empty list. A second context for another synthetic patient verifies replacement, not accumulation. The double does not sort, populate or fetch persistence; retained GetKdpResults/GetNewKdpExaminationResultDelegate/Populate perform orchestration. Windows binding, service transport and persistence remain unverified.
 - `{lifecycle_path}` Save body is source-extracted unchanged. A recording service double observes exact context/result identity and throws explicit synthetic generic/optimistic-lock faults; shared cases assert return value, error prompt and untouched unrelated DTO. Local FaultException types replace WCF exception transport only. This proves delegate selection and error routing, not validation, transactions, mapping or persistence in the original save service.
 - ReasonNotExamined, Consent, CoreComponentOffered, Reschedule, WithdrawConsent and Origin setters/getters are source-extracted unchanged. Shared cases assign changed and unchanged values, then optionally clear nullable/string fields or reset WithdrawConsent to false. Distinct initial sibling values detect cross-field writes; CoreComponentOffered maps to DTO CoreComponent. These setters do not validate values or raise delegate notifications. Synthetic text is a storage probe, not an approved lookup value. Original DTO change tracking, Windows binding, save validation and persistence are not proved by these cases.
+- Contact classification getters and original contact-code arrays are source-extracted unchanged. Three shared scenarios directly change the DTO code and observe all four flags on every step: KD03, every other listed contact, case/whitespace/prefix near-matches, empty/null/unknown codes and return to KD03. This verifies exact source applicability classification, not unsupported-contact rejection by a target or Windows binding delivery. Existing approval blockers remain.
 - ExaminerCategory/ExaminerKdpCode/ExaminerType/ExaminerName and PopulateHcpDetails are source-extracted unchanged. Shared cases prove category assignments (changed/same/null) clear type/code/name/cache; refreshed retrieval uses the new category. HCP selection matches only UsedCode=Y, obtains Description/Type from explicitly synthetic cached rows, and leaves category unchanged for nonempty codes. Empty/null code invokes the category setter, clearing code to empty, type/name/category/cache without retrieval. LookupFixture adds a synthetic Type field for these dependencies; real lookup data and Windows binding/event delivery remain unverified.
 - LocationType/LocationCode setters are source-extracted unchanged. Shared cases prove that changed, unchanged and null category assignments clear code/name/cache, and subsequent retrieval uses the assigned category rather than stale rows. Code assignments resolve exact cached descriptions, clear names for empty/null codes and yield null for unknown codes or absent cache without fetching rows. Synthetic descriptions are fixture data; Windows binding/event delivery remain unverified.
 - Lookup validation lifecycle uses the same unfiltered recording lookup-service double, switching only its explicit fault flag between calls for recovery. Null/empty input, absent category, stale cached rows and empty service responses exercise unchanged validation and retrieval bodies; no validation rule is supplied by the double. Service transport, real lookup values, Windows delivery and save/persistence remain unverified.

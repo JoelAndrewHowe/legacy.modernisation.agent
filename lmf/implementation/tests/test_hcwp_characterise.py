@@ -503,6 +503,29 @@ class CharacteriseTests(unittest.TestCase):
                     {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
             finally:
                 focus_source.write_text(original_focus)
+            classifications = rows['KD03-contact-classification-near-matches']['classifications']
+            self.assertEqual([True] + [False] * 7 + [True],
+                             [row['sixToEight'] for row in classifications])
+            self.assertTrue(all(not row['dsk'] and not row['rsk'] and
+                                not row['fifteenOrTwentySeven'] for row in classifications))
+            other_contacts = rows['KD03-contact-classification-other-contacts']['classifications']
+            self.assertEqual([False] * 7, [row['sixToEight'] for row in other_contacts])
+            self.assertEqual([True, True, False, False, False, False, False],
+                             [row['fifteenOrTwentySeven'] for row in other_contacts])
+            contact_source = stage / 'reference/ExtractedInteractions.cs'
+            original_contact = contact_source.read_text()
+            try:
+                guard = 'KdpExaminationResultTo.ExaminationCode == ExamCode6To8WeekContact'
+                self.assertEqual(1, original_contact.count(guard))
+                contact_source.write_text(original_contact.replace(guard,
+                    '(KdpExaminationResultTo.ExaminationCode ?? "").Trim().Equals(ExamCode6To8WeekContact, StringComparison.OrdinalIgnoreCase)'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-contact-classification-near-matches'},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                contact_source.write_text(original_contact)
             fresh_child = rows['KD03-child-populate-fresh']
             self.assertEqual([True, True], fresh_child['bindings'])
             self.assertEqual(33, len(fresh_child['calls']))

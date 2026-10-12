@@ -22,6 +22,19 @@ foreach (var scenario in scenarios)
     {
         switch (scenario["when"].GetValue<string>())
         {
+            case "contact-classification":
+            {
+                var contact = new ExtractedInteractions { KdpExaminationResultTo = result };
+                var classifications = new List<object>();
+                foreach (var code in input["codes"].AsArray()) {
+                    result.ExaminationCode = code?.GetValue<string>();
+                    classifications.Add(new { sixToEight = contact.Is6To8WeekContact,
+                        fifteenOrTwentySeven = contact.Is15Or27MonthContact,
+                        dsk = contact.IsDskContact, rsk = contact.IsRskContact });
+                }
+                observed["classifications"] = JsonSerializer.SerializeToNode(classifications);
+                break;
+            }
             case "dropdown-list":
             {
                 var listDropdown = new DropdownListFixture();
