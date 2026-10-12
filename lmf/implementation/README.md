@@ -81,6 +81,10 @@ The examples expose head circumference 100 rejected by field validation yet acce
 
 To rerun extracted verification independently, run `python3 WORKSPACE/characterise/verify.py`. Prerequisites are Python 3 and .NET 10; no NuGet test framework or Oracle installation is required. `scenarios.feature` is the readable BDD companion; `scenarios.json` is the executable Given/When/Then suite interpreted by the reference adapter (not a Cucumber feature runner).
 
+## Real-agent checkpoint
+
+`adapters/pi_agent.py` connects the appended-request contract to locally installed Pi. See [`docs/hcwp-real-agent.md`](docs/hcwp-real-agent.md) for configuration, the actual agent-assisted Characterise run (371 runner-verified passes), retained evidence and the human approval handoff. Its separate workspace is awaiting approval; real-agent downstream migration and browser completion remain unverified.
+
 ## Tests
 
 The retained supplied-bundle approval checkpoint is documented in [`docs/hcwp-approval-gate.md`](docs/hcwp-approval-gate.md); its current revision is operator-approved. The retained migration has accepted Convert evidence. Refactor prerequisites are NuGet access for EF Core InMemory 10.0.0 and Python Playwright/Chromium (`python3 -m pip install playwright`, `python3 -m playwright install --with-deps chromium`). Missing prerequisites fail the gate. Launch the generated synthetic app with `dotnet run --project workspaces/hcwp/migration/refactor/app/Hcwp.csproj -- --urls http://127.0.0.1:5080`. Its `REFACTOR.md` documents source/default adaptations, synthetic fixtures, read-back and temporary-storage limitations. See [`docs/hcwp-refactor.md`](docs/hcwp-refactor.md) for evidence and scope.

@@ -1,0 +1,25 @@
+{
+  "Source": "/workspaces/legacy.modernisation.agent/example-code/HCWP Core (pseudonymised) - single file.txt",
+  "Target": "/workspaces/legacy.modernisation.agent/lmf/implementation/workspaces/hcwp-real-agent/target.md",
+  "Agent": {
+    "Command": {
+      "Executable": "/usr/bin/python3",
+      "Arguments": [
+        "/workspaces/legacy.modernisation.agent/lmf/implementation/adapters/pi_agent.py"
+      ],
+      "TimeoutSeconds": 600
+    }
+  },
+  "Repairs": 0,
+  "Status": "awaiting-approval",
+  "Revision": "ffa9d6f246f635f224277786c64e6b1591e4770ed8c34ea73f1131d3728c12be",
+  "ApprovedRevision": null,
+  "Stages": [
+    {
+      "Name": "characterise",
+      "Status": "accepted",
+      "Attempts": 1,
+      "Diagnostic": null
+    }
+  ]
+}
