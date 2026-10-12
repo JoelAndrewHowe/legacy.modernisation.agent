@@ -17,7 +17,7 @@ Reviewed revision:
 
 Evidence under the workspace:
 
-- `state.json`: awaiting approval, null approved revision.
+- `state.json`: at the initial checkpoint, awaiting approval with null approved revision (see current recheck below).
 - `characterise/attempts/0001/`: agent/check commands, logs and runner-copied results.
 - `characterise/reference-report.json`: per-scenario comparison outcomes.
 - `characterise/behaviour.md`, `dependencies.md`, `gaps.md`, `fixtures.json`, `migration-plan.md`, `scenarios.json`, `reference/ADAPTATIONS.md`: human review inputs.
@@ -33,3 +33,9 @@ The supplied adapter supports only Characterise. After approval, Convert/Refacto
 Existing `tests/test_cli.py` covers source, target, behaviour, scenario and reference changes plus blocking gaps and failed verification with deterministic orchestration doubles.
 
 Validation: `python3 -m unittest discover -s tests` passed all 10 tests. No validator findings were supplied for this task.
+
+## Current checkpoint recheck
+
+A subsequent doer recheck found the retained workspace in `approved` state, with `ApprovedRevision` and `CurrentRevision` both matching the revision above. This differs from the initial awaiting-approval snapshot; this recheck did not issue approval and does not establish who approved it. Only Characterise is accepted, with one attempt; no Convert or Refactor artifacts exist. No resume or target generation was attempted. The next task remains planner-owned.
+
+The full automated suite passed again (10 tests), and `git diff --check` passed. No validator findings were supplied.
