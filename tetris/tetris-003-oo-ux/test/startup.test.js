@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
+import { PassThrough } from 'node:stream';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import { Game } from '../src/game.js';
@@ -136,6 +137,61 @@ test('interactive keys move, rotate, fall, and drop, and redraw', () => {
     assert.ok(output().split('\x1b[H').length >= 7);
   } finally {
     terminal.stop();
+  }
+});
+
+test('terminal decodes actual key bytes and keeps every frame within 24 rows through game over', () => {
+  let pieces = 0;
+  // Start with an asymmetric T to observe rotation, then stack O pieces.
+  const game = new Game(() => pieces++ === 0 ? 2 / 7 : 0);
+  const input = new PassThrough();
+  input.isTTY = true;
+  input.setRawMode = raw => { input.isRaw = raw; };
+  let output = '';
+  const terminal = new Terminal(game, input, {
+    isTTY: true,
+    write: text => { output += text; },
+  });
+  try {
+    terminal.start();
+    const x = game.piece.x;
+    input.write('\x1b[D');
+    assert.equal(game.piece.x, x - 1);
+    input.write('\x1b[C');
+    assert.equal(game.piece.x, x);
+    const shape = game.piece.shape;
+    input.write('\x1b[A');
+    assert.notDeepEqual(game.piece.shape, shape);
+    assert.deepEqual(game.piece.shape, [[0, 1, 0], [0, 1, 1], [0, 1, 0]]);
+    input.write('\x1b[B');
+    assert.equal(game.piece.y, 1);
+    for (let i = 0; i < 10; i++) input.write(' ');
+    assert.equal(game.gameOver, true);
+    assert.equal(terminal.timer, undefined);
+    const ended = game.snapshot();
+    input.write('\x1b[D\x1b[A\x1b[B ');
+    assert.deepEqual(game.snapshot(), ended);
+
+    const frames = output.split('\x1b[H').slice(1)
+      .filter(frame => frame.length > 0)
+      .map(frame => frame.replace(/\x1b\[J$/, ''));
+    assert.ok(frames.length >= 15);
+    for (const frame of frames) {
+      const rows = frame.split('\r\n');
+      assert.equal(rows.length, 24);
+      assert.ok(rows.every(row => Array.from(row).length <= 22));
+      assert.equal(rows[1], '+--------------------+');
+      assert.equal(rows[22], rows[1]);
+    }
+    assert.match(frames.at(-1), /^GAME OVER Score:0/);
+    assert.ok(frames.at(-1).endsWith('Q / Ctrl-C: quit'));
+    input.write('q');
+    assert.equal(terminal.running, false);
+    assert.equal(input.isRaw, false);
+    assert.ok(output.endsWith('\x1b[?25h\x1b[?1049l'));
+  } finally {
+    terminal.stop();
+    input.destroy();
   }
 });
 

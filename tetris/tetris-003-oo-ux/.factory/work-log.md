@@ -115,3 +115,42 @@ implements the layout, so added focused regressions in `test/renderer.test.js`.
 Validation: `npm test` passes all 32 tests. Left `.factory/plan.md` unchanged;
 no task was marked done.
 
+## Follow-up: startup, controls, and display verification
+
+Worked on the next unfinished task: verify startup, gameplay controls, and
+24-row display height, including game over.
+
+- Added a regression in `test/startup.test.js` using actual arrow-key escape
+  sequences and Space/Q bytes through Node's keypress decoder, rather than
+  synthesized keypress events. Verified movement, soft drop, blocked-spawn
+  game over, frozen gameplay afterward, stopped gravity, and quit cleanup.
+- Checked every rendered frame for exactly 24 rows, at most 22 columns, and
+  both board borders; checked final game-over score and quit help.
+- Ran `npm start` in a real 24-by-80 pseudo-terminal, sent all arrow controls
+  and repeated hard drops, reached game over, and quit successfully. All 47
+  captured game frames stayed within 24 rows; cursor/screen restoration was
+  emitted and the process exited successfully.
+- Validator findings supplied with this request: none; nothing to address.
+
+Validation: `npm test` passes all 33 tests. No application changes were needed.
+Left `.factory/plan.md` unchanged; no task was marked done.
+
+## Follow-up: raw Up-arrow rotation verification
+
+Continued the next unfinished task: verify startup, gameplay controls, and
+24-row display height, including game over.
+
+### Finding recorded and addressed
+
+- **`test/startup.test.js`: Raw Up-arrow decoding is not verified: the O piece
+  is rotation-invariant and no rotation assertion follows the input. Use an
+  asymmetric piece and assert its shape changes.** Changed the raw-byte test
+  to spawn a T piece first, followed by O pieces for the game-over stack.
+  Immediately after sending the Up-arrow escape sequence, assert that the
+  shape changes and equals the expected clockwise-rotated T. Movement checks
+  now use the initial spawn position rather than O-specific coordinates.
+  Retained raw controls, game-over, frame-height, and cleanup checks.
+
+Validation: `npm test` passes all 33 tests. Left `.factory/plan.md` unchanged;
+no task was marked done.
+
