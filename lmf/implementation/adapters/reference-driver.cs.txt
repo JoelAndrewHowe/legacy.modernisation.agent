@@ -357,7 +357,8 @@ foreach (var scenario in scenarios)
                 var contentSentinel = new object();
                 var contentTab = input["nullTab"].GetValue<bool>() ? null : new ContentTabFixture { Key = input["key"]?.GetValue<string>() };
                 contentTab?.Controls.Add(contentSentinel);
-                var matchingContentResult = new TabResultFixture(input["key"]?.GetValue<string>() == "0" ? 0 : 42, "SYNTH-first");
+                var contentKey = input["key"]?.GetValue<string>();
+                var matchingContentResult = new TabResultFixture(long.TryParse(contentKey, out var contentId) ? contentId : 42, "SYNTH-first");
                 contentControl.kdpExaminationDelegate.KdpExaminationResultDelegates = input["matched"].GetValue<bool>()
                     ? new() { new(99, "SYNTH-unrelated"), matchingContentResult, new(matchingContentResult.PkChildExaminationId, "SYNTH-second") }
                     : new() { new(99, "SYNTH-unrelated") };

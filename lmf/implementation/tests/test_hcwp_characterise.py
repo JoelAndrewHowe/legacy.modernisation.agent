@@ -42,7 +42,7 @@ class CharacteriseTests(unittest.TestCase):
             self.assertTrue(all(row['matches'] for row in report['scenarios']))
             rows = {row['id']: row['actual'] for row in report['scenarios']}
             for name, counts, sentinel, matched in [
-                ('existing', [1, 1], False, True), ('new', [2, 3], True, True),
+                ('existing', [1, 1], False, True), ('negative', [1, 1], False, True), ('new', [2, 3], True, True),
                 ('missing-existing', [0, 0], False, False), ('missing-new', [1, 1], True, False),
                 ('empty', [1, 1], True, False), ('null-key', [1, 1], True, False),
                 ('null-tab', [0, 0], False, False),
@@ -53,6 +53,26 @@ class CharacteriseTests(unittest.TestCase):
                     'orderedControlsIdentities': [True, True],
                     'dockFill': [True, True], 'focusCalls': [1 if matched else 0] * 2,
                     'errors': [], 'warnings': []}, rows['KD03-ui-tab-content-' + name])
+            content_source = stage / 'reference/ExtractedTabContentControl.cs'
+            original_content = content_source.read_text()
+            self.assertEqual(1, original_content.count('tabKey != 0'))
+            try:
+                content_source.write_text(original_content.replace('tabKey != 0', 'tabKey > 0'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-ui-tab-content-negative'},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+                negative = next(row['actual'] for row in mutant_report['scenarios']
+                                if row['id'] == 'KD03-ui-tab-content-negative')
+                self.assertEqual([2, 3], negative['counts'])
+                self.assertEqual([True, True], negative['sentinelRetained'])
+                self.assertEqual([False, False], negative['orderedControlsIdentities'])
+                for key in rows['KD03-ui-tab-content-negative'].keys() - {
+                        'counts', 'sentinelRetained', 'orderedControlsIdentities'}:
+                    self.assertEqual(rows['KD03-ui-tab-content-negative'][key], negative[key], key)
+            finally:
+                content_source.write_text(original_content)
             for name, keys, texts, selected in [
                 ('default', [['42', '99', 'trailing'], ['142', '199', 'trailing']], [['SYNTH-42', 'SYNTH-99', 'original-2'], ['SYNTH-142', 'SYNTH-199', 'original-2']], ['42', '142']),
                 ('current', [['-142', '-199'], ['-42', '-99']], [['SYNTH--142', 'SYNTH--199'], ['SYNTH--42', 'SYNTH--99']], ['-199', '-99']),
