@@ -61,6 +61,7 @@ class CharacteriseTests(unittest.TestCase):
                 ('empty', [[], []], [[], []], []),
             ]:
                 self.assertEqual({'keys': keys, 'texts': texts, 'selected': selected,
+                    'resultCollectionIdentities': [True, True], 'resultOrderedIdentities': [True, True],
                     'keysAtPreparation': keys if name != 'empty' else [],
                     'textsAtPreparation': texts if name != 'empty' else [],
                     'selectedIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
@@ -676,6 +677,36 @@ class CharacteriseTests(unittest.TestCase):
                 extracted_content.write_text(original_content)
             extracted_setup = stage / 'reference/ExtractedTabSetupControl.cs'
             original_setup = extracted_setup.read_text()
+            # Value-equal result rows and same-row result lists must not be
+            # substituted even when all tab/dispatch observations still match.
+            for field, assignment, names in [
+                ('resultCollectionIdentities',
+                 'kdpExaminationDelegate.KdpExaminationResultDelegates = new(kdpExaminationDelegate.KdpExaminationResultDelegates);',
+                 ('default', 'current', 'new', 'null-current', 'empty')),
+                ('resultOrderedIdentities',
+                 'for (var i = 0; i < kdpExaminationDelegate.KdpExaminationResultDelegates.Count; i++) { var row = kdpExaminationDelegate.KdpExaminationResultDelegates[i]; kdpExaminationDelegate.KdpExaminationResultDelegates[i] = new(row.PkChildExaminationId, row.ResultTabText); }',
+                 ('default', 'current', 'new', 'null-current')),
+            ]:
+                result_mutation = '''public void SetUpTabPages()
+        {
+            OriginalSetUpTabPages();
+            ''' + assignment + '''
+        }
+        public void OriginalSetUpTabPages()'''
+                try:
+                    extracted_setup.write_text(original_setup.replace('public void SetUpTabPages()', result_mutation))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                    failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                    self.assertEqual({'KD03-ui-tab-setup-' + name for name in names}, failures)
+                    for row in mutant_report['scenarios']:
+                        if row['id'] in failures:
+                            actual = row['actual']
+                            self.assertEqual([False, False], actual[field])
+                            self.assertEqual(rows[row['id']], {**actual, field: [True, True]})
+                finally:
+                    extracted_setup.write_text(original_setup)
             # Collection replacement/restoration preserves every tab object and
             # final collection identity, but must fail the per-call observation.
             setup_method = 'public void SetUpTabPages()'
