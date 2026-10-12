@@ -22,6 +22,20 @@ foreach (var scenario in scenarios)
     {
         switch (scenario["when"].GetValue<string>())
         {
+            case "ui-load":
+            {
+                var loadControl = new ExtractedUiLoad();
+                var states = new List<bool>();
+                var call = 0;
+                foreach (var state in input["defaultStates"].AsArray()) {
+                    loadControl.setDefaultTabPage = state.GetValue<bool>();
+                    loadControl.ucHLXKdpExaminations_Load(call == 0 ? null : new object(), call == 0 ? null : EventArgs.Empty);
+                    states.Add(loadControl.setDefaultTabPage);
+                    call++;
+                }
+                observed["defaultStates"] = JsonSerializer.SerializeToNode(states);
+                break;
+            }
             case "child-focus":
             {
                 var focusChild = new ExtractedChildFocus();

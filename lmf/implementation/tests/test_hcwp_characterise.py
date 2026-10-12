@@ -415,6 +415,23 @@ class CharacteriseTests(unittest.TestCase):
                 self.assertEqual({'errors': [], 'warnings': [], 'indices': indices,
                     'collectionSame': [True, True], 'itemIdentitiesSame': [True, True],
                     'selectedValuesSame': [True, True]}, rows['KD03-dropdown-selection-' + name])
+            for initial in ('false', 'true'):
+                self.assertEqual({'errors': [], 'warnings': [], 'defaultStates': [False, False]},
+                                 rows['KD03-ui-load-' + initial])
+            load_source = stage / 'reference/ExtractedUiLoad.cs'
+            original_load = load_source.read_text()
+            try:
+                assignment = 'setDefaultTabPage = false;'
+                self.assertEqual(1, original_load.count(assignment))
+                for replacement in ('', 'setDefaultTabPage = !setDefaultTabPage;'):
+                    load_source.write_text(original_load.replace(assignment, replacement))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                    self.assertEqual({'KD03-ui-load-false', 'KD03-ui-load-true'},
+                                     {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                load_source.write_text(original_load)
             focus_counts = {'empty': [1, 2], 'filled': [0, 0], 'whitespace': [0, 0],
                             'cleared': [0, 1], 'filled-after-empty': [1, 1]}
             for name, counts in focus_counts.items():
