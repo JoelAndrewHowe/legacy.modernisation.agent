@@ -1,5 +1,53 @@
 # Work log
 
+## Gravity-timer validator follow-up
+
+- Recorded medium-severity validator finding at `test/start.test.js:199`: timer tests could not detect gravity remaining fixed as levels increased; hardcoding `src/terminal-game.js:94` to 1000 ms passed all 28 tests. Recommendation: deterministic higher-level and level-transition fixtures with literal expected delays at startup and after rescheduling.
+- Addressed it within the next unchecked keyboard-controls/rendering task: replaced the getter-derived timer expectation with literal 1000 ms and added deterministic startup fixtures at 0, 10, 40, 90, and 150 lines, asserting 1000, 900, 600, 100, and 100 ms respectively at startup and after repeated callbacks. Checks also require exactly one pending timer, removal of the fired timer, and cleanup on stop.
+- Added a one-line-clear fixture at nine lines for gravity, Down, and Space. Each crosses to ten lines and asserts literal 900 ms on rescheduling and the following callback; keyboard actions can retain the already pending timeout until it fires.
+- Validation: `npm test` passed all 30 tests. Temporary-copy mutations fixing gravity to 1000 ms failed both new tests; caching the startup interval failed the level-transition test. No production changes were needed.
+- Left `.factory/plan.md` unchanged; no task was marked done.
+
+## Header-value validator follow-up
+
+- Recorded medium-severity validator finding in `test/start.test.js`: header assertions did not detect stale score, lines, or next-piece values; hardcoding `Score:0 Lines:0 Next:T` passed all 26 tests.
+- Addressed it within the next unchecked keyboard-controls/rendering task: added deterministic fixtures and literal expected headers independent of renderer output and game-state getters. Checked direct frames and freshly emitted 24-row frames at startup, soft drop, gravity, two-line clearing via hard drop, and restart. A separate blocked-spawn fixture checks nonzero game-over counters and a known preview.
+- Validation: `npm test` passed all 28 tests. Separate temporary-copy mutations hardcoding score to 0, lines to 0, and preview to T each failed the new independent header regression. No production changes were needed.
+- Left `.factory/plan.md` unchanged; no task was marked done.
+
+## Settled-block rendering validator follow-up
+
+- Recorded validator finding: `test/start.test.js` did not detect missing or misplaced settled blocks because its redraw oracle reused `renderFrame`. Recommendation: render a deterministic board fixture and independently assert occupied and empty cell positions, including settled blocks after hard drop.
+- Addressed it within the next unchecked keyboard-controls/rendering task: added a deterministic board with scattered settled blocks and an O piece, plus a coordinate-based oracle that checks all 200 cells and board borders independently of renderer and piece-cell helpers.
+- Checked both direct frames and actual terminal output before and after Space: existing blocks stay in place, the O locks at exact bottom coordinates, its old cells become empty, and the next T appears at exact spawn coordinates. Post-drop output must be a freshly emitted frame.
+- Validation: `npm test` passed all 26 tests. Temporary-copy mutations omitting settled blocks, shifting them one column, and omitting them only after hard drop each failed on the independent cell assertion. No production changes were needed.
+- Left `.factory/plan.md` unchanged; no task was marked done.
+
+## Fresh-frame validator follow-up
+
+- Recorded validator finding: `test/start.test.js` keyboard and gravity tests did not detect missing redraws. Recommendation: assert newly emitted frames reflect state changes after input, gravity, and restart.
+- Addressed it within the next unchecked keyboard-controls/rendering task: added an assertion helper that captures only output emitted by each action, requires a visible state change, and compares the fresh frame to the current rendered game state (including cursor positioning, screen clearing, and terminal line endings).
+- Applied checks to Left, Right, decoded Up, Down, Space, gravity, and restart; game-over restart also verifies that the fresh display no longer contains GAME OVER.
+- Validation: `npm test` passed all 25 tests. Separate temporary-copy mutations suppressing input, gravity, and restart redraws each failed on the fresh-frame assertion. No production changes were needed.
+- Left `.factory/plan.md` unchanged; no task was marked done.
+
+## Keyboard rotation validator follow-up
+
+- Recorded validator finding: `test/start.test.js` sent Up without asserting rotation; random O pieces could hide ineffective rotation, and removing the adapter's Up handler still passed.
+- Addressed the finding within the next unchecked keyboard-controls/rendering task: injected a deterministic T-piece source into the keyboard-actions test, sent the real Up escape sequence through readline, and asserted that orientation changes to the expected clockwise shape while position stays unchanged.
+- Validation: `npm test` passed all 25 tests. In a temporary copy, removing the adapter's Up handler caused the keyboard-actions regression to fail on the orientation assertion.
+- Left `.factory/plan.md` unchanged; no task was marked done.
+
+## Keyboard controls and bounded terminal rendering
+
+- Implemented the next unchecked task in `src/terminal-game.js`: raw-mode arrow-key movement/rotation/drop, Space hard drop, R restart, Q/Ctrl-C exit, and scheduled gravity using the existing engine.
+- Added a complete 24-row renderer: header (score, lines, next piece or game-over instructions), twenty board rows, two borders, and one controls row. Interactive output has no trailing newline; terminals smaller than 60x24 show a bounded resize prompt and pause play.
+- Added alternate-screen/cursor management and cleanup for quit and termination signals. Redirected invocations print one snapshot and exit. Documented usage and controls in `README.md`.
+- Replaced scaffold checks with terminal-adapter tests for frame bounds, actual escape-sequence decoding, keyboard actions, gravity, restart, resize, and resource restoration.
+- Validator findings: none were supplied in this request; there were no findings to address.
+- Validation: `npm test` passed all 25 tests; `npm start` successfully printed the 24-row snapshot with redirected input/output. Interactive behavior was exercised with simulated terminal streams, not a manual live-terminal session; the separate verification task remains unchecked.
+- Left `.factory/plan.md` unchanged; no task was marked done.
+
 ## PieceBag encapsulation validator follow-up
 
 - Recorded validator finding: `src/tetris.js:55–68` exposed writable `bag` and `random` fields, permitting `bag.bag.push('invalid')` to corrupt consumption and future spawns when a caller retained an injected bag.
