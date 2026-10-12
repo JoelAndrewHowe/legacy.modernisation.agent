@@ -61,6 +61,8 @@ class CharacteriseTests(unittest.TestCase):
                 ('empty', [[], []], [[], []], []),
             ]:
                 self.assertEqual({'keys': keys, 'texts': texts, 'selected': selected,
+                    'controlIdentities': [True, True],
+                    'controlIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
                     'resultCollectionIdentities': [True, True], 'resultOrderedIdentities': [True, True],
                     'resultCollectionIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
                     'resultOrderedIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
@@ -923,6 +925,38 @@ class CharacteriseTests(unittest.TestCase):
                             actual = row['actual']
                             self.assertEqual([False, False], actual[field])
                             self.assertEqual(rows[row['id']], {**actual, field: [True, True]})
+                finally:
+                    extracted_setup.write_text(original_setup)
+            # Same-tab/same-selection wrapper substitution previously escaped
+            # all observations. Check both post-return and dispatch boundaries.
+            for transient in (False, True):
+                wrapper_mutation = '''public void SetUpTabPages()
+        {
+            var savedControl = hlxAdminTabControlKdpExamination;
+            hlxAdminTabControlKdpExamination = new SaveTabControlFixture {
+                TabPages = savedControl.TabPages, SelectedTab = savedControl.SelectedTab
+            };
+            OriginalSetUpTabPages();
+            savedControl.SelectedTab = hlxAdminTabControlKdpExamination.SelectedTab;
+            ''' + ('hlxAdminTabControlKdpExamination = savedControl;' if transient else '') + '''
+        }
+        public void OriginalSetUpTabPages()'''
+                try:
+                    extracted_setup.write_text(original_setup.replace(setup_method, wrapper_mutation))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                    failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                    names = ('default', 'current', 'new', 'null-current') if transient else ('default', 'current', 'new', 'null-current', 'empty')
+                    self.assertEqual({'KD03-ui-tab-setup-' + name for name in names}, failures)
+                    for row in mutant_report['scenarios']:
+                        if row['id'] in failures:
+                            actual = row['actual']
+                            self.assertEqual([True, True] if transient else [False, False], actual['controlIdentities'])
+                            self.assertEqual([] if row['id'].endswith('-empty') else [False, False], actual['controlIdentitiesAtPreparation'])
+                            self.assertEqual(rows[row['id']], {**actual,
+                                'controlIdentities': [True, True],
+                                'controlIdentitiesAtPreparation': rows[row['id']]['controlIdentitiesAtPreparation']})
                 finally:
                     extracted_setup.write_text(original_setup)
             zero_guard = 'PkChildExaminationId != NewExamNumber'

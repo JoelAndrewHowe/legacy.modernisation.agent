@@ -243,7 +243,8 @@ foreach (var scenario in scenarios)
                 var setupControl = new ExtractedTabSetupControl { setDefaultTabPage = input["default"].GetValue<bool>() };
                 foreach (var key in input["keys"].AsArray())
                     setupControl.hlxAdminTabControlKdpExamination.TabPages.Add(new(key.GetValue<string>()) { Text = "original-" + setupControl.hlxAdminTabControlKdpExamination.TabPages.Count });
-                var setupTabs = setupControl.hlxAdminTabControlKdpExamination.TabPages;
+                var originalSetupControl = setupControl.hlxAdminTabControlKdpExamination;
+                var setupTabs = originalSetupControl.TabPages;
                 var originalSetupTabs = setupTabs.ToArray();
                 setupControl.currentTab = input["current"] == null ? null : setupTabs[input["current"].GetValue<int>()];
                 var originalCurrentSetupTab = setupControl.currentTab;
@@ -252,6 +253,7 @@ foreach (var scenario in scenarios)
                 var setupSelected = new List<string>();
                 var setupIdentities = new List<bool>();
                 var setupCollectionIdentities = new List<bool>();
+                var setupControlIdentities = new List<bool>();
                 var setupCurrentIdentities = new List<bool>();
                 var setupDefaultStates = new List<bool>();
                 var setupResultCollectionIdentities = new List<bool>();
@@ -275,6 +277,7 @@ foreach (var scenario in scenarios)
                     var afterSetupResults = setupControl.kdpExaminationDelegate.KdpExaminationResultDelegates;
                     setupResultCollectionIdentities.Add(ReferenceEquals(originalSetupResults, afterSetupResults));
                     setupResultOrderedIdentities.Add(afterSetupResults.Count == originalSetupResultRows.Length && originalSetupResultRows.Select((row, index) => ReferenceEquals(row, afterSetupResults[index])).All(value => value));
+                    setupControlIdentities.Add(ReferenceEquals(originalSetupControl, setupControl.hlxAdminTabControlKdpExamination));
                     var afterSetupTabs = setupControl.hlxAdminTabControlKdpExamination.TabPages;
                     setupCollectionIdentities.Add(ReferenceEquals(setupTabs, afterSetupTabs));
                     setupCurrentIdentities.Add(ReferenceEquals(originalCurrentSetupTab, setupControl.currentTab));
@@ -288,6 +291,8 @@ foreach (var scenario in scenarios)
                         exactSetupSelection &= ReferenceEquals(expectedSetupTab, setupControl.hlxAdminTabControlKdpExamination.SelectedTab) && ReferenceEquals(expectedSetupTab, setupControl.PreparedTabs.LastOrDefault());
                     }
                 }
+                observed["controlIdentities"] = JsonSerializer.SerializeToNode(setupControlIdentities);
+                observed["controlIdentitiesAtPreparation"] = JsonSerializer.SerializeToNode(setupControl.ControlsAtPreparation.Select(control => ReferenceEquals(originalSetupControl, control)));
                 observed["resultCollectionIdentitiesAtPreparation"] = JsonSerializer.SerializeToNode(setupResultCollectionIdentitiesAtPreparation);
                 observed["resultOrderedIdentitiesAtPreparation"] = JsonSerializer.SerializeToNode(setupResultOrderedIdentitiesAtPreparation);
                 observed["resultCollectionIdentities"] = JsonSerializer.SerializeToNode(setupResultCollectionIdentities);
