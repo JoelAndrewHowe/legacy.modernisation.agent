@@ -73,6 +73,7 @@ export class Game {
   }
 
   lock() {
+    if (this.over) return;
     this.piece.forEach((row, dy) => row.forEach((cell, dx) => {
       if (cell) this.board[this.y + dy][this.x + dx] = 1;
     }));

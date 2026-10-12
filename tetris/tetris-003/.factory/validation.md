@@ -1,5 +1,13 @@
 # Validation record
 
+## Current doer pass
+
+- No new validator findings were supplied in this request; previous findings remain recorded below.
+- Worked on the next unchecked task (the gameplay engine), without marking it done or changing `.factory/plan.md`.
+- Guarded `Game.lock()` after game over so it cannot mutate the board, score, or active piece once play ends.
+- Added deterministic coverage for all four line-clear scores, board dimensions, locking on stacked blocks, and rejected rotations preserving state. Extended game-over immutability coverage to direct locking.
+- Verification: `npm test` passes all 15 tests, including startup, gameplay, controls, cleanup, and physical display-height checks.
+
 ## Findings supplied
 
 - `npm test` passed but verified only a static startup scaffold; gameplay, controls, cleanup, and game-over behavior were unimplemented and untested.

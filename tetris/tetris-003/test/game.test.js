@@ -62,7 +62,46 @@ test('blocked spawn ends the game and subsequent actions do nothing', () => {
   game.drop();
   assert.equal(game.over, true);
   const snapshot = JSON.stringify(game);
-  game.move(1); game.rotate(); game.down(); game.drop();
+  game.move(1); game.rotate(); game.down(); game.drop(); game.lock();
+  assert.equal(JSON.stringify(game), snapshot);
+});
+
+test('locking clears one through four rows with the correct line scores', () => {
+  for (const [cleared, points] of [[1, 100], [2, 300], [3, 500], [4, 800]]) {
+    const game = new Game(() => 0);
+    game.rotate();
+    game.x = 4;
+    game.y = 16;
+    for (let y = 20 - cleared; y < 20; y++) {
+      game.board[y].fill(1);
+      game.board[y][4] = 0;
+    }
+    game.lock();
+    assert.equal(game.lines, cleared);
+    assert.equal(game.score, points);
+    assert.equal(game.board.length, 20);
+    assert.ok(game.board.every(row => row.length === 10));
+    assert.equal(game.board.flat().filter(Boolean).length, 4 - cleared);
+    assert.ok(game.board.slice(0, cleared).every(row => row.every(cell => cell === 0)));
+  }
+});
+
+test('gravity locks on stacked blocks without overwriting them', () => {
+  const game = square();
+  game.board[10][4] = 1;
+  for (let i = 0; i < 8; i++) assert.equal(game.down(), true);
+  assert.equal(game.down(), false);
+  assert.equal(game.board[10][4], 1);
+  assert.deepEqual(game.board.slice(8, 10).map(row => row.slice(4, 6)), [[1, 1], [1, 1]]);
+  assert.equal(game.board.flat().filter(Boolean).length, 5);
+  assert.equal(game.y, 0);
+});
+
+test('blocked rotation leaves the active piece and board unchanged', () => {
+  const game = new Game(() => 0);
+  game.board[1].fill(1);
+  const snapshot = JSON.stringify(game);
+  assert.equal(game.rotate(), false);
   assert.equal(JSON.stringify(game), snapshot);
 });
 
