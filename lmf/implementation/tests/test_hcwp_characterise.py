@@ -64,6 +64,7 @@ class CharacteriseTests(unittest.TestCase):
                     'keysAtPreparation': keys if name != 'empty' else [],
                     'textsAtPreparation': texts if name != 'empty' else [],
                     'orderedIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
+                    'collectionIdentitiesAtPreparation': [True, True] if name != 'empty' else [],
                     'collectionIdentity': True, 'collectionIdentities': [True, True], 'orderedIdentities': [True, True],
                     'exactSelection': True, 'currentIdentities': [True, True],
                     'defaultStates': [name != 'current' and name != 'null-current'] * 2,
@@ -701,6 +702,32 @@ class CharacteriseTests(unittest.TestCase):
                         self.assertEqual([False, True], row['actual']['collectionIdentities'])
                         self.assertTrue(row['actual']['collectionIdentity'])
                         self.assertEqual([True, True], row['actual']['orderedIdentities'])
+            finally:
+                extracted_setup.write_text(original_setup)
+            # Temporary same-tab collection replacement during dispatch leaves
+            # all previous observations unchanged after restoration.
+            dispatch_collection_mutation = '''public void SetUpTabPages()
+        {
+            var original = hlxAdminTabControlKdpExamination.TabPages;
+            hlxAdminTabControlKdpExamination.TabPages = new(original);
+            OriginalSetUpTabPages();
+            hlxAdminTabControlKdpExamination.TabPages = original;
+        }
+        public void OriginalSetUpTabPages()'''
+            try:
+                extracted_setup.write_text(original_setup.replace(setup_method, dispatch_collection_mutation))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                failures = {row['id'] for row in mutant_report['scenarios'] if not row['matches']}
+                self.assertEqual({'KD03-ui-tab-setup-' + name for name in
+                    ('default', 'current', 'new', 'null-current')}, failures)
+                for row in mutant_report['scenarios']:
+                    if row['id'] in failures:
+                        actual = row['actual']
+                        self.assertEqual([False, False], actual['collectionIdentitiesAtPreparation'])
+                        self.assertEqual(rows[row['id']],
+                            {**actual, 'collectionIdentitiesAtPreparation': [True, True]})
             finally:
                 extracted_setup.write_text(original_setup)
             # Intermediate current-tab replacement and flag toggling must not
