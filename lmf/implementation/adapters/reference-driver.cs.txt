@@ -277,6 +277,8 @@ foreach (var scenario in scenarios)
                 observed["keys"] = JsonSerializer.SerializeToNode(setupKeys);
                 observed["texts"] = JsonSerializer.SerializeToNode(setupTexts);
                 observed["selected"] = JsonSerializer.SerializeToNode(setupSelected);
+                var expectedSelectedAtPreparation = input["default"].GetValue<bool>() ? originalSetupTabs.FirstOrDefault() : originalCurrentSetupTab;
+                observed["selectedIdentitiesAtPreparation"] = JsonSerializer.SerializeToNode(setupControl.SelectedTabsAtPreparation.Select(tab => ReferenceEquals(expectedSelectedAtPreparation, tab)));
                 observed["keysAtPreparation"] = JsonSerializer.SerializeToNode(setupControl.KeysAtPreparation);
                 observed["textsAtPreparation"] = JsonSerializer.SerializeToNode(setupControl.TextsAtPreparation);
                 observed["collectionIdentitiesAtPreparation"] = JsonSerializer.SerializeToNode(setupControl.CollectionsAtPreparation.Select(tabs => ReferenceEquals(setupTabs, tabs)));
