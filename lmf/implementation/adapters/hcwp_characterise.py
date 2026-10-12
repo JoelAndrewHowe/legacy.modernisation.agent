@@ -228,6 +228,17 @@ public class HlxDropDown { public string Text; }
 public class ExtractedDropdownControls {
  public ExtractedInteractions kdpExaminationResultDelegate;
 ''' + dropdown_members.replace('KdpExaminationResultDelegate.TYPE_OF_INPUT', 'ExtractedInteractions.TYPE_OF_INPUT') + '\n}\n')
+    put('reference/ExtractedDropdownSelection.cs', '''using System.Collections.Generic;
+// Storage-only items/selected-value fixture; no binding or Windows event delivery.
+public class SelectionItemFixture { public object Value; }
+public class SelectionDropdownFixture {
+ public object SelectedValue;
+ public List<SelectionItemFixture> Items = new();
+}
+public class ExtractedDropdownSelection {
+''' + method(ui, 'getSelectedIndexOfSelectedValue').replace('private int', 'public int')
+        .replace('HlxDropDown', 'SelectionDropdownFixture')
+        .replace('Janus.Windows.EditControls.UIComboBoxItem', 'SelectionItemFixture') + '\n}\n')
     # Only visibility changes; query/grouping/flag decisions remain source-owned.
     repeat_member = method(repeat_source.replace('internal static void', 'public static void'), 'UpdateRepeatFlags')
     put('reference/ExtractedRepeatFlags.cs', (ROOT / 'repeat-support.cs.txt').read_text().replace('__MEMBERS__', repeat_member))
@@ -382,6 +393,18 @@ public class ExtractedDropdownControls {
         add('KD03-dropdown-examiner-cancel-' + str(initial_cancel).lower(), 'dropdown-control',
             {**base, 'descriptor': ' 999 ', 'kind': 'EXAMINER_TYPE', 'cancelOverload': True, 'initialCancel': initial_cancel},
             text=' 999 ', cancelled=initial_cancel)
+    for name, items, selected, indices in [
+        ('first-duplicate', ['5', 2, 5], [5, '2'], [0, 1]),
+        ('last', [5, 2, 22], ['22', 5], [2, 0]),
+        ('unknown', [5, 2], ['99', '2'], [-1, 1]),
+        ('null', [5, 2], [None, 5], [-1, 0]),
+        ('empty-items', [], [5, None], [-1, -1]),
+        ('empty-value', ['', 2], ['', None], [0, -1]),
+        ('verbatim', [' 5 ', 5], ['5', ' 5 '], [1, 0]),
+    ]:
+        add('KD03-dropdown-selection-' + name, 'dropdown-selection',
+            {**base, 'items': items, 'selectedValues': selected}, indices=indices,
+            collectionSame=[True, True], itemIdentitiesSame=[True, True], selectedValuesSame=[True, True])
     repeat_rows = [
         {'id': 1, 'client': 1001, 'code': 'KD03', 'date': '2025-02-19T09:00:00', 'flag': 'Y'},
         {'id': 2, 'client': 1001, 'code': 'KD03', 'date': '2025-02-19T09:00:00', 'flag': 'Y'},
@@ -792,6 +815,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 - `{ui_path}`: examination-date handler is retained with public visibility and a Text/DateTime-only fixture. Delegate ValidateExaminationDate and CheckAgeWithinScheduleRange execute extracted bodies with local ValidationFault substitution; synthetic date/death/existing-result fixtures and 6–8-week schedule exercise errors and warnings. WeeksBetween and DaysBetween are recovered unchanged from `{dates_path}`; no original Windows event delivery is claimed.
 - `{ui_path}`: Height, Weight and HeadCirc Validating method bodies are retained, changing only private visibility for direct invocation. Text/Value-only ControlFixture replaces proprietary numeric controls; CancelEventArgs is the runtime type. Delegate ValidateHeight/ValidateWeight/ValidateHeadCircumference bodies are extracted with local ValidationFault replacing WCF wrappers. Invented height 40–60 and weight 3–6 bands supply deviation dependencies. Shared cases assert invalid cancellation, empty-input bypass with incoming cancellation retained, and warning-only acceptance. No Windows binding, event loop, focus or layout parity is claimed.
 - Complete `{validator_path}` retained verbatim except DateTime.Today -> ReferenceClock.Today (frozen fixture).
+- `{ui_path}` getSelectedIndexOfSelectedValue is retained with public visibility and proprietary dropdown/item types renamed to storage-only SelectionDropdownFixture/SelectionItemFixture. Seven shared scenarios invoke twice, covering first duplicate match, mixed integer/string values compared through ToString, final item, missing/null/empty selections, empty items and verbatim whitespace. Indices and unchanged collection/item/selected-value references are observed per call. This does not execute manuallyRefreshSelectedDropdownValues or establish Windows binding/event delivery; null item values are not covered (the source dereferences Value).
 - DTO backing/property-change infrastructure replaced with same-named/type auto properties extracted from `{dto_path}`. No validator predicates replaced.
 - Missing resource strings replaced with their symbolic names; fault wrappers replaced with Exceptions carrying those names. Aggregated numbered messages normalised only by removing numbering/newlines. Resource identifiers compared exactly in order.
 - `{bmi_path}` CalculateBmi method retained verbatim in a small container.

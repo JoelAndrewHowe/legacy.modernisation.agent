@@ -407,6 +407,28 @@ class CharacteriseTests(unittest.TestCase):
             for cancelled in (False, True):
                 self.assertEqual({'errors': [], 'warnings': [], 'text': ' 999 ', 'cancelled': cancelled},
                                  rows['KD03-dropdown-examiner-cancel-' + str(cancelled).lower()])
+            selection_indices = {
+                'first-duplicate': [0, 1], 'last': [2, 0], 'unknown': [-1, 1],
+                'null': [-1, 0], 'empty-items': [-1, -1], 'empty-value': [0, -1], 'verbatim': [1, 0],
+            }
+            for name, indices in selection_indices.items():
+                self.assertEqual({'errors': [], 'warnings': [], 'indices': indices,
+                    'collectionSame': [True, True], 'itemIdentitiesSame': [True, True],
+                    'selectedValuesSame': [True, True]}, rows['KD03-dropdown-selection-' + name])
+            selection_source = stage / 'reference/ExtractedDropdownSelection.cs'
+            original_selection = selection_source.read_text()
+            self.assertIn('item.Value.ToString() == dropDownBox.SelectedValue.ToString()', original_selection)
+            try:
+                # Removing early termination incorrectly chooses the last equal value.
+                self.assertEqual(1, original_selection.count('break;'))
+                selection_source.write_text(original_selection.replace('break;', '// mutation: last match'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-dropdown-selection-first-duplicate'},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                selection_source.write_text(original_selection)
             dropdown_source = (stage / 'reference/ExtractedDropdownControls.cs').read_text()
             self.assertIn('ValidateExaminerTypeInput(object sender, CancelEventArgs e)', dropdown_source)
             self.assertIn('ValidateExaminerTypeInput(object sender, EventArgs e)', dropdown_source)

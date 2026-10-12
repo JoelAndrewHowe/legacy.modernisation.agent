@@ -523,6 +523,36 @@ foreach (var scenario in scenarios)
                 errors.AddRange(codeDelegate.Messenger.Errors);
                 warnings.AddRange(codeDelegate.Messenger.Warnings);
                 break;
+            case "dropdown-selection":
+                object SelectionValue(JsonNode node) {
+                    if (node == null) return null;
+                    if (node is JsonValue value && value.TryGetValue<int>(out var number)) return number;
+                    return node.GetValue<string>();
+                }
+                var selectionHelper = new ExtractedDropdownSelection();
+                var selectionDropdown = new SelectionDropdownFixture();
+                foreach (var item in input["items"].AsArray())
+                    selectionDropdown.Items.Add(new SelectionItemFixture { Value = SelectionValue(item) });
+                var selectionItems = selectionDropdown.Items;
+                var originalSelectionItems = selectionItems.ToArray();
+                var selectionIndices = new List<int>();
+                var selectionCollectionsSame = new List<bool>();
+                var selectionItemIdentitiesSame = new List<bool>();
+                var selectionValuesSame = new List<bool>();
+                foreach (var selectedInput in input["selectedValues"].AsArray()) {
+                    var selectedValue = SelectionValue(selectedInput);
+                    selectionDropdown.SelectedValue = selectedValue;
+                    selectionIndices.Add(selectionHelper.getSelectedIndexOfSelectedValue(selectionDropdown));
+                    selectionCollectionsSame.Add(ReferenceEquals(selectionItems, selectionDropdown.Items));
+                    selectionItemIdentitiesSame.Add(selectionDropdown.Items.Count == originalSelectionItems.Length &&
+                        selectionDropdown.Items.Select((item, index) => ReferenceEquals(item, originalSelectionItems[index])).All(same => same));
+                    selectionValuesSame.Add(ReferenceEquals(selectedValue, selectionDropdown.SelectedValue));
+                }
+                observed["indices"] = JsonSerializer.SerializeToNode(selectionIndices);
+                observed["collectionSame"] = JsonSerializer.SerializeToNode(selectionCollectionsSame);
+                observed["itemIdentitiesSame"] = JsonSerializer.SerializeToNode(selectionItemIdentitiesSame);
+                observed["selectedValuesSame"] = JsonSerializer.SerializeToNode(selectionValuesSame);
+                break;
             case "dropdown-control":
                 var dropdownDelegate = new ExtractedInteractions { KdpExaminationResultTo = result };
                 var dropdownControls = new ExtractedDropdownControls { kdpExaminationResultDelegate = dropdownDelegate };
