@@ -22,6 +22,30 @@ foreach (var scenario in scenarios)
     {
         switch (scenario["when"].GetValue<string>())
         {
+            case "child-populate":
+            {
+                var child = new ExtractedChildPopulate { dropDownsPopulated = input["populated"].GetValue<bool>() };
+                var childFirst = new ChildDelegateFixture();
+                var childSecond = new ChildDelegateFixture();
+                var oldInvalid = new object(); var oldOriginal = new object();
+                child.hlxDropDownExaminerType.InvalidValues = oldInvalid;
+                child.hlxDropDownExaminerType.OriginalValue = oldOriginal;
+                child.Populate(childFirst);
+                var firstBinding = ReferenceEquals(child.kdpExaminationResultDelegate, childFirst) && ReferenceEquals(child.bindingSourceKdpExaminationResults.DataSource, childFirst);
+                child.Populate(childSecond);
+                observed["bindings"] = JsonSerializer.SerializeToNode(new[] { firstBinding, ReferenceEquals(child.kdpExaminationResultDelegate, childSecond) && ReferenceEquals(child.bindingSourceKdpExaminationResults.DataSource, childSecond) });
+                observed["calls"] = JsonSerializer.SerializeToNode(child.PopulateDropDown.Calls.Select(call => new {
+                    field = call.Field,
+                    source = typeof(ChildDelegateFixture).GetFields().Where(f => f.FieldType == typeof(object)).FirstOrDefault(f => ReferenceEquals(f.GetValue(childFirst), call.Values))?.Name
+                        ?? childFirst.Scores.Where(pair => ReferenceEquals(pair.Value, call.Values)).Select(pair => "DskScores:" + pair.Key).FirstOrDefault(),
+                    addNull = call.AddNull
+                }));
+                observed["refreshes"] = child.Refreshes.Count;
+                observed["refreshState"] = child.Refreshes.All(snapshot => ReferenceEquals(snapshot[0], childFirst) && ReferenceEquals(snapshot[1], childFirst) && (bool)snapshot[2] && (int)snapshot[3] == 33 && ReferenceEquals(snapshot[4], childFirst.InvalidKdpCodesList) && ReferenceEquals(snapshot[5], childFirst.ExaminerCategory));
+                observed["metadataSame"] = ReferenceEquals(child.hlxDropDownExaminerType.InvalidValues, input["populated"].GetValue<bool>() ? oldInvalid : childFirst.InvalidKdpCodesList) && ReferenceEquals(child.hlxDropDownExaminerType.OriginalValue, input["populated"].GetValue<bool>() ? oldOriginal : childFirst.ExaminerCategory);
+                observed["populated"] = child.dropDownsPopulated;
+                break;
+            }
             case "lookup-validation-lifecycle":
                 var validationInteraction = new ExtractedInteractions { KdpExaminationResultTo = result };
                 var validationKind = input["kind"].GetValue<string>();

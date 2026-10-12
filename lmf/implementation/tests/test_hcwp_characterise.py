@@ -415,6 +415,39 @@ class CharacteriseTests(unittest.TestCase):
                 self.assertEqual({'errors': [], 'warnings': [], 'indices': indices,
                     'collectionSame': [True, True], 'itemIdentitiesSame': [True, True],
                     'selectedValuesSame': [True, True]}, rows['KD03-dropdown-selection-' + name])
+            fresh_child = rows['KD03-child-populate-fresh']
+            self.assertEqual([True, True], fresh_child['bindings'])
+            self.assertEqual(33, len(fresh_child['calls']))
+            self.assertEqual({'field': 'hlxDropDownHeart', 'source': 'PhysicalAssessment6To8WeeksList', 'addNull': None}, fresh_child['calls'][19])
+            self.assertEqual({'field': 'hlxDropDownDskLocomotor', 'source': 'DskScores:Locomotor', 'addNull': None}, fresh_child['calls'][24])
+            self.assertEqual(1, fresh_child['refreshes'])
+            for name in ('fresh', 'cached'):
+                self.assertTrue(rows['KD03-child-populate-' + name]['refreshState'])
+                self.assertTrue(rows['KD03-child-populate-' + name]['metadataSame'])
+                self.assertTrue(rows['KD03-child-populate-' + name]['populated'])
+            self.assertEqual([], rows['KD03-child-populate-cached']['calls'])
+            self.assertEqual(0, rows['KD03-child-populate-cached']['refreshes'])
+            self.assertEqual([True, True], rows['KD03-child-populate-cached']['bindings'])
+            child_source = stage / 'reference/ExtractedChildPopulate.cs'
+            original_child = child_source.read_text()
+            try:
+                # Rebinding must precede the cached-dropdown early return.
+                assignment = 'bindingSourceKdpExaminationResults.DataSource = this.kdpExaminationResultDelegate;'
+                self.assertEqual(1, original_child.count(assignment))
+                child_source.write_text(original_child.replace(assignment, 'if (!dropDownsPopulated) ' + assignment))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-child-populate-fresh', 'KD03-child-populate-cached'},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+                child_source.write_text(original_child.replace('if (dropDownsPopulated)', 'if (false)'))
+                mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                self.assertEqual({'KD03-child-populate-fresh', 'KD03-child-populate-cached'},
+                    {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+            finally:
+                child_source.write_text(original_child)
             refresh_source = stage / 'reference/ExtractedDropdownRefresh.cs'
             original_refresh = refresh_source.read_text()
             import re

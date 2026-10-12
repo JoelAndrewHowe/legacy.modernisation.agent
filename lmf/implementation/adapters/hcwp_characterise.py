@@ -245,6 +245,35 @@ public class ExtractedDropdownSelection {
     put('reference/ExtractedDropdownRefresh.cs', 'public class ExtractedDropdownRefresh : ExtractedDropdownSelection {\n'
         + '\n'.join(' public SelectionDropdownFixture ' + name + ' = new();' for name in refresh_fields)
         + '\n' + refresh + '\n}\n')
+    child_populate = method(ui, 'Populate').replace('KdpExaminationResultDelegate', 'ChildDelegateFixture')
+    child_properties = sorted(set(re.findall(r'kdpExaminationResultDelegate\.(\w+)', child_populate)) - {'DskScores'})
+    child_fields = sorted(set(re.findall(r'hlxDropDown\w+', child_populate)))
+    child_populate = re.sub(r'LookupsUtility\.Dsk\.(\w+)', r'"\1"', child_populate)
+    put('reference/ExtractedChildPopulate.cs', '''using System.Collections.Generic;
+// Recording-only binding/dropdown fixtures, not Windows binding or lookup rules.
+public class ChildDelegateFixture {
+ public Dictionary<string, object> Scores = new();
+ public object DskScores(string key) { if (!Scores.ContainsKey(key)) Scores[key] = new object(); return Scores[key]; }
+''' + '\n'.join(' public object ' + name + ' = new object();' for name in child_properties) + '''
+}
+public class ChildBindingFixture { public object DataSource; }
+public class ChildDropdownFixture { public object InvalidValues; public object OriginalValue; public string Name; }
+public class ChildPopulateCall { public string Field; public object Values; public bool? AddNull; }
+public class ChildPopulateRecorder {
+ public List<ChildPopulateCall> Calls = new();
+ public void Populate(ChildDropdownFixture field, object values, bool? addNull = null) {
+  Calls.Add(new() { Field = field.Name, Values = values, AddNull = addNull });
+ }
+}
+public class ExtractedChildPopulate {
+ public ChildDelegateFixture kdpExaminationResultDelegate;
+ public ChildBindingFixture bindingSourceKdpExaminationResults = new();
+ public bool dropDownsPopulated;
+ public ChildPopulateRecorder PopulateDropDown = new();
+ public List<object[]> Refreshes = new();
+ public void manuallyRefreshSelectedDropdownValues() { Refreshes.Add(new object[] { kdpExaminationResultDelegate, bindingSourceKdpExaminationResults.DataSource, dropDownsPopulated, PopulateDropDown.Calls.Count, hlxDropDownExaminerType.InvalidValues, hlxDropDownExaminerType.OriginalValue }); }
+''' + '\n'.join(' public ChildDropdownFixture ' + name + ' = new() { Name = "' + name + '" };' for name in child_fields)
+        + '\n' + child_populate + '\n}\n')
     # Only visibility changes; query/grouping/flag decisions remain source-owned.
     repeat_member = method(repeat_source.replace('internal static void', 'public static void'), 'UpdateRepeatFlags')
     put('reference/ExtractedRepeatFlags.cs', (ROOT / 'repeat-support.cs.txt').read_text().replace('__MEMBERS__', repeat_member))
@@ -261,6 +290,13 @@ public class ExtractedDropdownSelection {
     def add(id, operation, data, errors=None, warnings=None, **extra):
         scenarios.append({'id': id, 'given': 'A selected synthetic patient and frozen clock',
                           'when': operation, 'input': data, 'then': {'errors': errors or [], 'warnings': warnings or [], **extra}})
+    child_calls = re.findall(r'PopulateDropDown.Populate\((hlxDropDown\w+), kdpExaminationResultDelegate\.(\w+)(?:\("(\w+)"\))?(, true)?\);', child_populate)
+    for populated in (False, True):
+        add('KD03-child-populate-' + ('cached' if populated else 'fresh'), 'child-populate',
+            {**base, 'populated': populated}, bindings=[True, True],
+            calls=[] if populated else [{'field': field, 'source': prop + (':' + key if key else ''), 'addNull': True if null else None} for field, prop, key, null in child_calls],
+            refreshes=0 if populated else 1, refreshState=True,
+            metadataSame=True, populated=True)
     for mode, ids in [('unordered', [42, 99, 77]), ('ties', [77, 42, 99]), ('empty', [])]:
         add(f'KD03-get-results-{mode}', 'get-results', {**base, 'mode': mode},
             ids=ids, refreshIds=[88], calls=[1001, 2002], sameDtos=True,
@@ -796,6 +832,8 @@ Measurement assignment scenarios execute each retained Height/Weight/HeadCircumf
 
 ## Non-blocking / review assumptions
 
+Child-control Populate is retained with its delegate type renamed to a recording fixture and Dsk enum arguments represented by symbolic strings. Fresh/cached shared cases call it twice with distinct delegate objects: DataSource and delegate rebind on every call, while ordered dropdown setup, examiner metadata and refresh happen only on the first uncached call. Lookup properties are opaque synthetic objects; the recorder observes exact supplied references and nullable add-null arguments but does not populate controls or implement lookup rules. Refresh records setup-time binding/flag/count/metadata, not Windows selection delivery; separately extracted refresh logic remains independently tested. Full Windows binding and delegate lifecycle approval blockers remain unchanged.
+
 Source discrepancy: `{ui_path}` manuallyRefreshSelectedDropdownValues assigns Engagement.SelectedIndex from DomesticViolence's selection rather than Engagement's. Three extracted orchestration scenarios preserve this wiring across repeated calls (distinct indices, null/unknown values, empty lists). This is UI refresh evidence, not a new recording rule; any correction requires reviewed behavioural adjustment. The storage-only dropdown doubles do not establish Windows binding or automatic event delivery.
 
 GetKdpResults is source-extracted: shared cases check descending examination timestamps, stable equal-date ordering, empty lists and a second patient refresh replacing stale delegates. Recording GetKdpExamination returns explicit synthetic context/list objects without sorting; DTO identity, patient context, existing-list identity and lazy ranges are observed after source Populate. Real service retrieval, Windows binding and persistence remain unverified.
@@ -829,6 +867,7 @@ Resource translations are absent: errors/warnings are resource identifiers, not 
 ''')
     put('reference/ADAPTATIONS.md', f'''# Extracted reference adaptations
 
+- `{ui_path}` child-control Populate retains its body with KdpExaminationResultDelegate renamed to ChildDelegateFixture and LookupsUtility.Dsk enum arguments replaced by their symbolic strings. Opaque synthetic lookup objects and a recording PopulateDropDown substitute observe all 33 ordered calls, exact first-delegate lookup references and add-null flags; they do not implement list population or business rules. Two shared cases (fresh/cached) invoke twice with distinct delegates, verifying that binding/delegate assignment precede the cache guard, setup/metadata/refresh occur once only on an uncached control, and second-call rebinding does not replace the first examiner metadata. Refresh records binding, setup count, metadata and populated flag at dispatch; it does not deliver Windows events. Mutations guarding rebinding or removing the cache guard fail both cases. This is orchestration evidence only, not full Windows binding or child/delegate integration parity; existing approval blockers remain.
 - `{ui_path}` manuallyRefreshSelectedDropdownValues retains its body with public visibility. A separate harness reuses the extracted selection helper and supplies storage-only dropdowns. Three shared scenarios invoke twice with distinct per-control indices, null/unknown values and empty lists; all 33 destination indices and unchanged control/item/value references are observed. Engagement reads DomesticViolence's selected index in the supplied source; this discrepancy is preserved and explicitly tested, not corrected. Synthetic 33-item lists are not lookup data. SelectedIndex assignment does not simulate Windows binding, selection events or automatic refresh delivery. Full child Populate and approval blockers remain unverified/unchanged.
 
 - `{ui_path}`: examination-date handler is retained with public visibility and a Text/DateTime-only fixture. Delegate ValidateExaminationDate and CheckAgeWithinScheduleRange execute extracted bodies with local ValidationFault substitution; synthetic date/death/existing-result fixtures and 6–8-week schedule exercise errors and warnings. WeeksBetween and DaysBetween are recovered unchanged from `{dates_path}`; no original Windows event delivery is claimed.
