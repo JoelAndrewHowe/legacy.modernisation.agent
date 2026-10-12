@@ -967,7 +967,7 @@ Parent-delegate Save now executes source-extracted selection and fault routing a
 Resource translations are absent: errors/warnings are resource identifiers, not original displayed prose. Reference save only clones accepted input and proves validator outcomes; original service transaction, entity mapping and persistence are unverified. Windows/Oracle application cannot be built from this bundle. PostgreSQL is unverified and not connected. No target or browser implementation has been generated.
 ''')
     put('migration-plan.md', '''# Bounded migration plan
-1. Characterise: retain source identities, inspect inventory/rules, run extracted-reference scenarios. Resolve blocking coverage, repeat scope gaps with human review; do not approve current incomplete coverage by implication.
+1. Characterise: retain source identities, inspect inventory/rules, run extracted-reference scenarios. The agreed KD03 scenarios must pass; remaining Windows lifecycle and excluded-infrastructure limitations are non-blocking when documented. Repeat-flag scope is agreed in the seed. Stop awaiting explicit human approval of this generated revision.
 2. Approval: runner hashes source/target/reviewed artifacts and stops. Seed acceptance is not behaviour approval.
 3. Convert after approval: modern .NET runtime/dependency port; retain validator/delegate structure, compatibility substitutions, same scenarios and observations. No Blazor or redesigned persistence yet.
 4. Refactor after conversion parity: server-interactive Blazor and EF Core in-memory. Only KD03 selection/submission, selected synthetic patient; save then read through fresh context. Add shared failure, warning/confirmation, physical assessment, lookup/default and decline examples before approving them.

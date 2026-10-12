@@ -83,6 +83,10 @@ To rerun extracted verification independently, run `python3 WORKSPACE/characteri
 
 ## Tests
 
+The retained supplied-bundle approval checkpoint is documented in [`docs/hcwp-approval-gate.md`](docs/hcwp-approval-gate.md); it remains awaiting human review, not approved.
+
+`python3 tests/test_hcwp_approval.py` exercises the actual reference verifier through the CLI and checks the revision-bound approval gate without generating a target.
+
 `python3 tests/test_hcwp_characterise.py` runs the supplied bundle through actual extraction/build/verification, checks the documented discrepancies and approval readiness, and introduces an expected-observation mismatch to ensure comparison fails.
 
 `python3 tests/test_cli.py` builds the CLI and executes subprocess-based deterministic agent doubles in temporary workspaces. Coverage includes approval stops, revision invalidation, blocking gaps, empty/skipped/failed/missing/stale verification, bounded repairs, retained diagnostics, workspace isolation and recovery without redoing accepted stages. These synthetic fixtures demonstrate orchestration only and do not represent HCWP behaviour.
