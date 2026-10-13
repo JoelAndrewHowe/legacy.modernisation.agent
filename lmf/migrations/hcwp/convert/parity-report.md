@@ -4,11 +4,11 @@
 
 Fresh execution of `convert/run-approved-scenarios` exited **0**: reference **40/40 passed**, conversion **40/40 passed**, **0 failures, 0 skips, 0 omitted approved scenarios**, and **40 exact observation matches**. Every fresh reference observation also matches the approved Characterise observations. This establishes **parity with extracted legacy logic**, not parity with the original Windows/Oracle application or the full save service.
 
-This report implements the next unfinished reporting task. The external plan remains unchanged and unchecked; this is not an agent declaration that Convert is complete. No approved source, scenarios, fixtures, reference files or operator approval were amended. No Refactor work was introduced.
+The final baseline-confirmation task was executed again; see `baseline-confirmation.md` for its mechanical evidence. The external plan remains unchanged and unchecked; this is not an agent declaration that Convert is complete. No approved source, scenarios, fixtures, reference files or operator approval were amended. No Refactor work was introduced.
 
 ## Revisions and evidence identities
 
-Paths below are relative to `lmf/migrations/hcwp`. Repository HEAD at execution: `1623a4c81e7e42e9c672e394d583a9d0316fdee5`; content hashes, not HEAD alone, identify working-tree evidence.
+Paths below are relative to `lmf/migrations/hcwp`. Repository HEAD at the latest execution: `71d72cf14d3ca056783024f25659ecbb85a5d4fd`; content hashes, not HEAD alone, identify working-tree evidence.
 
 | Input or artifact | SHA-256 |
 | --- | --- |
@@ -118,4 +118,4 @@ No new findings were supplied after the user's findings heading. Historical **V0
 - Appointment statuses, recalls/prefill, scheduled save, editing/deletion, search, other contact workflows and historical database migration are excluded. KD03-only rejection is migration scope enforcement, not a rule attributed to the legacy validator.
 - No Blazor/EF Core redesign, PostgreSQL/Azure compatibility, production deployment/security or original Windows/Oracle execution is claimed. Browser delivery belongs to Refactor.
 
-The reporting artifact and repeatable executable evidence are now present. The separate remaining plan task to confirm the current Convert baseline before declaring completion is left untouched.
+Fresh executable evidence confirms parity with the current approved Characterise baseline; `baseline-confirmation.md` records the final task's checks. The external plan checkbox remains untouched, and completion is left to the validator/runner.
