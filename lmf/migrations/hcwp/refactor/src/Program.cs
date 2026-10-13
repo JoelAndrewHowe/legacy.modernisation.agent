@@ -5,6 +5,8 @@ using Hcwp.Presentation;
 using System.Text.Json.Nodes;
 
 var builder = WebApplication.CreateBuilder(args);
+// This bounded local demo also serves build-time assets when dotnet run defaults to Production.
+builder.WebHost.UseStaticWebAssets();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 var fixtures = JsonNode.Parse(File.ReadAllText(Path.Combine(builder.Environment.ContentRootPath, "demo-fixtures.json"))).AsObject();
 ReferenceClock.Now = DateTime.Parse((string)fixtures["clock"]["now"]);

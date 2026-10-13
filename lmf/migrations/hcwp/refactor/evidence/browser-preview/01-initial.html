@@ -1,19 +1,21 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="/">
+    <link rel="stylesheet" href="vendor/nhsw/nhsw.min.css">
     <!--!--><!--!--><!--!--><title>Synthetic KD03 recording</title><!--!--><!--!--></head>
 <body><!--!--><!--!--><!--!--><!--!--><!--!--><!--!--><!--!--><!--!-->
-<main><!--!--><h1 tabindex="-1">6–8-week contact (KD03)</h1>
+<main class="nhsw-main-wrapper" id="maincontent"><div class="nhsw-width-container"><!--!--><h1 class="nhsw-h1" tabindex="-1">6–8-week contact (KD03)</h1>
     <!--!--><p>Architecture preview only. Synthetic patient 101, born 1 January 2025.</p>
-    <!--!--><p>Fixed demonstration clock: 15 March 2025. Temporary in-memory data; not clinical policy.</p><!--!--><form method="post"><!--!--><!--!--><input type="hidden" name="__RequestVerificationToken" value="CfDJ8NzoGBNlLbhJn2B0SWHhJPtTHg-HuOpS9zvcMHWH5a5vUfkIBIarApXlaDWYWVPf35r4hX261RB1ud0V4Fd7M95wIDZwsAZ4saSUHvrSOn0InXDFh-lua9VV8e4Uz_1O8-YT3jj0_NCor9H3kq_MSFk"><!--!--><div><!--!--><label for="contact-date">Contact date</label>
-            <!--!--><input id="contact-date" type="date" name="Model.Date" class="valid" _bl_511367b8-d124-4980-aace-453555c513d7=""></div><!--!-->
-        <div><!--!--><label for="heart">Heart assessment</label>
-            <!--!--><select id="heart" name="Model.Heart" class="valid" _bl_bc25eefe-61ac-4c09-a8e7-2f847cc4f999=""><!--!--><option value="">Not recorded</option>
+    <!--!--><p>Fixed demonstration clock: 15 March 2025. Temporary in-memory data; not clinical policy.</p><!--!--><form method="post"><!--!--><!--!--><input type="hidden" name="__RequestVerificationToken" value="CfDJ8NzoGBNlLbhJn2B0SWHhJPutmNNsYNYE8NM9FTGeZTjbDAvxC5FnDQllA1PprdAPnReMuhUDdIlh1bznuuZD_oQqu-R2L_67KD_qxHRfytu3fJRyfyeVdnn_xAI-4FfcUjge5RVm37-QfUKTycFdSRA" style=""><!--!--><div class="nhsw-form-group"><!--!--><label class="nhsw-label" for="contact-date">Contact date</label>
+            <!--!--><div class="nhsw-hint" id="contact-date-hint">Use the date of the contact, not the date entered.</div>
+            <!--!--><input id="contact-date" aria-describedby="contact-date-hint" type="date" name="Model.Date" class="nhsw-input nhsw-input--width-10 valid" _bl_a274afec-03ee-4082-b30d-2be400fd96d5="" style=""></div><!--!-->
+        <div class="nhsw-form-group"><!--!--><label class="nhsw-label" for="heart">Heart assessment</label>
+            <!--!--><select id="heart" name="Model.Heart" class="nhsw-select valid" _bl_04600d26-9ba2-499e-8750-61fcb6676e70=""><!--!--><option value="">Not recorded</option>
                 <!--!--><option value="1">Satisfactory</option>
                 <!--!--><option value="2">Concern</option>
                 <!--!--><option value="3">Not assessed</option></select></div><!--!-->
-        <!--!--><button type="submit">Save KD03 result</button></form><!--!-->
-    <!--!--><h2>Saved results for patient 101</h2>
-    <button type="button">Reload from persistence</button><!--!--><p>No saved KD03 results.</p><!--!--><p>Other contacts, search, editing, appointments and recalls are not supported.</p></main><!--!-->
+        <!--!--><button class="nhsw-button nhsw-button--primary nhsw-button--inline" type="submit">Save KD03 result</button></form><!--!-->
+    <!--!--><h2 class="nhsw-h2">Saved results for patient 101</h2>
+    <button class="nhsw-button nhsw-button--secondary nhsw-button--inline" type="button">Reload from persistence</button><!--!--><p>No saved KD03 results.</p><!--!--><p>Other contacts, search, editing, appointments and recalls are not supported.</p></div></main><!--!-->
         <!--!-->
     <script src="_framework/blazor.web.js"></script></body></html>

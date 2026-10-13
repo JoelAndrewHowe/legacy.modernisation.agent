@@ -1,0 +1,17 @@
+{
+  "scope": "NHSW styling of current preview only, not full Refactor gate",
+  "checks": [
+    "Local official stylesheet served; no external runtime requests",
+    "Visible labels remain associated with native controls",
+    "Primary button renders official NHSW blue"
+  ],
+  "failed": 1,
+  "skipped": 0,
+  "browser": "156.0.8078.4",
+  "contrast": {
+    "method": "Chromium computed sRGB colours, alpha-composited over rendered ancestor backgrounds; WCAG relative luminance. No colour rounding before threshold comparison.",
+    "criteria": "1.4.3: 4.5:1 normal text, 3:1 large text (24px or 18.667px bold). 1.4.11: 3:1 control boundaries and contrasting focus indicator portions. Visible keyboard focus also checked separately (2.4.7). Not a full WCAG audit or AAA 2.4.13 claim.",
+    "measurements": []
+  },
+  "error": "Error: locator.evaluateAll: Error: Image/opacity needs pixel-based contrast measurement\n    at background (eval at evaluate (:370:30), <anonymous>:12:76)\n    at eval (eval at evaluate (:370:30), <anonymous>:16:44)\n    at Array.map (<anonymous>)\n    at eval (eval at evaluate (:370:30), <anonymous>:15:62)\n    at UtilityScript.evaluate (<anonymous>:372:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+}

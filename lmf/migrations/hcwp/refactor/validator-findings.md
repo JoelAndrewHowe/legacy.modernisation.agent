@@ -1,4 +1,48 @@
-# Validator finding: executed architecture-preview browser evidence
+# Validator findings
+
+## Current NHSW task
+
+### Finding: missing current-interface AA contrast evidence
+
+The validator reported that `browser/nhsw.mjs` asserted button colour and focus
+styling but measured no foreground/background contrast, and provenance deferred
+contrast to the later full-flow task. This is a deficiency in the **current
+NHSW integration**, not a request to implement the remaining full flow.
+
+Added `browser/contrast.mjs` and integrated executed measurements into the real
+Chromium NHSW check. The report records rendered text, headings, hints, labels,
+input/select values, select SVG arrow, both buttons, hover and focus states,
+control boundaries, persisted summary values and the existing generic error
+including programmatic summary focus. Responsive text/control measurements
+also execute at 320/768/1280px. No business rules, upstream files, vendored CSS,
+human approvals or plan checkboxes changed.
+
+Executed `refactor/verify-nhsw`: current approval/Convert prerequisites and
+asset checksums pass; application builds with zero warnings/errors; Chromium
+156.0.8078.4 executes six passing check groups, zero failures/skips.
+`evidence/nhsw-browser/results.json` contains **146 measured colour pairs**,
+**141 passing applicable AA assertions** (SC 1.4.3 and 1.4.11) and five diagnostic
+pairs. Yellow/page contrast is 1.103:1 and is not itself claimed to meet 3:1;
+the official dark or red adjacent focus portions pass. `nhsw-provenance.md`
+now documents actual ratios, thresholds, measurement method and boundaries
+rather than deferring current contrast. Screenshots and server/build logs are
+retained beside the report; it includes timestamps and tested-source hashes.
+
+Initial test failures are retained in
+`evidence/nhsw-browser-contrast-initial-failure.json` (flat-background guard
+rejected the reviewed right-aligned select SVG) and
+`evidence/nhsw-browser-contrast-outline-expectation-failure.json` (computed
+outline shorthand colour/style/width order differed from the assertion).
+The guard now explicitly handles that reviewed SVG and measures its fill;
+unknown images/opacity still fail. The shorthand assertion now checks actual
+style and width without assuming order. The final executed report passes.
+
+Full-flow/error-link implementation, fresh three-way parity and the complete
+Refactor gate remain pending. These measurements are not a full accessibility
+certification, native OS popup audit or AAA focus-area claim. No plan item is
+marked done.
+
+# Historical finding: executed architecture-preview browser evidence
 
 ## Finding supplied
 
