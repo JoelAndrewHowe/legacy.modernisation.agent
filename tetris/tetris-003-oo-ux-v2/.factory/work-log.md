@@ -1,5 +1,14 @@
 # Work log
 
+## Gameplay, startup, and real-terminal cleanup verification
+
+- Worked on the next unchecked verification task; `.factory/plan.md` remains unchanged and no task was marked done.
+- Validator findings: none were supplied in this request. Verification uncovered a separate shutdown defect: in a real PTY, Q restored the display but `npm start` did not exit because stdin was already resumed at startup. Fixed `src/terminal-game.js` to pause input unconditionally on stop; added a resumed-input regression in `test/start.test.js`.
+- Added `test/verify-terminal.py`, an optional Python 3/POSIX standard-library harness launching actual `npm start` processes in 60x24 PTYs. Verified decoded arrows, soft/hard drops, real timed gravity, restart, repeated drops to game over, and game-over restart. All captured complete frames contain 24 rows, both borders, full controls, and at most 60 columns. This checks PTY output, not a terminal emulator's scrolling or visual appearance.
+- Verified Q and Ctrl-C exit successfully, and SIGTERM sent to the process group terminates startup/game processes. All three restore original termios attributes and emit cursor/alternate-screen restoration sequences. The harness accounts for PTY ONLCR expansion of line endings.
+- Validation: `npm test` passed all 34 tests; `python3 test/verify-terminal.py` passed all three live-PTY scenarios. Separately, redirected `npm start` exited 0 with a 24-row ANSI-free snapshot and no stderr.
+- Updated `README.md` with the PTY verification command and corrected stale placeholder-cell documentation. No manual visual terminal session was performed.
+
 ## Coloured two-column cell validator follow-up
 
 - Recorded blocking finding at `src/terminal-game.js:11-23`: normal and game-over TTY frames used monochrome single-character `#`/`@` cells, making tetrominoes indistinguishable.

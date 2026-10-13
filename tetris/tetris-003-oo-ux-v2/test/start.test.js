@@ -400,6 +400,18 @@ test('game-over stops gravity, displays instructions, and allows restart', () =>
   } finally { t.adapter.stop(); }
 });
 
+test('quit releases input even when the TTY was already resumed at startup', () => {
+  const t = terminal();
+  t.input.resume();
+  assert.equal(t.input.isPaused(), false);
+  t.adapter.start();
+  t.key('q');
+  assert.equal(t.input.isPaused(), true);
+  assert.equal(t.input.isRaw, false);
+  assert.equal(t.timers.size, 0);
+  assert.ok(t.output.text.endsWith('\x1b[?25h\x1b[?1049l'));
+});
+
 test('quit, Ctrl-C and signals restore terminal state and release resources', () => {
   for (const exit of ['q', 'ctrl-c', 'SIGINT', 'SIGTERM', 'SIGHUP', 'exit']) {
     const t = terminal();

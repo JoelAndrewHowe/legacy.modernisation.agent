@@ -61,7 +61,6 @@ export class TerminalGame {
     }
     this.running = true;
     this.wasRaw = Boolean(this.input.isRaw);
-    this.wasPaused = this.input.isPaused();
     readline.emitKeypressEvents(this.input);
     this.input.on('keypress', this.onKey);
     this.output.on('resize', this.onResize);
@@ -139,7 +138,9 @@ export class TerminalGame {
     try {
       this.input.setRawMode(this.wasRaw);
     } finally {
-      if (this.wasPaused) this.input.pause();
+      // A real TTY may already be flowing at startup. Always release its
+      // active read handle so quitting allows the Node process to exit.
+      this.input.pause();
       this.output.write(LEAVE);
     }
   }
