@@ -6,6 +6,10 @@ import test from 'node:test';
 import { TerminalGame, renderFrame } from '../src/terminal-game.js';
 import { Board, Piece, TetrisGame } from '../src/tetris.js';
 
+const stripAnsi = text => text.replace(/\x1b\[[0-9;]*m/g, '');
+const colours = { I: '96', O: '93', T: '95', S: '92', Z: '91', J: '94', L: '38;5;208' };
+const filledCell = type => `\x1b[${colours[type]}m██\x1b[0m`;
+
 function terminal(createGame) {
   const input = new PassThrough();
   input.isTTY = true;
@@ -47,14 +51,39 @@ test('normal and game-over frames include all UI in exactly 24 rows', () => {
   const blocked = new Board(10, 20, Array.from({ length: 20 }, () => Array(10).fill('T')));
   for (const game of [new TetrisGame(), new TetrisGame({ board: blocked })]) {
     const frame = renderFrame(game);
-    const rows = frame.split('\n');
+    const rows = stripAnsi(frame).split('\n');
     assert.equal(rows.length, 24);
     assert.ok(rows.every(row => row.length <= 60));
     assert.match(rows[0], /Score:0 Lines:0 Next:/);
-    assert.match(rows[1], /^\+----------\+$/);
+    assert.match(rows[1], /^\+--------------------\+$/);
     assert.match(rows[23], /Q quit/);
     if (game.gameOver) assert.match(rows[0], /GAME OVER R:new Q:quit/);
-    else assert.equal((frame.match(/@/g) ?? []).length, 4);
+    else assert.equal(frame.split(filledCell(game.active.type)).length - 1, 4);
+    assert.ok(frame.includes(filledCell(game.gameOver ? 'T' : game.active.type)));
+  }
+});
+
+test('all seven tetrominoes use distinct colours for settled and active solid cells', () => {
+  assert.equal(new Set(Object.values(colours)).size, 7);
+  for (const type of Object.keys(colours)) {
+    const rows = Array.from({ length: 20 }, () => Array(10).fill(null));
+    rows[19][0] = type;
+    const t = terminal(() => new TetrisGame({
+      board: new Board(10, 20, rows),
+      initialState: { active: new Piece(type) },
+      pieces: { next: () => 'T' },
+    }));
+    t.adapter.start();
+    try {
+      const frame = t.output.text.split('\x1b[H\x1b[2J').at(-1);
+      assert.equal(frame.split(filledCell(type)).length - 1, 5, type);
+      const lines = stripAnsi(frame).split('\r\n');
+      assert.equal(lines.length, 24);
+      assert.ok(lines.every(line => line.length <= 60));
+      assert.equal(lines[21], `|██${'  '.repeat(9)}|`);
+      assert.doesNotMatch(frame, /[#@]/);
+      assert.equal(renderFrame(t.adapter.game, { colour: false }), stripAnsi(renderFrame(t.adapter.game)));
+    } finally { t.adapter.stop(); }
   }
 });
 
@@ -68,21 +97,24 @@ test('rendered cells preserve settled blocks and place hard-drop blocks exactly'
     initialState: { active: new Piece('O', 1, 2) },
     pieces: { next: () => 'T' },
   }));
-  const assertCells = (frame, blocks, active) => {
+  const assertCells = (frame, blocks, active, activeType = 'O') => {
     const lines = frame.split(/\r?\n/);
     assert.equal(lines.length, 24);
-    assert.equal(lines[1], '+----------+');
-    assert.equal(lines[22], '+----------+');
-    const expected = new Map(blocks.map(([x, y]) => [`${x},${y}`, '#']));
-    for (const [x, y] of active) expected.set(`${x},${y}`, '@');
+    assert.equal(lines[1], '+--------------------+');
+    assert.equal(lines[22], '+--------------------+');
+    const expected = new Map(blocks.map(([x, y, type = 'J']) => [`${x},${y}`, type]));
+    for (const [x, y] of active) expected.set(`${x},${y}`, activeType);
     for (let y = 0; y < 20; y++) {
-      assert.equal(lines[y + 2].length, 12);
-      assert.equal(lines[y + 2][0], '|');
-      assert.equal(lines[y + 2][11], '|');
+      const visible = stripAnsi(lines[y + 2]);
+      assert.equal(visible.length, 22);
+      let expectedRow = '|';
       for (let x = 0; x < 10; x++) {
-        assert.equal(lines[y + 2][x + 1], expected.get(`${x},${y}`) ?? ' ',
+        const type = expected.get(`${x},${y}`);
+        assert.equal(visible.slice(1 + x * 2, 3 + x * 2), type ? '██' : '  ',
           `rendered cell (${x}, ${y})`);
+        expectedRow += type ? filledCell(type) : '  ';
       }
+      assert.equal(lines[y + 2], `${expectedRow}|`, 'cell colours and reset boundaries');
     }
   };
   t.adapter.start();
@@ -92,14 +124,14 @@ test('rendered cells preserve settled blocks and place hard-drop blocks exactly'
     assertCells(t.output.text.split('\x1b[2J').at(-1), settled, initialActive);
     const offset = t.output.text.length;
     t.key('space');
-    const locked = [...settled, [1, 18], [2, 18], [1, 19], [2, 19]];
+    const locked = [...settled, [1, 18, 'O'], [2, 18, 'O'], [1, 19, 'O'], [2, 19, 'O']];
     const spawned = [[4, 0], [3, 1], [4, 1], [5, 1]];
     assert.equal(t.adapter.game.score, 32);
     assert.equal(t.adapter.game.lines, 0);
-    assertCells(renderFrame(t.adapter.game), locked, spawned);
+    assertCells(renderFrame(t.adapter.game), locked, spawned, 'T');
     const freshOutput = t.output.text.slice(offset);
     assert.ok(freshOutput.startsWith('\x1b[H\x1b[2J'));
-    assertCells(freshOutput.slice('\x1b[H\x1b[2J'.length), locked, spawned);
+    assertCells(freshOutput.slice('\x1b[H\x1b[2J'.length), locked, spawned, 'T');
   } finally { t.adapter.stop(); }
 });
 
@@ -277,6 +309,58 @@ test('real keypress decoder handles arrow escape sequences and quit', () => {
   t.input.write('q');
   assert.equal(t.adapter.running, false);
   assert.equal(t.timers.size, 0);
+});
+
+test('real keyboard bytes drive movement, drops, restart, and Ctrl-C', () => {
+  const t = terminal(() => new TetrisGame({ pieces: { next: () => 'T' } }));
+  t.adapter.start();
+  try {
+    const game = t.adapter.game;
+    const { x, y } = game.active;
+    assertRedraw(t, () => t.input.write('\x1b[C'));
+    assert.equal(game.active.x, x + 1);
+    assertRedraw(t, () => t.input.write('\x1b[D'));
+    assert.equal(game.active.x, x);
+    assertRedraw(t, () => t.input.write('\x1b[B'));
+    assert.equal(game.active.y, y + 1);
+    assert.equal(game.score, 1);
+    assertRedraw(t, () => t.input.write(' '));
+    assert.ok(game.board.rows.flat().some(Boolean));
+    assertRedraw(t, () => t.input.write('r'));
+    assert.notEqual(t.adapter.game, game);
+    assert.equal(t.adapter.game.score, 0);
+    t.input.write('\x03');
+    assert.equal(t.adapter.running, false);
+    assert.equal(t.input.isRaw, false);
+    assert.equal(t.timers.size, 0);
+  } finally { t.adapter.stop(); }
+});
+
+test('minimum-size terminal emits complete normal and game-over frames without scrolling', () => {
+  for (const blocked of [false, true]) {
+    const t = terminal(() => new TetrisGame({
+      board: blocked
+        ? new Board(10, 20, Array.from({ length: 20 }, () => Array(10).fill('T')))
+        : new Board(),
+      pieces: { next: () => 'T' },
+    }));
+    t.output.columns = 60;
+    t.adapter.start();
+    try {
+      const frame = t.output.text.split('\x1b[H\x1b[2J').at(-1);
+      const rows = stripAnsi(frame).split('\r\n');
+      assert.equal(rows.length, 24);
+      assert.equal(frame.split(filledCell('T')).length - 1, blocked ? 200 : 4);
+      assert.ok(rows.every(row => row.length <= 60));
+      assert.equal(rows[1], '+--------------------+');
+      assert.equal(rows[22], '+--------------------+');
+      assert.equal(rows[23], '< > move | Up spin | Down drop | Space slam | R new | Q quit');
+      assert.ok(!frame.endsWith('\n'));
+      assert.match(rows[0], /Score:0 Lines:0 Next:T/);
+      if (blocked) assert.match(rows[0], /GAME OVER R:new Q:quit/);
+      else assert.match(rows[0], /^Tetris /);
+    } finally { t.adapter.stop(); }
+  }
 });
 
 test('too-small terminals pause play and redraw after resize', () => {

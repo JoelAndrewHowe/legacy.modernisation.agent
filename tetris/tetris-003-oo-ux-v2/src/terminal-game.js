@@ -5,20 +5,29 @@ const ENTER = '\x1b[?1049h\x1b[?25l';
 const LEAVE = '\x1b[?25h\x1b[?1049l';
 const CONTROLS = '< > move | Up spin | Down drop | Space slam | R new | Q quit';
 const MIN_COLUMNS = CONTROLS.length;
+const COLOURS = Object.freeze({
+  I: '96', O: '93', T: '95', S: '92', Z: '91', J: '94', L: '38;5;208',
+});
+
+function renderCell(type, colour) {
+  if (!type) return '  ';
+  return colour ? `\x1b[${COLOURS[type]}m██\x1b[0m` : '██';
+}
 
 // One header + twenty board rows + two borders + one help row = 24.
-export function renderFrame(game) {
-  const rows = game.board.rows.map(row => row.map(cell => cell ? '#' : ' '));
+export function renderFrame(game, { colour = true } = {}) {
+  const rows = game.board.rows.map(row => [...row]);
   if (!game.gameOver) {
     for (const { x, y } of game.active.cells()) {
-      if (y >= 0 && y < rows.length && x >= 0 && x < rows[y].length) rows[y][x] = '@';
+      if (y >= 0 && y < rows.length && x >= 0 && x < rows[y].length) rows[y][x] = game.active.type;
     }
   }
   const status = game.gameOver ? 'GAME OVER R:new Q:quit' : 'Tetris';
   const header = `${status} Score:${game.score} Lines:${game.lines} Next:${game.nextType}`;
-  const border = `+${'-'.repeat(game.board.width)}+`;
+  const border = `+${'-'.repeat(game.board.width * 2)}+`;
   return [header.slice(0, MIN_COLUMNS), border,
-    ...rows.map(row => `|${row.join('')}|`), border, CONTROLS].join('\n');
+    ...rows.map(row => `|${row.map(cell => renderCell(cell, colour)).join('')}|`),
+    border, CONTROLS].join('\n');
 }
 
 export class TerminalGame {
@@ -47,7 +56,7 @@ export class TerminalGame {
     if (this.running) return;
     // A redirected invocation prints a snapshot without owning any resources.
     if (!this.input.isTTY || !this.output.isTTY) {
-      this.output.write(`${renderFrame(this.game)}\n`);
+      this.output.write(`${renderFrame(this.game, { colour: false })}\n`);
       return;
     }
     this.running = true;

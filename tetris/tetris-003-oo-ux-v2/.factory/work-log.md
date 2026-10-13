@@ -1,5 +1,23 @@
 # Work log
 
+## Coloured two-column cell validator follow-up
+
+- Recorded blocking finding at `src/terminal-game.js:11-23`: normal and game-over TTY frames used monochrome single-character `#`/`@` cells, making tetrominoes indistinguishable.
+- Recorded high-severity finding at `test/start.test.js`: renderer tests enforced those placeholders and the minimum-size test accepted the failing presentation; filled coloured cells and ANSI-stripped layout bounds needed coverage while retaining game-over checks.
+- Addressed both within the next unchecked keyboard-controls/rendering task. Settled and active cells now use solid `██` blocks with seven distinct ANSI tetromino colours and per-cell resets; empty cells and borders use matching two-column widths. Redirected snapshots retain solid two-column blocks without ANSI escapes.
+- Replaced placeholder assertions with independent cell-coordinate, colour, and reset assertions before/after hard drop. Added emitted-TTY coverage for all seven active and settled colours, and ANSI-stripped 24-row/60-column bounds for normal and game-over frames, including fully occupied game-over boards.
+- Validation: `npm test` passed all 33 tests. Terminal output was exercised through simulated TTY streams, not a manual terminal session.
+- Left `.factory/plan.md` unchanged; no task was marked done.
+
+## Keyboard decoding and minimum-size display follow-up
+
+- Continued the next unchecked task (keyboard controls and bounded terminal rendering); existing production implementation needed no changes.
+- Added real-byte input coverage for Right, Left, Down, Space, R, and Ctrl-C through readline rather than synthetic keypress events. Checked movement, scoring, locked blocks, fresh redraws, restart, and shutdown.
+- Added emitted-frame checks at exactly 60x24 for normal and game-over states: all 24 rows, both borders, full controls, counters, preview, and no trailing newline. These checks bound output dimensions; they do not simulate a terminal emulator's scrolling behavior.
+- Validator findings: none were supplied in this request; no new findings to address.
+- Validation: `npm test` passed all 32 tests. No manual terminal session was performed; the separate verification task remains pending.
+- Left `.factory/plan.md` unchanged; no task was marked done.
+
 ## Gravity-timer validator follow-up
 
 - Recorded medium-severity validator finding at `test/start.test.js:199`: timer tests could not detect gravity remaining fixed as levels increased; hardcoding `src/terminal-game.js:94` to 1000 ms passed all 28 tests. Recommendation: deterministic higher-level and level-transition fixtures with literal expected delays at startup and after rescheduling.
