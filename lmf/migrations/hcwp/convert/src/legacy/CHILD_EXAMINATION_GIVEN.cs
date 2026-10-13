@@ -1,0 +1,44 @@
+// Extracted bundle file 71; see extract.py and README.md.
+using System;
+using System.Collections.Generic;
+
+namespace Orvex.Model
+{
+    public class ChildExaminationGiven
+    {
+        public ChildExaminationGiven()
+        {
+
+            HeightMeasurementRefused = "N";
+            WeightMeasurementRefused = "N";
+            HeadMeasurementRefused = "N";
+            RescheduleExamination = "N";
+        }
+
+        public long PkFkChildExamGivenId { get; set; }
+        public DateTime ExaminationDate { get; set; }
+        public string ExaminationDateEstimated { get; set; }
+        public byte? FkNotExaminedReasonId { get; set; }
+        public string RescheduleExamination { get; set; }
+        public string ParentPresent { get; set; }
+        public string HeightMeasurementRefused { get; set; }
+        public string WeightMeasurementRefused { get; set; }
+        public string HeadMeasurementRefused { get; set; }
+        public string RecordStatus { get; set; }
+        public byte Origin { get; set; }
+        public string FkReferredFromAgencyCode { get; set; }
+        public byte? FkLocationHeldTypeId { get; set; }
+        public string FkChildLocationHeldCode { get; set; }
+        public string FkStaffTypeExaminerId { get; set; }
+        public string FkHcpExaminerCode { get; set; }
+        public string FkExaminerCatId { get; set; }
+        public string FkCurrTreatmentAgencyCode { get; set; }
+        public DateTime? ResultEnteredDate { get; set; }
+        public virtual ChildExamination ChildExamination { get; set; }
+        public virtual ChildExaminationKdp ChildExaminationKdp { get; set; }
+        public virtual ExamNotExaminedReason ExamNotExaminedReason { get; set; }
+        public virtual Examiner Examiner { get; set; }
+        public virtual HealthCareProfessionals HealthCareProfessionals { get; set; }
+        public virtual ChildLocations ChildLocations { get; set; }
+    }
+}

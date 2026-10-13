@@ -1,0 +1,19 @@
+// Extracted bundle file 79; see extract.py and README.md.
+using System;
+
+namespace Orvex.Model
+{
+    public class DeviationsCentile
+    {
+        public short Age { get; set; }
+        public string Gender { get; set; }
+        public string MeasurementType { get; set; }
+        public string Centile { get; set; }
+        public decimal? LowerBound { get; set; }
+        public decimal? UpperBound { get; set; }
+
+        public double Lower => (double?)LowerBound ?? double.NegativeInfinity;
+
+        public double Upper => (double?)UpperBound ?? double.PositiveInfinity;
+    }
+}

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+here="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+target="$(dirname -- "$here")"
+mkdir -p "$here/evidence"
+# Check the human-owned packet before executing; never regenerate it.
+(cd "$target" && sha256sum --check characterise/review-files.sha256) > "$here/evidence/approval-check.log"
+python3 - "$target" <<'PY'
+import hashlib, pathlib, sys
+p = pathlib.Path(sys.argv[1])
+revision = hashlib.sha256((p/'characterise/review-files.sha256').read_bytes()).hexdigest()
+approval = (p/'approvals/characterise-approved.md').read_text()
+assert 'State: approved for progression to Convert' in approval and f'`{revision}`' in approval, 'Absent or stale operator approval; stop for human review'
+checks = {
+    p/'../../docs/vision.md': 'a5280da556de24f8d6d9254df5b1bdd22ace59c7fc0a5ac64b9485dd71483444',
+    p/'../../iterations/001-characterise-and-migrate-hcwp.md': '73c53da335f85625dd0ce180d69eec64a21431f9ab8247a58520e0dfbd3addcd',
+    p/'../../../example-code/HCWP Core (pseudonymised) - single file.txt': 'f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2',
+}
+for file, digest in checks.items():
+    assert hashlib.sha256(file.read_bytes()).hexdigest() == digest, f'Changed approved input: {file}; stop for human review'
+PY
+dotnet build "$here/src/Converted.csproj" --nologo > "$here/evidence/build.log" 2>&1 || {
+  printf '%s\n' "Converted build failed: $here/evidence/build.log" >&2
+  exit 1
+}
+dotnet "$here/src/bin/Debug/net10.0/Converted.dll" "$target/characterise" "$here/evidence" "$@"

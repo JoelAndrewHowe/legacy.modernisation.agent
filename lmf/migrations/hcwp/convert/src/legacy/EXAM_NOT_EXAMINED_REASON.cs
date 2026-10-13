@@ -1,0 +1,23 @@
+// Extracted bundle file 80; see extract.py and README.md.
+using System;
+using System.Collections.Generic;
+
+namespace Orvex.Model
+{
+    public class ExamNotExaminedReason
+    {
+        public ExamNotExaminedReason()
+        {
+            ChildExaminationGiven = new List<ChildExaminationGiven>();
+        }
+
+        public byte PkExamNotExamRsonId { get; set; }
+        public string Description { get; set; }
+        public string KdpDescription { get; set; }
+        public string RecordStatus { get; set; }
+        public string PrefixCode { get; set; } //TODO not sure if this is used anywhere so have left in and created a new standard 'prefix' that matches other tables. Remove this column in future if not in use.
+        public string Prefix { get; set; }
+        public byte? DisplayOrder { get; set; }
+        public virtual ICollection<ChildExaminationGiven> ChildExaminationGiven { get; set; }
+    }
+}

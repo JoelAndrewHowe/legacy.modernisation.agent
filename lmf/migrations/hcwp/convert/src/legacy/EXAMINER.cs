@@ -1,0 +1,26 @@
+// Extracted bundle file 82; see extract.py and README.md.
+using System.Collections.Generic;
+
+namespace Orvex.Model
+{
+    public class Examiner
+    {
+        public Examiner()
+        {
+            ChildExaminationGiven = new List<ChildExaminationGiven>();
+            ChildPreschoolRecall = new List<ChildPreschoolRecall>();
+        }
+
+        public string ExaminerCode { get; set; }
+        public string PkExaminerId { get; set; }
+        public string Description { get; set; }
+        public string ExaminerType { get; set; }
+        public string RecordStatus { get; set; }
+        public string Prefix { get; set; }
+        public byte? DisplayOrder { get; set; }
+
+        public virtual ICollection<ChildExaminationGiven> ChildExaminationGiven { get; set; }
+        public virtual ICollection<ChildPreschoolRecall> ChildPreschoolRecall { get; set; }
+        public virtual ICollection<PreschoolScheduleExams> PreschoolScheduleExams { get; set; }
+    }
+}

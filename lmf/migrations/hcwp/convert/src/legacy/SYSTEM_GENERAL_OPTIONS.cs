@@ -1,0 +1,15 @@
+// Extracted bundle file 89; see extract.py and README.md.
+using System;
+using System.Collections.Generic;
+
+namespace Orvex.Model
+{
+    public class SystemGeneralOptions
+    {
+        public byte PkSysGenOptionsId { get; set; }
+        public byte? LBmiIndex { get; set; }
+        public byte? HBmiIndex { get; set; }
+
+    }
+
+}
