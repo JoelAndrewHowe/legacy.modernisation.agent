@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+"""Capture both complete suites without writing to the approved reference packet."""
+import hashlib
+import json
+import pathlib
+import shutil
+import subprocess
+
+here = pathlib.Path(__file__).resolve().parent
+target = here.parent
+evidence = here / 'evidence'
+evidence.mkdir(exist_ok=True)
+
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+def run(command, log):
+    with log.open('w') as output:
+        subprocess.run(command, cwd=target, stdout=output, stderr=subprocess.STDOUT, check=True)
+
+# Fail before reference execution if approval, inputs, provenance or target fail.
+run(['python3', str(here / 'audit-port')], evidence / 'execution-port-audit.json')
+run([str(here / 'verify')], evidence / 'full-suite.jsonl')
+
+# The unmodified reference runner has a fixed output location relative to its
+# input directory. Execute a byte-identical disposable copy entirely in Convert.
+stage = here / '.reference-run'
+if stage.exists():
+    shutil.rmtree(stage)
+stage.mkdir()
+for name in ('fixtures.json', 'scenarios.json'):
+    shutil.copy2(target / 'characterise' / name, stage / name)
+reference = target / 'characterise/reference'
+shutil.copytree(reference, stage / 'reference', ignore=shutil.ignore_patterns(
+    'bin', 'obj', 'evidence', '__pycache__'))
+copied = {}
+for source in sorted(reference.rglob('*')):
+    if not source.is_file() or any(part in ('bin', 'obj', 'evidence', '__pycache__')
+                                   for part in source.relative_to(reference).parts):
+        continue
+    relative = source.relative_to(reference)
+    assert digest(source) == digest(stage / 'reference' / relative), relative
+    copied[str(relative)] = digest(source)
+for name in ('fixtures.json', 'scenarios.json'):
+    assert digest(stage / name) == digest(target / 'characterise' / name)
+
+run(['dotnet', 'build', str(stage / 'reference/Reference.csproj'), '--nologo'],
+    evidence / 'reference-build.log')
+run(['dotnet', str(stage / 'reference/bin/Debug/net10.0/Reference.dll'), str(stage)],
+    evidence / 'reference-full-suite.jsonl')
+shutil.copy2(stage / 'reference/evidence/results.json', evidence / 'reference-results.json')
+
+suite = json.loads((target / 'characterise/scenarios.json').read_text())
+ids = [s['id'] for s in suite['scenarios']]
+assert ids and len(ids) == len(set(ids)) and all(s['required'] for s in suite['scenarios'])
+reports = [json.loads(p.read_text()) for p in (
+    evidence / 'reference-results.json', evidence / 'results.json',
+    reference / 'evidence/results.json')]
+for report in reports:
+    assert report['mode'] == 'verify' and report['selectedScenario'] is None
+    assert (report['total'], report['passed'], report['failed'], report['skipped']) == (len(ids), len(ids), 0, 0)
+    assert [r['id'] for r in report['results']] == ids
+    for result in report['results']:
+        assert result['status'] == 'passed' and result['observations'] and not result['differences']
+    for key, filename in (('fixtureSha256', 'fixtures.json'), ('scenarioSha256', 'scenarios.json')):
+        assert report[key] == digest(target / 'characterise' / filename)
+    assert report['sourceSha256'] == reports[0]['sourceSha256']
+comparisons = []
+for fresh, converted, approved in zip(*(r['results'] for r in reports)):
+    assert fresh['observations'] == converted['observations'], f"Reference/Convert mismatch: {fresh['id']}"
+    assert fresh['observations'] == approved['observations'], f"Approved baseline mismatch: {fresh['id']}"
+    comparisons.append({'id': fresh['id'], 'reference': 'passed', 'conversion': 'passed',
+                        'exactObservationMatch': True, 'approvedBaselineMatch': True})
+# Historical V01: inspect the actual independently executed observation layers.
+v01 = [f'KD03-{n:03}' for n in (*range(4, 12), 14, 15, 32)]
+for report in reports[:2]:
+    for result in report['results']:
+        if result['id'] in v01:
+            o = result['observations']
+            assert o['validatorPrompt'] == 'ValidationErrorsPrompt'
+            assert o['savePrompt'] == 'ExamResultsErrorSavingPrompt'
+            assert o['parentNotification'] == {'type': 'NonFatalErrorEncountered', 'kind': 'Error',
+                'title': 'KdpResultsTitle', 'prompt': 'ExamResultsErrorSavingPrompt'}
+            assert o['storeUnchanged'] and not o['saved']
+run(['sha256sum', '--check', 'characterise/review-files.sha256'],
+    evidence / 'execution-post-approval-check.log')
+summary = {'total': len(ids), 'passed': len(ids), 'failed': 0, 'skipped': 0,
+           'omitted': [], 'exactObservationMatches': len(ids), 'v01Checked': v01}
+identity = {'approvedRevision': digest(target / 'characterise/review-files.sha256'),
+            'referenceCopiedFiles': copied,
+            'evidenceSha256': {name: digest(evidence / name) for name in (
+                'reference-results.json', 'results.json', 'reference-full-suite.jsonl', 'full-suite.jsonl')},
+            'approvedResultsSha256': digest(reference / 'evidence/results.json')}
+(evidence / 'scenario-comparison.json').write_text(json.dumps(
+    {'summary': summary, 'identity': identity, 'scenarios': comparisons}, indent=2) + '\n')
+print(json.dumps(summary))
