@@ -159,9 +159,13 @@ and stdout captures in `evidence/smoke.<ID>.jsonl`. The build succeeded with
 0 warnings/0 errors. KD03-004 and KD03-011 specifically check V01, ordered errors,
 no-save storage and (for 011) clearing/required flags.
 
-These are construction checks, **not execution of the entire required suite**.
-The remaining plan task must run unfiltered `characterise/verify`, inspect all
-40 outcomes and resolve any failures, then the later review task records exact
-revision/limitations and pending human decisions. No Characterise completion,
-human approval, original-system parity or Convert/Refactor implementation is
-claimed here.
+Those filtered runs remain construction checks. The subsequent unfiltered
+`characterise/verify` execution passed **40/40 required scenarios, zero failures,
+zero skips**, exit 0; build had zero warnings/errors. Full observations are in
+`evidence/results.json` and `evidence/full-suite.jsonl`; `../execution.md`
+records required-ID coverage and the V01 checks across all 11 affected scenarios.
+No harness logic, fixtures or expectations needed changing. All adaptations and
+unverified boundaries above remain limitations, not original-system evidence.
+The later review task and human approval remain pending; the external plan is
+unchanged. No Characterise completion, human approval, original-system parity
+or Convert/Refactor implementation is claimed here.
