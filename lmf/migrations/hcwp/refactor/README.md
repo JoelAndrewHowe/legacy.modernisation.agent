@@ -20,8 +20,9 @@ with zero failures/skips and exact observations; see `parity-report.md`. Reprodu
 with `refactor/run-approved-scenarios` (evidence in `evidence/parity/`).
 Build/configured style/persistence/current-browser verification now has positive
 executed evidence: see `verification.md` and reproduce with `refactor/verify-gate`.
-**Refactor is not declared complete:** final limitations documentation and
-completion assessment remain pending. No task checkbox was changed.
+`limitations-and-completion.md` documents fixture origins, persistence and
+infrastructure boundaries, and assesses the bounded outcomes from positive
+executed evidence. This is not stage approval; no task checkbox was changed.
 
 ## Reproduce full-flow smoke/regression evidence
 

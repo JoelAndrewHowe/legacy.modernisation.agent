@@ -1,5 +1,10 @@
 # KD03 full-flow implementation
 
+Historical implementation-task report below. Current six-group browser and
+three-way parity/gate evidence supersedes its earlier counts and pending-task
+statements: see `verification.md`, `parity-report.md` and
+`limitations-and-completion.md` for the final bounded assessment.
+
 Implemented the next unfinished task only; the external plan remains unchanged.
 Supplied presentation/evidence validator findings are recorded and addressed in
 `validator-findings.md`. Current human approval and complete

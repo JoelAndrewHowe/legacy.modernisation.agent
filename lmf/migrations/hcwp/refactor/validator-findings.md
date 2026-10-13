@@ -1,5 +1,18 @@
 # Validator findings
 
+## Final limitations and completion assessment task
+
+No validator findings were supplied after the request heading. Documented
+synthetic fixture origins, EF InMemory limitations, excluded infrastructure and
+absent original Windows/Oracle/PostgreSQL verification in
+`limitations-and-completion.md`. Updated the README and verification handoff to
+remove their stale pending-documentation statements. Inspected retained hashes
+and current approval/accepted Convert prerequisites, then reran the complete
+gate for the final documented packet. The independent assessment is retained in
+`evidence/completion-assessment.json`; passing evidence is an assessment for
+review, not human approval or an agent change of stage state. The plan remains
+unchanged and unchecked. No new behaviour or speculative polish was introduced.
+
 ## Verification rerun (current invocation)
 
 No validator findings were supplied after the heading. Reran the next unfinished

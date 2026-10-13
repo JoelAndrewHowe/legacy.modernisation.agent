@@ -1,0 +1,37 @@
+{
+  "assessedAt": "2026-10-13T14:25:01.967380+00:00",
+  "assessment": "Bounded required Refactor outcomes have positive executed evidence; submitted for runner/validator review, not stage approval.",
+  "gateStartedAt": "2026-10-13T14:23:56.133644+00:00",
+  "gateFinishedAt": "2026-10-13T14:24:37.917942+00:00",
+  "failed": 0,
+  "skipped": 0,
+  "inventoryEntriesVerified": {
+    "sourceSha256": 89,
+    "evidenceSha256": 121
+  },
+  "scenarioPasses": {
+    "reference": 40,
+    "conversion": 40,
+    "refactor": 40
+  },
+  "exactObservationMatches": 40,
+  "modelPasses": 4,
+  "persistencePasses": 4,
+  "realBrowserGroupsPassed": 6,
+  "fixtureCopyMatchesApproved": true,
+  "validatorFindingsSupplied": [],
+  "planModified": false,
+  "taskMarkedDone": false,
+  "originalWindowsOracleVerified": false,
+  "postgresqlVerified": false,
+  "evidenceClaim": "parity with extracted legacy logic",
+  "sha256": {
+    "evidence/gate-results.json": "546fd7c73898308f93561f54a671b191ad87f8a5c359312827c5b176f5b6121e",
+    "evidence/parity/comparison.json": "ce83055c28f5e5c5a81b12bcca919adea4f09ad09ce045d168bd758c75e77006",
+    "limitations-and-completion.md": "bf5b9b72aab3464bb467f3b1b0fce3f6844f258e9e2fee9802d0c617bc5a18e0",
+    "README.md": "1108e4365177b287e7f45d11ecdaf8b53eef008c3c1b3b194e932e2f74510768",
+    "verification.md": "63010f60bcba08f167cabe45c8c40533db0281066a0a1a4736aa4ee916e628c5",
+    "validator-findings.md": "2d3df1d93b108aa228b85ac9ecffbefcb5d3a1eec30892f6eebe76609fbb74e3",
+    "full-flow.md": "83b053da9abfb40bfe9311e700ae1085a95bdb440beb73d4259d84b1ec11e643"
+  }
+}

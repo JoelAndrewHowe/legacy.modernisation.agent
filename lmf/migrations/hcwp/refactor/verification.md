@@ -68,8 +68,10 @@ syntax parser, exclude the contrast-exempt inactive control, and blur Reload
 before normal-state inspection. Explicit focus contrast checks remain required;
 no approved behaviour, scenario, upstream file or library asset was changed.
 
-Only this verification task is addressed. The external plan remains unchanged
-and unchecked. Final limitations documentation/completion assessment is the next
-unfinished task; this report does not declare Refactor complete. Evidence remains
-parity with extracted legacy logic, using synthetic fixtures and temporary EF
-InMemory, not original Windows/Oracle or PostgreSQL verification.
+The preceding sections record the verification task and its historical reruns.
+The final documentation task is now assessed in `limitations-and-completion.md`,
+with independent evidence inspection in `evidence/completion-assessment.json`.
+The external plan remains unchanged and its final checkbox unchecked; no stage
+approval is asserted. Evidence remains parity with extracted legacy logic,
+using synthetic fixtures and temporary EF InMemory, not original Windows/Oracle
+or PostgreSQL verification.
