@@ -18,8 +18,10 @@ The interface uses vendored official NHSW assets; see `nhsw-provenance.md`.
 Fresh three-way parity passes all 40 approved scenarios on each implementation,
 with zero failures/skips and exact observations; see `parity-report.md`. Reproduce
 with `refactor/run-approved-scenarios` (evidence in `evidence/parity/`).
-**Refactor is not complete:** the remaining configured style/persistence/browser
-gate and final completion assessment remain pending. No task checkbox was changed.
+Build/configured style/persistence/current-browser verification now has positive
+executed evidence: see `verification.md` and reproduce with `refactor/verify-gate`.
+**Refactor is not declared complete:** final limitations documentation and
+completion assessment remain pending. No task checkbox was changed.
 
 ## Reproduce full-flow smoke/regression evidence
 

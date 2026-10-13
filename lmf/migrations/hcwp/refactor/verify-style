@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+# Format modern authored C#; keep extracted compatibility/rule/adapter text inspectable.
+dotnet format whitespace refactor/src/Hcwp.csproj --no-restore --verify-no-changes --include refactor/src/Application refactor/src/Presentation refactor/src/Persistence/DemoData.cs refactor/src/Persistence/RecordingContext.cs refactor/src/Program.cs --verbosity diagnostic
+dotnet format whitespace refactor/checks/Checks.csproj --no-restore --verify-no-changes --include refactor/checks/ArchitectureChecks.cs refactor/checks/FlowChecks.cs refactor/checks/Program.cs --verbosity diagnostic
+for file in refactor/browser/*.mjs; do node --check "$file"; done
+for file in refactor/verify-architecture refactor/verify-flow refactor/verify-nhsw refactor/verify-preview refactor/verify-style; do bash -n "$file"; done
+python3 - <<'PY'
+import ast
+from pathlib import Path
+for file in [Path('refactor/run-approved-scenarios'), Path('refactor/verify-gate'), *Path('refactor').glob('*.py')]:
+    ast.parse(file.read_text(), filename=str(file))
+PY
+printf '%s\n' '117106cd1129ddfc0dae636d123d9123583c8f3970ebad63e2295d63bb502d99  refactor/src/wwwroot/vendor/nhsw/nhsw.min.css' '0a657e4e9df62b5286ded60d036205904cc1ab1194f2e812f873848267fc114a  refactor/src/wwwroot/vendor/nhsw/LICENSE' | sha256sum --check
+printf '%s\n' 'Configured style checks passed (no skips).'

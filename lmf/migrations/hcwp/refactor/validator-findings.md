@@ -1,8 +1,34 @@
 # Validator findings
 
+## Verification rerun (current invocation)
+
+No validator findings were supplied after the heading. Reran the next unfinished
+build/style/persistence/browser task without changing the plan. Independent
+post-run checksum inspection found a stale hash for `evidence/gate-run.log`:
+the gate inventoried its caller's still-open stdout before printing its report.
+Retained the finding in `evidence/gate-transcript-checksum-failure.json` and
+excluded only that active transcript from the inventory. Completed check logs
+and browser artifacts remain hashed; no behaviour or approved assertion changed.
+Fresh execution and inventory verification are recorded in `verification.md`.
+
+## Build/style/persistence/browser verification task
+
+No validator findings were supplied after the heading in this invocation.
+Executed the next unfinished task without marking it done. Added the configured
+`verify-style` and fail-fast `verify-gate` runners; repaired three encountered
+runner defects with retained failure evidence (see `verification.md`). Final
+executed gate passes build with zero warnings/errors, configured style checks,
+four model checks, four fresh-context persistence checks, six current-interface
+real Chromium groups and fresh 40/40 parity on all three implementations, with
+zero failures/skips. Expanded current-interface checks cover all labels, normal
+responsive/contrast states, explicit Reload and existing keyboard/error/warning/
+confirmation presentation. No business rule or approved scenario changed.
+`evidence/gate-results.json` retains the executed command results and identities.
+Final limitations/completion assessment remains a separate unfinished task.
+
 ## Fresh three-way parity task
 
-Re-executed `refactor/run-approved-scenarios` for this invocation; exit 0,
+Re-executed `refactor/run-approved-scenarios` for the preceding parity invocation; exit 0,
 finished UTC `2026-10-13T13:54:17.855042+00:00`. Refreshed the parity report
 and all three execution reports. Independently verified every retained evidence
 checksum in `evidence/parity/comparison.json` after execution. No new defect

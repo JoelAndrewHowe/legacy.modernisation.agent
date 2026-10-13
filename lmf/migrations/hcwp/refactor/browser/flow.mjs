@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const evidence = `${root}evidence/full-flow-browser`;
 const url = 'http://127.0.0.1:5189';
-const report = { startedAt: new Date().toISOString(), scope: 'Full-flow implementation smoke, not complete Refactor gate', checks: [], failed: 0, skipped: 0, browserExecuted: false };
+const report = { startedAt: new Date().toISOString(), scope: 'Current full-flow browser gate; bounded synthetic KD03, not full accessibility certification', checks: [], failed: 0, skipped: 0, browserExecuted: false };
 let server, browser, log = '';
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function check(name, action) { await action(); report.checks.push({ name, status: 'passed' }); }
@@ -50,6 +50,30 @@ try {
     assert.ok(await control.evaluate(el => el.classList.contains('nhsw-is-invalid') && el.parentElement.classList.contains('nhsw-form-group--error')));
     assert.ok(await page.locator(`#${id}-error`).innerText());
   };
+  await check('current NHSW assets, all labels, responsive baseline and keyboard focus', async () => {
+    const css = await page.request.get(`${url}/vendor/nhsw/nhsw.min.css`);
+    assert.equal(css.status(), 200);
+    assert.match(await css.text(), /\.nhsw-button/);
+    assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll('link[rel="stylesheet"], script[src]')].filter(el => new URL(el.href || el.src).origin !== location.origin).map(el => el.outerHTML)), []);
+    const controls = page.locator('form input, form select');
+    assert.ok(await controls.count() > 20, 'Complete common/contact-specific form required');
+    for (const control of await controls.all()) {
+      assert.ok(await control.evaluate(el => el.labels.length === 1 && el.labels[0].textContent.trim().length > 0), 'Visible associated label required');
+      assert.ok(await control.evaluate(el => el.classList.contains(el.tagName === 'SELECT' ? 'nhsw-select' : 'nhsw-input')));
+    }
+    await inspectState('baseline', 'main h1, main h2, main p, main label, main legend, main input, main select, main button');
+    await page.locator('#contact-date').focus();
+    await page.keyboard.press('Tab');
+    assert.ok(await page.evaluate(() => document.activeElement.matches('form input, form select')));
+    const focused = await page.evaluate(() => {
+      const el = document.activeElement; const s = getComputedStyle(el);
+      return { id: el.id, outline: s.outlineStyle, width: s.outlineWidth, shadow: s.boxShadow };
+    });
+    assert.ok((focused.outline !== 'none' && focused.width !== '0px') || focused.shadow !== 'none');
+    report.keyboardFocus = focused;
+    await measureContrast(page, report, 'baseline keyboard focus', `#${focused.id}`, true);
+    await page.locator('h1').click();
+  });
   await check('no-results rejection with focused summary and field link', async () => {
     await save(); await page.getByRole('heading', { name: 'Result not saved' }).waitFor();
     assert.match(await page.locator('.nhsw-error-summary').innerText(), /NoResultsEnteredMessage/);
@@ -86,6 +110,11 @@ try {
     assert.equal(values['Patient ID'], '101'); assert.equal(values.Date, '2025-02-19');
     for (const key of ['Heart', 'Hips', 'Eyes', 'Testes', 'PhysicalGeneral']) assert.equal(values[key], '1');
     assert.equal(values.Height, '60'); assert.equal(values.Weight, '6'); assert.equal(values.HeadCircumference, '40');
+    await page.getByRole('button', { name: 'Reload from persistence' }).click();
+    assert.deepEqual(await page.locator('main dl').evaluate(el => Object.fromEntries([...el.querySelectorAll('dt')].map(dt => [dt.textContent, dt.nextElementSibling.textContent]))), values);
+    await page.locator('h1').click(); // Inspect normal saved state without retained Reload focus.
+    // Disabled Save is inactive (AA contrast exemption); do not treat its opacity as flat colour.
+    await inspectState('saved', 'main dt, main dd, main button:not(:disabled), main p');
     await page.screenshot({ path: `${evidence}/saved.png`, fullPage: true });
   });
   await check('repeat confirmation declines then accepts with age warning', async () => {
