@@ -1,0 +1,12 @@
+digraph characterise {
+  start -> planner
+  planner -> doer [label="not complete"]
+  planner -> finish [label="complete"]
+  doer -> source-fidelity
+  source-fidelity -> doer [label="not satisfied"]
+  source-fidelity -> dependency-scope [label="satisfied"]
+  dependency-scope -> doer [label="not satisfied"]
+  dependency-scope -> reference-evidence [label="satisfied"]
+  reference-evidence -> doer [label="not satisfied"]
+  reference-evidence -> planner [label="satisfied"]
+}
