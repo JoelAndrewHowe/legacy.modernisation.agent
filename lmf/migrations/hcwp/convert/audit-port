@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+"""Check literal-port provenance without running or changing the reference."""
+import hashlib
+import json
+from pathlib import Path
+
+root = Path(__file__).resolve().parent.parent
+sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
+inventory = root / 'characterise/review-files.sha256'
+revision = sha(inventory)
+approval = (root / 'approvals/characterise-approved.md').read_text()
+assert 'State: approved for progression to Convert' in approval
+assert f'`{revision}`' in approval, 'Stale approval; operator review required'
+for line in inventory.read_text().splitlines():
+    digest, name = line.split('  ', 1)
+    assert sha(root / name) == digest, f'Changed approved file: {name}'
+provenance = json.loads((root / 'convert/source-provenance.json').read_text())
+assert provenance['approvedRevision'] == revision
+recorded = set()
+changed = []
+for entry in provenance['files']:
+    target = root / entry['convertedPath']
+    source = root / entry['approvedSourcePath']
+    assert sha(source) == entry['approvedSourceSha256'], str(source)
+    assert sha(target) == entry['convertedSha256'], str(target)
+    identical = target.read_bytes() == source.read_bytes()
+    assert identical == entry['identical'], str(target)
+    recorded.add(target.resolve())
+    if not identical:
+        changed.append(entry['convertedPath'])
+actual = {p.resolve() for p in (root / 'convert/src').rglob('*')
+          if p.is_file() and not {'bin', 'obj'}.intersection(p.relative_to(root / 'convert/src').parts)}
+assert actual == recorded, 'Missing or extra source-provenance entries'
+assert changed == ['convert/src/Program.cs'], changed
+project = (root / 'convert/src/Converted.csproj').read_text()
+assert '<TargetFramework>net10.0</TargetFramework>' in project
+for dependency in ('ProjectReference', 'PackageReference', 'HintPath', '<Reference ', '<Compile '):
+    assert dependency not in project, f'Unexpected dependency: {dependency}'
+print(json.dumps({'approvedRevision': revision, 'provenanceFilesChecked': len(recorded),
+                  'changedFiles': changed, 'scenarioExecutions': 0}))
