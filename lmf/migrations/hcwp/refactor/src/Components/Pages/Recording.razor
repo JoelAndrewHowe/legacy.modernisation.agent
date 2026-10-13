@@ -1,0 +1,51 @@
+@page "/"
+@inject RecordingPageModel Model
+<PageTitle>Synthetic KD03 recording</PageTitle>
+<main>
+    <h1>6–8-week contact (KD03)</h1>
+    <p>Architecture preview only. Synthetic patient 101, born 1 January 2025.</p>
+    <p>Fixed demonstration clock: 15 March 2025. Temporary in-memory data; not clinical policy.</p>
+    @if (Model.Error != null)
+    {
+        <section role="alert" aria-labelledby="error-title">
+            <h2 id="error-title">Result not saved</h2>
+            <p>@Model.Error</p>
+        </section>
+    }
+    <EditForm Model="Model" OnSubmit="Model.Save" FormName="kd03">
+        <div>
+            <label for="contact-date">Contact date</label>
+            <InputDate id="contact-date" @bind-Value="Model.Date" />
+        </div>
+        <div>
+            <label for="heart">Heart assessment</label>
+            <InputSelect id="heart" @bind-Value="Model.Heart">
+                <option value="">Not recorded</option>
+                <option value="1">Satisfactory</option>
+                <option value="2">Concern</option>
+                <option value="3">Not assessed</option>
+            </InputSelect>
+        </div>
+        <button type="submit">Save KD03 result</button>
+    </EditForm>
+    <h2>Saved results for patient 101</h2>
+    <button type="button" @onclick="Model.Reload">Reload from persistence</button>
+    @if (Model.Results.Count == 0)
+    {
+        <p>No saved KD03 results.</p>
+    }
+    @foreach (var result in Model.Results)
+    {
+        <dl>
+            <dt>Result ID</dt><dd>@result.PkChildExaminationId</dd>
+            <dt>Patient ID</dt><dd>@result.ClientId</dd>
+            <dt>Date</dt><dd>@result.ExaminationDate.ToString("yyyy-MM-dd")</dd>
+            <dt>Heart</dt><dd>@result.Heart</dd>
+            <dt>Repeat</dt><dd>@result.IsRepeat</dd>
+        </dl>
+    }
+    <p>Other contacts, search, editing, appointments and recalls are not supported.</p>
+</main>
+@code {
+    protected override void OnInitialized() => Model.Reload();
+}

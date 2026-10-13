@@ -1,0 +1,37 @@
+// Extracted bundle file 15; see extract.py and README.md.
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+namespace Orvex.TransferObjects
+{
+    [DataContract]
+    public class KdpExaminationTO: AbstractTO
+    {
+        public override Array getEnumValues()
+        {
+            return null;
+        }
+
+        [DataMember]
+        public List<KdpExaminationResultTO>  HcpExaminationResultToList
+        {
+            get; set;
+        }
+
+        [DataMember]
+        public bool HasPreschoolConsent { get; set; }
+
+        [DataMember]
+        public string Gender { get; set; }
+
+        [DataMember]
+        public DateTime DateOfBirth { get; set; }
+
+        [DataMember]
+        public DateTime? DateOfDeath { get; set; }
+
+        [DataMember]
+        public List<ChildExaminationGivenSubTO> OutstandingAppointmentsList { get; set; }
+    }
+}

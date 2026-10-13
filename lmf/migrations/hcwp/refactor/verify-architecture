@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+here="$(cd -- "$(dirname -- "$0")" && pwd)"
+cd "$here/.."
+python3 refactor/check-prerequisites.py > refactor/evidence/prerequisites.json
+dotnet build refactor/checks/Checks.csproj > refactor/evidence/build.log 2>&1
+dotnet refactor/checks/bin/Debug/net10.0/Checks.dll characterise refactor/evidence > refactor/evidence/architecture-scenarios.jsonl
+dotnet refactor/checks/bin/Debug/net10.0/Checks.dll --persistence refactor/src/demo-fixtures.json > refactor/evidence/persistence.json
+python3 refactor/compare-architecture.py

@@ -1,0 +1,91 @@
+{
+  "startedAt": "2026-10-13T10:08:48.155Z",
+  "url": "http://127.0.0.1:5187/",
+  "browserExecuted": true,
+  "scope": "Architecture preview Save and fresh-context Reload only; not the Refactor gate",
+  "checks": [
+    {
+      "name": "Save via interactive circuit",
+      "status": "passed",
+      "saved": [
+        {
+          "Result ID": "9001",
+          "Patient ID": "101",
+          "Date": "2025-02-20",
+          "Heart": "1",
+          "Repeat": "False"
+        }
+      ],
+      "circuit": {
+        "url": "ws://127.0.0.1:5187/_blazor?id=0ZI7cqeAvSxtNkbi5QTGkA",
+        "sent": 16,
+        "received": 18
+      }
+    },
+    {
+      "name": "Reload ignores unsaved draft changes",
+      "status": "passed",
+      "saved": [
+        {
+          "Result ID": "9001",
+          "Patient ID": "101",
+          "Date": "2025-02-20",
+          "Heart": "1",
+          "Repeat": "False"
+        }
+      ],
+      "circuit": {
+        "url": "ws://127.0.0.1:5187/_blazor?id=0ZI7cqeAvSxtNkbi5QTGkA",
+        "sent": 22,
+        "received": 22
+      }
+    },
+    {
+      "name": "New browser context/circuit reload retains saved patient values",
+      "status": "passed",
+      "saved": [
+        {
+          "Result ID": "9001",
+          "Patient ID": "101",
+          "Date": "2025-02-20",
+          "Heart": "1",
+          "Repeat": "False"
+        }
+      ],
+      "circuit": {
+        "url": "ws://127.0.0.1:5187/_blazor?id=GFXBrJqVMR7kvQhdUYA60w",
+        "sent": 10,
+        "received": 9
+      }
+    }
+  ],
+  "failed": 0,
+  "skipped": 0,
+  "errors": [],
+  "browser": {
+    "name": "Chromium",
+    "version": "156.0.8078.4",
+    "playwright": "1.64.0"
+  },
+  "finishedAt": "2026-10-13T10:08:53.618Z",
+  "passed": 3,
+  "artifacts": {
+    "01-initial.png": "27e661441b7769448c7bc21d328ed14dd6d0918ccab362f265b87c512878c860",
+    "01-initial.html": "8a2b745396bc4e91e6f746959eb641a40cb6282f179970b62e86ac38141595a4",
+    "02-saved.png": "eca5ade34fb1b88474e67695fd86210d96de1418f1d5821104df37edffb45f9e",
+    "02-saved.html": "3dde126df0f3bd9ccae8816e5c41efdfb42c6166c5568f7476d76e6e658dbcb0",
+    "03-reloaded-with-unsaved-edits.png": "cdaca3ac687730f0e8401200677ef2421dddd00d93a491e2739cc57b3aefb6b0",
+    "03-reloaded-with-unsaved-edits.html": "3dde126df0f3bd9ccae8816e5c41efdfb42c6166c5568f7476d76e6e658dbcb0",
+    "save-reload-trace.zip": "2061d61782d0725c5a81d8869db8ff0df2f370a8416d8d4784377450f5a21c12",
+    "04-fresh-circuit-reloaded.png": "ce569bbb826bb95ae539fbd0e2289e2f4ec2481eb04cf2173cb020c7ecb0c056",
+    "04-fresh-circuit-reloaded.html": "badbe087a383e8cb0cfb89ca4ec67e80842c77c8aafe76a82200f469672ae277",
+    "fresh-circuit-trace.zip": "c49ee93e232bf2eceb858b98a64f3f6e67fa4195792decb06bd6857c787620ed"
+  },
+  "sourceHashes": {
+    "src/Components/Pages/Recording.razor": "1aa73f7dd891701bf877726b4969bd9e7f90862c3fbc6c2a2beb161600e26419",
+    "src/Presentation/RecordingPageModel.cs": "665edf0a401627806c7871b24c5d686b19d6861922a26a060ae2dd21b5849bff",
+    "src/Application/Kd03Recording.cs": "0b4019f9c429b70b2d98c46dd12c626c8644dfa7bd90d31b9955203557fac4e3",
+    "src/Persistence/RecordingContext.cs": "23b8f4788039c1454986928a2d03ad9174c62472b15949ba9380655309ce3ea2",
+    "browser/preview.mjs": "e39baa08e5bbd01a25077d93de26b5bb56c8b4ab6c315469cbd44fa59bfc731c"
+  }
+}

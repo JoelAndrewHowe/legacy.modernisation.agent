@@ -1,0 +1,29 @@
+// Extracted bundle file 70; see extract.py and README.md.
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Orvex.Model
+{
+    public class ChildExamination
+    {
+        public ChildExamination()
+        {
+            ChildMeasurement = new List<ChildMeasurement>();
+        }
+
+        public long PkChildExaminationId { get; set; }
+        public long ClientId { get; set; }
+        public string Sector { get; set; }
+        public string FkExaminationId { get; set; }
+        public string FkAgencyReferredFromId { get; set; }
+        public byte? Origin { get; set; }
+        public string IsRepeat { get; set; }
+        public string RecordStatus { get; set; }
+        public virtual ICollection<ChildMeasurement> ChildMeasurement { get; set; }
+        public virtual ChildGeneral ChildGeneral { get; set; }
+        public virtual ChildExaminationGiven ChildExaminationGiven { get; set; }
+        public virtual ICollection<HlxAppointment> HlxAppointment { get; set; }
+        public virtual ExaminationDescriptions ExaminationDescriptions { get; set; }
+    }
+}

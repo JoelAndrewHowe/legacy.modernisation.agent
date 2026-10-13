@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+here="$(cd -- "$(dirname -- "$0")" && pwd)"
+# Restore/install failures are fatal; no mocked or skipped browser fallback.
+python3 "$here/check-prerequisites.py" > "$here/evidence/prerequisites.json"
+dotnet build "$here/src/Hcwp.csproj" > "$here/evidence/browser-build.log" 2>&1
+npm ci --prefix "$here/browser"
+npm test --prefix "$here/browser"

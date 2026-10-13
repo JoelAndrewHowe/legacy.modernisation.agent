@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "evidenceClaim": "Inputs only; future evidence is parity with extracted legacy logic, not the original Windows/Oracle system.",
+  "source": {
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2"
+  },
+  "sourceReferences": {
+    "parent": "Orvex.ViewModels/KdpExaminationDelegate.cs: GetKdpResults, AddNewKdpResult, Save (bundle file 5)",
+    "result": "Orvex.ViewModels/KdpExaminationResultDelegate.cs: setters, ClearDataFromHiddenFields, ValidateAndSetExamCode, ValidateExaminationDate, ValidateHeight, ValidateWeight, ValidateHeadCircumference, ValidateLocationCode, ValidateExaminerCode, CheckDeviations, CheckAgeWithinScheduleRange, CheckBmi (bundle file 6)",
+    "validator": "Orvex.Contracts/HLX.BusinessTier/Common/Validator/BusinessValidator/Examinations/KdpExaminationValidator.cs: ValidateOnSave, NoResults, field validators (bundle file 27)",
+    "choices": "Orvex.Contracts/HLX.BusinessTier/Common/Util/LookupsUtility.cs: PhysicalAssessment6To8Weeks, YesNo, YesNoUnknown, ExaminationOrigin, EvidenceOfXgm, DomesticViolenceConcern, CoreComponentOffered (bundle file 24)",
+    "dates": "Orvex.Contracts/HLX.BusinessTier/Common/Util/DateCalculation.cs: DaysBetween, WeeksBetween (bundle file 23)",
+    "measurements": "Orvex.Business/Services/Business/ChildMeasurementsService.cs: CalculateBmi, GetExpectedRanges, GetPrescribedRanges (bundle file 42)",
+    "repeat": "Orvex.Business/Services/Business/Examinations/ExaminationsCrudManager.cs: UpdateRepeatFlags (bundle file 43)",
+    "service": "Orvex.Business/Services/Business/Examinations/KdpExaminationService.cs: SaveKdpExaminationResult, InsertKdpExaminationResult, GetKdpResultTo, GetKdpExaminationResult, ConfigureMappings, GetAgeRangeFromExamSchedule (bundle file 44)",
+    "lookups": "Orvex.Business/Services/Business/Lookups/LookupService.cs: lookup queries (bundle file 46)",
+    "reasonSeed": "EXAM_NOT_EXAMINED_REASON.sql (bundle file 92)",
+    "locationSeed": "KDP_LOCATION_TYPES.sql (bundle file 93)",
+    "scope": "lmf/iterations/001-characterise-and-migrate-hcwp.md: agreed functional scope, repeat-flag decision, acceptance examples 4, 5, 9, 10"
+  },
+  "provenance": {
+    "patients": "Invented synthetic IDs, dates, sex and consent; no production or supplied test patient reused.",
+    "histories": "Invented well-formed existing-result rows to exercise source-backed duplicate/repeat algorithms. Historical equal-date ties bypass insertion validation intentionally.",
+    "drafts": "Invented demonstration inputs; field names/defaults derived from parent/result/TO and choices; no clinical accuracy asserted.",
+    "clockAndSequences": "Invented deterministic compatibility substitutions for DateTime.Now/Today and Oracle sequences, reset per scenario.",
+    "operationalLookups": "Invented descriptions, category/HCP/location rows. Category 18 is a source-offered category; GP Surgery type 5 is supplied SQL seed. Staff type SYN and HCP/location codes are invented.",
+    "environments": "Invented BMI limits, centile bands and active schedule ages for determinate warning examples, not clinical recommendations. Preserve raw band Upper/Lower aggregation semantics.",
+    "choices": "Physical, yes/no, unknown, origin, evidence, domestic violence and core values are source-backed utility dictionaries; reasons/location types are supplied SQL seeds, not invented rules."
+  },
+  "clock": {"now": "2025-03-15T12:00:00", "today": "2025-03-15"},
+  "sequences": {"examinationNext": 9001, "measurementNext": 8001},
+  "outstandingAppointments": [],
+  "patients": {
+    "selected": {"ClientId": 101, "DateOfBirth": "2025-01-01T00:00:00", "DateOfDeath": null, "Gender": "M", "HasPreschoolConsent": true},
+    "other": {"ClientId": 202, "DateOfBirth": "2025-01-01T00:00:00", "DateOfDeath": null, "Gender": "F", "HasPreschoolConsent": true},
+    "noConsent": {"ClientId": 303, "DateOfBirth": "2025-01-01T00:00:00", "DateOfDeath": null, "Gender": "F", "HasPreschoolConsent": false},
+    "deceased": {"ClientId": 404, "DateOfBirth": "2025-01-01T00:00:00", "DateOfDeath": "2025-02-20T10:00:00", "Gender": "M", "HasPreschoolConsent": true}
+  },
+  "choices": {
+    "physical": {"1 - Satisfactory": 1, "2 - Concern": 2, "3 - Not assessed": 3, "": null},
+    "yesNo": {"Yes": "Y", "No": "N", "": null},
+    "yesNoUnknown": {"Yes": "Y", "No": "N", "Not Known": "U", "": null},
+    "origin": {"Scheduled": 1, "Unscheduled": 2, "Movement In": 3, "Amendment": 4, "Not Known": 5},
+    "evidence": {"1 - XGM observed": 1, "2 - XGM disclosed": 2, "3 - XGM not present": 3, "4 - Not examined": 4, "": null},
+    "domesticViolence": {"1 - Domestic violence assessment completed": 1, "2 - Domestic violence assessment not completed": 2, "": null},
+    "core": {"1 - Universal": 1, "2 - Enhanced": 2, "3 - Enhanced Plus": 3, "4 - Intensive": 4, "5 - Intensive Plus": 5},
+    "reasons": {"1": "Was not brought", "2": "Unwell or uncooperative child", "3": "Examination refused", "4": "Parent / Carer not present", "5": "Not required"},
+    "locationTypes": {"5": "GP Surgery", "2": "Clinic", "1": "School", "17": "At Home", "6": "Hospital", "18": "Telephone Contact", "22": "Virtual"}
+  },
+  "operationalLookups": {
+    "examinations": [{"Code": "KD03", "Description": "Synthetic KD03 6–8-week contact", "ExamType": 10}, {"Code": "KD04", "Description": "Synthetic sentinel contact; not offered", "ExamType": 10}],
+    "examinerCategories": [{"Code": "18", "Description": "Synthetic examiner category"}],
+    "examiners": [{"Code": "SYN001", "Description": "Synthetic examiner A", "Name1": "Synthetic examiner", "Name2": "A", "Category": "18", "Type": "SYN", "UsedCode": "Y"}, {"Code": "SYN002", "Description": "Synthetic unused examiner", "Name1": "Synthetic unused", "Name2": "examiner", "Category": "18", "Type": "SYN", "UsedCode": "N"}],
+    "locations": [{"Code": "SYNLOC", "Description": "Synthetic surgery", "Name": "Synthetic surgery", "LocationType": 5}]
+  },
+  "environments": {
+    "standard": {
+      "schedule": [{"ExaminationCode": "KD03", "MinimumAgeWks": 6, "MaximumAgeWks": 8, "ActiveFrom": "2020-01-01T00:00:00", "ActiveTo": "2030-01-01T00:00:00"}],
+      "bmiOptions": {"LBmiIndex": 10, "HBmiIndex": 20},
+      "centileBands": [
+        {"Age": 49, "Gender": "M", "MeasurementType": "Height", "Upper": 40, "Lower": 55},
+        {"Age": 49, "Gender": "M", "MeasurementType": "Height", "Upper": 45, "Lower": 70},
+        {"Age": 49, "Gender": "M", "MeasurementType": "Weight", "Upper": 2, "Lower": 4},
+        {"Age": 49, "Gender": "M", "MeasurementType": "Weight", "Upper": 3, "Lower": 8}
+      ]
+    },
+    "noSchedule": {"schedule": [], "bmiOptions": {"LBmiIndex": 10, "HBmiIndex": 20}, "centileBands": []}
+  },
+  "drafts": {
+    "unselected": {"ExaminationCode": null, "ExaminationDate": "0001-01-01T00:00:00"},
+    "emptyResult": {"ExaminationCode": "KD03", "ExaminationDate": "2025-02-19T00:00:00"},
+    "heartOnly": {"ExaminationCode": "KD03", "ExaminationDate": "2025-02-19T00:00:00", "Heart": 1},
+    "full": {
+      "ExaminationCode": "KD03", "ExaminationDate": "2025-02-19T00:00:00", "Origin": 2,
+      "Height": 60, "Weight": 5.4, "HeadCircumference": 38,
+      "HeightMeasurementDeclined": "N", "WeightMeasurementDeclined": "N", "HeadMeasurementDeclined": "N",
+      "ReasonNotExamined": null, "Reschedule": "N", "Consent": "Y", "OnwardReferralsMade": "N",
+      "ReceivingBoostSchemeService": "N", "LookedAfterChild": "U", "OnChildProtectionRegister": "N",
+      "EvidenceOfXgm": 3, "DomesticViolenceConcern": 1, "CoreComponent": 1,
+      "Heart": 1, "Hips": 2, "Eyes": 3, "Testes": 1, "PhysicalGeneral": 2,
+      "LocationType": 5, "LocationCode": "SYNLOC", "ExaminerCategory": "18", "ExaminerType": "SYN", "ExaminerHcpCode": "SYN001"
+    },
+    "notExamined": {"ExaminationCode": "KD03", "ExaminationDate": "2025-02-19T00:00:00", "ReasonNotExamined": "1", "Reschedule": "Y", "PhysicalGeneral": 3}
+  },
+  "savedProjections": {
+    "full": {
+      "PkChildExaminationId": 9001, "ChildMeasurementId": 8001, "ClientId": 101,
+      "ExaminationCode": "KD03", "OriginalExamCode": "KD03", "ExamDescription": "Synthetic KD03 6–8-week contact",
+      "ExaminationDate": "2025-02-19T00:00:00", "ResultEnteredDate": "2025-03-15T12:00:00", "Origin": 2,
+      "IsRepeat": false, "Height": 60, "Weight": 5.4, "HeadCircumference": 38,
+      "HeightMeasurementDeclined": "N", "WeightMeasurementDeclined": "N", "HeadMeasurementDeclined": "N",
+      "ReasonNotExamined": null, "Reschedule": "N", "Consent": "Y", "OnwardReferralsMade": "N",
+      "ReceivingBoostSchemeService": "N", "LookedAfterChild": "U", "OnChildProtectionRegister": "N",
+      "EvidenceOfXgm": 3, "DomesticViolenceConcern": 1, "CoreComponent": 1,
+      "Heart": 1, "Hips": 2, "Eyes": 3, "Testes": 1, "PhysicalGeneral": 2,
+      "LocationType": 5, "LocationCode": "SYNLOC", "LocationName": "Synthetic surgery",
+      "ExaminerCategory": "18", "ExaminerType": "SYN", "ExaminerHcpCode": "SYN001", "ExaminerName": "Synthetic examiner A"
+    },
+    "heartOnly": {
+      "PkChildExaminationId": 9001, "ChildMeasurementId": 0, "ClientId": 101,
+      "ExaminationCode": "KD03", "OriginalExamCode": "KD03", "ExaminationDate": "2025-02-19T00:00:00",
+      "ResultEnteredDate": "2025-03-15T12:00:00", "Origin": 2, "IsRepeat": false,
+      "Heart": 1, "Hips": null, "Eyes": null, "Testes": null, "PhysicalGeneral": null,
+      "Height": null, "Weight": null, "HeadCircumference": null, "Consent": null, "CoreComponent": null,
+      "Reschedule": "N", "ReasonNotExamined": null,
+      "HeightMeasurementDeclined": "N", "WeightMeasurementDeclined": "N", "HeadMeasurementDeclined": "N"
+    },
+    "notExamined": {
+      "PkChildExaminationId": 9001, "ChildMeasurementId": 0, "ClientId": 101,
+      "ExaminationCode": "KD03", "OriginalExamCode": "KD03", "ExaminationDate": "2025-02-19T00:00:00",
+      "ResultEnteredDate": "2025-03-15T12:00:00", "Origin": 2, "IsRepeat": false,
+      "ReasonNotExamined": "1", "Reschedule": "Y", "PhysicalGeneral": 3,
+      "Heart": null, "Hips": null, "Eyes": null, "Testes": null,
+      "Height": null, "Weight": null, "HeadCircumference": null
+    }
+  },
+  "histories": {
+    "empty": [],
+    "oneEarlier": [
+      {"PkChildExaminationId": 1101, "ClientId": 101, "ExaminationCode": "KD03", "ExaminationDate": "2025-02-12T09:00:00", "IsRepeat": "N", "Heart": 1},
+      {"PkChildExaminationId": 2201, "ClientId": 202, "ExaminationCode": "KD03", "ExaminationDate": "2025-02-01T09:00:00", "IsRepeat": "Y", "Heart": 1}
+    ],
+    "oneLater": [
+      {"PkChildExaminationId": 1101, "ClientId": 101, "ExaminationCode": "KD03", "ExaminationDate": "2025-02-26T09:00:00", "IsRepeat": "N", "Heart": 1},
+      {"PkChildExaminationId": 2201, "ClientId": 202, "ExaminationCode": "KD03", "ExaminationDate": "2025-02-01T09:00:00", "IsRepeat": "Y", "Heart": 1}
+    ],
+    "sameDay": [{"PkChildExaminationId": 1101, "ClientId": 101, "ExaminationCode": "KD03", "ExaminationDate": "2025-02-19T09:00:00", "IsRepeat": "N", "Heart": 1}],
+    "orderingAndGrouping": [
+      {"PkChildExaminationId": 1103, "ClientId": 101, "ExaminationCode": "KD03", "ExaminationDate": "2025-02-26T09:00:00", "IsRepeat": "N", "Heart": 1},
+      {"PkChildExaminationId": 1101, "ClientId": 101, "ExaminationCode": "KD03", "ExaminationDate": "2025-02-12T09:00:00", "IsRepeat": "Y", "Heart": 1},
+      {"PkChildExaminationId": 1102, "ClientId": 101, "ExaminationCode": "KD03", "ExaminationDate": "2025-02-19T09:00:00", "IsRepeat": "N", "Heart": 1},
+      {"PkChildExaminationId": 1190, "ClientId": 101, "ExaminationCode": "KD04", "ExaminationDate": "2025-02-01T09:00:00", "IsRepeat": "N", "Heart": 1},
+      {"PkChildExaminationId": 2201, "ClientId": 202, "ExaminationCode": "KD03", "ExaminationDate": "2025-02-01T09:00:00", "IsRepeat": "Y", "Heart": 1}
+    ],
+    "ties": [
+      {"PkChildExaminationId": 1101, "ClientId": 101, "ExaminationCode": "KD03", "ExaminationDate": "2025-02-12T09:00:00", "IsRepeat": "Y", "Heart": 1},
+      {"PkChildExaminationId": 1102, "ClientId": 101, "ExaminationCode": "KD03", "ExaminationDate": "2025-02-12T09:00:00", "IsRepeat": "Y", "Heart": 1},
+      {"PkChildExaminationId": 1103, "ClientId": 101, "ExaminationCode": "KD03", "ExaminationDate": "2025-02-19T09:00:00", "IsRepeat": "N", "Heart": 1}
+    ]
+  },
+  "observationDefaults": {
+    "noSave": {"saved": false, "newRows": {"examination": 0, "given": 0, "kdp": 0, "measurement": 0}, "storeUnchanged": true},
+    "savedNoMeasurement": {"saved": true, "newRows": {"examination": 1, "given": 1, "kdp": 1, "measurement": 0}},
+    "savedWithMeasurement": {"saved": true, "newRows": {"examination": 1, "given": 1, "kdp": 1, "measurement": 1}}
+  }
+}
