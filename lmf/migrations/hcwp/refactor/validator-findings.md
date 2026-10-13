@@ -1,5 +1,30 @@
 # Validator findings
 
+## Fresh three-way parity task
+
+Re-executed `refactor/run-approved-scenarios` for this invocation; exit 0,
+finished UTC `2026-10-13T13:54:17.855042+00:00`. Refreshed the parity report
+and all three execution reports. Independently verified every retained evidence
+checksum in `evidence/parity/comparison.json` after execution. No new defect
+was found and no implementation or approved expectation required alteration.
+
+No new validator findings were supplied after the findings heading in this
+request. Executed the next unfinished plan task without changing its checkbox:
+`refactor/run-approved-scenarios` freshly built and ran reference, conversion
+and refactor against every approved KD03 scenario. Each passed 40/40 with zero
+failures/skips; all 40 full observations match each other and the approved
+baseline. Historical V01's distinct inner/outer prompts, actual parent
+notification and unchanged no-save storage passed on all three fresh runs for
+its 11 affected IDs. No behavioural repair or scenario weakening was needed.
+
+`parity-report.md` and `evidence/parity/` retain per-scenario observations,
+stdout, build logs, before/after approval checks, implementation hashes and
+comparison evidence. All writes stayed under `refactor/`, using byte-identical
+disposable upstream copies rather than modifying the reviewed packet. No human
+approval was created. The remaining configured style/persistence/browser gate
+and final completion assessment are not claimed by this task. Earlier pending
+parity statements below describe historical task states, not current evidence.
+
 ## Full-flow validator repairs
 
 Supplied findings:

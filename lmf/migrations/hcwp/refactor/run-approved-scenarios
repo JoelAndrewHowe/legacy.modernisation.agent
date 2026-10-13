@@ -1,0 +1,234 @@
+#!/usr/bin/env python3
+"""Fresh three-way parity; all generated files remain in Refactor."""
+import datetime
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import subprocess
+
+here = Path(__file__).resolve().parent
+root = here.parent
+evidence = here / 'evidence/parity'
+evidence.mkdir(parents=True, exist_ok=True)
+started = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def load(path):
+    return json.loads(path.read_text())
+
+
+def manifest(base):
+    return {str(p.relative_to(base)): sha(p) for p in sorted(base.rglob('*'))
+            if p.is_file() and not {'bin', 'obj', 'evidence', '__pycache__', 'node_modules'}
+            .intersection(p.relative_to(base).parts)}
+
+
+def run(command, log):
+    with (evidence / log).open('w') as output:
+        subprocess.run([str(x) for x in command], cwd=root, stdout=output,
+                       stderr=subprocess.STDOUT, check=True)
+
+
+# Verify current approval and accepted Convert evidence before any execution.
+run(['python3', here / 'check-prerequisites.py'], 'prerequisites-before.json')
+prerequisites = load(evidence / 'prerequisites-before.json')
+run(['dotnet', '--info'], 'dotnet-info.log')
+inputs = {name: sha(root / 'characterise' / name)
+          for name in ('fixtures.json', 'scenarios.json')}
+implementations = {'reference': manifest(root / 'characterise/reference'),
+                   'conversion': manifest(root / 'convert/src'),
+                   'refactor': {**{'src/' + k: v for k, v in manifest(here / 'src').items()},
+                                **{'checks/' + k: v for k, v in manifest(here / 'checks').items()}}}
+# Neither approved upstream runner is changed. In particular, the reference's
+# fixed evidence destination is accommodated with a byte-identical private copy.
+stage = here / '.parity-run'
+if stage.exists():
+    shutil.rmtree(stage)
+stage.mkdir()
+for name in inputs:
+    shutil.copy2(root / 'characterise' / name, stage / name)
+    assert sha(stage / name) == inputs[name]
+for source, destination, key in ((root / 'characterise/reference', stage / 'reference', 'reference'),
+                                  (root / 'convert/src', stage / 'conversion', 'conversion')):
+    shutil.copytree(source, destination, ignore=shutil.ignore_patterns(
+        'bin', 'obj', 'evidence', '__pycache__'))
+    assert manifest(destination) == implementations[key], f'Copy mismatch: {key}'
+
+for key, project, dll in (
+        ('reference', stage / 'reference/Reference.csproj', stage / 'reference/bin/Debug/net10.0/Reference.dll'),
+        ('conversion', stage / 'conversion/Converted.csproj', stage / 'conversion/bin/Debug/net10.0/Converted.dll'),
+        ('refactor', here / 'checks/Checks.csproj', here / 'checks/bin/Debug/net10.0/Checks.dll')):
+    run(['dotnet', 'build', project, '--nologo'], key + '-build.log')
+    build = (evidence / (key + '-build.log')).read_text()
+    assert 'Build succeeded.' in build and '0 Warning(s)' in build and '0 Error(s)' in build
+    output = evidence / key
+    output.mkdir(exist_ok=True)
+    command = ['dotnet', dll, stage if key == 'reference' else root / 'characterise']
+    if key != 'reference':
+        command.append(output)
+    run(command, key + '-suite.jsonl')
+    if key == 'reference':
+        shutil.copy2(stage / 'reference/evidence/results.json', output / 'results.json')
+
+suite = load(root / 'characterise/scenarios.json')['scenarios']
+ids = [s['id'] for s in suite]
+assert len(ids) == 40 and len(set(ids)) == 40 and all(s['required'] for s in suite)
+reports = {key: load(evidence / key / 'results.json') for key in implementations}
+reports['approved'] = load(root / 'characterise/reference/evidence/results.json')
+for key, report in reports.items():
+    assert report['mode'] == 'verify' and report['selectedScenario'] is None, key
+    assert [report[k] for k in ('total', 'passed', 'failed', 'skipped')] == [40, 40, 0, 0], key
+    assert [r['id'] for r in report['results']] == ids, key
+    assert report['sourceSha256'] == prerequisites['sha256']['../../../example-code/HCWP Core (pseudonymised) - single file.txt']
+    assert report['fixtureSha256'] == inputs['fixtures.json']
+    assert report['scenarioSha256'] == inputs['scenarios.json']
+    for result in report['results']:
+        assert result['status'] == 'passed' and result['observations'] and not result['differences'], result['id']
+    if key != 'approved':
+        lines = [json.loads(line) for line in (evidence / (key + '-suite.jsonl')).read_text().splitlines()]
+        assert lines[:-1] == report['results'], f'Incomplete stdout: {key}'
+        assert lines[-1] == dict(total=40, passed=40, failed=0, skipped=0)
+
+rows = []
+for index, scenario in enumerate(suite):
+    observations = {key: report['results'][index]['observations'] for key, report in reports.items()}
+    assert all(o == observations['approved'] for o in observations.values()), scenario['id']
+    rows.append(dict(id=scenario['id'], title=scenario['title'], reference='passed',
+                     conversion='passed', refactor='passed', exactObservationMatch=True,
+                     approvedBaselineMatch=True))
+# Recheck historical V01 at actual inner fault and parent notification layers.
+v01 = [f'KD03-{n:03}' for n in (*range(4, 12), 14, 15, 32)]
+for report in reports.values():
+    for result in report['results']:
+        if result['id'] in v01:
+            o = result['observations']
+            assert o['validatorPrompt'] == 'ValidationErrorsPrompt'
+            assert o['savePrompt'] == 'ExamResultsErrorSavingPrompt'
+            assert o['parentNotification'] == dict(type='NonFatalErrorEncountered', kind='Error',
+                title='KdpResultsTitle', prompt='ExamResultsErrorSavingPrompt')
+            assert o['storeUnchanged'] and not o['saved']
+
+assert manifest(root / 'characterise/reference') == implementations['reference']
+assert manifest(root / 'convert/src') == implementations['conversion']
+assert manifest(here / 'src') == {k[4:]: v for k, v in implementations['refactor'].items() if k.startswith('src/')}
+assert manifest(here / 'checks') == {k[7:]: v for k, v in implementations['refactor'].items() if k.startswith('checks/')}
+for name, digest in inputs.items():
+    assert sha(root / 'characterise' / name) == digest
+run(['python3', here / 'check-prerequisites.py'], 'prerequisites-after.json')
+assert load(evidence / 'prerequisites-after.json') == prerequisites
+summary = dict(total=40, passed=40, failed=0, skipped=0, omitted=[],
+               freshExecutions={'reference': 40, 'conversion': 40, 'refactor': 40},
+               exactObservationMatches=40, approvedBaselineMatches=40, v01Checked=v01,
+               newValidatorFindings=[], browserGateExecuted=False, planChanged=False)
+identity = dict(startedUtc=started, finishedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                approvedRevision=prerequisites['approvedRevision'], inputSha256=inputs,
+                sourceSha256=reports['approved']['sourceSha256'], implementationSha256=implementations,
+                runnerSha256=sha(Path(__file__).resolve()),
+                evidenceSha256={str(p.relative_to(evidence)): sha(p) for p in sorted(evidence.rglob('*'))
+                                if p.is_file() and p.name != 'comparison.json'})
+(evidence / 'comparison.json').write_text(json.dumps(dict(summary=summary, identity=identity, scenarios=rows), indent=2) + '\n')
+text = f'''# HCWP KD03 Refactor parity report
+
+## Executed result
+
+Fresh, separately compiled reference, conversion and refactor runs each pass
+**40/40 approved scenarios, zero failures, zero skips and no omitted IDs**.
+All 40 complete observation objects match each other and the approved baseline.
+This is **parity with extracted legacy logic**, not the original Windows/Oracle
+application or full save service. The external plan remains unchanged/unchecked.
+This task does not certify the remaining style, persistence and browser gate.
+
+Execution: {identity['startedUtc']} to {identity['finishedUtc']}.
+Approved revision (SHA-256 of `characterise/review-files.sha256`):
+`{identity['approvedRevision']}`.
+Source bundle SHA-256: `{identity['sourceSha256']}`.
+Fixtures SHA-256: `{inputs['fixtures.json']}`.
+Scenarios SHA-256: `{inputs['scenarios.json']}`.
+
+## Reproduction and evidence
+
+From `lmf/migrations/hcwp`, run `refactor/run-approved-scenarios`.
+Requires Python 3 and .NET SDK 10; EF Core 10.0.0 restore may need NuGet.
+`evidence/parity/dotnet-info.log` records the executed SDK/runtime environment.
+The command checks current human approval and accepted Convert evidence before
+and after execution. It makes byte-identical reference/conversion source copies
+in disposable `refactor/.parity-run/`, then builds each independently. The
+unmodified reference runs against identical copied inputs to accommodate its
+fixed output path; conversion and refactor read the approved inputs directly.
+No build or execution writes to Characterise, Convert or approvals.
+
+Executed commands (absolute paths are supplied by the runner):
+
+```sh
+python3 refactor/check-prerequisites.py
+dotnet build refactor/.parity-run/reference/Reference.csproj --nologo
+dotnet refactor/.parity-run/reference/bin/Debug/net10.0/Reference.dll refactor/.parity-run
+dotnet build refactor/.parity-run/conversion/Converted.csproj --nologo
+dotnet refactor/.parity-run/conversion/bin/Debug/net10.0/Converted.dll characterise refactor/evidence/parity/conversion
+dotnet build refactor/checks/Checks.csproj --nologo
+dotnet refactor/checks/bin/Debug/net10.0/Checks.dll characterise refactor/evidence/parity/refactor
+python3 refactor/check-prerequisites.py
+```
+
+All three builds have zero warnings/errors. Under `evidence/parity/`, each stage's
+`results.json` retains full per-scenario observations and differences, and
+`*-suite.jsonl` retains executed stdout. `*-build.log` retains build diagnostics.
+`comparison.json` identifies all tested source files, input/output checksums,
+runner checksum, execution timestamps and per-ID matches. The two prerequisite
+reports establish unchanged reviewed inputs and accepted upstream evidence.
+Exceptions, failed/empty/filtered runs, mismatches and skips fail the command;
+no expectations or adapters are altered to achieve parity.
+
+## Per-scenario observations
+
+Full observations are indexed by ID in `evidence/parity/reference/results.json`,
+`conversion/results.json` and `refactor/results.json`. Every row below denotes
+three positive executed passes and exact full-observation/approved-baseline match.
+
+| ID | Approved scenario | Reference | Conversion | Refactor | Exact / approved match |
+| --- | --- | --- | --- | --- | --- |
+'''
+for row in rows:
+    title = row['title'].replace('|', '\\|').replace('\n', ' ')
+    text += f"| {row['id']} | {title} | Pass | Pass | Pass | Yes / Yes |\n"
+text += '''
+## Comparison and findings
+
+Comparison uses parsed JSON object equality: property order/whitespace is ignored;
+arrays, scalar values and all emitted fields remain exact. Approved expected
+projections execute independently on each stage, followed by full-observation
+comparison. No new normalisation was introduced. Inherited adapters pin synthetic
+clock/IDs, deduplicate semantic BMI notification copies, exclude ephemeral locks
+and use resource keys instead of unavailable original prose; see
+`characterise/reference/README.md`. Stored values, calculations, ordered errors,
+warnings, confirmation/refusal outcomes and patient-specific repeats are retained.
+
+No new validator findings were supplied in this request. Historical V01 was
+rechecked on all three fresh runs for KD03-004–011, KD03-014–015 and KD03-032:
+inner `ValidationErrorsPrompt`, outer `ExamResultsErrorSavingPrompt`, actual
+`NonFatalErrorEncountered`/`KdpResultsTitle`, no save and unchanged storage match.
+No behavioural repair or weakening of approved scenarios was necessary.
+
+## Boundaries
+
+The suite exercises the approved explicit adapter paths, not original Windows
+control/event delivery or browser interactions. Refactor executes the real domain,
+application and EF Core InMemory persistence; the same independently inspectable
+extraction assumptions and compatibility shells still bound the evidence.
+Synthetic patients/lookups/schedules/BMI/centile data are not clinical policy.
+EF InMemory is temporary and does not prove relational constraints, transactions,
+Oracle precision/triggers/concurrency or PostgreSQL compatibility. Original
+Windows/Oracle execution and PostgreSQL verification remain absent.
+KD03 only: search, edits/deletes, other contacts, scheduled consent withdrawal,
+appointment/prefill/recall effects, database migration, Azure and production
+security/deployment are excluded. No full save-service or clinical certification
+is claimed. Remaining configured style, persistence and browser checks are
+separate unfinished plan tasks; this report does not declare Refactor complete.
+'''
+(here / 'parity-report.md').write_text(text)
+print(json.dumps(summary))
