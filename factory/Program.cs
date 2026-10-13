@@ -10,20 +10,30 @@ internal static class FactoryProgram
     public static async Task<int> RunAsync(string[] args)
     {
         var options = Options.Parse(args);
-        if (options.Target is null) return Fail("A target is required.");
-        if (options.Seed is null || !File.Exists(options.Seed)) return Fail("There is no seed.");
-
         var factory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../.."));
+        if (options.Run is null) return Fail("A run is required.");
+
+        RunConfiguration run;
+        try
+        {
+            run = RunConfiguration.Resolve(factory, options);
+        }
+        catch (MachineException error) { return Fail(error.Message); }
+        if (!File.Exists(run.Seed)) return Fail("There is no seed.");
+
+        Directory.CreateDirectory(run.Target);
         AssemblyLine line;
         try
         {
-            line = AssemblyLine.Read(Path.Combine(factory, "assembly-line.dot"), Path.Combine(factory, "machines"));
+            line = AssemblyLine.Read(
+                Path.Combine(run.Target, ".assembly-lines", $"{run.Line}.dot"),
+                Path.Combine(run.Target, ".assembly-lines", ".machines"));
         }
         catch (MachineException error) { return Fail(error.Message); }
 
-        Directory.CreateDirectory(options.Target);
-        var repository = Git.FindContainingRepository(options.Target) ?? Git.Initialize(options.Target);
-        var plan = Path.Combine(options.Target, ".factory", "plan.md");
+        run.Save();
+        var repository = Git.FindContainingRepository(run.Target) ?? Git.Initialize(run.Target);
+        var plan = Path.Combine(run.Directory, "plan.md");
         var current = line.First;
         var findings = Array.Empty<string>();
         var attempts = 0;
@@ -35,20 +45,21 @@ internal static class FactoryProgram
             if (current == "doer" && attempts == options.Attempts)
                 return Fail($"A task hit its limit of {options.Attempts} attempts.");
 
-            var configuration = MachineConfiguration.Read(Path.Combine(factory, "machines", $"{current}.json"));
-            var prompt = Prompt(current, options.Seed, plan, configuration.Lens, findings, line.FieldsFrom(current),
-                updatePlan, current == "validator" ? Git.TargetDiff(repository, options.Target) : "");
+            var configuration = MachineConfiguration.Read(Path.Combine(
+                run.Target, ".assembly-lines", ".machines", current, "config.json"));
+            var role = configuration.Role ?? current;
+            var prompt = Prompt(current, role, run.Seed, plan, configuration.Lens, findings, line.FieldsFrom(current),
+                updatePlan, role == "validator" ? Git.TargetDiff(repository, run.Target) : "");
             MachineResult result;
             try
             {
-                result = await Call(configuration.Harness ?? "pi", options.Target, current, prompt);
+                result = await Call(configuration.Harness ?? "pi", run.Target, current, prompt);
             }
             catch (MachineException error) { return Fail(error.Message); }
 
             if (current == "planner")
             {
                 if (!File.Exists(plan)) return Fail("The planner did not write a plan.");
-                Git.CommitTarget(repository, options.Target, "Factory: update plan");
                 updatePlan = false;
             }
             else if (current == "doer")
@@ -56,9 +67,9 @@ internal static class FactoryProgram
                 attempts++;
                 workWaiting = true;
             }
-            else if (current == "validator" && !result.TryStrings("findings", out findings))
+            else if (role == "validator" && !result.TryStrings("findings", out findings))
             {
-                return Fail("Could not read the validator's result.");
+                return Fail($"Could not read the {current}'s result.");
             }
 
             try
@@ -66,7 +77,7 @@ internal static class FactoryProgram
                 var next = line.Next(current, result);
                 if (next == "planner" && workWaiting)
                 {
-                    Git.CommitTarget(repository, options.Target, "Factory: completed task");
+                    Git.CommitTarget(repository, run.Target, "Factory: completed task");
                     workWaiting = false;
                     updatePlan = true;
                     attempts = 0;
@@ -81,10 +92,10 @@ internal static class FactoryProgram
         return 0;
     }
 
-    private static string Prompt(string machine, string seed, string plan, string? lens, string[] findings,
+    private static string Prompt(string machine, string role, string seed, string plan, string? lens, string[] findings,
         string[] fields, bool updatePlan, string work)
     {
-        var job = machine switch
+        var job = role switch
         {
             "planner" when updatePlan => "The current task's validated work has been committed. Mark that task done.",
             "planner" => "If no plan exists, read only the seed and create a short task list. Do no product work. Otherwise inspect your plan.",
@@ -92,7 +103,7 @@ internal static class FactoryProgram
             "validator" => $"Inspect only the current uncommitted work below. Change neither the plan nor the work. Your validation lens is {lens}.\n{work}",
             _ => "Do your configured job."
         };
-        var requested = fields.Concat(machine == "validator" ? ["findings"] : []).Distinct().ToArray();
+        var requested = fields.Concat(role == "validator" ? ["findings"] : []).Distinct().ToArray();
         var result = requested.Length == 0
             ? "End with one line of JSON describing what you did."
             : requested.Length == 1
@@ -148,7 +159,9 @@ internal sealed class AssemblyLine(List<Edge> edges)
                 match.Groups[3].Success ? match.Groups[3].Value : null));
         }
 
-        var machines = Directory.GetFiles(machinesDirectory, "*.json").Select(Path.GetFileNameWithoutExtension).ToHashSet();
+        var machines = Directory.Exists(machinesDirectory)
+            ? Directory.GetDirectories(machinesDirectory).Select(Path.GetFileName).ToHashSet()
+            : [];
         foreach (var node in edges.SelectMany(edge => new[] { edge.From, edge.To }).Distinct())
             if (node is not "start" and not "finish" && !machines.Contains(node))
                 throw new MachineException($"The factory has no machine called \"{node}\".");
@@ -192,29 +205,72 @@ internal sealed class AssemblyLine(List<Edge> edges)
 
 internal sealed record MachineConfiguration(
     [property: JsonPropertyName("harness")] string? Harness,
-    [property: JsonPropertyName("lens")] string? Lens)
+    [property: JsonPropertyName("lens")] string? Lens,
+    [property: JsonPropertyName("role")] string? Role)
 {
     public static MachineConfiguration Read(string path) =>
-        JsonSerializer.Deserialize<MachineConfiguration>(File.ReadAllText(path)) ?? new(null, null);
+        JsonSerializer.Deserialize<MachineConfiguration>(File.ReadAllText(path)) ?? new(null, null, null);
 }
 
-internal sealed record Options(string? Seed, string? Target, int Attempts)
+internal sealed record Options(string? Run, string? Seed, string? Target, string? Line, int Attempts)
 {
     public static Options Parse(string[] args)
     {
+        string? run = null;
         string? seed = null;
         string? target = null;
+        string? line = null;
         var attempts = 3;
         for (var index = 0; index < args.Length; index++)
         {
             switch (args[index])
             {
+                case "--run" when index + 1 < args.Length: run = args[++index]; break;
                 case "--seed" when index + 1 < args.Length: seed = Path.GetFullPath(args[++index]); break;
                 case "--target" when index + 1 < args.Length: target = Path.GetFullPath(args[++index]); break;
+                case "--line" when index + 1 < args.Length: line = args[++index]; break;
                 case "--attempts" when index + 1 < args.Length: attempts = int.Parse(args[++index]); break;
             }
         }
-        return new Options(seed, target, attempts);
+        return new Options(run, seed, target, line, attempts);
+    }
+}
+
+internal sealed record RunSettings(
+    [property: JsonPropertyName("target")] string Target,
+    [property: JsonPropertyName("line")] string Line,
+    [property: JsonPropertyName("seed")] string Seed);
+
+internal sealed record RunConfiguration(string Name, string Directory, string Target, string Line, string Seed)
+{
+    public static RunConfiguration Resolve(string factory, Options options)
+    {
+        var directory = Path.Combine(factory, "runs", options.Run!);
+        var path = Path.Combine(directory, "run.json");
+        if (File.Exists(path))
+        {
+            var settings = JsonSerializer.Deserialize<RunSettings>(File.ReadAllText(path))
+                ?? throw new MachineException($"Could not read the {options.Run} run.");
+            if (options.Target is not null && options.Target != settings.Target)
+                throw new MachineException($"The \"{options.Run}\" run already has a target.");
+            if (options.Line is not null && options.Line != settings.Line)
+                throw new MachineException($"The \"{options.Run}\" run already has an assembly line.");
+            if (options.Seed is not null && options.Seed != settings.Seed)
+                throw new MachineException($"The \"{options.Run}\" run already has a seed.");
+            return new(options.Run!, directory, settings.Target, settings.Line, settings.Seed);
+        }
+
+        if (options.Target is null) throw new MachineException("A target is required.");
+        if (options.Line is null) throw new MachineException("An assembly line is required.");
+        if (options.Seed is null) throw new MachineException("There is no seed.");
+        return new(options.Run!, directory, options.Target, options.Line, options.Seed);
+    }
+
+    public void Save()
+    {
+        System.IO.Directory.CreateDirectory(Directory);
+        var json = JsonSerializer.Serialize(new RunSettings(Target, Line, Seed), new JsonSerializerOptions { WriteIndented = true });
+        File.WriteAllText(Path.Combine(Directory, "run.json"), json + Environment.NewLine);
     }
 }
 
@@ -275,13 +331,15 @@ internal static class Git
     }
 
     public static bool HasTargetChanges(string repository, string target) =>
-        !string.IsNullOrWhiteSpace(RunChecked(repository, "status", "--porcelain", "--untracked-files=all", "--", Pathspec(repository, target)));
+        !string.IsNullOrWhiteSpace(RunChecked(repository, "status", "--porcelain", "--untracked-files=all", "--",
+            Pathspec(repository, target), AssemblyLinesExclusion(repository, target)));
 
     public static string TargetDiff(string repository, string target)
     {
         var pathspec = Pathspec(repository, target);
-        var tracked = RunChecked(repository, "diff", "--", pathspec);
-        var untracked = RunChecked(repository, "ls-files", "--others", "--exclude-standard", "--", pathspec);
+        var exclusion = AssemblyLinesExclusion(repository, target);
+        var tracked = RunChecked(repository, "diff", "--", pathspec, exclusion);
+        var untracked = RunChecked(repository, "ls-files", "--others", "--exclude-standard", "--", pathspec, exclusion);
         return tracked + "\nUntracked files:\n" + untracked;
     }
 
@@ -289,12 +347,19 @@ internal static class Git
     {
         var pathspec = Pathspec(repository, target);
         if (!HasTargetChanges(repository, target)) return;
-        RunChecked(repository, "add", "--", pathspec);
-        RunChecked(repository, "commit", "--quiet", "--only", "-m", message, "--", pathspec);
+        var exclusion = AssemblyLinesExclusion(repository, target);
+        RunChecked(repository, "add", "--", pathspec, exclusion);
+        RunChecked(repository, "commit", "--quiet", "--only", "-m", message, "--", pathspec, exclusion);
     }
 
     private static string Pathspec(string repository, string target) =>
         Path.GetRelativePath(repository, target) is "." ? "." : Path.GetRelativePath(repository, target);
+
+    private static string AssemblyLinesExclusion(string repository, string target)
+    {
+        var path = Path.GetRelativePath(repository, Path.Combine(target, ".assembly-lines"));
+        return $":(exclude){path}";
+    }
 
     private static string RunChecked(string directory, params string[] arguments)
     {
