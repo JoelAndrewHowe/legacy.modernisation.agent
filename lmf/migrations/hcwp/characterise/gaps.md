@@ -1,0 +1,67 @@
+# KD03 gaps, contradictions and limitations
+
+## Status and classification
+
+This task produces source-backed behaviour/dependency/gaps documentation only. No harness, executable scenarios, test passes or human approval are claimed. The run plan is deliberately unchanged and its task remains unchecked.
+
+- **Source-backed quirk/contradiction:** preserve in extracted logic; flag for human review, not silently fix.
+- **Synthetic fixture:** an explicit demonstration input, not recovered clinical/operational truth.
+- **Non-blocking evidence limitation/exclusion:** cannot be claimed verified, but does not block a determinate scoped scenario.
+- **Pending implementation/evidence:** later named plan task, not an indeterminate business requirement. A missing dependency becomes blocking only if it prevents a required scenario running or makes its expected outcome indeterminate; then resolve or seek explicit scope adjustment.
+
+References below identify original bundle files/methods in `example-code/HCWP Core (pseudonymised) - single file.txt`; `behaviour.md` and `dependencies.md` give original paths. Source hash: `f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2`.
+
+## Validator findings supplied with this invocation
+
+No findings appeared after the user's “Record and address these validator findings:”. There are no supplied validator defects to repair. This records the empty findings list, not a validator pass. Concrete issues discovered during source inspection are recorded below.
+
+## Preserve-and-review register
+
+| ID | Evidence and consequence | Treatment / classification |
+| --- | --- | --- |
+| Q01 | Validator (27) `ValidateHeadCircumference` rejects >=100; `ValidateOnSave` accepts nonnull head strictly below 1000. Different message keys too. UI (3) calls the former for nonblank input; service (44) calls the latter. | Source-backed contradiction. Preserve both paths, including e.g. head=150 field rejection/direct-save acceptance. Human may later authorise a change; no harmonisation now. |
+| Q02 | Validator `NoResults` omits `PhysicalGeneral` and `CoreComponent`, unlike heart/hips/eyes/testes. Consent, declined flags and metadata also do not count. General-only without reason fails; general with reason can save. | Source-backed omission/possible bug. Explicit examples in behaviour; preserve predicate verbatim where practical. |
+| Q03 | Result (6) `Is*Required` returns inverse declined, but save accepts null measurements and setters clear values even when declined is set false. | Source-backed mismatch between UI hints and save rules. Do not invent mandatory measurements or treat declined-only as sufficient result. |
+| Q04 | KD03 physical applicability is code-based; DomainModel (10) labels testes for boys but Result has no sex restriction. Designers/bindings absent. | Non-blocking presentation limitation. Preserve supplied raw nullable testes field without inventing gender rejection; original control visibility unverified. |
+| Q05 | Result clears RSK/development/DSK only when code changes; Populate and save do not enforce applicability. Save also lacks code lookup and categorical membership validation. | Source-backed layered behaviour. Do not conflate field validation with save. KD03-only adapter rejection is the agreed demonstration boundary, not extracted validator parity. |
+| Q06 | Service (44) schedule method selects first active matching-code row, not a patient/centre-specific schedule despite interface (20) commentary. No ordering of multiple rows. | Source-backed code/comment discrepancy. Single unambiguously active synthetic row makes included age examples determinate; clinical schedule selection/multiple-row ordering unverified. |
+| Q07 | Measurements (42) range lower=min band Upper, upper=max band Lower; Result accepts only strict interior and warns at endpoints/degenerate/missing-type zero range. | Source-backed quirk, preserve rather than reverse bound semantics. Source bands needed for fixtures; live centile interpretation unverified. |
+| Q08 | Result lookup validators may send missing-category/type/service error then return true when cached list is null; HCP population assumes list exists. | Source-backed permissiveness/order dependence. Do not make save reject missing metadata without source evidence. WinForms event order and null-list exceptions unverified. |
+| Q09 | CRUD (43) repeat updates load code prefix, group exact code, use full timestamps; all earliest ties N. Save duplicate check instead compares calendar day. | Source-backed distinction. Ties are existing fixtures, not newly insertable same-day duplicates. Bound repeat evidence to patient isolation, exact grouping, ordering, ties and idempotence; unsupported-type effects excluded. |
+| Q10 | Result repeat description may append RecallText in update and getter when original-code repeat has null lock; UI refresh assigns Engagement index using DomesticViolence control (3). | Source-backed possible presentation bugs, non-blocking missing-control/resource limitation. Do not assert exact Windows rendering parity. No speculative mutation expansion. |
+| Q11 | Given mapping (52) `FkExaminerCatId` max length 1 conflicts with Result's category codes 17–28 and Examiner mapping (64) key max 2. Source tests (90) use domestic-violence value 3 although offered dictionary only 1/2, and School location FK=3 instead of SQL (93) FK=1. | Source contradiction/unrepresentative tests. Preserve offered choices from utility/SQL and save lack of whitelist. Original Oracle acceptance of two-character category is unverified, not silently widened as database parity. |
+| Q12 | Result height/weight setters can compute BMI before validation; height=0 can divide by zero. Missing control order prevents knowing reachability in original UI. | Non-blocking event-delivery limitation. Required invalid-input scenarios should explicitly name validator path; do not claim arbitrary UI event sequence safety. |
+| Q13 | Read `GetKdpResultTo` uses SingleOrDefault measurement; measurement mapping overwrites contact date; ordinary insert gives matching dates. Domain display mapping (37) dereferences missing navigation/single measurement and missing resolvers. | Source-backed read boundary. Well-formed fixtures with at most one linked measurement make scoped TO read determinate. Corrupt historical data/display null handling unverified. |
+
+## Unavailable inputs and synthetic fixture obligations
+
+No new fixture file has been created in this task. The next fixture/scenario task must label every invented value and record its origin; no supplied test patient identifier is to be treated as real data or clinical truth.
+
+| Needed input | Supplied evidence | Required bounded treatment |
+| --- | --- | --- |
+| Selected patient ID, DOB, optional death, sex, consent, historical results | TO/model fields and tests, not production data | Invent stable synthetic patients and explicit dates/flags; include another patient for isolation. Existing KD03 entries support duplicates/repeats, not editing. |
+| Location-type and not-examined choices | SQL files 92/93 are actual supplied seeds | Use their KDP descriptions/codes, not generic reason descriptions or inconsistent test location values. SQL-backed choices are not invented operational patients/locations. |
+| KD03 long/short descriptions, examiner categories, used/unused HCP and locations | Code query/mapping exists; real rows and Oracle LOOKUPS procedures absent | Synthetic lookup records with stable codes and explicit descriptions/used flags. Keep category vs staff type vs HCP separate. No invented clinical rules. |
+| Recommended ages | Schedule model/query exists, no rows supplied | Explicitly synthetic min/max (a 6/8-week demonstration range is possible, not established by code/name). Cover warning outcome and absent schedule as needed; no hard age enforcement. |
+| BMI limits / measurement bands | Options/view entities and algorithms, no data supplied | Invent review-labelled options and age/gender bands sufficient for warning examples. Preserve aggregation algorithm; do not assert accepted clinical ranges. |
+| Current time and IDs | DateTime.Now/Today sites and Oracle sequences | Deterministic synthetic clock and ID allocation for reproducibility; document all substitutions, not just service's injected clock. |
+| Message wording/localisation | Resource keys used; .resx/fault/message bases missing | Compatibility messages keyed by original identifier/category/prompt; any friendly prose explicitly synthetic, exact original wording unverified. |
+| Original build/runtime support | Bundle explicitly not buildable; missing base classes, annotations, startup configuration and model members | Extract included logic with minimal shells/adapters, retain originals/source locations and list every actual adaptation in reference documentation. Not an original-application build claim. |
+
+## Intentional exclusions and evidence boundaries
+
+1. **Windows/Oracle execution unavailable.** Only parity with extracted legacy logic can be established later. UI/control event delivery, focus, binding and actual modal rendering remain unverified and non-blocking when reported.
+2. **Not full save-service parity.** Service `SaveKdpExaminationResult` calls appointment statuses and produced recall clearing (44/43); exclude or no-op those boundaries explicitly. Empty outstanding-appointment fixture also excludes prefill confirmations, not the consent/duplicate confirmations in scope.
+3. **Persistence double limitations.** Must perform a real read from committed synthetic entity storage rather than return form values. In-memory reference cannot prove Oracle precision rounding, empty-string-to-null, length/FK enforcement, computed SECTOR triggers, sequence consumption, transactional errors, optimistic concurrency or provider collation. `KDP_Schema.sql` (94) is reconstructed with inferred/illustrative details and omitted triggers.
+4. **Ordinary add is not scheduled save.** Scheduled-result withdrawal modifies medical consent; ordinary save does not. Appointment/recall next-due, edits/deletes and other contact recording are excluded. Raw WithdrawConsent is not a persisted ordinary-result consent mutation.
+5. **Unsupported contacts.** Demonstration adapter must enforce KD03-only per agreed scope even though legacy lookup/save can accept other codes. Label that observation as scope enforcement, not the legacy rule.
+6. **No PostgreSQL/production evidence.** Azure/PostgreSQL compatibility, migration of existing data, deployment and production security not verified. Future EF Core in-memory demonstration may reset on restart.
+7. **Coverage is bounded.** Supplied tests (90/91) exercise reads/scheduled consent and declined notifications; they are not a KD03 workflow suite, nor supplied repeat tests. The iteration's accepted repeat categories must be instantiated in the later shared scenarios; do not claim they were executed here. No speculative exhaustive mutation/UI-object-identity coverage is required.
+
+## Pending evidence and human decisions
+
+Named later tasks still need migration slices, synthetic fixture/scenario JSON, independently inspectable extracted harness, command execution and per-scenario results, and final review with exact revisions/commands. Their absence means Characterise is not complete, not that source-established outcomes should be sent back for operator re-specification.
+
+Human review before Convert must cover the two head ranges, counted-results omissions, lack of gender-specific testes rule, synthetic clinical/lookup values, KD03-only boundary, schedule-selection limitation and excluded infrastructure. Preserve quirks by default; any requested behavioural change needs an explicit decision and new approved revision. Do not create approval or proceed to Convert/Refactor on the agent's authority.
+
+No scoped expected outcome has been found indeterminate solely from these source rules. If subsequent extraction cannot execute a required scenario, identify that specific blocking scenario/dependency rather than expanding scope. Completion requires the later mechanical gate; this documentation alone does not assert it.
