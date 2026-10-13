@@ -1,1 +1,13 @@
 /factory/runs/
+
+# Generated downloads and publish outputs
+/artifacts/
+
+# Build and restored dependency outputs
+**/bin/
+**/obj/
+**/node_modules/
+
+# The repository's launcher scripts are source, not build output.
+!/bin/
+!/bin/**
