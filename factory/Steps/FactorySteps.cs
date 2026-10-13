@@ -739,7 +739,7 @@ public sealed class FactorySteps
             #!/usr/bin/env bash
             set -euo pipefail
             mkdir -p "$FACTORY_CALLS"
-            prompt="$*"
+            if [ "$#" -gt 0 ]; then prompt="$*"; else prompt=$(cat); fi
             role=$(printf '%s' "$prompt" | sed -n 's/.*You are the \(planner\|doer\|validator\).*/\1/p' | head -1)
             number=$(($(find "$FACTORY_CALLS" -name '{{identity}}-'"$FACTORY_TEST_RUN"'-'"$role"'-*.prompt' | wc -l) + 1))
             printf '%s' "$prompt" > "$FACTORY_CALLS/{{identity}}-$FACTORY_TEST_RUN-$role-$number.prompt"
@@ -777,7 +777,8 @@ public sealed class FactorySteps
               echo '{"satisfied":true,"findings":[]}'
             fi
             """);
-        File.SetUnixFileMode(path, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+        if (!OperatingSystem.IsWindows())
+            File.SetUnixFileMode(path, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
         return path;
     }
 

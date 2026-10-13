@@ -114,22 +114,31 @@ internal static class FactoryProgram
 
     private static async Task<MachineResult> Call(string harness, string target, string machine, string prompt)
     {
+        var isPi = Path.GetFileName(harness) == "pi";
         var start = new ProcessStartInfo(harness)
         {
             WorkingDirectory = target,
+            RedirectStandardInput = isPi,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
         };
-        if (Path.GetFileName(harness) == "pi") start.ArgumentList.Add("-p");
-        start.ArgumentList.Add(prompt);
+        if (isPi) start.ArgumentList.Add("-p");
+        else start.ArgumentList.Add(prompt);
 
         try
         {
             using var process = Process.Start(start) ?? throw new MachineException($"Could not run the {machine}.");
-            var output = await process.StandardOutput.ReadToEndAsync();
-            var error = await process.StandardError.ReadToEndAsync();
-            await process.WaitForExitAsync();
+            if (isPi)
+            {
+                await process.StandardInput.WriteAsync(prompt);
+                process.StandardInput.Close();
+            }
+            var outputTask = process.StandardOutput.ReadToEndAsync();
+            var errorTask = process.StandardError.ReadToEndAsync();
+            await Task.WhenAll(outputTask, errorTask, process.WaitForExitAsync());
+            var output = await outputTask;
+            var error = await errorTask;
             if (process.ExitCode != 0)
                 throw new MachineException($"Could not run the {machine}: {error.Trim()}");
             return MachineResult.From(output);
