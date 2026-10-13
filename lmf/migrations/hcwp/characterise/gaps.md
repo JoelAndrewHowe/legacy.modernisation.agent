@@ -2,7 +2,7 @@
 
 ## Status and classification
 
-Source-backed behaviour/dependency/gaps documentation is accompanied by `migration-plan.md`, synthetic `fixtures.json` and 40 required shared scenario definitions in `scenarios.json`. These definitions have not run against a harness. No harness, reference test passes or human approval are claimed. The run plan is deliberately unchanged and the current task remains unchecked.
+Source-backed behaviour/dependency/gaps documentation is accompanied by `migration-plan.md`, synthetic `fixtures.json` and 40 required shared scenario definitions in `scenarios.json`. `reference/` now contains the executable extracted C# harness and `verify` command; `reference/README.md` inventories actual adaptations/doubles. Ten filtered construction smoke scenarios passed (one pass each, zero failures/skips), including V01 checks KD03-004/011. The full 40-scenario suite has not yet been executed; Characterise completion and human approval are not claimed. The run plan is deliberately unchanged and the current task remains unchecked.
 
 - **Source-backed quirk/contradiction:** preserve in extracted logic; flag for human review, not silently fix.
 - **Synthetic fixture:** an explicit demonstration input, not recovered clinical/operational truth.
@@ -11,7 +11,9 @@ Source-backed behaviour/dependency/gaps documentation is accompanied by `migrati
 
 References below identify original bundle files/methods in `example-code/HCWP Core (pseudonymised) - single file.txt`; `behaviour.md` and `dependencies.md` give original paths. Source hash: `f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2`.
 
-## Validator findings supplied with this invocation
+## Validator findings register
+
+No new validator findings were listed in the current harness-building invocation. The previously recorded V01 remains applicable and is addressed at the executable inner-fault/outer-notification boundaries, with passing filtered smoke evidence in `reference/evidence/results.KD03-004.json` and `results.KD03-011.json`. This is not a new validator approval or the full suite gate.
 
 **V01 — save fault versus parent notification (addressed in definitions).** The supplied finding covers `scenarios.json` KD03-004–010, KD03-011, KD03-014–015 and KD03-032 and the `migration-plan.md` save/decline contract. File 27 `ValidateOnSave` throws the aggregate fault with `ValidationErrorsPrompt`; file 44 propagates it; file 5 `KdpExaminationDelegate.Save` catches `FaultException`, sends `NonFatalErrorEncountered` using `ex.Message`, `KdpResultsTitle` and `ExamResultsErrorSavingPrompt`, and returns false. The 11 expectations now distinguish `validatorPrompt` from observable `savePrompt` and explicitly assert `parentNotification`. Ordered errors, declined-field values and unchanged-storage expectations are preserved. The operation contract now requires the parent catch for save and decline. No legacy behaviour is altered. Definition checks are not a validator pass or reference execution; the later harness must observe both layers.
 
@@ -60,7 +62,7 @@ References below identify original bundle files/methods in `example-code/HCWP Co
 
 ## Pending evidence and human decisions
 
-Migration slices and synthetic fixture/scenario JSON are defined. Structural checks parsed both JSON files, verified all 40 required unique IDs, resolved fixture/source references, checked no-save projection invariants and matched the source SHA-256. These are not reference scenario passes. Named later tasks still need the independently inspectable extracted harness, command execution and per-scenario results, and final review with exact revisions/commands. Their absence means Characterise is not complete, not that source-established outcomes should be sent back for operator re-specification.
+Migration slices and synthetic fixture/scenario JSON are defined. Structural checks parsed both JSON files, verified all 40 required unique IDs, resolved fixture/source references, checked no-save projection invariants and matched the source SHA-256. These are not reference scenario passes. The independently inspectable extracted harness and command now exist. Actual compatibility substitutions and non-blocking evidence limitations are listed in `reference/README.md`; these include missing trimmed members, resource/base-class shells, scalar mapping, cloned entity persistence and excluded infrastructure. Named later tasks still need unfiltered command execution of all 40 IDs and final review with exact revisions/commands. Their absence means Characterise is not complete, not that source-established outcomes should be sent back for operator re-specification.
 
 Human review before Convert must cover the two head ranges, counted-results omissions, lack of gender-specific testes rule, synthetic clinical/lookup values, KD03-only boundary, schedule-selection limitation and excluded infrastructure. Preserve quirks by default; any requested behavioural change needs an explicit decision and new approved revision. Do not create approval or proceed to Convert/Refactor on the agent's authority.
 

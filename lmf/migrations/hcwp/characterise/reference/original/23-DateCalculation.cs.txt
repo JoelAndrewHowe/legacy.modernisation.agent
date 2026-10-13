@@ -1,0 +1,30 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HLX.BusinessTier.Common.Util
+
+{
+    public static class DateCalculation
+    {
+        public static int DaysBetween(this DateTime dateFrom, DateTime dateTo)
+        {
+            return (int)(dateTo - dateFrom).TotalDays;
+        }
+        public static double WeeksBetween(this DateTime dateFrom, DateTime dateTo)
+        {
+            return (double)dateFrom.DaysBetween(dateTo) / 7;
+        }
+        public static int MonthsBetween(this DateTime dateFrom, DateTime dateTo)
+        {
+            return ((dateTo.Year - dateFrom.Year) * 12) - dateFrom.Month + dateTo.Month + (dateTo.Day < dateFrom.Day ? -1 : 0);
+        }
+
+        public static int MonthsToDays(int months)
+        {
+            return (int) (months * 365.25 / 12);
+        }
+    }
+}

@@ -1,0 +1,22 @@
+using System;
+using System.Collections.Generic;
+
+namespace Orvex.Model
+{
+    public class ChildSchoolRecall
+    {
+        public long PkChildSchoolRecall { get; set; }
+        public long ClientId { get; set; }
+        public string SchoolCode { get; set; }
+        public byte LocationType { get; set; }
+        public DateTime? DateDue { get; set; }
+        public string ExamCode { get; set; }
+        public string RecallIndicator { get; set; }
+        public string NextSessionIndicator { get; set; }
+        public string RecordStatus { get; set; }
+        public string Sector { get; set; }
+        public virtual ChildGeneral ChildGeneral { get; set; }
+        public virtual ChildLocations ChildLocations { get; set; }
+        public virtual ExaminationDescriptions ExaminationDescriptions { get; set; }
+    }
+}

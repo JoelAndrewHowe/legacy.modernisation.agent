@@ -1,0 +1,117 @@
+using System.Data.Entity;
+using System.Linq;
+using Orvex.Model;
+using Orvex.Services.Internal;
+
+namespace Orvex.Business.Utils
+{
+    public class ExaminationsCrudManager
+    {
+
+        internal static void UpdateRepeatFlags(IUnitOfWork uow, long clientId, string examinationCode)
+        {
+            var examPrefix = examinationCode.Length > 2 ? examinationCode.Substring(0, 2) : examinationCode;
+
+            //Query database to ensure all exam details are in local cache
+            uow.Repository<ChildExaminationGiven>()
+                .Include(e => e.ChildExamination)
+                .Where(exam => exam.ChildExamination.ClientId == clientId && exam.ChildExamination.FkExaminationId.StartsWith(examPrefix))
+                .ToList();
+
+            //Set ChildExamination navigation property to allow querying against local cache
+            foreach (var ceg in uow.Repository<ChildExaminationGiven>().Local().Where(ce => ce.ChildExamination == null))
+            {
+                ceg.ChildExamination = uow.Repository<ChildExamination>().Local().Single(ce => ce.PkChildExaminationId == ceg.PkFkChildExamGivenId);
+            }
+            
+            //Fetch exams that where value of IsRepeat is incorrect and derive correct value
+            var examsToUpdate = 
+                from exam in uow.Repository<ChildExaminationGiven>().Local()
+                where exam.ChildExamination.ClientId == clientId && exam.ChildExamination.FkExaminationId.StartsWith(examPrefix)
+                group exam by exam.ChildExamination.FkExaminationId into grp
+                let minExamDate = grp.Min(g => g.ExaminationDate)
+                from g in grp
+                where (g.ExaminationDate > minExamDate && g.ChildExamination.IsRepeat != "Y") || (g.ExaminationDate == minExamDate && g.ChildExamination.IsRepeat != "N")
+                select new { g.ChildExamination, IsRepeat = (g.ExaminationDate == minExamDate) ? "N" : "Y" };
+
+            foreach (var item in examsToUpdate)
+            {
+                item.ChildExamination.IsRepeat = item.IsRepeat;
+            }
+        }
+
+        /// <summary>
+        /// Resets appointments if exam code has changed and clears any outstanding appointments with the same exam code
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="examinationCode"></param>
+        /// <param name="clientId"></param>
+        /// <param name="childExamId"></param>
+        internal static void UpdateAppointmentStatuses(IUnitOfWork uow, string examinationCode, long clientId, long childExamId)
+        {
+            ResetAppointmentsIfExamCodeChanged(uow, examinationCode, clientId, childExamId);
+            ClearOutstandingAppointments(uow, examinationCode, clientId, childExamId);
+        }
+
+        internal static void ClearOutstandingAppointments(IUnitOfWork uow, string examinationCode, long clientId, long childExamId)
+        {
+            // Set any outstanding appointments for this examination code to not outstanding
+            uow.Repository<HlxAppointment>()
+                .Where(ca => ca.ClientId == clientId
+                    && ca.ExaminationDue == examinationCode
+                    && ca.IsOutstanding != "N")
+                .ToList()
+                .ForEach(item => {
+                    item.IsOutstanding = "N";
+                    item.FkChildExaminationId = childExamId;
+                });
+        }
+
+        internal static void ResetAppointmentsIfExamCodeChanged(IUnitOfWork uow, string examinationCode, long clientId, long childExamId)
+        {
+            // Check if any exams have previously been set to not outstanding using this result but a different exam code
+            // (this could happen if the exam code of the result has been updated) - if so set these to outstanding again
+            uow.Repository<HlxAppointment>()
+                .Where(ca => ca.ClientId == clientId
+                    && ca.FkChildExaminationId == childExamId
+                    && ca.ExaminationDue != examinationCode
+                    && ca.IsOutstanding != "Y")
+                .ToList()
+                .ForEach(item => {
+                    item.IsOutstanding = "Y";
+                    item.FkChildExaminationId = null;
+                });
+        }
+
+        internal static void ResetAppointmentsForDeletedResult(IUnitOfWork uow, string examinationCode, long clientId, long childExamId)
+        {
+            // Set any appointments previously set to not outstanding using this result back to outstanding
+            uow.Repository<HlxAppointment>()
+                .Where(ca => ca.ClientId == clientId
+                    && ca.ExaminationDue == examinationCode
+                    && ca.IsOutstanding != "Y"
+                    && ca.FkChildExaminationId == childExamId)
+                .ToList()
+                .ForEach(item => {
+                    item.IsOutstanding = "Y";
+                    item.FkChildExaminationId = null;
+                });
+        }
+
+        internal static void ClearProducedRecalls(IUnitOfWork uow, string examinationCode, long clientId)
+        {
+            const string ProducedFlagPreschool = "A";
+            const string ProducedFlagSchool = "P";
+
+            uow.Repository<ChildPreschoolRecall>()
+                .Where(r => r.FkClientId == clientId && r.FkExamCode == examinationCode && r.RecallIndicator == ProducedFlagPreschool)
+                .ToList()
+                .ForEach(r => { r.RecordStatus = "D"; });
+
+            uow.Repository<ChildSchoolRecall>()
+                .Where(r => r.ClientId == clientId && r.ExamCode == examinationCode && r.RecallIndicator == ProducedFlagSchool)
+                .ToList()
+                .ForEach(r => { r.RecordStatus = "D"; });
+        }
+    }
+}

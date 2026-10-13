@@ -2,7 +2,7 @@
 
 ## Status and gate
 
-This task defines slices and shared inputs/outcomes only. `fixtures.json` and `scenarios.json` are not execution evidence. The next task builds the independently inspectable reference harness; the subsequent task runs it. The external run plan remains unchecked. Validator finding V01 (save fault versus parent notification) is recorded below and corrected in the shared contract; this is not a validator pass.
+`fixtures.json` and `scenarios.json` define shared inputs/outcomes, not execution evidence. The independently inspectable `reference/` harness and `verify` command now exist; construction smoke evidence and actual adaptations are documented in `reference/README.md`. The subsequent task must execute the full suite. The external run plan remains unchecked. Validator finding V01 (save fault versus parent notification) is corrected in the shared contract and implemented/checked at both executable boundaries; this is not a validator approval.
 
 Evidence may establish **parity with extracted legacy logic**, never parity with the original Windows/Oracle application or full save service. Source SHA-256 and original paths are in `fixtures.json` and `behaviour.md`. No Convert/Refactor code is created here. Human approval of the exact completed Characterise revision is required before Convert.
 
@@ -90,4 +90,6 @@ Re-ran `python3 -m json.tool` on both JSON files and `git diff --check -- charac
 
 These checks validate definitions only; no reference pass or approval is claimed.
 
-Next: retain and adapt original logic in `reference/`, document executable command, then execute **every** required ID with positive passes, zero failures, zero skips and per-scenario observations. JSON parsing/contract checks performed in this task are not reference passes. Final `review.md` must identify exact revisions, commands/results, all doubles/exclusions and pending human decisions (including synthetic clinical values, head limits and general-assessment omission). Stop awaiting approval after that mechanical gate; do not manufacture approval.
+Harness construction update: original snapshots, retained C# logic, explicit compatibility/persistence doubles and `characterise/verify` are now available; see `reference/README.md` for actual substitutions and ten passing filtered smoke checks, including V01. No new validator findings were supplied. No full-suite or approval claim is made, and no plan checkbox is changed.
+
+Next: execute `characterise/verify` without a filter for **every** required ID with positive passes, zero failures, zero skips and per-scenario observations. JSON parsing/contract checks performed in this task are not reference passes. Final `review.md` must identify exact revisions, commands/results, all doubles/exclusions and pending human decisions (including synthetic clinical values, head limits and general-assessment omission). Stop awaiting approval after that mechanical gate; do not manufacture approval.

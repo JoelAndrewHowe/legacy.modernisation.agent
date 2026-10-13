@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+here="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+mkdir -p "$here/reference/evidence"
+dotnet build "$here/reference/Reference.csproj" --nologo > "$here/reference/evidence/build.log" 2>&1 || {
+  printf '%s\n' "Reference build failed: $here/reference/evidence/build.log" >&2
+  exit 1
+}
+dotnet "$here/reference/bin/Debug/net10.0/Reference.dll" "$here" "$@"

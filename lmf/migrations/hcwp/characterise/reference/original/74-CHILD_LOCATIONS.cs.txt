@@ -1,0 +1,32 @@
+using System;
+using System.Collections.Generic;
+
+namespace Orvex.Model
+{
+    public class ChildLocations
+    {
+        public ChildLocations()
+        {
+            ChildExaminationGiven = new List<ChildExaminationGiven>();
+            ChildGeneral = new List<ChildGeneral>();
+            ChildGeneral1 = new List<ChildGeneral>();
+            ChildPreschoolRecall = new List<ChildPreschoolRecall>();
+            ChildSchoolRecall = new List<ChildSchoolRecall>();
+    }
+
+        public string Code { get; set; }
+        public byte LocationType { get; set; }
+        public string Name { get; set; }
+        public DateTime? ActiveFrom { get; set; }
+        public DateTime? ActiveTo { get; set; }
+        public string RecordStatus { get; set; }
+
+        public virtual ICollection<ChildExaminationGiven> ChildExaminationGiven { get; set; }
+        public virtual ICollection<ChildGeneral> ChildGeneral { get; set; }
+        public virtual ICollection<ChildGeneral> ChildGeneral1 { get; set; }
+        public virtual ChildLocations LocalAuthority { get; set; }
+        public virtual ICollection<ChildPreschoolRecall> ChildPreschoolRecall { get; set; }
+        public virtual ICollection<ChildSchoolRecall> ChildSchoolRecall { get; set; }
+
+    }
+}

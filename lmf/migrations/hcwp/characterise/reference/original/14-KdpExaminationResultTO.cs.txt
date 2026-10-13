@@ -1,0 +1,416 @@
+using System;
+using System.Runtime.Serialization;
+
+// ReSharper disable once CheckNamespace
+namespace Orvex.TransferObjects
+{
+   
+    [DataContract]
+    // ReSharper disable once CheckNamespace
+    public class KdpExaminationResultTO: AbstractTO
+    {
+        public override Array getEnumValues()
+        {
+            return Enum.GetValues(typeof (PropertyNames));
+        }
+
+        public enum PropertyNames
+        {
+            PkChildExaminationId,
+            ExaminationCode,
+            ExaminationDate,
+            ResultEnteredDate,
+            ReasonNotExamined,
+            Consent,
+            Reschedule,
+            WithdrawConsent,
+            LocationType,
+            LocationCode,
+            ExaminerType,
+            ExaminerCategory,
+            ExaminerHcpCode,
+            Height,
+            Weight,
+            HeadCircumference,
+            HeightMeasurementDeclined,
+            WeightMeasurementDeclined,
+            HeadMeasurementDeclined,
+            OnwardReferralsMade,
+            ReceivingBoostSchemeService,
+            LookedAfterChild,
+            OnChildProtectionRegister,
+            EvidenceOfXgm,
+            DomesticViolenceConcern,
+            RskResponsiveParenting,
+            RskEngagement,
+            RskSocioFactors,
+            RskFamilyHealth,
+            RskFamilySupport,
+            RskCompleted,
+            Development,
+            DevelopmentFurther,
+            Heart,
+            Hips,
+            Eyes,
+            Testes,
+            PhysicalGeneral,
+            DskLocomotor,
+            DskManipulative,
+            DskVisual,
+            DskHearingAndLanguage,
+            DskSpeechAndLanguage,
+            DskInteractiveSocial,
+            DskSelfCareSocial,
+            DskCognitive,
+            Origin,
+            IsRepeat,
+            CoreComponent
+        }
+
+        [DataMember]
+        public long PkChildExaminationId
+        {
+            get { return GetPropertyOrDefault<long>(PropertyNames.PkChildExaminationId); }
+            set { setProperty(PropertyNames.PkChildExaminationId, value); }
+        }
+        [DataMember]
+        public string  ExaminationCode
+        {
+            get { return (string)getProperty(PropertyNames.ExaminationCode); }
+            set { setProperty(PropertyNames.ExaminationCode, value); }
+        }
+        [DataMember]
+        public DateTime ExaminationDate
+        {
+            get { return GetPropertyOrDefault<DateTime>(PropertyNames.ExaminationDate); }
+            set { setProperty(PropertyNames.ExaminationDate, value); }
+        }
+
+        [DataMember]
+        public DateTime? ResultEnteredDate
+        {
+            get { return GetPropertyOrDefault<DateTime>(PropertyNames.ResultEnteredDate); }
+            set { setProperty(PropertyNames.ResultEnteredDate, value); }
+        }
+        [DataMember]
+        public string ReasonNotExamined
+        {
+            get { return (string)getProperty(PropertyNames.ReasonNotExamined); }
+            set { setProperty(PropertyNames.ReasonNotExamined, value); }
+        }
+        [DataMember]
+        public string Consent
+        {
+            get { return (string)getProperty(PropertyNames.Consent); }
+            set { setProperty(PropertyNames.Consent, value); }
+        }
+        [DataMember]
+        public string Reschedule
+        {
+            get { return (string)getProperty(PropertyNames.Reschedule); }
+            set { setProperty(PropertyNames.Reschedule, value); }
+        }
+        [DataMember]
+        public bool WithdrawConsent
+        {
+            get { return GetPropertyOrDefault<bool>(PropertyNames.WithdrawConsent); }
+            set { setProperty(PropertyNames.WithdrawConsent, value); }
+        }
+        [DataMember]
+        public byte? LocationType
+        {
+            get { return (byte?)getProperty(PropertyNames.LocationType); }
+            set { setProperty(PropertyNames.LocationType, value); }
+        }
+        [DataMember]
+        public string LocationCode
+        {
+            get { return (string)getProperty(PropertyNames.LocationCode); }
+            set { setProperty(PropertyNames.LocationCode, value); }
+        }
+        [DataMember]
+        public string ExaminerType
+        {
+            get { return (string)getProperty(PropertyNames.ExaminerType); }
+            set { setProperty(PropertyNames.ExaminerType, value); }
+        }
+        [DataMember]
+        public string ExaminerCategory
+        {
+            get { return (string)getProperty(PropertyNames.ExaminerCategory); }
+            set { setProperty(PropertyNames.ExaminerCategory, value); }
+        }
+        [DataMember]
+        public string ExaminerHcpCode
+        {
+            get { return (string)getProperty(PropertyNames.ExaminerHcpCode); }
+            set { setProperty(PropertyNames.ExaminerHcpCode, value); }
+        }
+        [DataMember]
+        public decimal? Height
+        {
+            get { return (decimal?)getProperty(PropertyNames.Height); }
+            set { setProperty(PropertyNames.Height, value); }
+        }
+        [DataMember]
+        public decimal? Weight
+        {
+            get { return (decimal?)getProperty(PropertyNames.Weight); }
+            set { setProperty(PropertyNames.Weight, value); }
+        }
+        [DataMember]
+        public decimal? HeadCircumference
+        {
+            get { return (decimal?)getProperty(PropertyNames.HeadCircumference); }
+            set { setProperty(PropertyNames.HeadCircumference, value); }
+        }
+        [DataMember]
+        public string HeightMeasurementDeclined
+        {
+            get { return (string)getProperty(PropertyNames.HeightMeasurementDeclined); }
+            set { setProperty(PropertyNames.HeightMeasurementDeclined, value); }
+        }
+        [DataMember]
+        public string WeightMeasurementDeclined
+        {   
+            get { return (string)getProperty(PropertyNames.WeightMeasurementDeclined); }
+            set { setProperty(PropertyNames.WeightMeasurementDeclined, value); }
+        }
+        [DataMember]
+        public string HeadMeasurementDeclined
+        {
+            get { return (string)getProperty(PropertyNames.HeadMeasurementDeclined); }
+            set { setProperty(PropertyNames.HeadMeasurementDeclined, value); }
+        }
+        [DataMember]
+        public string OnwardReferralsMade 
+        {
+            get { return (string)getProperty(PropertyNames.OnwardReferralsMade); }
+            set { setProperty(PropertyNames.OnwardReferralsMade, value); }
+        }
+        [DataMember]
+        public string ReceivingBoostSchemeService
+        {
+            get { return (string)getProperty(PropertyNames.ReceivingBoostSchemeService); }
+            set { setProperty(PropertyNames.ReceivingBoostSchemeService, value); }
+        }
+        [DataMember]
+        public string LookedAfterChild
+        {
+            get { return (string)getProperty(PropertyNames.LookedAfterChild); }
+            set { setProperty(PropertyNames.LookedAfterChild, value); }
+        }
+        [DataMember]
+        public string OnChildProtectionRegister
+        {
+            get { return (string)getProperty(PropertyNames.OnChildProtectionRegister); }
+            set { setProperty(PropertyNames.OnChildProtectionRegister, value); }
+        }
+        [DataMember]
+        public byte? EvidenceOfXgm
+        {
+            get { return (byte?)getProperty(PropertyNames.EvidenceOfXgm); }
+            set { setProperty(PropertyNames.EvidenceOfXgm, value); }
+        }
+        [DataMember]
+        public byte? DomesticViolenceConcern
+        {
+            get { return (byte?)getProperty(PropertyNames.DomesticViolenceConcern); }
+            set { setProperty(PropertyNames.DomesticViolenceConcern, value); }
+        }
+        [DataMember]
+        public byte? RskResponsiveParenting
+        {
+            get { return (byte?)getProperty(PropertyNames.RskResponsiveParenting); }
+            set { setProperty(PropertyNames.RskResponsiveParenting, value); }
+        }
+
+        [DataMember]
+        public byte? RskEngagement
+        {
+            get { return (byte?)getProperty(PropertyNames.RskEngagement); }
+            set { setProperty(PropertyNames.RskEngagement, value); }
+        }
+
+        [DataMember]
+        public byte? RskSocioFactors
+        {
+            get { return (byte?)getProperty(PropertyNames.RskSocioFactors); }
+            set { setProperty(PropertyNames.RskSocioFactors, value); }
+        }
+
+        [DataMember]
+        public byte? RskFamilyHealth
+        {
+            get { return (byte?)getProperty(PropertyNames.RskFamilyHealth); }
+            set { setProperty(PropertyNames.RskFamilyHealth, value); }
+        }
+
+        [DataMember]
+        public byte? RskFamilySupport
+        {
+            get { return (byte?)getProperty(PropertyNames.RskFamilySupport); }
+            set { setProperty(PropertyNames.RskFamilySupport, value); }
+        }
+
+        [DataMember]
+        public string RskCompleted
+        {
+            get { return (string)getProperty(PropertyNames.RskCompleted); }
+            set { setProperty(PropertyNames.RskCompleted, value); }
+        }
+
+        [DataMember]
+        public byte? Development
+        {
+            get { return (byte?)getProperty(PropertyNames.Development); }
+            set { setProperty(PropertyNames.Development, value); }
+        }
+
+        [DataMember]
+        public string DevelopmentFurther
+        {
+            get { return (string)getProperty(PropertyNames.DevelopmentFurther); }
+            set { setProperty(PropertyNames.DevelopmentFurther, value); }
+        }
+
+        [DataMember]
+        public byte? Heart
+        {
+            get { return (byte?)getProperty(PropertyNames.Heart); }
+            set { setProperty(PropertyNames.Heart, value); }
+        }
+
+        [DataMember]
+        public byte? Hips
+        {
+            get { return (byte?)getProperty(PropertyNames.Hips); }
+            set { setProperty(PropertyNames.Hips, value); }
+        }
+
+        [DataMember]
+        public byte? Eyes
+        {
+            get { return (byte?)getProperty(PropertyNames.Eyes); }
+            set { setProperty(PropertyNames.Eyes, value); }
+        }
+
+        [DataMember]
+        public byte? Testes
+        {
+            get { return (byte?)getProperty(PropertyNames.Testes); }
+            set { setProperty(PropertyNames.Testes, value); }
+        }
+
+        [DataMember]
+        public byte? PhysicalGeneral
+        {
+            get { return (byte?)getProperty(PropertyNames.PhysicalGeneral); }
+            set { setProperty(PropertyNames.PhysicalGeneral, value); }
+        }
+
+        [DataMember]
+        public string DskLocomotor
+        {
+            get { return (string)getProperty(PropertyNames.DskLocomotor); }
+            set { setProperty(PropertyNames.DskLocomotor, value); }
+        }
+
+        [DataMember]
+        public string DskManipulative
+        {
+            get { return (string)getProperty(PropertyNames.DskManipulative); }
+            set { setProperty(PropertyNames.DskManipulative, value); }
+        }
+
+        [DataMember]
+        public string DskVisual
+        {
+            get { return (string)getProperty(PropertyNames.DskVisual); }
+            set { setProperty(PropertyNames.DskVisual, value); }
+        }
+
+        [DataMember]
+        public string DskHearingAndLanguage
+        {
+            get { return (string)getProperty(PropertyNames.DskHearingAndLanguage); }
+            set { setProperty(PropertyNames.DskHearingAndLanguage, value); }
+        }
+
+        [DataMember]
+        public string DskSpeechAndLanguage
+        {
+            get { return (string)getProperty(PropertyNames.DskSpeechAndLanguage); }
+            set { setProperty(PropertyNames.DskSpeechAndLanguage, value); }
+        }
+
+        [DataMember]
+        public string DskInteractiveSocial
+        {
+            get { return (string)getProperty(PropertyNames.DskInteractiveSocial); }
+            set { setProperty(PropertyNames.DskInteractiveSocial, value); }
+        }
+
+        [DataMember]
+        public string DskSelfCareSocial
+        {
+            get { return (string)getProperty(PropertyNames.DskSelfCareSocial); }
+            set { setProperty(PropertyNames.DskSelfCareSocial, value); }
+        }
+
+        [DataMember]
+        public string DskCognitive
+        {
+            get { return (string)getProperty(PropertyNames.DskCognitive); }
+            set { setProperty(PropertyNames.DskCognitive, value); }
+        }
+
+        [DataMember]
+        public byte? Origin
+        {
+            get { return (byte?)getProperty(PropertyNames.Origin); }
+            set { setProperty(PropertyNames.Origin, value); }
+        }
+
+        [DataMember]
+        public bool IsRepeat
+        {
+            get { return GetPropertyOrDefault<bool>(PropertyNames.IsRepeat); }
+            set { setProperty(PropertyNames.IsRepeat, value); }
+        }
+
+        [DataMember]
+        public byte? CoreComponent
+        {
+            get { return (byte?)getProperty(PropertyNames.CoreComponent); }
+            set { setProperty(PropertyNames.CoreComponent, value); }
+        }
+
+
+        [DataMember]
+        public string Sector { get; set; }
+
+        [DataMember]
+        public long ClientId { get; set; }
+
+        [DataMember]
+        public string OriginalExamCode { get; set; }
+
+        [DataMember]
+        public string ExamDescription { get; set; }
+
+        [DataMember]
+        public string ExaminerName { get; set; }
+
+        [DataMember]
+        public string LocationName { get; set; }
+
+        [DataMember]
+        public long ChildMeasurementId { get; set; }
+
+        // DataMember attribute not needed as these properties are used only by services
+        public string ReasonNotExaminedDescription { get; set; }
+        public string ExaminerTypeDescription { get; set; }
+        public string LocationTypeDescription { get; set; }
+    }
+}

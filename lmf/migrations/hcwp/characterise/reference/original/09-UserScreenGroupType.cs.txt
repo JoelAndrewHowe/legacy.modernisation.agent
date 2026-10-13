@@ -1,0 +1,29 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Orvex.Contracts.Enums
+{
+    public enum UserScreenGroupType
+    {
+        Core = 1,
+        Web = 2
+    }
+
+    public enum ExamType : byte
+    {
+        MedicalPreschool = 1,
+        MedicalSchool = 2,
+        AudioPreschool = 3,
+        AudioSchool = 4,
+        VisionPreschool = 5,
+        VisionSchool = 6,
+        HealthSurveillance = 7,
+        OtherScreening = 8,
+        Cmp = 9,
+        Kdp = 10,
+        AudioPathway = 11
+    }
+}

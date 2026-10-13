@@ -1,0 +1,21 @@
+using System;
+
+namespace Orvex.Model
+{
+    public class ChildMeasurement
+    {
+        public long PkChildMeasurementId { get; set; }
+        public long ClientId { get; set; }
+        public string Sector { get; set; }
+        public DateTime MeasurementDate { get; set; }
+        public decimal? Height { get; set; }
+        public decimal? HeadCircumference { get; set; }
+        public byte? Outcome { get; set; }
+        public decimal? BodyMassIndex { get; set; }
+        public long? FkChildExaminationId { get; set; }
+        public decimal? Weight { get; set; }
+        public string RecordStatus { get; set; }
+        public virtual ChildExamination ChildExamination { get; set; }
+        public virtual ChildGeneral ChildGeneral { get; set; }
+    }
+}

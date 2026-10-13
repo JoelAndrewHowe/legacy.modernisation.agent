@@ -1,0 +1,451 @@
+// ReSharper disable once CheckNamespace
+
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.ServiceModel.Activation;
+using AutoMapper;
+using HLX.BusinessTier.Common.Util;
+using HLX.Net2008.Common;
+using Orvex.Business.Utils;
+using Orvex.Business.Validation;
+using Orvex.Messages.Faults;
+using Orvex.Model;
+using Orvex.Services;
+using Orvex.Services.Internal;
+using Orvex.TransferObjects;
+using Orvex.DomainModel;
+using Orvex.Model.ProcResults;
+using Orvex.Contracts.Enums;
+using static Orvex.Resources.Resources;
+using Orvex.HLX.BusinessTier.Common.AutoMapperConfig.Resolvers;
+
+namespace Orvex.Business
+{
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    public class KdpExaminationService: IKdpExaminationService
+    {
+        private readonly Func<IUnitOfWork> unitOfWorkFactory;
+        private readonly GetCurrentDateTime getCurrentDateTime;
+
+        private const byte PreschoolConsentCategory = (byte)LookupsUtility.CONSENT_CATEGORY.PSH;
+        private readonly string kdpConsentYesValue = LookupsUtility.ExamConsentResultMap()[LookupsUtility.EXAM_CONSENT_RESULTS.CONSENT];
+        private static readonly string KdpExamCodeAcronym = LookupsUtility.ExamTypeCodeMap()[ExamType.Kdp];
+        private const byte MedicalConsentType = 11;
+
+
+        private readonly KdpExaminationValidator kdpExaminationValidator;
+        static KdpExaminationService()
+        {
+            ConfigureMappings();
+        }
+
+        public static void ConfigureMappings()
+        {
+            #region CreateMap Model -->  Transfer Object
+            Mapper.CreateMap<ChildExamination, KdpExaminationResultTO>()
+                .ForMember(dest => dest.PkChildExaminationId, act => act.MapFrom(src => src.PkChildExaminationId))
+                .ForMember(dest => dest.ClientId, act => act.MapFrom(src => src.ClientId))
+                .ForMember(dest => dest.ExaminationCode, act => act.MapFrom(src => src.FkExaminationId))
+                .ForMember(dest => dest.OriginalExamCode, act => act.MapFrom(src => src.FkExaminationId))
+                .ForMember(dest => dest.Sector, act => act.MapFrom(src => src.Sector))
+                .ForMember(dest => dest.ExamDescription, act => act.MapFrom(src => src.ExaminationDescriptions.LongDescription))
+                .ForMember(dest => dest.IsRepeat, act => act.ResolveUsing<StringToBoolResolver>().FromMember(src => src.IsRepeat))
+                .IgnoreUnMapped();
+
+            Mapper.CreateMap<ChildExaminationGiven, KdpExaminationResultTO>()
+                 .ForMember(dest => dest.PkChildExaminationId, act => act.MapFrom(src => src.PkFkChildExamGivenId))
+                 .ForMember(dest => dest.LocationType, act => act.MapFrom(src => src.FkLocationHeldTypeId))
+                 .ForMember(dest => dest.LocationCode, act => act.MapFrom(src => src.FkChildLocationHeldCode))
+                 .ForMember(dest => dest.ExaminerType, act => act.MapFrom(src => src.FkStaffTypeExaminerId))
+                 .ForMember(dest => dest.ExaminerHcpCode, act => act.MapFrom(src => src.FkHcpExaminerCode))
+                 .ForMember(dest => dest.ExaminerCategory, act => act.MapFrom(src => src.FkExaminerCatId))
+                 .ForMember(dest => dest.LocationName, act => act.MapFrom(src => src.ChildLocations.Name))
+                 .ForMember(dest => dest.ReasonNotExamined, act => act.MapFrom(src => src.FkNotExaminedReasonId))
+                 .ForMember(dest => dest.ExaminerName, act => act.MapFrom(src => string.Join(" ", src.HealthCareProfessionals.Name1, src.HealthCareProfessionals.Name2)))
+                 .ForMember(dest => dest.Reschedule, act => act.MapFrom(src => src.RescheduleExamination))
+                 .ForMember(dest => dest.ExaminerTypeDescription, act => act.MapFrom(src => src.Examiner.Description))
+                 .ForMember(dest => dest.HeightMeasurementDeclined, act => act.MapFrom(src => src.HeightMeasurementRefused))
+                 .ForMember(dest => dest.WeightMeasurementDeclined, act => act.MapFrom(src => src.WeightMeasurementRefused))
+                 .ForMember(dest => dest.HeadMeasurementDeclined, act => act.MapFrom(src => src.HeadMeasurementRefused))
+                 .IgnoreUnMapped();
+
+            Mapper.CreateMap<ChildExaminationKdp, KdpExaminationResultTO>()
+                .ForMember(dest => dest.PkChildExaminationId, act => act.MapFrom(src => src.PkFkExamKdpGivenId))
+                .ForMember(dest => dest.ReceivingBoostSchemeService, act => act.MapFrom(src => src.ReceivingBoostScheme))
+                .ForMember(dest => dest.ReasonNotExaminedDescription, act => act.MapFrom(src => src.ChildExaminationGiven.ExamNotExaminedReason.KdpDescription))
+                .IgnoreUnMapped();
+
+            Mapper.CreateMap<ChildMeasurement, KdpExaminationResultTO>()
+                .ForMember(dest => dest.ChildMeasurementId, act => act.MapFrom(src => src.PkChildMeasurementId))
+                .ForMember(dest => dest.PkChildExaminationId, act => act.MapFrom(src => src.FkChildExaminationId))
+                .ForMember(dest => dest.ClientId, act => act.MapFrom(src => src.ClientId))
+                .ForMember(dest => dest.Sector, act => act.MapFrom(src => src.Sector))
+                .ForMember(dest => dest.ExaminationDate, act => act.MapFrom(src => src.MeasurementDate))
+                .ForMember(dest => dest.Height, act => act.MapFrom(src => src.Height))
+                .ForMember(dest => dest.Weight, act => act.MapFrom(src => src.Weight))
+                .ForMember(dest => dest.HeadCircumference, act => act.MapFrom(src => src.HeadCircumference))
+                .IgnoreUnMapped();
+
+            Mapper.CreateMap<PreSchoolExams_NextExamDue_ProcResults, NextExamDueTO>();
+
+            #endregion
+
+            #region CreateMap Transfer Object --> Model
+            Mapper.CreateMap<KdpExaminationResultTO, ChildExamination>()
+                .ForMember(dest => dest.PkChildExaminationId, act => act.MapFrom(src => src.PkChildExaminationId))
+                .ForMember(dest => dest.ClientId, act => act.MapFrom(src => src.ClientId))
+                .ForMember(dest => dest.FkExaminationId, act => act.MapFrom(src => src.ExaminationCode))
+                .ForMember(dest => dest.Sector, act => act.MapFrom(src => src.Sector))
+                .ForMember(dest => dest.IsRepeat, act => act.ResolveUsing<BoolToStringResolver>().FromMember(src => src.IsRepeat))
+                .MapIntoUnitOfWork(model => model.PkChildExaminationId, to => to.PkChildExaminationId);
+
+            Mapper.CreateMap<KdpExaminationResultTO, ChildExaminationGiven>()
+                .ForMember(dest => dest.PkFkChildExamGivenId, act => act.MapFrom(src => src.PkChildExaminationId))
+                .ForMember(dest => dest.ExaminationDate, act => act.MapFrom(src => src.ExaminationDate))
+                .ForMember(dest => dest.FkLocationHeldTypeId, act => act.MapFrom(src => src.LocationType))
+                .ForMember(dest => dest.FkChildLocationHeldCode, act => act.MapFrom(src => src.LocationCode))
+                .ForMember(dest => dest.FkStaffTypeExaminerId, act => act.MapFrom(src => src.ExaminerType))
+                .ForMember(dest => dest.FkHcpExaminerCode, act => act.MapFrom(src => src.ExaminerHcpCode))
+                .ForMember(dest => dest.FkExaminerCatId, act => act.MapFrom(src => src.ExaminerCategory))
+                .ForMember(dest => dest.FkNotExaminedReasonId, act => act.MapFrom(src => string.IsNullOrEmpty(src.ReasonNotExamined)
+                    ? (byte?)null
+                    : Convert.ToByte(src.ReasonNotExamined)))
+                .ForMember(dest => dest.RescheduleExamination, act => act.MapFrom(src => src.Reschedule))
+                .ForMember(dest => dest.HeightMeasurementRefused, act => act.MapFrom(src => src.HeightMeasurementDeclined))
+                .ForMember(dest => dest.WeightMeasurementRefused, act => act.MapFrom(src => src.WeightMeasurementDeclined))
+                .ForMember(dest => dest.HeadMeasurementRefused, act => act.MapFrom(src => src.HeadMeasurementDeclined))
+                .MapIntoUnitOfWork(model => model.PkFkChildExamGivenId, to => to.PkChildExaminationId);
+
+            Mapper.CreateMap<KdpExaminationResultTO, ChildExaminationKdp>()
+                .ForMember(dest => dest.PkFkExamKdpGivenId, act => act.MapFrom(src => src.PkChildExaminationId))
+                .ForMember(dest => dest.ReceivingBoostScheme, act => act.MapFrom(src => src.ReceivingBoostSchemeService))
+                .MapIntoUnitOfWork(model => model.PkFkExamKdpGivenId, to => to.PkChildExaminationId);
+
+            Mapper.CreateMap<KdpExaminationResultTO, ChildMeasurement>()
+                .ForMember(dest => dest.PkChildMeasurementId, act => act.MapFrom(src => src.ChildMeasurementId))
+                .ForMember(dest => dest.FkChildExaminationId, act => act.MapFrom(src => src.PkChildExaminationId))
+                .ForMember(dest => dest.ClientId, act => act.MapFrom(src => src.ClientId))
+                .ForMember(dest => dest.Sector, act => act.MapFrom(src => src.Sector))
+                .ForMember(dest => dest.MeasurementDate, act => act.MapFrom(src => src.ExaminationDate))
+                .ForMember(dest => dest.Height, act => act.MapFrom(src => src.Height))
+                .ForMember(dest => dest.Weight, act => act.MapFrom(src => src.Weight))
+                .ForMember(dest => dest.HeadCircumference, act => act.MapFrom(src => src.HeadCircumference))
+                .MapIntoUnitOfWork(model => model.PkChildMeasurementId, to => to.ChildMeasurementId);
+            #endregion
+        }
+
+        public KdpExaminationService(Func<IUnitOfWork> unitOfWorkFactory,
+            KdpExaminationValidator kdpExamValidator, GetCurrentDateTime getCurrentDateTime)
+        {
+            this.unitOfWorkFactory = unitOfWorkFactory;
+            this.getCurrentDateTime = getCurrentDateTime;
+            kdpExaminationValidator = kdpExamValidator;
+        }
+
+        public KdpExaminationTO GetKdpExamination(long clientId)
+        {
+            using (var uow = unitOfWorkFactory())
+            {
+                var childExamination = uow.Repository<ChildExamination>()
+                    .Include(c => c.ChildExaminationGiven)
+                    .Include(c => c.ChildExaminationGiven.ChildExaminationKdp)
+                    .Include(c => c.ChildMeasurement)
+                    .Include(c => c.ExaminationDescriptions)
+                    .Include(c => c.ChildExaminationGiven.ChildLocations)
+                    .Include(c => c.ChildExaminationGiven.HealthCareProfessionals)
+                    .Where(c => c.ClientId == clientId && c.ExaminationDescriptions.FkExamDescriptionType == ExamType.Kdp)
+                    .OrderByDescending(c => c.ChildExaminationGiven.ExaminationDate)
+                    .ToList();
+
+                var childDetails = GetChildDetails(clientId, uow);
+
+                var outstandingResults = GetKdpOutstandingAppointments(clientId, uow);
+
+                return new KdpExaminationTO
+                {
+                    Id = clientId.ToString("D"),
+                    DateOfBirth = childDetails.DateOfBirth,
+                    DateOfDeath = childDetails.DateOfDeath,
+                    Gender = childDetails.Sex,
+                    HasPreschoolConsent = childDetails.Consents.SingleOrDefault(con => con.ConsentCategory == PreschoolConsentCategory && con.ConsentType == MedicalConsentType)?.ConsentResult == kdpConsentYesValue,
+                    HcpExaminationResultToList = childExamination.Select(GetKdpResultTo).ToList(),
+                    OutstandingAppointmentsList = outstandingResults
+                };
+            }
+        }
+
+        private static List<ChildExaminationGivenSubTO> GetKdpOutstandingAppointments(long clientId, IUnitOfWork uow)
+        {
+            var outstandingAppointments = uow.Repository<HlxAppointment>()
+               .Include(appt => appt.ExaminationDescriptions)
+               .Where(appt => appt.ClientId == clientId
+                              && appt.ExaminationDue.StartsWith(KdpExamCodeAcronym)
+                              && appt.IsOutstanding == "Y"
+                              && appt.AppointmentDatetime <= DateTime.Now)
+               .OrderByDescending(appt => appt.AppointmentDatetime)
+               .ToList();
+
+            return outstandingAppointments.Select(appt => new ChildExaminationGivenSubTO
+            {
+                PkChildExaminationGivenId = 0,
+                ClientId = clientId,
+                ExaminationCode = appt.ExaminationDue,
+                ExaminationDesc = appt.ExaminationDescriptions?.ShortDescription,
+                ExaminationDate = appt.AppointmentDatetime,
+                Origin = LookupsUtility.EXAMINATION_ORIGIN.SCHEDULED
+            }).ToList();
+        }
+
+        private static ChildGeneral GetChildDetails(long clientId, IUnitOfWork uow)
+        {
+            return uow.Repository<ChildGeneral>()
+                .Include(cg => cg.Consents)
+                .Single(cg => cg.ClientId == clientId);
+        }
+
+        public static KdpExaminationResultTO GetKdpResultTo(ChildExamination childExamination)
+        {
+            var kdpResultTo = childExamination.To<KdpExaminationResultTO>();
+
+            if (childExamination.ChildExaminationGiven != null)
+            {
+                Mapper.Map(childExamination.ChildExaminationGiven, kdpResultTo);
+
+                if (childExamination.ChildExaminationGiven.ChildExaminationKdp != null)
+                {
+                    Mapper.Map(childExamination.ChildExaminationGiven.ChildExaminationKdp, kdpResultTo);
+                }
+            }
+
+            var childMeasurement = childExamination.ChildMeasurement.SingleOrDefault();
+            if (childMeasurement != null)
+            {
+                Mapper.Map(childMeasurement, kdpResultTo);
+            }
+            kdpResultTo.GenerateLock();
+            kdpResultTo.PropertyChanged.Clear();
+            return kdpResultTo;
+        }
+
+        public KdpExaminationResultTO GetKdpExaminationResult(long pkChildExaminationId)
+        {
+            using (var uow = unitOfWorkFactory())
+            {
+                var childExamination = uow.Repository<ChildExamination>()
+                    .Include(c => c.ChildExaminationGiven)
+                    .Include(c => c.ChildExaminationGiven.ChildExaminationKdp)
+                    .Include(c => c.ChildMeasurement)
+                    .Include(c => c.ExaminationDescriptions)
+                    .Include(c => c.ChildExaminationGiven.ChildLocations)
+                    .Include(c => c.ChildExaminationGiven.HealthCareProfessionals)
+                    .FirstOrDefault(c => c.PkChildExaminationId == pkChildExaminationId);
+          
+                return GetKdpResultTo(childExamination);
+            }
+        }
+
+        public void SaveKdpExaminationResult(KdpExaminationTO kdpExamTo, KdpExaminationResultTO kdpExamResultTo)
+        {
+            using (var uow = unitOfWorkFactory())
+            {
+                var currentData = uow.Repository<ChildExamination>()
+                    .Include(ce => ce.ChildExaminationGiven)
+                    .Include(ce => ce.ChildExaminationGiven.ChildExaminationKdp)
+                    .Include(ce => ce.ChildMeasurement)
+                    .SingleOrDefault(c => c.PkChildExaminationId == kdpExamResultTo.PkChildExaminationId);
+
+                if (currentData != null)
+                {
+                    kdpExamResultTo.CheckLock(GetKdpResultTo(currentData));
+                    kdpExaminationValidator.ValidateOnSave(kdpExamResultTo, kdpExamTo.DateOfBirth, kdpExamTo.DateOfDeath,kdpExamTo.HcpExaminationResultToList);
+                    UpdateKdpExaminationResult(uow, kdpExamResultTo, currentData);
+                }
+                else
+                {
+                    kdpExaminationValidator.ValidateOnSave(kdpExamResultTo, kdpExamTo.DateOfBirth, kdpExamTo.DateOfDeath,kdpExamTo.HcpExaminationResultToList);
+                    InsertKdpExaminationResult(uow, kdpExamResultTo);
+                }
+
+                ExaminationsCrudManager.UpdateRepeatFlags(uow, kdpExamResultTo.ClientId,kdpExamResultTo.ExaminationCode);
+
+                ExaminationsCrudManager.UpdateAppointmentStatuses(uow, kdpExamResultTo.ExaminationCode, kdpExamResultTo.ClientId, kdpExamResultTo.PkChildExaminationId);
+
+                ExaminationsCrudManager.ClearProducedRecalls(uow, kdpExamResultTo.ExaminationCode, kdpExamResultTo.ClientId);
+
+                uow.Commit();
+            }
+        }
+
+        private void UpdateKdpExaminationResult(IUnitOfWork uow, KdpExaminationResultTO kdpExamResultTo, ChildExamination currentData)
+        {
+            uow.UpdateTransferObject<KdpExaminationResultTO, ChildExamination>(kdpExamResultTo, checkLock: false);
+
+            kdpExamResultTo.ResultEnteredDate = DateTime.Now;
+            if (currentData.ChildExaminationGiven != null)
+                uow.UpdateTransferObject<KdpExaminationResultTO, ChildExaminationGiven>(kdpExamResultTo,checkLock: false);
+            else uow.InsertTransferObject<KdpExaminationResultTO, ChildExaminationGiven>(kdpExamResultTo);
+
+            if(currentData.ChildExaminationGiven?.ChildExaminationKdp !=null)
+                uow.UpdateTransferObject<KdpExaminationResultTO, ChildExaminationKdp>(kdpExamResultTo, checkLock: false);
+            else uow.InsertTransferObject<KdpExaminationResultTO, ChildExaminationKdp>(kdpExamResultTo);
+
+            if (kdpExamResultTo.ChildMeasurementId > 0)
+            {
+                uow.UpdateTransferObject<KdpExaminationResultTO, ChildMeasurement>(kdpExamResultTo, checkLock: false);
+            }else if ((kdpExamResultTo.Height.HasValue || kdpExamResultTo.Weight.HasValue || kdpExamResultTo.HeadCircumference.HasValue) &&
+                      kdpExamResultTo.ChildMeasurementId <= 0)
+            {
+                kdpExamResultTo.ChildMeasurementId = GetNextChildMeasurementPrimaryKey(uow);
+                uow.InsertTransferObject<KdpExaminationResultTO, ChildMeasurement>(kdpExamResultTo);
+            }
+        }
+
+        private void InsertKdpExaminationResult(IUnitOfWork uow, KdpExaminationResultTO kdpExamResultTo)
+        {
+            kdpExamResultTo.PkChildExaminationId = GetChildExaminationPrimaryKey(uow);
+
+            uow.InsertTransferObject<KdpExaminationResultTO, ChildExamination>(kdpExamResultTo);
+            uow.InsertTransferObject<KdpExaminationResultTO, ChildExaminationGiven>(kdpExamResultTo);
+            uow.InsertTransferObject<KdpExaminationResultTO, ChildExaminationKdp>(kdpExamResultTo);
+
+
+            if ((kdpExamResultTo.Height.HasValue || kdpExamResultTo.Weight.HasValue || kdpExamResultTo.HeadCircumference.HasValue) && kdpExamResultTo.ChildMeasurementId <= 0)
+            {
+                kdpExamResultTo.ChildMeasurementId = GetNextChildMeasurementPrimaryKey(uow);
+                uow.InsertTransferObject<KdpExaminationResultTO, ChildMeasurement>(kdpExamResultTo);
+            }
+        }
+
+        private static long GetChildExaminationPrimaryKey(IUnitOfWork uow)
+        {
+            return uow.GetNextId<ChildExamination>();
+        }
+
+        private static long GetNextChildMeasurementPrimaryKey(IUnitOfWork uow)
+        {
+            return uow.GetNextId<ChildMeasurement>();
+        }
+
+        public void DeleteKdpExaminationResult(long examinationId, long clientId, string examinationCode)
+        {
+            using (var uow = unitOfWorkFactory())
+            {
+                var result = uow.Repository<ChildExamination>()
+                    .Include(c => c.ChildExaminationGiven)
+                    .Include(c => c.ChildExaminationGiven.ChildExaminationKdp)
+                    .Include(c => c.ChildMeasurement)
+                    .SingleOrDefault(c => c.PkChildExaminationId == examinationId);
+
+                if (result == null)
+                    throw OptimisticLockFault.Default();
+
+                result.ChildMeasurement.ToList().ForEach(uow.Repository<ChildMeasurement>().Delete);
+                uow.Repository<ChildExaminationKdp>().Delete(result.ChildExaminationGiven.ChildExaminationKdp);
+                uow.Repository<ChildExaminationGiven>().Delete(result.ChildExaminationGiven);
+                uow.Repository<ChildExamination>().Delete(result);
+
+                ExaminationsCrudManager.UpdateRepeatFlags(uow, clientId, examinationCode);
+                ExaminationsCrudManager.ResetAppointmentsForDeletedResult(uow, examinationCode, Convert.ToInt64(clientId), examinationId);
+
+                uow.Commit();
+            }
+        }
+
+        public void SaveScheduledResult(KdpScheduledResultTO kdpExamResultTo)
+        {
+            using (var uow = unitOfWorkFactory())
+            {
+                var resultAlreadyRecorded = uow.Repository<HlxAppointment>()
+                    .Single(appt => appt.PkHlxAppointmentId == kdpExamResultTo.AppointmentId)
+                    .IsOutstanding == HLXBoolean.False;
+
+                if (resultAlreadyRecorded)
+                {
+                    throw OptimisticLockFault.Default();
+                }
+
+                kdpExaminationValidator.ValidateOnSave(kdpExamResultTo, kdpExamResultTo.DateOfBirth, kdpExamResultTo.DateOfDeath);
+
+                InsertKdpExaminationResult(uow, kdpExamResultTo);
+
+                ExaminationsCrudManager.UpdateAppointmentStatuses(uow, kdpExamResultTo.ExaminationCode, kdpExamResultTo.ClientId, kdpExamResultTo.PkChildExaminationId);
+
+                ExaminationsCrudManager.ClearProducedRecalls(uow, kdpExamResultTo.ExaminationCode, kdpExamResultTo.ClientId);
+
+                if (kdpExamResultTo.WithdrawConsent)
+                {
+                    var medicalConsent = uow.Repository<Consent>()
+                        .Single(c => c.ClientId == kdpExamResultTo.ClientId
+                            && c.ConsentCategory == (byte)LookupsUtility.CONSENT_CATEGORY.PSH
+                            && c.ConsentType == MedicalConsentType);
+
+                    medicalConsent.ConsentResult = LookupsUtility.ExamConsentResultMap()[LookupsUtility.EXAM_CONSENT_RESULTS.CONSENT_REFUSED];
+                    medicalConsent.DateOfConsent = getCurrentDateTime().Date;
+                }
+
+                uow.Commit();
+            }
+        }
+
+        public List<KdpExamResultModel> GetKdpExamResults(long clientId)
+        {
+            using (var uow = unitOfWorkFactory())
+            {
+                var childGeneral = uow.Repository<ChildGeneral>().Single(rec => rec.ClientId == clientId);
+
+                var childExaminationList = uow.Repository<ChildExamination>()
+                    .Include(c => c.ChildExaminationGiven.ChildExaminationKdp)
+                    .Include(c => c.ChildExaminationGiven.Examiner)
+                    .Include(c => c.ChildExaminationGiven.ExamNotExaminedReason)
+                    .Include(c => c.ChildMeasurement)
+                    .Include(c => c.ExaminationDescriptions)
+                    .Where(c => c.ClientId == childGeneral.ClientId &&
+                            c.ExaminationDescriptions.FkExamDescriptionType == ExamType.Kdp)
+                    .OrderByDescending(c => c.ChildExaminationGiven.ExaminationDate)
+                    .ToList();
+                var kdpExamResultModelList = Mapper.Map<List<ChildExamination>, List<KdpExamResultModel>>(childExaminationList);
+
+                var resultsLocationTypes = kdpExamResultModelList.Where(result => result.LocationType != null).Select(result => result.LocationType).Distinct();
+
+                var locationTypes = resultsLocationTypes as IList<byte?> ?? resultsLocationTypes.ToList();
+                if (!locationTypes.Any()) return kdpExamResultModelList;
+                var kdpLocationTypes = uow.Repository<KdpLocationTypes>().Where(rec => locationTypes.Contains(rec.FkLocationType)).ToList();
+                foreach (var kdpExamResultModel in kdpExamResultModelList.Where(kdpExamResultModel => kdpExamResultModel.LocationType != null))
+                {
+                    kdpExamResultModel.LocationTypeDesc = kdpLocationTypes.SingleOrDefault(rec => rec.FkLocationType == kdpExamResultModel.LocationType)?.Description;
+                }
+                return kdpExamResultModelList;
+            }
+        }
+
+        public Tuple<double, double> GetAgeRangeFromExamSchedule(string examCode)
+        {
+            using (var uow = unitOfWorkFactory())
+            {
+                var scheduledExam = uow.Repository<PreschoolScheduleExams>()
+                                        .WhereIsActive()
+                                        .Where(x => x.FkExamCode == examCode)
+                                        .Select(x => new { MinimumAgeWks = x.MinimumAgeWks, MaximumAgeWks = x.MaximumAgeWks })
+                                        .FirstOrDefault();
+
+                if (scheduledExam == null)
+                    return null;
+
+                var minimumAgeInWeeks = Convert.ToDouble(scheduledExam.MinimumAgeWks);
+                var maximumAgeInWeeks = (double?)scheduledExam.MaximumAgeWks ?? double.MaxValue;
+
+                return new Tuple<double,double>(minimumAgeInWeeks, maximumAgeInWeeks);
+            }
+        }
+
+        public NextExamDueTO GetNextKdpContactDue(long clientId)
+        {
+            using (var uow = unitOfWorkFactory())
+            {
+                return Mapper.Map<NextExamDueTO>(PreschoolsManager.NextPreschoolExamDue(clientId, uow).FirstOrDefault());
+            }
+        }
+    }
+}

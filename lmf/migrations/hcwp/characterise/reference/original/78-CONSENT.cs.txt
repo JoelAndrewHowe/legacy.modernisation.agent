@@ -1,0 +1,24 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Orvex.Model
+{
+    public class Consent
+    {
+        public long ConsentId { get; set; }
+        public long ClientId { get; set; }
+        public string Sector { get; set; }
+        public byte ConsentType { get; set; }
+        public byte ConsentCategory { get; set; }
+        public DateTime? DateOfConsent { get; set; }
+        public string ReasonNoConsent { get; set; }
+        public DateTime CreationDate { get; set; }
+        public string CreationOrigin { get; set; }
+        public long CreationUser { get; set; }
+        public DateTime ModificationDate { get; set; }
+        public string ConsentResult { get; set; }
+        public string RecordStatus { get; set; }
+        public virtual ChildGeneral ChildGeneral { get; set; }
+    }
+}

@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "claim": "parity with extracted legacy logic; not the original Windows/Oracle system",
+  "sourceSha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+  "fixtureSha256": "ece4997b76d12a9fa488974e76d02bc4c89ecad1779cee1d89715d1b24b4e6a3",
+  "scenarioSha256": "409f6d6d8615d0bc851810feed5343e10954750ac52a7d463301ffdd385bad3b",
+  "mode": "verify",
+  "selectedScenario": "KD03-033",
+  "total": 1,
+  "passed": 1,
+  "failed": 0,
+  "skipped": 0,
+  "results": [
+    {
+      "id": "KD03-033",
+      "status": "passed",
+      "observations": {
+        "accepted": true,
+        "saved": false,
+        "messages": [],
+        "newRows": {
+          "examination": 0,
+          "given": 0,
+          "kdp": 0,
+          "measurement": 0
+        },
+        "storeUnchanged": false,
+        "offeredCodes": [
+          "KD03"
+        ],
+        "repeatFlags": {
+          "1103": "Y",
+          "1101": "N",
+          "1102": "Y",
+          "2201": "Y"
+        },
+        "unchangedPatients": [
+          202,
+          303,
+          404
+        ],
+        "kd03Order": [
+          1103,
+          1102,
+          1101
+        ]
+      },
+      "differences": []
+    }
+  ]
+}
