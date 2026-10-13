@@ -2,7 +2,7 @@
 
 ## Status and classification
 
-This task produces source-backed behaviour/dependency/gaps documentation only. No harness, executable scenarios, test passes or human approval are claimed. The run plan is deliberately unchanged and its task remains unchecked.
+Source-backed behaviour/dependency/gaps documentation is accompanied by `migration-plan.md`, synthetic `fixtures.json` and 40 required shared scenario definitions in `scenarios.json`. These definitions have not run against a harness. No harness, reference test passes or human approval are claimed. The run plan is deliberately unchanged and the current task remains unchecked.
 
 - **Source-backed quirk/contradiction:** preserve in extracted logic; flag for human review, not silently fix.
 - **Synthetic fixture:** an explicit demonstration input, not recovered clinical/operational truth.
@@ -13,7 +13,7 @@ References below identify original bundle files/methods in `example-code/HCWP Co
 
 ## Validator findings supplied with this invocation
 
-No findings appeared after the user's “Record and address these validator findings:”. There are no supplied validator defects to repair. This records the empty findings list, not a validator pass. Concrete issues discovered during source inspection are recorded below.
+**V01 — save fault versus parent notification (addressed in definitions).** The supplied finding covers `scenarios.json` KD03-004–010, KD03-011, KD03-014–015 and KD03-032 and the `migration-plan.md` save/decline contract. File 27 `ValidateOnSave` throws the aggregate fault with `ValidationErrorsPrompt`; file 44 propagates it; file 5 `KdpExaminationDelegate.Save` catches `FaultException`, sends `NonFatalErrorEncountered` using `ex.Message`, `KdpResultsTitle` and `ExamResultsErrorSavingPrompt`, and returns false. The 11 expectations now distinguish `validatorPrompt` from observable `savePrompt` and explicitly assert `parentNotification`. Ordered errors, declined-field values and unchanged-storage expectations are preserved. The operation contract now requires the parent catch for save and decline. No legacy behaviour is altered. Definition checks are not a validator pass or reference execution; the later harness must observe both layers.
 
 ## Preserve-and-review register
 
@@ -35,7 +35,7 @@ No findings appeared after the user's “Record and address these validator find
 
 ## Unavailable inputs and synthetic fixture obligations
 
-No new fixture file has been created in this task. The next fixture/scenario task must label every invented value and record its origin; no supplied test patient identifier is to be treated as real data or clinical truth.
+`fixtures.json` now labels synthetic patients, histories, inputs, clock/IDs, operational lookups, schedule rows, BMI options and raw centile bands with provenance. Source-backed choice dictionaries and SQL seeds are separate from invented operational values. `scenarios.json` assigns stable KD03-001 through KD03-040 IDs and expected projections. No supplied test patient identifier is treated as real data or clinical truth. The extraction task must document its actual substitutions; declarative fixtures alone do not prove those adaptations.
 
 | Needed input | Supplied evidence | Required bounded treatment |
 | --- | --- | --- |
@@ -60,7 +60,7 @@ No new fixture file has been created in this task. The next fixture/scenario tas
 
 ## Pending evidence and human decisions
 
-Named later tasks still need migration slices, synthetic fixture/scenario JSON, independently inspectable extracted harness, command execution and per-scenario results, and final review with exact revisions/commands. Their absence means Characterise is not complete, not that source-established outcomes should be sent back for operator re-specification.
+Migration slices and synthetic fixture/scenario JSON are defined. Structural checks parsed both JSON files, verified all 40 required unique IDs, resolved fixture/source references, checked no-save projection invariants and matched the source SHA-256. These are not reference scenario passes. Named later tasks still need the independently inspectable extracted harness, command execution and per-scenario results, and final review with exact revisions/commands. Their absence means Characterise is not complete, not that source-established outcomes should be sent back for operator re-specification.
 
 Human review before Convert must cover the two head ranges, counted-results omissions, lack of gender-specific testes rule, synthetic clinical/lookup values, KD03-only boundary, schedule-selection limitation and excluded infrastructure. Preserve quirks by default; any requested behavioural change needs an explicit decision and new approved revision. Do not create approval or proceed to Convert/Refactor on the agent's authority.
 

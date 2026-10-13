@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "fixtureFile": "fixtures.json",
+  "contract": "migration-plan.md#shared-json-contract-version-1",
+  "status": "Defined, not executed; all scenarios required. No approval claimed.",
+  "expectationComposition": "expected.base resolves fixtures.observationDefaults first; remaining expected keys override it. savedFixture resolves fixtures.savedProjections, then savedOverrides. Compare every resolved key. All no-save paths require zero row deltas and unchanged committed storage.",
+  "scenarios": [
+    {
+      "id": "KD03-001", "required": true, "title": "Given a selected patient, adding a draft supplies source defaults",
+      "sourceRefs": ["parent"], "operation": "draft", "patient": "selected", "draft": "unselected",
+      "expected": {"base": "noSave", "accepted": true, "messages": [], "draftValues": {"ClientId": 101, "PkChildExaminationId": 0, "ExaminationCode": null, "ExaminationDate": "0001-01-01T00:00:00", "ResultEnteredDate": "2025-03-15T12:00:00", "Origin": 2, "Reschedule": "N", "HeightMeasurementDeclined": "N", "WeightMeasurementDeclined": "N", "HeadMeasurementDeclined": "N", "WithdrawConsent": false, "IsRepeat": false}}
+    },
+    {
+      "id": "KD03-002", "required": true, "title": "Given full KD03 input, record and freshly read common and all physical values",
+      "sourceRefs": ["parent", "result", "service", "measurements"], "operation": "record", "patient": "selected", "draft": "full", "confirmations": [],
+      "expected": {"base": "savedWithMeasurement", "accepted": true, "messages": [], "savedFixture": "full", "bmi": 15, "bmiOutsideRange": false}
+    },
+    {
+      "id": "KD03-003", "required": true, "title": "Heart alone is a counted result; no measurements or affirmative consent are mandatory",
+      "sourceRefs": ["validator", "service"], "operation": "save", "patient": "selected", "draft": "heartOnly",
+      "expected": {"base": "savedNoMeasurement", "accepted": true, "messages": [], "savedFixture": "heartOnly", "bmi": null}
+    },
+    {
+      "id": "KD03-004", "required": true, "title": "Missing code/date and invalid measurements produce ordered aggregate errors",
+      "sourceRefs": ["validator"], "operation": "save", "patient": "selected", "draft": "unselected", "overrides": {"Height": 0, "Weight": 1000, "HeadCircumference": 1000, "Reschedule": "Y"},
+      "expected": {"base": "noSave", "accepted": false, "errors": ["NoExamCodeMessage", "NoExamDateMessage", "InvalidHeightMessage", "InvalidWeightMessage", "InvalidHeadCircumferenceMessage", "RescheduleOnlyIfNotExaminedMessage"], "validatorPrompt": "ValidationErrorsPrompt", "savePrompt": "ExamResultsErrorSavingPrompt", "parentNotification": {"type": "NonFatalErrorEncountered", "kind": "Error", "title": "KdpResultsTitle", "prompt": "ExamResultsErrorSavingPrompt"}}
+    },
+    {
+      "id": "KD03-005", "required": true, "title": "A future contact fails save without changing existing records",
+      "sourceRefs": ["validator"], "operation": "save", "patient": "selected", "draft": "heartOnly", "history": "oneEarlier", "overrides": {"ExaminationDate": "2025-03-16T00:00:00"},
+      "expected": {"base": "noSave", "accepted": false, "errors": ["FutureExamDateMessage"], "validatorPrompt": "ValidationErrorsPrompt", "savePrompt": "ExamResultsErrorSavingPrompt", "parentNotification": {"type": "NonFatalErrorEncountered", "kind": "Error", "title": "KdpResultsTitle", "prompt": "ExamResultsErrorSavingPrompt"}}
+    },
+    {
+      "id": "KD03-006", "required": true, "title": "A contact before birth fails save",
+      "sourceRefs": ["validator"], "operation": "save", "patient": "selected", "draft": "heartOnly", "overrides": {"ExaminationDate": "2024-12-31T23:59:59"},
+      "expected": {"base": "noSave", "accepted": false, "errors": ["ExamDateBeforeDobMessage"], "validatorPrompt": "ValidationErrorsPrompt", "savePrompt": "ExamResultsErrorSavingPrompt", "parentNotification": {"type": "NonFatalErrorEncountered", "kind": "Error", "title": "KdpResultsTitle", "prompt": "ExamResultsErrorSavingPrompt"}}
+    },
+    {
+      "id": "KD03-007", "required": true, "title": "A timestamp after death fails save even on the same day",
+      "sourceRefs": ["validator"], "operation": "save", "patient": "deceased", "draft": "heartOnly", "overrides": {"ExaminationDate": "2025-02-20T10:00:01"},
+      "expected": {"base": "noSave", "accepted": false, "errors": ["ExamDateAfterDeathMessage"], "validatorPrompt": "ValidationErrorsPrompt", "savePrompt": "ExamResultsErrorSavingPrompt", "parentNotification": {"type": "NonFatalErrorEncountered", "kind": "Error", "title": "KdpResultsTitle", "prompt": "ExamResultsErrorSavingPrompt"}}
+    },
+    {
+      "id": "KD03-008", "required": true, "title": "An empty KD03 result is not recordable",
+      "sourceRefs": ["validator"], "operation": "save", "patient": "selected", "draft": "emptyResult",
+      "expected": {"base": "noSave", "accepted": false, "errors": ["NoResultsEnteredMessage"], "validatorPrompt": "ValidationErrorsPrompt", "savePrompt": "ExamResultsErrorSavingPrompt", "parentNotification": {"type": "NonFatalErrorEncountered", "kind": "Error", "title": "KdpResultsTitle", "prompt": "ExamResultsErrorSavingPrompt"}}
+    },
+    {
+      "id": "KD03-009", "required": true, "title": "General assessment alone is omitted from counted results",
+      "sourceRefs": ["validator"], "operation": "save", "patient": "selected", "draft": "emptyResult", "overrides": {"PhysicalGeneral": 1},
+      "expected": {"base": "noSave", "accepted": false, "errors": ["NoResultsEnteredMessage"], "validatorPrompt": "ValidationErrorsPrompt", "savePrompt": "ExamResultsErrorSavingPrompt", "parentNotification": {"type": "NonFatalErrorEncountered", "kind": "Error", "title": "KdpResultsTitle", "prompt": "ExamResultsErrorSavingPrompt"}}
+    },
+    {
+      "id": "KD03-010", "required": true, "title": "Consent and core component do not count as results",
+      "sourceRefs": ["validator"], "operation": "save", "patient": "selected", "draft": "emptyResult", "overrides": {"Consent": "Y", "CoreComponent": 1},
+      "expected": {"base": "noSave", "accepted": false, "errors": ["NoResultsEnteredMessage"], "validatorPrompt": "ValidationErrorsPrompt", "savePrompt": "ExamResultsErrorSavingPrompt", "parentNotification": {"type": "NonFatalErrorEncountered", "kind": "Error", "title": "KdpResultsTitle", "prompt": "ExamResultsErrorSavingPrompt"}}
+    },
+    {
+      "id": "KD03-011", "required": true, "title": "Declined-only recording is insufficient and both boolean transitions clear measurements",
+      "sourceRefs": ["result", "validator"], "operation": "decline", "patient": "selected", "draft": "emptyResult", "overrides": {"Height": 60, "Weight": 5.4, "HeadCircumference": 38},
+      "assignments": [{"property": "IsHeightDeclined", "value": true}, {"property": "IsWeightDeclined", "value": true}, {"property": "IsHeadCircumferenceDeclined", "value": true}, {"property": "IsHeightDeclined", "value": false}],
+      "expected": {"base": "noSave", "accepted": false, "errors": ["NoResultsEnteredMessage"], "validatorPrompt": "ValidationErrorsPrompt", "savePrompt": "ExamResultsErrorSavingPrompt", "parentNotification": {"type": "NonFatalErrorEncountered", "kind": "Error", "title": "KdpResultsTitle", "prompt": "ExamResultsErrorSavingPrompt"}, "fieldValues": {"Height": null, "Weight": null, "HeadCircumference": null, "HeightMeasurementDeclined": "N", "WeightMeasurementDeclined": "Y", "HeadMeasurementDeclined": "Y"}, "requiredFlags": {"IsHeightRequired": true, "IsWeightRequired": false, "IsHeadCircumferenceRequired": false}}
+    },
+    {
+      "id": "KD03-012", "required": true, "title": "A recorded N shared result counts, without measurements",
+      "sourceRefs": ["validator", "service"], "operation": "save", "patient": "selected", "draft": "emptyResult", "overrides": {"OnwardReferralsMade": "N"},
+      "expected": {"base": "savedNoMeasurement", "accepted": true, "messages": [], "savedFixture": "heartOnly", "savedOverrides": {"Heart": null, "OnwardReferralsMade": "N"}}
+    },
+    {
+      "id": "KD03-013", "required": true, "title": "Reason plus reschedule and general assessment saves, because general is not counted",
+      "sourceRefs": ["validator", "service"], "operation": "save", "patient": "selected", "draft": "notExamined",
+      "expected": {"base": "savedNoMeasurement", "accepted": true, "messages": [], "savedFixture": "notExamined"}
+    },
+    {
+      "id": "KD03-014", "required": true, "title": "Reason plus heart conflicts and saves nothing",
+      "sourceRefs": ["validator"], "operation": "save", "patient": "selected", "draft": "notExamined", "overrides": {"Heart": 1},
+      "expected": {"base": "noSave", "accepted": false, "errors": ["ResultsRecordedButNotExamined"], "validatorPrompt": "ValidationErrorsPrompt", "savePrompt": "ExamResultsErrorSavingPrompt", "parentNotification": {"type": "NonFatalErrorEncountered", "kind": "Error", "title": "KdpResultsTitle", "prompt": "ExamResultsErrorSavingPrompt"}}
+    },
+    {
+      "id": "KD03-015", "required": true, "title": "Rescheduling without a reason fails even with a result",
+      "sourceRefs": ["validator"], "operation": "save", "patient": "selected", "draft": "heartOnly", "overrides": {"Reschedule": "Y"},
+      "expected": {"base": "noSave", "accepted": false, "errors": ["RescheduleOnlyIfNotExaminedMessage"], "validatorPrompt": "ValidationErrorsPrompt", "savePrompt": "ExamResultsErrorSavingPrompt", "parentNotification": {"type": "NonFatalErrorEncountered", "kind": "Error", "title": "KdpResultsTitle", "prompt": "ExamResultsErrorSavingPrompt"}}
+    },
+    {
+      "id": "KD03-016", "required": true, "title": "Head 150 fails the field path",
+      "sourceRefs": ["result", "validator"], "operation": "field", "patient": "selected", "draft": "heartOnly", "method": "ValidateHeadCircumference", "value": 150,
+      "expected": {"base": "noSave", "accepted": false, "messages": [{"kind": "Error", "key": "HeadCircumferenceInvalidFormatMessage"}]}
+    },
+    {
+      "id": "KD03-017", "required": true, "title": "The same head 150 passes direct save and reads back unchanged",
+      "sourceRefs": ["validator", "service"], "operation": "save", "patient": "selected", "draft": "heartOnly", "overrides": {"HeadCircumference": 150},
+      "expected": {"base": "savedWithMeasurement", "accepted": true, "messages": [], "savedFixture": "heartOnly", "savedOverrides": {"HeadCircumference": 150, "ChildMeasurementId": 8001}}
+    },
+    {
+      "id": "KD03-018", "required": true, "title": "Head zero uses the distinct field minus-number error",
+      "sourceRefs": ["validator", "result"], "operation": "field", "patient": "selected", "draft": "heartOnly", "method": "ValidateHeadCircumference", "value": 0,
+      "expected": {"base": "noSave", "accepted": false, "messages": [{"kind": "Error", "key": "HeadCircumferenceMinusNumberErrorMessage"}]}
+    },
+    {
+      "id": "KD03-019", "required": true, "title": "Head field's upper endpoint 100 is rejected",
+      "sourceRefs": ["validator", "result"], "operation": "field", "patient": "selected", "draft": "heartOnly", "method": "ValidateHeadCircumference", "value": 100,
+      "expected": {"base": "noSave", "accepted": false, "messages": [{"kind": "Error", "key": "HeadCircumferenceInvalidFormatMessage"}]}
+    },
+    {
+      "id": "KD03-020", "required": true, "title": "Exclusive height and weight bounds reject invalid field input",
+      "sourceRefs": ["validator", "result"], "operation": "field", "patient": "selected", "draft": "heartOnly", "method": "ValidateHeight", "value": 0,
+      "expected": {"base": "noSave", "accepted": false, "messages": [{"kind": "Error", "key": "InvalidHeightMessage"}]}
+    },
+    {
+      "id": "KD03-021", "required": true, "title": "Weight upper endpoint 1000 fails field validation",
+      "sourceRefs": ["validator", "result"], "operation": "field", "patient": "selected", "draft": "heartOnly", "method": "ValidateWeight", "value": 1000,
+      "expected": {"base": "noSave", "accepted": false, "messages": [{"kind": "Error", "key": "InvalidWeightMessage"}]}
+    },
+    {
+      "id": "KD03-022", "required": true, "title": "No preschool consent warns but does not prevent recording; female testes value is not rejected",
+      "sourceRefs": ["parent", "validator", "result"], "operation": "record", "patient": "noConsent", "draft": "heartOnly", "overrides": {"Testes": 3}, "confirmations": [],
+      "expected": {"base": "savedNoMeasurement", "accepted": true, "messages": [{"kind": "Warning", "key": "NoConsentMessage"}], "savedFixture": "heartOnly", "savedOverrides": {"ClientId": 303, "Testes": 3}}
+    },
+    {
+      "id": "KD03-023", "required": true, "title": "Age below synthetic schedule warns and still saves",
+      "sourceRefs": ["result", "service", "dates"], "operation": "record", "patient": "selected", "draft": "heartOnly", "overrides": {"ExaminationDate": "2025-02-05T00:00:00"}, "confirmations": [],
+      "expected": {"base": "savedNoMeasurement", "accepted": true, "messages": [{"kind": "Warning", "key": "KdpContactGivenBeforeMinAge"}], "savedFixture": "heartOnly", "savedOverrides": {"ExaminationDate": "2025-02-05T00:00:00"}}
+    },
+    {
+      "id": "KD03-024", "required": true, "title": "Age above synthetic schedule warns and still saves",
+      "sourceRefs": ["result", "service", "dates"], "operation": "record", "patient": "selected", "draft": "heartOnly", "overrides": {"ExaminationDate": "2025-03-05T00:00:00"}, "confirmations": [],
+      "expected": {"base": "savedNoMeasurement", "accepted": true, "messages": [{"kind": "Warning", "key": "KdpContactGivenAfterMaxAge"}], "savedFixture": "heartOnly", "savedOverrides": {"ExaminationDate": "2025-03-05T00:00:00"}}
+    },
+    {
+      "id": "KD03-025", "required": true, "title": "Absent schedule does not invent an age-window rule",
+      "sourceRefs": ["result", "service"], "operation": "record", "patient": "selected", "draft": "heartOnly", "environment": "noSchedule", "overrides": {"ExaminationDate": "2025-03-05T00:00:00"}, "confirmations": [],
+      "expected": {"base": "savedNoMeasurement", "accepted": true, "messages": [], "savedFixture": "heartOnly", "savedOverrides": {"ExaminationDate": "2025-03-05T00:00:00"}}
+    },
+    {
+      "id": "KD03-026", "required": true, "title": "Raw centile aggregation retains reversed bound naming and endpoint warns without rejecting",
+      "sourceRefs": ["measurements", "result"], "operation": "field", "patient": "selected", "draft": "heartOnly", "method": "ValidateHeight", "value": 40,
+      "expected": {"base": "noSave", "accepted": true, "messages": [{"kind": "Warning", "key": "OutsideExpectedRangeMessage"}], "expectedRanges": {"Height": {"LowerBound": 40, "UpperBound": 70}, "Weight": {"LowerBound": 2, "UpperBound": 8}}}
+    },
+    {
+      "id": "KD03-027", "required": true, "title": "BMI outside synthetic prescribed limits warns, not rejects, and reads back measurements",
+      "sourceRefs": ["result", "measurements", "service"], "operation": "record", "patient": "selected", "draft": "full", "overrides": {"Weight": 7.5}, "confirmations": [],
+      "expected": {"base": "savedWithMeasurement", "accepted": true, "messages": [{"kind": "Warning", "key": "BmiOutsidePrescribedRangeMessage"}], "savedFixture": "full", "savedOverrides": {"Weight": 7.5}, "bmi": 20.83, "bmiOutsideRange": true}
+    },
+    {
+      "id": "KD03-028", "required": true, "title": "Declining duplicate-code confirmation retains unselected code and does not save",
+      "sourceRefs": ["result", "validator"], "operation": "record", "patient": "selected", "draft": "heartOnly", "history": "oneEarlier", "confirmations": [false],
+      "expected": {"base": "noSave", "accepted": false, "messages": [{"kind": "Confirmation", "key": "KdpDuplicateExamCodeMessage"}], "fieldValues": {"ExaminationCode": null}}
+    },
+    {
+      "id": "KD03-029", "required": true, "title": "Accept duplicate-code confirmation and save later KD03 as repeat with patient isolation",
+      "sourceRefs": ["result", "validator", "repeat", "service"], "operation": "record", "patient": "selected", "draft": "heartOnly", "history": "oneEarlier", "confirmations": [true],
+      "expected": {"base": "savedNoMeasurement", "accepted": true, "messages": [{"kind": "Confirmation", "key": "KdpDuplicateExamCodeMessage"}], "savedFixture": "heartOnly", "savedOverrides": {"IsRepeat": true}, "repeatFlags": {"1101": "N", "9001": "Y", "2201": "Y"}, "unchangedPatients": [202], "kd03Order": [9001, 1101]}
+    },
+    {
+      "id": "KD03-030", "required": true, "title": "Save earlier KD03 demotes existing earliest and leaves another patient unchanged",
+      "sourceRefs": ["result", "repeat", "service"], "operation": "record", "patient": "selected", "draft": "heartOnly", "history": "oneLater", "confirmations": [true],
+      "expected": {"base": "savedNoMeasurement", "accepted": true, "messages": [{"kind": "Confirmation", "key": "KdpDuplicateExamCodeMessage"}], "savedFixture": "heartOnly", "repeatFlags": {"1101": "Y", "9001": "N", "2201": "Y"}, "unchangedPatients": [202], "kd03Order": [1101, 9001]}
+    },
+    {
+      "id": "KD03-031", "required": true, "title": "Same calendar-day duplicate rejects before confirmation despite differing time",
+      "sourceRefs": ["result", "validator"], "operation": "record", "patient": "selected", "draft": "heartOnly", "history": "sameDay", "confirmations": [],
+      "expected": {"base": "noSave", "accepted": false, "messages": [{"kind": "Error", "key": "KdpResultAlreadyEnteredMessage"}]}
+    },
+    {
+      "id": "KD03-032", "required": true, "title": "Direct save also rejects same-day duplicates",
+      "sourceRefs": ["validator", "service"], "operation": "save", "patient": "selected", "draft": "heartOnly", "history": "sameDay",
+      "expected": {"base": "noSave", "accepted": false, "errors": ["KdpResultAlreadyEnteredMessage"], "validatorPrompt": "ValidationErrorsPrompt", "savePrompt": "ExamResultsErrorSavingPrompt", "parentNotification": {"type": "NonFatalErrorEncountered", "kind": "Error", "title": "KdpResultsTitle", "prompt": "ExamResultsErrorSavingPrompt"}}
+    },
+    {
+      "id": "KD03-033", "required": true, "title": "Existing KD03 flags use chronological order, exact-code grouping and patient isolation",
+      "sourceRefs": ["repeat", "scope"], "operation": "repeat", "patient": "selected", "history": "orderingAndGrouping", "runs": 1,
+      "expected": {"accepted": true, "saved": false, "messages": [], "newRows": {"examination": 0, "given": 0, "kdp": 0, "measurement": 0}, "repeatFlags": {"1101": "N", "1102": "Y", "1103": "Y", "2201": "Y"}, "unchangedPatients": [202], "kd03Order": [1103, 1102, 1101]}
+    },
+    {
+      "id": "KD03-034", "required": true, "title": "All exact earliest timestamp ties remain non-repeat",
+      "sourceRefs": ["repeat", "scope"], "operation": "repeat", "patient": "selected", "history": "ties", "runs": 1,
+      "expected": {"accepted": true, "saved": false, "messages": [], "newRows": {"examination": 0, "given": 0, "kdp": 0, "measurement": 0}, "repeatFlags": {"1101": "N", "1102": "N", "1103": "Y"}}
+    },
+    {
+      "id": "KD03-035", "required": true, "title": "Repeat recalculation is idempotent",
+      "sourceRefs": ["repeat", "scope"], "operation": "repeat", "patient": "selected", "history": "orderingAndGrouping", "runs": 2,
+      "expected": {"accepted": true, "saved": false, "messages": [], "newRows": {"examination": 0, "given": 0, "kdp": 0, "measurement": 0}, "repeatFlags": {"1101": "N", "1102": "Y", "1103": "Y", "2201": "Y"}, "unchangedPatients": [202], "sameAfterSecondRun": true}
+    },
+    {
+      "id": "KD03-036", "required": true, "title": "Demonstration offers only KD03 and rejects unsupported submission without legacy-rule attribution",
+      "sourceRefs": ["scope"], "operation": "unsupported", "patient": "selected", "draft": "heartOnly", "history": "oneEarlier", "overrides": {"ExaminationCode": "KD04"},
+      "expected": {"base": "noSave", "accepted": false, "offeredCodes": ["KD03"], "messages": [{"kind": "ScopeError", "key": "UnsupportedContact"}]}
+    },
+    {
+      "id": "KD03-037", "required": true, "title": "Unknown legacy lookup code fails field validation independently of the scope adapter",
+      "sourceRefs": ["result", "validator"], "operation": "field", "patient": "selected", "draft": "unselected", "method": "ValidateAndSetExamCode", "value": "ZZ99",
+      "expected": {"base": "noSave", "accepted": false, "messages": [{"kind": "Error", "key": "KdpInvalidExamCodeMessage"}], "fieldValues": {"ExaminationCode": null}}
+    },
+    {
+      "id": "KD03-038", "required": true, "title": "Unknown location is a field error, not a fabricated save mandate",
+      "sourceRefs": ["result", "lookups"], "operation": "field", "patient": "selected", "draft": "heartOnly", "overrides": {"LocationType": 5}, "method": "ValidateLocationCode", "value": "MISSING",
+      "expected": {"base": "noSave", "accepted": false, "messages": [{"kind": "Error", "key": "InvalidLocationCodeMessage"}]}
+    },
+    {
+      "id": "KD03-039", "required": true, "title": "Unused examiner is a field error",
+      "sourceRefs": ["result", "lookups"], "operation": "field", "patient": "selected", "draft": "heartOnly", "overrides": {"ExaminerCategory": "18"}, "method": "ValidateExaminerCode", "value": "SYN002",
+      "expected": {"base": "noSave", "accepted": false, "messages": [{"kind": "Error", "key": "UnusedExaminerCodeMessage"}]}
+    },
+    {
+      "id": "KD03-040", "required": true, "title": "Missing location type reports error yet null-list field path returns true",
+      "sourceRefs": ["result"], "operation": "field", "patient": "selected", "draft": "heartOnly", "method": "ValidateLocationCode", "value": "MISSING",
+      "expected": {"base": "noSave", "accepted": true, "messages": [{"kind": "Error", "key": "NoLocationTypeMessage"}]}
+    }
+  ]
+}
