@@ -1,5 +1,53 @@
 # Validator findings
 
+## Full-flow validator repairs
+
+Supplied findings:
+1. Warning markup omitted the documented NHSW heading, icon, heading-text and content structure.
+2. Field errors existed only in the summary, without inline errors, invalid styling or ARIA associations.
+3. Four-group workflow evidence did not inspect confirmation keyboard operation, responsive presentation or changed-state contrast.
+
+Repaired `src/Components/Pages/Recording.razor` using pinned upstream
+`preview/examples/warning-callout-default.html`, `preview/examples/select-error.html`
+and `preview/error-states.html` input markup. Heading level is adapted to h2;
+icon is hidden from assistive technology, with the upstream hidden Important
+prefix. Approved warning/error message identities are unchanged. Each existing
+summary target now has inline error content, NHSW invalid control/form-group
+classes, `aria-invalid` and `aria-describedby`; summary focus and linked-control
+focus remain intact. No validation rules or outcome mappings changed.
+
+Expanded `browser/flow.mjs` and executed `refactor/verify-flow`: build has zero
+warnings/errors; 40 approved refactor scenarios, four model and four persistence
+checks pass; Chromium executes five groups, zero failures/skips/runtime errors.
+Keyboard Tab/Enter operates summary links; Tab/Space declines confirmation
+without saving; Shift+Tab/Enter accepts it. Both confirmation buttons and invalid
+controls have measured visible official focus. At 320/768/1280px, input error,
+select error, confirmation and warning states have no horizontal overflow.
+`evidence/full-flow-browser/` contains twelve screenshots and rendered HTML
+snapshots plus refreshed `repeat-warning.png`, report, hashes and server log.
+The report retains 83 computed-colour measurements: 78 applicable AA assertions
+pass and five yellow/page diagnostic pairs are not claimed as qualifying focus
+indicators. Minimum applicable ratio is 4.145642:1. This is changed-component
+inspection, not full WCAG certification, fresh three-way parity or the final
+gate. The plan is unchanged; no task is marked done.
+
+## Full-flow implementation task (historical)
+
+No new validator findings were supplied in the earlier implementation request.
+Implemented the next unfinished plan task without changing its checkbox or any
+upstream artifact. See `full-flow.md` for the bounded implementation and executed
+checks; this is not a completed Refactor gate.
+
+An executed Chromium smoke check found that fragment navigation alone did not
+focus the error-linked field. Added explicit Blazor `ElementReference.FocusAsync`
+while retaining real anchor targets. The failure is retained in
+`evidence/full-flow-error-link-failure.json`. A subsequent run clicked before DOM
+event attachment completed and navigated the plain form; retained in
+`evidence/full-flow-circuit-timing-failure.json`. The runner now waits after live
+circuit establishment and verifies actual event-driven outcomes. Final execution
+passes four browser groups, zero failures/skips. No mocked interactions or rule
+changes were used to repair these findings.
+
 ## Current NHSW task
 
 ### Finding: missing current-interface AA contrast evidence

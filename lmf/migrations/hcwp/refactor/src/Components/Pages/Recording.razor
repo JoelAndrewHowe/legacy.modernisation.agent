@@ -2,63 +2,110 @@
 @inject RecordingPageModel Model
 <PageTitle>Synthetic KD03 recording</PageTitle>
 <main class="nhsw-main-wrapper" id="maincontent">
-    <div class="nhsw-width-container">
+<div class="nhsw-width-container">
     <h1 class="nhsw-h1">6–8-week contact (KD03)</h1>
-    <p>Architecture preview only. Synthetic patient 101, born 1 January 2025.</p>
+    <p>Synthetic patient 101, born 1 January 2025. KD03 only.</p>
     <p>Fixed demonstration clock: 15 March 2025. Temporary in-memory data; not clinical policy.</p>
+    <p>Fields are optional individually. General assessment alone does not count as a result. Warnings use resource identities; original localised prose is unavailable.</p>
     @if (Model.Error != null)
     {
-        <section class="nhsw-error-summary" role="alert" aria-labelledby="error-title" tabindex="-1">
+        <section class="nhsw-error-summary" role="alert" aria-labelledby="error-title" tabindex="-1" @ref="errorSummary">
             <h2 class="nhsw-h3 nhsw-error-summary__title" id="error-title">Result not saved</h2>
-            <p>@Model.Error</p>
+            <ul class="nhsw-list nhsw-error-summary__list">
+            @foreach (var error in Model.Error.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+            {
+                <li><a href="@("#" + RecordingFields.ErrorTarget(error))" @onclick="() => FocusField(error)" @onclick:preventDefault>@error</a></li>
+            }
+            </ul>
         </section>
     }
-    <EditForm Model="Model" OnSubmit="Model.Save" FormName="kd03">
-        <div class="nhsw-form-group">
-            <label class="nhsw-label" for="contact-date">Contact date</label>
-            <div class="nhsw-hint" id="contact-date-hint">Use the date of the contact, not the date entered.</div>
-            <InputDate class="nhsw-input nhsw-input--width-10" id="contact-date" aria-describedby="contact-date-hint" @bind-Value="Model.Date" />
+    @foreach (var message in Model.Messages.Where(m => m is Orvex.Messages.WarningNotificationMessage).DistinctBy(m => m.Message))
+    {
+        <div class="nhsw-warning-callout" role="status">
+            <h2 class="nhsw-warning-callout__heading">
+                <span class="nhsw-warning-callout__icon" aria-hidden="true">!</span>
+                <span class="nhsw-warning-callout__heading-text"><span class="nhsw-visually-hidden">Important: </span>Warning</span>
+            </h2>
+            <div class="nhsw-warning-callout__content"><p class="nhsw-body">@message.Message</p></div>
         </div>
-        <div class="nhsw-form-group">
-            <label class="nhsw-label" for="heart">Heart assessment</label>
-            <InputSelect class="nhsw-select" id="heart" @bind-Value="Model.Heart">
-                <option value="">Not recorded</option>
-                <option value="1">Satisfactory</option>
-                <option value="2">Concern</option>
-                <option value="3">Not assessed</option>
-            </InputSelect>
-        </div>
-        <button class="nhsw-button nhsw-button--primary nhsw-button--inline" type="submit">Save KD03 result</button>
-    </EditForm>
+    }
+    @if (Model.Pending != null)
+    {
+        <section aria-labelledby="confirmation-title" role="alert">
+            <h2 class="nhsw-h2" id="confirmation-title">Confirm another KD03 contact</h2>
+            <p>@Model.Pending.Message</p>
+            <button class="nhsw-button nhsw-button--primary nhsw-button--inline" type="button" @onclick="() => Model.Confirm(true)">Yes, continue</button>
+            <button class="nhsw-button nhsw-button--secondary nhsw-button--inline" type="button" @onclick="() => Model.Confirm(false)">No, do not save</button>
+        </section>
+    }
+    <form @onsubmit="Model.Save" @onsubmit:preventDefault>
+        <fieldset class="nhsw-fieldset" disabled="@(Model.Pending != null || Model.Saved)">
+            <legend class="nhsw-fieldset__legend nhsw-fieldset__legend--m">New KD03 result</legend>
+            @foreach (var field in RecordingFields.All)
+            {
+                var errors = Model.Error?.Split('\n', StringSplitOptions.RemoveEmptyEntries).Where(e => RecordingFields.ErrorTarget(e) == field.Id).ToArray() ?? [];
+                var invalid = errors.Length > 0;
+                var errorId = field.Id + "-error";
+                <div class="@(invalid ? "nhsw-form-group nhsw-form-group--error" : "nhsw-form-group")" @key="field.Property">
+                    <label class="nhsw-label" for="@field.Id">@field.Label</label>
+                    @if (invalid)
+                    {
+                        <p class="nhsw-error-message" id="@errorId"><span class="nhsw-visually-hidden">Error: </span>@string.Join(" ", errors)</p>
+                    }
+                    @if (field.Type == "select")
+                    {
+                        <select @ref="fieldElements[field.Id]" class="@(invalid ? "nhsw-select nhsw-is-invalid" : "nhsw-select")" aria-invalid="@(invalid ? "true" : null)" aria-describedby="@(invalid ? errorId : null)" id="@field.Id" value="@RecordingFields.Value(Model.Draft, field.Property)" @onchange="e => Model.Set(field.Property, e.Value?.ToString())">
+                            @if (field.Property != "WithdrawConsent") { <option value="">Not recorded</option> }
+                            @foreach (var option in field.Options)
+                            {
+                                var parts = option.Split('|');
+                                <option value="@parts[0]">@parts[1]</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <input @ref="fieldElements[field.Id]" class="@(invalid ? "nhsw-input nhsw-input--width-10 nhsw-is-invalid" : "nhsw-input nhsw-input--width-10")" aria-invalid="@(invalid ? "true" : null)" aria-describedby="@(invalid ? errorId : null)" id="@field.Id" type="@field.Type" step="any" value="@RecordingFields.Value(Model.Draft, field.Property)" @onchange="e => Model.Set(field.Property, e.Value?.ToString())" />
+                    }
+                </div>
+            }
+            <p>Calculated BMI: @(Model.Bmi?.ToString() ?? "Not available")</p>
+            <button class="nhsw-button nhsw-button--primary nhsw-button--inline" type="submit">Save KD03 result</button>
+        </fieldset>
+    </form>
+    @if (Model.Saved) { <p role="status">Result saved and read back from persistence.</p> }
+    <button class="nhsw-button nhsw-button--secondary nhsw-button--inline" type="button" @onclick="Model.NewResult">Start new result</button>
     <h2 class="nhsw-h2">Saved results for patient 101</h2>
     <button class="nhsw-button nhsw-button--secondary nhsw-button--inline" type="button" @onclick="Model.Reload">Reload from persistence</button>
-    @if (Model.Results.Count == 0)
-    {
-        <p>No saved KD03 results.</p>
-    }
+    @if (Model.Results.Count == 0) { <p>No saved KD03 results.</p> }
     @foreach (var result in Model.Results)
     {
         <dl class="nhsw-summary-list nhsw-summary-list--no-border">
-            <div class="nhsw-summary-list__row">
-                <dt class="nhsw-summary-list__key">Result ID</dt><dd class="nhsw-summary-list__value">@result.PkChildExaminationId</dd>
-            </div>
-            <div class="nhsw-summary-list__row">
-                <dt class="nhsw-summary-list__key">Patient ID</dt><dd class="nhsw-summary-list__value">@result.ClientId</dd>
-            </div>
-            <div class="nhsw-summary-list__row">
-                <dt class="nhsw-summary-list__key">Date</dt><dd class="nhsw-summary-list__value">@result.ExaminationDate.ToString("yyyy-MM-dd")</dd>
-            </div>
-            <div class="nhsw-summary-list__row">
-                <dt class="nhsw-summary-list__key">Heart</dt><dd class="nhsw-summary-list__value">@result.Heart</dd>
-            </div>
-            <div class="nhsw-summary-list__row">
-                <dt class="nhsw-summary-list__key">Repeat</dt><dd class="nhsw-summary-list__value">@result.IsRepeat</dd>
-            </div>
+            @foreach (var property in new[] { "PkChildExaminationId", "ClientId", "ExaminationCode", "OriginalExamCode", "ResultEnteredDate", "ChildMeasurementId", "IsRepeat", "LocationName", "ExaminerName", "ExaminerType" }.Concat(RecordingFields.All.Select(f => f.Property)))
+            {
+                <div class="nhsw-summary-list__row">
+                    <dt class="nhsw-summary-list__key">@(property switch { "PkChildExaminationId" => "Result ID", "ClientId" => "Patient ID", "ExaminationDate" => "Date", "IsRepeat" => "Repeat", _ => property })</dt>
+                    <dd class="nhsw-summary-list__value">@RecordingFields.Value(result, property)</dd>
+                </div>
+            }
         </dl>
     }
-    <p>Other contacts, search, editing, appointments and recalls are not supported.</p>
-    </div>
+    <p>Other contacts, search, editing, appointments and recalls are not supported. Ordinary save does not withdraw patient consent. Original Windows/Oracle and PostgreSQL are unverified.</p>
+</div>
 </main>
 @code {
+    private readonly Dictionary<string, ElementReference> fieldElements = [];
+    private async Task FocusField(string error) => await fieldElements[RecordingFields.ErrorTarget(error)].FocusAsync();
+    private ElementReference errorSummary;
+    private string focusedError;
     protected override void OnInitialized() => Model.Reload();
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Model.Error != null && Model.Error != focusedError)
+        {
+            focusedError = Model.Error;
+            await errorSummary.FocusAsync();
+        }
+        if (Model.Error == null) focusedError = null;
+    }
 }

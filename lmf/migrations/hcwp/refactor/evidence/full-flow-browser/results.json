@@ -1,0 +1,1957 @@
+{
+  "startedAt": "2026-10-13T10:48:01.294Z",
+  "scope": "Full-flow implementation smoke, not complete Refactor gate",
+  "checks": [
+    {
+      "name": "no-results rejection with focused summary and field link",
+      "status": "passed"
+    },
+    {
+      "name": "input error structure, summary keyboard link, responsive presentation and contrast",
+      "status": "passed"
+    },
+    {
+      "name": "all physical fields and measurements save through live circuit",
+      "status": "passed"
+    },
+    {
+      "name": "repeat confirmation declines then accepts with age warning",
+      "status": "passed"
+    },
+    {
+      "name": "fresh browser circuit reloads patient-specific saved values",
+      "status": "passed"
+    }
+  ],
+  "failed": 0,
+  "skipped": 0,
+  "browserExecuted": true,
+  "browser": "156.0.8078.4",
+  "contrast": {
+    "method": "Chromium computed sRGB colours, alpha-composited over rendered ancestor backgrounds; WCAG relative luminance. No colour rounding before threshold comparison.",
+    "criteria": "1.4.3: 4.5:1 normal text, 3:1 large text (24px or 18.667px bold). 1.4.11: 3:1 control boundaries and contrasting focus indicator portions. Visible keyboard focus also checked separately (2.4.7). Not a full WCAG audit or AAA 2.4.13 claim.",
+    "measurements": [
+      {
+        "state": "focused no-results summary",
+        "element": "section.nhsw-error-summary",
+        "text": "Result not saved\n            1: NoResultsEnteredMessage",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "focused no-results summary",
+        "element": "section.nhsw-error-summary",
+        "text": "Result not saved\n            1: NoResultsEnteredMessage",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "focus error border / yellow outline",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 4.145642027362272,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "focused no-results summary",
+        "element": "section.nhsw-error-summary",
+        "text": "Result not saved\n            1: NoResultsEnteredMessage",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "focus error border / surrounding page",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "focused no-results summary",
+        "element": "section.nhsw-error-summary",
+        "kind": "yellow / page (diagnostic, not sole indicator)",
+        "foreground": [
+          255,
+          235,
+          59
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 1.1026459662620216,
+        "threshold": null,
+        "criterion": "Informational: qualifying dark focus portions measured above",
+        "style": {
+          "outline": "rgb(255, 235, 59) solid 3px",
+          "shadow": "none"
+        }
+      },
+      {
+        "state": "focused invalid select",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "focused invalid select",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "reviewed rendered select SVG arrow / background",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "focused invalid select",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "focus dark edge / control background",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "focused invalid select",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "focus dark border / yellow outline",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 4.145642027362272,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "focused invalid select",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "focus dark border / surrounding page",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "focused invalid select",
+        "element": "#heart",
+        "kind": "yellow / page (diagnostic, not sole indicator)",
+        "foreground": [
+          255,
+          235,
+          59
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 1.1026459662620216,
+        "threshold": null,
+        "criterion": "Informational: qualifying dark focus portions measured above",
+        "style": {
+          "outline": "rgb(255, 235, 59) solid 3px",
+          "shadow": "rgb(33, 43, 50) 0px 0px 0px 2px inset"
+        }
+      },
+      {
+        "state": "select-error 320px",
+        "element": "#error-title",
+        "text": "Result not saved",
+        "fontSize": 22,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "select-error 320px",
+        "element": "a.",
+        "text": "1: NoResultsEnteredMessage",
+        "fontSize": 16,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          0,
+          0,
+          238
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 8.486423403300037,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "select-error 320px",
+        "element": "#heart-error",
+        "text": "Error: 1: NoResultsEnteredMessage",
+        "fontSize": 16,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "select-error 320px",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "select-error 320px",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "reviewed rendered select SVG arrow / background",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "select-error 320px",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "boundary / surrounding page",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "select-error 768px",
+        "element": "#error-title",
+        "text": "Result not saved",
+        "fontSize": 26,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "select-error 768px",
+        "element": "a.",
+        "text": "1: NoResultsEnteredMessage",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          0,
+          0,
+          238
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 8.486423403300037,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "select-error 768px",
+        "element": "#heart-error",
+        "text": "Error: 1: NoResultsEnteredMessage",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "select-error 768px",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "select-error 768px",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "reviewed rendered select SVG arrow / background",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "select-error 768px",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "boundary / surrounding page",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "select-error 1280px",
+        "element": "#error-title",
+        "text": "Result not saved",
+        "fontSize": 26,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "select-error 1280px",
+        "element": "a.",
+        "text": "1: NoResultsEnteredMessage",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          0,
+          0,
+          238
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 8.486423403300037,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "select-error 1280px",
+        "element": "#heart-error",
+        "text": "Error: 1: NoResultsEnteredMessage",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "select-error 1280px",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "select-error 1280px",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "reviewed rendered select SVG arrow / background",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "select-error 1280px",
+        "element": "#heart",
+        "text": "Not recordedSatisfactoryConcernNot assessed",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "boundary / surrounding page",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "focused invalid input",
+        "element": "#Height",
+        "text": "-1",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "focused invalid input",
+        "element": "#Height",
+        "text": "-1",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "focus dark edge / control background",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "focused invalid input",
+        "element": "#Height",
+        "text": "-1",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "focus dark border / yellow outline",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 4.145642027362272,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "focused invalid input",
+        "element": "#Height",
+        "text": "-1",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "focus dark border / surrounding page",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "focused invalid input",
+        "element": "#Height",
+        "kind": "yellow / page (diagnostic, not sole indicator)",
+        "foreground": [
+          255,
+          235,
+          59
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 1.1026459662620216,
+        "threshold": null,
+        "criterion": "Informational: qualifying dark focus portions measured above",
+        "style": {
+          "outline": "rgb(255, 235, 59) solid 3px",
+          "shadow": "rgb(33, 43, 50) 0px 0px 0px 2px inset"
+        }
+      },
+      {
+        "state": "input-error 320px",
+        "element": "#error-title",
+        "text": "Result not saved",
+        "fontSize": 22,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "input-error 320px",
+        "element": "a.",
+        "text": "InvalidHeightMessage",
+        "fontSize": 16,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          0,
+          0,
+          238
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 8.486423403300037,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "input-error 320px",
+        "element": "#Height-error",
+        "text": "Error: InvalidHeightMessage",
+        "fontSize": 16,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "input-error 320px",
+        "element": "#Height",
+        "text": "-1",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "input-error 320px",
+        "element": "#Height",
+        "text": "-1",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "boundary / surrounding page",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "input-error 768px",
+        "element": "#error-title",
+        "text": "Result not saved",
+        "fontSize": 26,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "input-error 768px",
+        "element": "a.",
+        "text": "InvalidHeightMessage",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          0,
+          0,
+          238
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 8.486423403300037,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "input-error 768px",
+        "element": "#Height-error",
+        "text": "Error: InvalidHeightMessage",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "input-error 768px",
+        "element": "#Height",
+        "text": "-1",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "input-error 768px",
+        "element": "#Height",
+        "text": "-1",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "boundary / surrounding page",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "input-error 1280px",
+        "element": "#error-title",
+        "text": "Result not saved",
+        "fontSize": 26,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "input-error 1280px",
+        "element": "a.",
+        "text": "InvalidHeightMessage",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          0,
+          0,
+          238
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 8.486423403300037,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "input-error 1280px",
+        "element": "#Height-error",
+        "text": "Error: InvalidHeightMessage",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "input-error 1280px",
+        "element": "#Height",
+        "text": "-1",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "input-error 1280px",
+        "element": "#Height",
+        "text": "-1",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "boundary / surrounding page",
+        "foreground": [
+          213,
+          40,
+          27
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 4.571175459037319,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "confirmation 320px",
+        "element": "#confirmation-title",
+        "text": "Confirm another KD03 contact",
+        "fontSize": 27,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "confirmation 320px",
+        "element": "p.",
+        "text": "KdpDuplicateExamCodeMessage",
+        "fontSize": 16,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "confirmation 320px",
+        "element": "button.nhsw-button nhsw-button--primary nhsw-button--inline",
+        "text": "Yes, continue",
+        "fontSize": 16,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          255,
+          255,
+          255
+        ],
+        "background": [
+          27,
+          54,
+          93
+        ],
+        "ratio": 12.122389524532837,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "confirmation 320px",
+        "element": "button.nhsw-button nhsw-button--primary nhsw-button--inline",
+        "text": "Yes, continue",
+        "fontSize": 16,
+        "fontWeight": "700",
+        "kind": "button fill / surrounding page",
+        "foreground": [
+          27,
+          54,
+          93
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 10.947003145671195,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "confirmation 320px",
+        "element": "button.nhsw-button nhsw-button--secondary nhsw-button--inline",
+        "text": "No, do not save",
+        "fontSize": 16,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "confirmation 320px",
+        "element": "button.nhsw-button nhsw-button--secondary nhsw-button--inline",
+        "text": "No, do not save",
+        "fontSize": 16,
+        "fontWeight": "700",
+        "kind": "boundary / surrounding page",
+        "foreground": [
+          76,
+          98,
+          114
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 5.751230027823506,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "confirmation 768px",
+        "element": "#confirmation-title",
+        "text": "Confirm another KD03 contact",
+        "fontSize": 36,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "confirmation 768px",
+        "element": "p.",
+        "text": "KdpDuplicateExamCodeMessage",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "confirmation 768px",
+        "element": "button.nhsw-button nhsw-button--primary nhsw-button--inline",
+        "text": "Yes, continue",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          255,
+          255,
+          255
+        ],
+        "background": [
+          27,
+          54,
+          93
+        ],
+        "ratio": 12.122389524532837,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "confirmation 768px",
+        "element": "button.nhsw-button nhsw-button--primary nhsw-button--inline",
+        "text": "Yes, continue",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "button fill / surrounding page",
+        "foreground": [
+          27,
+          54,
+          93
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 10.947003145671195,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "confirmation 768px",
+        "element": "button.nhsw-button nhsw-button--secondary nhsw-button--inline",
+        "text": "No, do not save",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "confirmation 768px",
+        "element": "button.nhsw-button nhsw-button--secondary nhsw-button--inline",
+        "text": "No, do not save",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "boundary / surrounding page",
+        "foreground": [
+          76,
+          98,
+          114
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 5.751230027823506,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "confirmation 1280px",
+        "element": "#confirmation-title",
+        "text": "Confirm another KD03 contact",
+        "fontSize": 36,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "confirmation 1280px",
+        "element": "p.",
+        "text": "KdpDuplicateExamCodeMessage",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "confirmation 1280px",
+        "element": "button.nhsw-button nhsw-button--primary nhsw-button--inline",
+        "text": "Yes, continue",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          255,
+          255,
+          255
+        ],
+        "background": [
+          27,
+          54,
+          93
+        ],
+        "ratio": 12.122389524532837,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "confirmation 1280px",
+        "element": "button.nhsw-button nhsw-button--primary nhsw-button--inline",
+        "text": "Yes, continue",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "button fill / surrounding page",
+        "foreground": [
+          27,
+          54,
+          93
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 10.947003145671195,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "confirmation 1280px",
+        "element": "button.nhsw-button nhsw-button--secondary nhsw-button--inline",
+        "text": "No, do not save",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 14.420350826794484,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "confirmation 1280px",
+        "element": "button.nhsw-button nhsw-button--secondary nhsw-button--inline",
+        "text": "No, do not save",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "boundary / surrounding page",
+        "foreground": [
+          76,
+          98,
+          114
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 5.751230027823506,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "keyboard confirmation no",
+        "element": "button.nhsw-button nhsw-button--secondary nhsw-button--inline",
+        "text": "No, do not save",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "keyboard confirmation no",
+        "element": "button.nhsw-button nhsw-button--secondary nhsw-button--inline",
+        "text": "No, do not save",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "focus underline / surrounding page",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "keyboard confirmation no",
+        "element": "button.nhsw-button nhsw-button--secondary nhsw-button--inline",
+        "text": "No, do not save",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "focus underline / yellow fill",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "keyboard confirmation no",
+        "element": "button.nhsw-button nhsw-button--secondary nhsw-button--inline",
+        "kind": "yellow / page (diagnostic, not sole indicator)",
+        "foreground": [
+          255,
+          235,
+          59
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 1.1026459662620216,
+        "threshold": null,
+        "criterion": "Informational: qualifying dark focus portions measured above",
+        "style": {
+          "outline": "rgb(33, 43, 50) none 3px",
+          "shadow": "rgb(33, 43, 50) 0px 2px 0px 0px"
+        }
+      },
+      {
+        "state": "keyboard confirmation yes",
+        "element": "button.nhsw-button nhsw-button--primary nhsw-button--inline",
+        "text": "Yes, continue",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "keyboard confirmation yes",
+        "element": "button.nhsw-button nhsw-button--primary nhsw-button--inline",
+        "text": "Yes, continue",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "focus underline / surrounding page",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "keyboard confirmation yes",
+        "element": "button.nhsw-button nhsw-button--primary nhsw-button--inline",
+        "text": "Yes, continue",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "focus underline / yellow fill",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 3,
+        "criterion": "1.4.11",
+        "passed": true
+      },
+      {
+        "state": "keyboard confirmation yes",
+        "element": "button.nhsw-button nhsw-button--primary nhsw-button--inline",
+        "kind": "yellow / page (diagnostic, not sole indicator)",
+        "foreground": [
+          255,
+          235,
+          59
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 1.1026459662620216,
+        "threshold": null,
+        "criterion": "Informational: qualifying dark focus portions measured above",
+        "style": {
+          "outline": "rgb(33, 43, 50) none 3px",
+          "shadow": "rgb(33, 43, 50) 0px 2px 0px 0px"
+        }
+      },
+      {
+        "state": "warning 320px",
+        "element": "span.nhsw-warning-callout__icon",
+        "text": "!",
+        "fontSize": 16,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          255,
+          235,
+          59
+        ],
+        "background": [
+          33,
+          43,
+          50
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 320px",
+        "element": "span.nhsw-warning-callout__heading-text",
+        "text": "Important: Warning",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 320px",
+        "element": "p.nhsw-body",
+        "text": "KdpContactGivenAfterMaxAge",
+        "fontSize": 16,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          249,
+          196
+        ],
+        "ratio": 13.458566414717398,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 768px",
+        "element": "span.nhsw-warning-callout__icon",
+        "text": "!",
+        "fontSize": 16,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          255,
+          235,
+          59
+        ],
+        "background": [
+          33,
+          43,
+          50
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 768px",
+        "element": "span.nhsw-warning-callout__heading-text",
+        "text": "Important: Warning",
+        "fontSize": 22,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 768px",
+        "element": "p.nhsw-body",
+        "text": "KdpContactGivenAfterMaxAge",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          249,
+          196
+        ],
+        "ratio": 13.458566414717398,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 1280px",
+        "element": "span.nhsw-warning-callout__icon",
+        "text": "!",
+        "fontSize": 16,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          255,
+          235,
+          59
+        ],
+        "background": [
+          33,
+          43,
+          50
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 1280px",
+        "element": "span.nhsw-warning-callout__heading-text",
+        "text": "Important: Warning",
+        "fontSize": 22,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 1280px",
+        "element": "p.nhsw-body",
+        "text": "KdpContactGivenAfterMaxAge",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          249,
+          196
+        ],
+        "ratio": 13.458566414717398,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      }
+    ]
+  },
+  "presentation": [
+    {
+      "state": "select-error",
+      "width": 320,
+      "overflow": false,
+      "screenshot": "select-error-320.png",
+      "html": "select-error-320.html"
+    },
+    {
+      "state": "select-error",
+      "width": 768,
+      "overflow": false,
+      "screenshot": "select-error-768.png",
+      "html": "select-error-768.html"
+    },
+    {
+      "state": "select-error",
+      "width": 1280,
+      "overflow": false,
+      "screenshot": "select-error-1280.png",
+      "html": "select-error-1280.html"
+    },
+    {
+      "state": "input-error",
+      "width": 320,
+      "overflow": false,
+      "screenshot": "input-error-320.png",
+      "html": "input-error-320.html"
+    },
+    {
+      "state": "input-error",
+      "width": 768,
+      "overflow": false,
+      "screenshot": "input-error-768.png",
+      "html": "input-error-768.html"
+    },
+    {
+      "state": "input-error",
+      "width": 1280,
+      "overflow": false,
+      "screenshot": "input-error-1280.png",
+      "html": "input-error-1280.html"
+    },
+    {
+      "state": "confirmation",
+      "width": 320,
+      "overflow": false,
+      "screenshot": "confirmation-320.png",
+      "html": "confirmation-320.html"
+    },
+    {
+      "state": "confirmation",
+      "width": 768,
+      "overflow": false,
+      "screenshot": "confirmation-768.png",
+      "html": "confirmation-768.html"
+    },
+    {
+      "state": "confirmation",
+      "width": 1280,
+      "overflow": false,
+      "screenshot": "confirmation-1280.png",
+      "html": "confirmation-1280.html"
+    },
+    {
+      "state": "warning",
+      "width": 320,
+      "overflow": false,
+      "screenshot": "warning-320.png",
+      "html": "warning-320.html"
+    },
+    {
+      "state": "warning",
+      "width": 768,
+      "overflow": false,
+      "screenshot": "warning-768.png",
+      "html": "warning-768.html"
+    },
+    {
+      "state": "warning",
+      "width": 1280,
+      "overflow": false,
+      "screenshot": "warning-1280.png",
+      "html": "warning-1280.html"
+    }
+  ],
+  "runtimeErrors": [],
+  "passed": 5,
+  "finishedAt": "2026-10-13T10:48:11.548Z",
+  "sourceHashes": {
+    "browser/flow.mjs": "e54cb1719737f133a04016fe0822fb9d37489520dd14c05d7548e054900d6ff7",
+    "browser/contrast.mjs": "0fe79afe889ecd4cac27b91dd41b335427ca1c0bd848678693a2b3438608547e",
+    "src/Components/Pages/Recording.razor": "09a0e6f7064f4e600a68b73f1ed7aefde3544808d53286924ff7058da0b54892",
+    "src/wwwroot/vendor/nhsw/nhsw.min.css": "117106cd1129ddfc0dae636d123d9123583c8f3970ebad63e2295d63bb502d99"
+  }
+}

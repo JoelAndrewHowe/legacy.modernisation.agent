@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+python3 refactor/check-prerequisites.py > refactor/evidence/full-flow-prerequisites.json
+dotnet build refactor/src > refactor/evidence/full-flow-build.log 2>&1
+dotnet run --project refactor/checks -- --flow refactor/src/demo-fixtures.json > refactor/evidence/full-flow-model.json
+dotnet run --project refactor/checks -- --persistence refactor/src/demo-fixtures.json > refactor/evidence/full-flow-persistence.json
+dotnet run --project refactor/checks -- characterise refactor/evidence/full-flow-regression > refactor/evidence/full-flow-regression.jsonl
+node refactor/browser/flow.mjs > refactor/evidence/full-flow-browser.log 2>&1
+find refactor/src refactor/checks -type f \( -name '*.cs' -o -name '*.razor' -o -name '*.csproj' -o -name 'demo-fixtures.json' \) -not -path '*/obj/*' -not -path '*/bin/*' -print0 | sort -z | xargs -0 sha256sum > refactor/evidence/full-flow-source.sha256
+sha256sum refactor/browser/flow.mjs refactor/browser/package-lock.json >> refactor/evidence/full-flow-source.sha256

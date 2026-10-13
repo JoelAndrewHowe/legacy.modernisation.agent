@@ -12,9 +12,18 @@ namespace Hcwp.Application;
 public sealed class Kd03Recording
 {
     private readonly IKdpExaminationService service;
+    private readonly Store store;
     public Kd03Recording(Store store)
     {
+        this.store = store;
         service = new KdpExaminationService(() => new UnitOfWork(store), new KdpExaminationValidator());
+    }
+
+    public Orvex.ViewModels.KdpExaminationDelegate CreateRules(Orvex.Services.Internal.IMessenger messenger, ILookupService lookups)
+    {
+        var validator = new KdpExaminationValidator();
+        return new(service, validator, messenger, () => new Orvex.ViewModels.KdpExaminationResultDelegate(
+            validator, messenger, lookups, new Orvex.Business.ChildMeasurementsService(() => new UnitOfWork(store)), service));
     }
 
     public KdpExaminationTO ReadPatient(long selectedPatient) => service.GetKdpExamination(selectedPatient);

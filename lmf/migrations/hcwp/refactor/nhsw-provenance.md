@@ -27,10 +27,16 @@ The matching `dist/nhsw-behaviours.js` error-summary behaviour was inspected.
   labels, date input styling, hint association and native select.
 - Official primary/secondary buttons and responsive summary-list rows with
   semantic `dl`/`dt`/`dd`. The selected patient and exclusions remain explicit.
-- Generic save-error panel uses the NHSW error-summary classes, alert role,
-  title association and focusable container. It does not invent field mappings
-  for the current generic fault. Field-linked summary and automatic focus on
-  dynamically inserted errors belong to the next full-flow task.
+- Full-flow save errors use the NHSW error-summary classes, alert role,
+  title association and focusable container, with explicit Blazor summary/link
+  focus. Inline errors translate pinned `preview/error-states.html` input and
+  `preview/examples/select-error.html` markup, retaining form-group error and
+  `nhsw-is-invalid` classes, hidden Error prefix and ARIA associations.
+- Warnings translate pinned `preview/examples/warning-callout-default.html`:
+  heading (adapted to h2), hidden decorative icon, heading-text with hidden
+  Important prefix, content wrapper and body class. Approved message identities
+  are unchanged. `full-flow.md` links executed changed-state evidence; historical
+  preview evidence below must not certify the expanded interface.
 - Native HTML date input is deliberately not the library date-picker component.
   None of the current components requires a library behaviours script. No tabs,
   expandable/conditional content, counts or date-picker are introduced, and no

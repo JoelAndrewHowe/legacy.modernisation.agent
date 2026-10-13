@@ -1,43 +1,43 @@
-# HCWP KD03 architecture preview
+# HCWP KD03 synthetic recording
 
-Prerequisites: .NET SDK 10, Python 3 and bash. EF Core InMemory is pinned to
-10.0.0; restore may require access to NuGet when it is not already cached.
-
-From `lmf/migrations/hcwp`:
+Requires .NET SDK 10, Python 3 and bash. EF Core InMemory is pinned to 10.0.0;
+restore may need NuGet. From `lmf/migrations/hcwp`:
 
 ```sh
-refactor/verify-architecture
 dotnet run --project refactor/src/Hcwp.csproj --urls http://127.0.0.1:5187
 ```
 
-Open `http://127.0.0.1:5187/`. Patient 101 is synthetic and already selected.
-Choose a heart assessment and save. Reload reads EF-backed saved data; a browser
-reload retains it within the running process. Restart resets the temporary data.
-The fixture clock is fixed at 15 March 2025, not the current clinical date.
+Open the local URL. Patient 101 is synthetic, already selected. Enter KD03
+fields, save, respond to applicable confirmation and inspect saved read-back.
+Invalid input does not save. Start new result permits another contact; Reload
+reads persistence independently of the draft. Browser reload retains data within
+the process; restart resets it. The demonstration clock is 15 March 2025.
 
-This is an **architecture preview**, not the complete browser demonstration.
-NHSW integration and complete field/warning/confirmation UX are later plan tasks.
-`architecture.md` describes the boundaries, executed evidence and limitations.
-Executed preview-only browser verification is retained; no completed Refactor
-gate or comprehensive browser verification is claimed.
+The interface uses vendored official NHSW assets; see `nhsw-provenance.md`.
+`full-flow.md` documents the implementation, evidence and limitations.
+**Refactor is not complete:** fresh three-way parity and the full style/browser
+gate remain pending. No task checkbox was changed.
 
-## Reproduce the preview browser evidence
+## Reproduce full-flow smoke/regression evidence
 
-Requires Node.js/npm and Playwright's Chromium (pinned by `browser/package-lock.json`):
+Requires Node.js/npm and pinned Playwright Chromium:
 
 ```sh
 npm ci --prefix refactor/browser
 (cd refactor/browser && npx playwright install chromium)
-refactor/verify-preview > refactor/evidence/browser-preview-run.log 2>&1
+refactor/verify-flow
 ```
 
-On a host missing browser system libraries, install them with Playwright's
-`install-deps chromium` command using appropriate privileges. Missing browser
-prerequisites fail, not skip, the check. Port 5187 must be free: the test starts
-and stops its own freshly seeded app. It executes Save, changes draft values
-without saving and clicks Reload, then opens a separate browser context/circuit
-and clicks Reload again. All three checks require live Blazor WebSocket traffic.
-`evidence/browser-preview/results.json` contains outcomes and source/artifact
-hashes; adjacent PNGs, rendered HTML and Playwright traces show the interactions.
-Open a trace locally with `npx playwright show-trace <trace.zip>` from `browser/`.
-See `validator-findings.md` for the supplied finding and bounded repair.
+If browser system libraries are missing, use Playwright's `install-deps chromium`
+with appropriate privileges. Missing prerequisites fail, never skip. Port 5189
+must be free; the runner starts/stops a freshly seeded real app.
+
+Evidence is under `evidence/full-flow-*`. Historical `verify-preview` and
+`verify-nhsw` checks targeted the smaller preview interface; do not use their
+old reports to certify this expanded interface. `architecture.md` and
+`validator-findings.md` retain historical architecture and repair context.
+
+Parity is with extracted legacy logic, not the original Windows/Oracle system.
+Temporary EF InMemory storage does not verify PostgreSQL. Other contacts,
+search, editing/deleting, appointments, recalls and production infrastructure
+remain excluded.
