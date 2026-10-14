@@ -1,0 +1,43 @@
+{
+  "startedAt": "2026-10-14T22:34:43.188058+00:00",
+  "seedGroups": 9,
+  "errors": [],
+  "commands": [
+    {
+      "command": "sha256sum --check lmf/migrations/hcwp/system-feel/characterise/input-files.sha256",
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "startedAt": "2026-10-14T22:34:44.333309+00:00",
+      "finishedAt": "2026-10-14T22:34:44.499972+00:00",
+      "exitCode": 0,
+      "output": "task-5-prestart-input-hash-check.log"
+    },
+    {
+      "command": "sha256sum characterise/review-files.sha256",
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "startedAt": "2026-10-14T22:34:44.500315+00:00",
+      "finishedAt": "2026-10-14T22:34:44.503088+00:00",
+      "exitCode": 0,
+      "output": "task-5-prestart-baseline-revision-check.log"
+    },
+    {
+      "command": "sha256sum --check characterise/review-files.sha256",
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "startedAt": "2026-10-14T22:34:44.503112+00:00",
+      "finishedAt": "2026-10-14T22:34:44.507544+00:00",
+      "exitCode": 0,
+      "output": "task-5-prestart-baseline-hash-check.log"
+    }
+  ],
+  "files": 1499,
+  "directories": 184,
+  "symlinks": 2,
+  "membershipMatches": true,
+  "allDigestsMatchSnapshot": true,
+  "manifestReconcilesExactly": true,
+  "secondEnumerationMatches": true,
+  "approvalRevision": "5f50912226b822117af68002edbb802b13cabec9d5b7545d7e01309685969699",
+  "actualReviewManifestSha256": "5f50912226b822117af68002edbb802b13cabec9d5b7545d7e01309685969699",
+  "approvalRevisionMatches": true,
+  "finishedAt": "2026-10-14T22:34:44.507566+00:00",
+  "passed": true
+}
