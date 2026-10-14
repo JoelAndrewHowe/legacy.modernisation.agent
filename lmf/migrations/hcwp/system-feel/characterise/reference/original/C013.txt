@@ -1,0 +1,17 @@
+            <div class="row">
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                    <label> @(Model.DateOfDeath.HasValue ? new MvcHtmlString(Resources.AgeAtDeath) : Html.DisplayNameFor(model => model.AgeString))</label>
+                </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                        @(Model.CurrentStatusCode != "7" ? Html.SpanFor(m => m.AgeString)  : new MvcHtmlString("-") )
+                    </div>               
+            </div>
+            @if (Model.DateOfDeath.HasValue)
+            {
+                <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        <label>@Html.DisplayNameFor(model => model.DateOfDeath)</label>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                        @Html.SpanFor(m => m.DateOfDeath, null, "{0:dd-MMM-yyyy}")
+                    </div>

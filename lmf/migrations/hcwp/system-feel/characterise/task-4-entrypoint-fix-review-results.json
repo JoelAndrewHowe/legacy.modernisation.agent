@@ -1,0 +1,74 @@
+{
+  "finishedAt": "2026-10-14T22:23:08.781622+00:00",
+  "checks": {
+    "allEarlierEvidenceUnchanged": true,
+    "all30SnapshotHashesAndModesMatchGitApply": true,
+    "historicalPatchHashUnchanged": true,
+    "successfulPrefixReuseRejected": true,
+    "changedSourceWhitespaceCheck": true
+  },
+  "retainedArtifactsChecked": 101,
+  "changedEarlierArtifacts": [],
+  "snapshotMismatches": [],
+  "currentFilesDifferentFromHistoricalSnapshot": [
+    "lmf/migrations/hcwp/system-feel/characterise/reference/README.md",
+    "lmf/migrations/hcwp/system-feel/characterise/reference/run.py",
+    "lmf/migrations/hcwp/system-feel/characterise/reference/test-harness.py",
+    "lmf/migrations/hcwp/system-feel/characterise/verify"
+  ],
+  "commands": [
+    {
+      "command": [
+        "git",
+        "init",
+        "--quiet",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/.snapshot-check-ak6367jl"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-C",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/.snapshot-check-ak6367jl",
+        "apply",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/task-4-review-harness.patch"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/task-4-review-harness.patch:103: trailing whitespace.\n            var address = string.Empty; \n/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/task-4-review-harness.patch:823: trailing whitespace.\n                \n/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/task-4-review-harness.patch:893: trailing whitespace.\n            var address = string.Empty; \n/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/task-4-review-harness.patch:1036: trailing whitespace.\n                    </div>               \n/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/task-4-review-harness.patch:1174: trailing whitespace.\n</script>    \nwarning: squelched 2 whitespace errors\nwarning: 7 lines add whitespace errors.\n"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "lmf/migrations/hcwp/system-feel/characterise/reference/README.md",
+        "lmf/migrations/hcwp/system-feel/characterise/reference/run.py",
+        "lmf/migrations/hcwp/system-feel/characterise/reference/test-harness.py",
+        "lmf/migrations/hcwp/system-feel/characterise/verify",
+        "lmf/migrations/hcwp/system-feel/characterise/task-4-validator-review.md"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "prefixReuse": {
+    "exitCode": 1,
+    "stdout": "",
+    "stderr": "Retained evidence exists; use a fresh --evidence-prefix\n"
+  },
+  "currentFiles": {
+    "reference/README.md": "765129a8524a5b9b1f21a179f5414d8f974a72c074183f58940b008563492823",
+    "reference/run.py": "f5a72dcb837779b806b525a612c4bf6300871f34da81d0afc7e89169006589f5",
+    "reference/test-harness.py": "527131e8a9604398ccdb8522f2bd46d3b333831831f5fa63ba6e8ec0ebad2ca7",
+    "verify": "46cb6750720bfa080840e1bcdd717d89c2c3791d14de5e9bf4eb1665ecf8d571",
+    "task-4-validator-review.md": "025ea84b857634c748540a40ea8ee265ef57803b74e3ff0ba2a299de5873afbe",
+    "task-4-review-harness-snapshot.json": "aedf756f2220830ffaa14af484790313cf6d273d8f8f88967b8eb31390e945e0"
+  },
+  "exitCode": 0
+}

@@ -1,0 +1,11 @@
+    public class StandardNameResolver : ValueResolver<INameModel, string>
+    {
+        protected override string ResolveCore(INameModel source)
+        {
+            return (string.IsNullOrEmpty(source.Title) ? string.Empty : source.Title + " ")
+                                   + (string.IsNullOrEmpty(source.Surname) ? string.Empty : source.Surname + ", ")
+                                   + (string.IsNullOrEmpty(source.Forename) ? string.Empty : source.Forename);
+        }
+    }
+}
+

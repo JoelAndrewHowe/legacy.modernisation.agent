@@ -1,0 +1,69 @@
+    public class AgeResolver : ValueResolver<ChildGeneral, string>
+    {
+        protected override string ResolveCore(ChildGeneral source)
+        {
+            return GetAge(source.DateOfBirth, source.DateOfDeath);
+        }
+
+        /// <summary>
+        /// Ported from package LOOKUPS.AGE_DSP
+        /// </summary>
+        private static string GetAge(DateTime dateOfBirth, DateTime? thresholdDate)
+        {
+            string age;
+
+            var dateToCalculate = DateTime.Now;
+
+            if (thresholdDate.HasValue)
+            {
+                dateToCalculate = thresholdDate.Value;
+            }
+
+            var years = dateToCalculate.Year - dateOfBirth.Year;
+
+            var months = (years*12) + (dateToCalculate.Month - dateOfBirth.Month);
+
+            years = months / 12;
+
+            if (years < 1)
+            {
+                if (months <= 3)
+                {
+                    var days = (int)(dateToCalculate - dateOfBirth).TotalDays;
+
+                    if (days < 1)
+                    {
+                        age = "0 day";
+                    }
+                    else if (days == 1)
+                    {
+                        age = days + " day";
+                    }
+                    else if (days > 1 && days < 7)
+                    {
+                        age = days + " days";
+                    }
+                    else if (days < 14)
+                    {
+                        age = "1 week";
+                    }
+                    else
+                    {
+                        var weeks = (int)(dateToCalculate - dateOfBirth).TotalDays / 7;
+                        age = weeks + " weeks";
+                    }
+                }
+                else
+                {
+                    age = months + " months";
+                }
+            }
+            else
+            {
+                months = months % 12;
+                age = $"{years} Years {months} Months";
+            }
+
+            return age;
+        }
+    }

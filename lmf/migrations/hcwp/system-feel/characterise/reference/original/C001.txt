@@ -1,0 +1,38 @@
+        public ClientSummaryModel GetClientSummary(long clientId)
+        {
+            using (var uow = unitOfWorkFactory())
+            {
+                DefaultAccessForChild(clientId);
+
+                var child = uow.Repository<ChildGeneral>()
+                    .Include(x => x.ChildCentres.Select(t => t.ChildLocations))
+                    .Include(x => x.RelHcpDemographics.Select(t => t.HealthCareProfessionals))
+                    .Include(x => x.ChildAlertCodes.Select(a => a.AlertCodes))
+                    .Include(x => x.RemoteFlag)
+                    .Where(x => x.ClientId == clientId)
+                    .AsNoTracking()
+                    .SingleOrDefault();
+
+                var clientSummary = Mapper.Map<ChildGeneral, ClientSummaryModel>(child);
+
+                if (child != null)
+                {
+                    clientSummary.Organisation = GetOrganisationValue(child.ChildCentres, uow);
+                    clientSummary.RemoteChild = child.RemoteFlag.IsRemote == OVXBoolean.True;
+                }
+                
+                return clientSummary;
+            }
+        }
+
+        public void DefaultAccessForChild(long clientId)
+        {
+            using (var uow = unitOfWorkFactory())
+            {
+                AccessControlProvider.DefaultAccessForChild(clientId, uow);
+            }
+        }
+
+        public void ResetDefaultAccess()
+        {
+            using (var uow = unitOfWorkFactory())

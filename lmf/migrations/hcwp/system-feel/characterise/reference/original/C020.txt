@@ -1,0 +1,4 @@
+@if (Model.ShowAlert)
+{
+   @Html.Partial("_ClientAlerts", Model)
+}

@@ -1,0 +1,34 @@
+        public enum GENDER
+        {
+            [EnumMember]
+            [Display(Name = nameof(Resources.Unknown), ResourceType = typeof(Resources))]
+            NOTKNOWN = 0,
+            [EnumMember]
+            [Display(Name = nameof(Resources.GenderMale), ResourceType = typeof(Resources))]
+            MALE = 1,
+            [EnumMember]
+            [Display(Name = nameof(Resources.GenderFemale), ResourceType = typeof(Resources))]
+            FEMALE = 2,
+            [EnumMember]
+            [Display(Name = nameof(Resources.GenderNotSpecified), ResourceType = typeof(Resources))]
+            NOTSPECIFIED = 9
+        }
+        public static Dictionary<String, string> Gender(bool includeNull, DICTIONARY_TYPE dictionaryType)
+        {
+            Dictionary<String, string> _dict = new Dictionary<String, string>();
+            if (dictionaryType == DICTIONARY_TYPE.ENUM)
+            {
+                _dict.Add("Not Known", GENDER.NOTKNOWN.ToString());
+                _dict.Add("Male", GENDER.MALE.ToString());
+                _dict.Add("Female", GENDER.FEMALE.ToString());
+                _dict.Add("Not Specified", GENDER.NOTSPECIFIED.ToString());
+            }
+            else
+            {
+                _dict.Add("Not Known", "0");
+                _dict.Add("Male", "1");
+                _dict.Add("Female", "2");
+                _dict.Add("Not Specified", "9");
+            }
+            if (includeNull) _dict.Add("", null);
+            return _dict;

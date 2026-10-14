@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "bindings": [
+    {
+      "id": "C001",
+      "document": "behaviour.md",
+      "path": "example-code/patient-banner (pseudononymised).txt",
+      "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+      "start_line": 101,
+      "end_line": 138,
+      "symbol": "GetClientSummary",
+      "fragment": "public ClientSummaryModel GetClientSummary(long clientId)",
+      "extractedSha256": "42bbaa16e79d6bb507e22400d49cc4d1556f6ca263afc359bd89c1854c150044"
+    },
+    {
+      "id": "C003",
+      "document": "behaviour.md",
+      "path": "example-code/patient-banner (pseudononymised).txt",
+      "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+      "start_line": 776,
+      "end_line": 796,
+      "symbol": "Mapper.CreateMap<ChildGeneral, ClientSummaryModel>",
+      "fragment": "Mapper.CreateMap<ChildGeneral, ClientSummaryModel>()",
+      "extractedSha256": "0bda5c97eb044a4fadc926db76848fea5863364b4f4ad82af74681668b90279a"
+    },
+    {
+      "id": "C005",
+      "document": "behaviour.md",
+      "path": "example-code/patient-banner (pseudononymised).txt",
+      "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+      "start_line": 388,
+      "end_line": 398,
+      "symbol": "StandardNameResolver",
+      "fragment": "public class StandardNameResolver : ValueResolver<INameModel, string>",
+      "extractedSha256": "69b3e918a9b2f423006d46120074b288d179005acd229dd955a78a40a59cff29"
+    },
+    {
+      "id": "C008",
+      "document": "behaviour.md",
+      "path": "example-code/patient-banner (pseudononymised).txt",
+      "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+      "start_line": 208,
+      "end_line": 229,
+      "symbol": "AddressResolver",
+      "fragment": "public class AddressResolver : ValueResolver<AddressModel, string>",
+      "extractedSha256": "0367f2529cc5c582f49560d408b1f8387235b5ab6cde8978a58b388eb308df9a"
+    },
+    {
+      "id": "C010",
+      "document": "behaviour.md",
+      "path": "example-code/patient-banner (pseudononymised).txt",
+      "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+      "start_line": 1247,
+      "end_line": 1278,
+      "symbol": "SpanFor",
+      "fragment": "public static MvcHtmlString SpanFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, object htmlAttributes = null, string format = null, bool leaveBlankIfNull = false)",
+      "extractedSha256": "16990b751de43c05d4894ec843e19e07dc98c3e651a3c92b80bb8a3b63f2a6a0"
+    },
+    {
+      "id": "C012",
+      "document": "behaviour.md",
+      "path": "example-code/patient-banner (pseudononymised).txt",
+      "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+      "start_line": 242,
+      "end_line": 310,
+      "symbol": "AgeResolver",
+      "fragment": "public class AgeResolver : ValueResolver<ChildGeneral, string>",
+      "extractedSha256": "12a465663871a4e0342ff5cc85db2c41476505f6df32bf0186c331f1c549f783"
+    },
+    {
+      "id": "C013",
+      "document": "behaviour.md",
+      "path": "example-code/patient-banner (pseudononymised).txt",
+      "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+      "start_line": 1523,
+      "end_line": 1539,
+      "symbol": "Model.CurrentStatusCode",
+      "fragment": "@(Model.CurrentStatusCode != \"7\" ? Html.SpanFor(m => m.AgeString)  : new MvcHtmlString(\"-\") )",
+      "extractedSha256": "8718fb1226c1c8e6902d3784276f46baf8b71ab8fd2f86c9035dfa1a064b7eb7"
+    },
+    {
+      "id": "C014",
+      "document": "behaviour.md",
+      "path": "example-code/patient-banner (pseudononymised).txt",
+      "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+      "start_line": 347,
+      "end_line": 354,
+      "symbol": "CurrentStatusResolver",
+      "fragment": "public class CurrentStatusResolver : ValueResolver<string, string>",
+      "extractedSha256": "151df5f73b682ddf44c46277c250af31b3c8637fce8794e6e464fc019fcd93c5"
+    },
+    {
+      "id": "C015",
+      "document": "behaviour.md",
+      "path": "example-code/patient-banner (pseudononymised).txt",
+      "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+      "start_line": 324,
+      "end_line": 335,
+      "symbol": "ChildCentreResolver",
+      "fragment": "public class ChildCentreResolver : ValueResolver<ChildCentres, string>",
+      "extractedSha256": "7b11bf539e211a03bd9e6d2937757be47738840c91e666ef9ce1d943be780c9d"
+    },
+    {
+      "id": "C017",
+      "document": "behaviour.md",
+      "path": "example-code/patient-banner (pseudononymised).txt",
+      "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+      "start_line": 144,
+      "end_line": 171,
+      "symbol": "GetOrganisationValue",
+      "fragment": "private static string GetOrganisationValue(IEnumerable<ChildCentres> childCentres, IUnitOfWork uow)",
+      "extractedSha256": "9cfa57d8424a294714a8a3f7aba5ce1216f722eebcaf8a4bd96f593274ee89c5"
+    },
+    {
+      "id": "C018",
+      "document": "behaviour.md",
+      "path": "example-code/patient-banner (pseudononymised).txt",
+      "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+      "start_line": 564,
+      "end_line": 568,
+      "symbol": "ShowAlert",
+      "fragment": "public bool ShowAlert => CurrentStatusCode == LookupsUtility.CurrentStatus_MovementOut || CurrentStatusCode == LookupsUtility.CurrentStatus_TransferredOut",
+      "extractedSha256": "bc0884114d3da4ccfea64e5e6ed8a25daa308c9f96699d16d183b9f92f38e228"
+    },
+    {
+      "id": "C019",
+      "document": "behaviour.md",
+      "path": "example-code/patient-banner (pseudononymised).txt",
+      "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+      "start_line": 1340,
+      "end_line": 1385,
+      "symbol": "FILE: Web/Views/_ClientAlerts.cshtml",
+      "fragment": "FILE: Web/Views/_ClientAlerts.cshtml",
+      "extractedSha256": "c8e5c3df9ae8073b7a423e8a16ebebeba52834691cd523ecd5d0533273e72216"
+    },
+    {
+      "id": "C020",
+      "document": "behaviour.md",
+      "path": "example-code/patient-banner (pseudononymised).txt",
+      "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+      "start_line": 1633,
+      "end_line": 1636,
+      "symbol": "Model.ShowAlert",
+      "fragment": "@if (Model.ShowAlert)",
+      "extractedSha256": "f1b5afcde415ac1877cb4d098c1b14ccaf1632778b9204f15cb7843b48d06543"
+    },
+    {
+      "id": "C021",
+      "document": "behaviour.md",
+      "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+      "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+      "start_line": 6685,
+      "end_line": 6745,
+      "symbol": "GetKdpExamination",
+      "fragment": "public KdpExaminationTO GetKdpExamination(long clientId)",
+      "extractedSha256": "eac468492cf9e0899fb35d105874c486a61e2a783d91c87804c12de23c9dd874"
+    },
+    {
+      "id": "C022",
+      "document": "behaviour.md",
+      "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+      "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+      "start_line": 629,
+      "end_line": 633,
+      "symbol": "GetKdpResults",
+      "fragment": "public void GetKdpResults(long clientId)",
+      "extractedSha256": "9d238f8c20f8d6f0bb3485714e8b4fb04f2c96b0b20e8eb1467068535a7e2af1"
+    },
+    {
+      "id": "C024",
+      "document": "behaviour.md",
+      "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+      "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+      "start_line": 6583,
+      "end_line": 6627,
+      "symbol": "ConfigureMappings",
+      "fragment": "public static void ConfigureMappings()",
+      "extractedSha256": "73c7c9919396cfe11183ec531c58e154319221fed9194b94b7626b26d8e78a7e"
+    },
+    {
+      "id": "C027",
+      "document": "behaviour.md",
+      "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+      "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+      "start_line": 4579,
+      "end_line": 4588,
+      "symbol": "PhysicalAssessment6To8Weeks",
+      "fragment": "public static Dictionary<string, byte?> PhysicalAssessment6To8Weeks()",
+      "extractedSha256": "0d068daa0d8f35566f362ff21f05d5e5887bf8ed80aa469bede364aae37cad1b"
+    },
+    {
+      "id": "C029",
+      "document": "behaviour.md",
+      "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+      "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+      "start_line": 247,
+      "end_line": 251,
+      "symbol": "hlxDropDownHeart",
+      "fragment": "PopulateDropDown.Populate(hlxDropDownHeart, kdpExaminationResultDelegate.PhysicalAssessment6To8WeeksList);",
+      "extractedSha256": "763f7b2722d1131502c3e21f6ac7f6b54319922be7ad3e20b01f56036e024a11"
+    },
+    {
+      "id": "C030",
+      "document": "behaviour.md",
+      "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+      "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+      "start_line": 6218,
+      "end_line": 6222,
+      "symbol": "dest.Heart",
+      "fragment": ".ForMember(dest => dest.Heart, act => act.ResolveUsing(LookupsUtility.PhysicalAssessment6To8Weeks()).FromMember(src => src.ChildExaminationGiven.ChildExaminationKdp.Heart.ToString()))",
+      "extractedSha256": "48c178f41816d655e6b3a5260900e01408e4ff3ee814fbf13df2b8956b47ab16"
+    },
+    {
+      "id": "C079",
+      "document": "behaviour.md",
+      "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+      "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+      "start_line": 4049,
+      "end_line": 4082,
+      "symbol": "public enum GENDER",
+      "fragment": "NOTSPECIFIED = 9",
+      "extractedSha256": "87fb5219f738c1e710aeff9e823f5dddb0b8bb5e97a8032dc3e0ae0787812bbc"
+    }
+  ],
+  "generatedSha256": "9196a65b071e8a598c628e925f8811573da29115455557e224f887d511d6605f",
+  "adaptations": "README.md#extraction-and-adaptations"
+}

@@ -1,0 +1,32 @@
+    public static class StaticSpan
+    {
+        public static MvcHtmlString SpanFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, object htmlAttributes = null, string format = null, bool leaveBlankIfNull = false)
+        {
+            var valueGetter = expression.Compile();
+            var value = valueGetter(helper.ViewData.Model);
+
+
+            var span = new TagBuilder("span");
+            span.MergeAttributes(new RouteValueDictionary(htmlAttributes));
+
+            if (value is DateTime? && value.ToString() == DateTime.MinValue.ToString(CultureInfo.InvariantCulture))
+            {
+                span.SetInnerText(leaveBlankIfNull ? string.Empty : "-");
+
+                return MvcHtmlString.Create(span.ToString());
+            }
+
+
+            if (value != null && !string.IsNullOrEmpty(value.ToString()))
+            {
+                span.SetInnerText(format != null ? string.Format(format, value) : value.ToString());
+            }
+            else
+            {
+                span.SetInnerText(leaveBlankIfNull ? string.Empty : "-");
+            }
+
+            return MvcHtmlString.Create(span.ToString());
+        }
+    }
+}

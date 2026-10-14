@@ -1,0 +1,46 @@
+================================================================
+FILE: Web/Views/_ClientAlerts.cshtml
+================================================================
+@using OVX.BusinessTier.Common.Util
+@using Orvex.Resources
+@model  Orvex.DomainModel.ClientSummaryModel
+@{
+    var showChildDiedAlert = Model.CurrentStatusCode == LookupsUtility.CurrentStatus_Died;
+    var showChildMovedOutAlert = Model.CurrentStatusCode == LookupsUtility.CurrentStatus_MovementOut;
+    var showChildTransferredOutAlert = Model.CurrentStatusCode == LookupsUtility.CurrentStatus_TransferredOut;
+    var showChildStillbornAlert = Model.CurrentStatusCode == LookupsUtility.CurrentStatus_Stillbirth;
+    var dateOfBirth = string.Format(Resources.DateFormatStandard, Model.DateOfBirth);
+    var dateOfDeath = string.Format(Resources.DateFormatStandard, Model.DateOfDeath);
+    var currentStatusDate = string.Format(Resources.DateFormatStandard, Model.CurrentStatusDate);
+}
+<div id="client-alerts">
+    @foreach (var childAlert in Model.ChildAlerts)
+    {
+        @OrvexComponents.AlertDialog(Resources.CommunityIndexHeading, string.Format(Resources.ChildAlerts, childAlert))
+    }
+    @if (showChildDiedAlert)
+    {
+        @OrvexComponents.AlertDialog(Resources.ChildDiedAlertHeading, string.Format(Resources.ChildDiedAlertMessage, dateOfDeath))
+    }
+    @if (showChildMovedOutAlert)
+    {
+        @OrvexComponents.AlertDialog(Resources.ChildMovedOutAlertHeading, string.Format(Resources.ChildMovedOutAlertMessage, currentStatusDate))
+    }
+    @if (showChildTransferredOutAlert)
+    {
+        @OrvexComponents.AlertDialog(Resources.ChildTransferredOutAlertHeading, string.Format(Resources.ChildTransferredOutAlertMessage, currentStatusDate))
+    }
+    @if (showChildStillbornAlert)
+    {
+        @OrvexComponents.AlertDialog(Resources.ChildStillbornAlertHeading, string.Format(Resources.ChildStillbornAlertMessage, dateOfBirth))
+    }
+</div>
+<script>
+    $(document)
+        .ready(function () {
+            var showAlerts = getQueryParams()['showAlerts'];
+
+            if (showAlerts !== "false") $('#client-alerts').setupAlertDialogs();
+        });
+</script>    
+

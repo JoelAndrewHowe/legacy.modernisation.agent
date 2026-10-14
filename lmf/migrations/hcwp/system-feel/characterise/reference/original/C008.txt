@@ -1,0 +1,22 @@
+    public class AddressResolver : ValueResolver<AddressModel, string>
+    {
+        protected override string ResolveCore(AddressModel source)
+        {
+            var address = string.Empty; 
+
+            if (!string.IsNullOrEmpty(source.Address1) && source.Address1 != "-")
+                address += source.Address1 + ", ";
+            if (!string.IsNullOrEmpty(source.Address2) && source.Address2 != "-")
+                address += source.Address2 + ", ";
+            if (!string.IsNullOrEmpty(source.Address3) && source.Address3 != "-")
+                address += source.Address3 + ", ";
+            if (!string.IsNullOrEmpty(source.Address4) && source.Address4 != "-")
+                address += source.Address4 + ", ";
+            if (!string.IsNullOrEmpty(source.Address5) && source.Address5 != "-")
+                address += source.Address5 + ", ";
+            if (!string.IsNullOrEmpty(source.Postcode) && source.Postcode != "-")
+                address += source.Postcode;
+
+            return address.TrimEnd().TrimEnd(',');
+        }
+    }

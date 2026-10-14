@@ -1,0 +1,28 @@
+        private static string GetOrganisationValue(IEnumerable<ChildCentres> childCentres, IUnitOfWork uow)
+        {
+            string organisationValue;
+
+            var locations = childCentres.FirstOrDefault(cc => cc.ChildLocationType == (byte)LookupsUtility.CENTRE_TYPES.HEALTH_AUTHORITY);
+            if (locations != null)
+            {
+                if (locations.ChildLocations != null)
+                {
+                    var organisation = uow.Repository<ChildLocations>()
+                        .AsNoTracking()
+                        .SingleOrDefault(
+                            cl => cl.Code == locations.ChildLocations.Organisation && cl.LocationTypes.Authority == "Y");
+
+                    organisationValue = (organisation == null ? "-" : String.Join(", ", organisation.Code, organisation.Name));
+                }
+                else
+                {
+                    organisationValue = "-";
+                }
+            }
+            else
+            {
+                organisationValue = "-";
+            }
+
+            return organisationValue;
+        }

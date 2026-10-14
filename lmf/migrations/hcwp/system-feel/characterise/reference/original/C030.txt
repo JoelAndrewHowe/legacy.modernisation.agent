@@ -1,0 +1,5 @@
+              .ForMember(dest => dest.Heart, act => act.ResolveUsing(LookupsUtility.PhysicalAssessment6To8Weeks()).FromMember(src => src.ChildExaminationGiven.ChildExaminationKdp.Heart.ToString()))
+              .ForMember(dest => dest.Hips, act => act.ResolveUsing(LookupsUtility.PhysicalAssessment6To8Weeks()).FromMember(src => src.ChildExaminationGiven.ChildExaminationKdp.Hips.ToString()))
+              .ForMember(dest => dest.Eyes, act => act.ResolveUsing(LookupsUtility.PhysicalAssessment6To8Weeks()).FromMember(src => src.ChildExaminationGiven.ChildExaminationKdp.Eyes.ToString()))
+              .ForMember(dest => dest.Testes, act => act.ResolveUsing(LookupsUtility.PhysicalAssessment6To8Weeks()).FromMember(src => src.ChildExaminationGiven.ChildExaminationKdp.Testes.ToString()))
+              .ForMember(dest => dest.PhysicalGeneral, act => act.ResolveUsing(LookupsUtility.PhysicalAssessment6To8Weeks()).FromMember(src => src.ChildExaminationGiven.ChildExaminationKdp.PhysicalGeneral.ToString()))

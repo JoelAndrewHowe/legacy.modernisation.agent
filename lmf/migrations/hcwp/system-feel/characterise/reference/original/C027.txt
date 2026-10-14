@@ -1,0 +1,10 @@
+        public static Dictionary<string, byte?> PhysicalAssessment6To8Weeks()
+        {
+            return new Dictionary<string, byte?>
+            {
+                {"1 - Satisfactory", 1},
+                {"2 - Concern", 2},
+                {"3 - Not assessed", 3},
+                {string.Empty, null}
+            };
+        }

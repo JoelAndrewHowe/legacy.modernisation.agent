@@ -1,0 +1,8 @@
+    public class CurrentStatusResolver : ValueResolver<string, string>
+    {
+        protected override string ResolveCore(string source)
+        {
+            return !string.IsNullOrEmpty(source) ? LookupsUtility.CurrentStatusText(source) : string.Empty;
+        }
+    }
+}

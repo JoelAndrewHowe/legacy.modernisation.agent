@@ -1,0 +1,61 @@
+
+        public KdpExaminationTO GetKdpExamination(long clientId)
+        {
+            using (var uow = unitOfWorkFactory())
+            {
+                var childExamination = uow.Repository<ChildExamination>()
+                    .Include(c => c.ChildExaminationGiven)
+                    .Include(c => c.ChildExaminationGiven.ChildExaminationKdp)
+                    .Include(c => c.ChildMeasurement)
+                    .Include(c => c.ExaminationDescriptions)
+                    .Include(c => c.ChildExaminationGiven.ChildLocations)
+                    .Include(c => c.ChildExaminationGiven.HealthCareProfessionals)
+                    .Where(c => c.ClientId == clientId && c.ExaminationDescriptions.FkExamDescriptionType == ExamType.Kdp)
+                    .OrderByDescending(c => c.ChildExaminationGiven.ExaminationDate)
+                    .ToList();
+
+                var childDetails = GetChildDetails(clientId, uow);
+
+                var outstandingResults = GetKdpOutstandingAppointments(clientId, uow);
+
+                return new KdpExaminationTO
+                {
+                    Id = clientId.ToString("D"),
+                    DateOfBirth = childDetails.DateOfBirth,
+                    DateOfDeath = childDetails.DateOfDeath,
+                    Gender = childDetails.Sex,
+                    HasPreschoolConsent = childDetails.Consents.SingleOrDefault(con => con.ConsentCategory == PreschoolConsentCategory && con.ConsentType == MedicalConsentType)?.ConsentResult == kdpConsentYesValue,
+                    HcpExaminationResultToList = childExamination.Select(GetKdpResultTo).ToList(),
+                    OutstandingAppointmentsList = outstandingResults
+                };
+            }
+        }
+
+        private static List<ChildExaminationGivenSubTO> GetKdpOutstandingAppointments(long clientId, IUnitOfWork uow)
+        {
+            var outstandingAppointments = uow.Repository<HlxAppointment>()
+               .Include(appt => appt.ExaminationDescriptions)
+               .Where(appt => appt.ClientId == clientId
+                              && appt.ExaminationDue.StartsWith(KdpExamCodeAcronym)
+                              && appt.IsOutstanding == "Y"
+                              && appt.AppointmentDatetime <= DateTime.Now)
+               .OrderByDescending(appt => appt.AppointmentDatetime)
+               .ToList();
+
+            return outstandingAppointments.Select(appt => new ChildExaminationGivenSubTO
+            {
+                PkChildExaminationGivenId = 0,
+                ClientId = clientId,
+                ExaminationCode = appt.ExaminationDue,
+                ExaminationDesc = appt.ExaminationDescriptions?.ShortDescription,
+                ExaminationDate = appt.AppointmentDatetime,
+                Origin = LookupsUtility.EXAMINATION_ORIGIN.SCHEDULED
+            }).ToList();
+        }
+
+        private static ChildGeneral GetChildDetails(long clientId, IUnitOfWork uow)
+        {
+            return uow.Repository<ChildGeneral>()
+                .Include(cg => cg.Consents)
+                .Single(cg => cg.ClientId == clientId);
+        }

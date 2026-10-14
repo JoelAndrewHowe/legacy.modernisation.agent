@@ -1,0 +1,188 @@
+{
+  "command": [
+    "lmf/migrations/hcwp/system-feel/characterise/reference/test-harness.py",
+    "--evidence-prefix",
+    "task-4-selftest-fix"
+  ],
+  "cwd": "/workspaces/legacy.modernisation.agent",
+  "startedAt": "2026-10-14T22:16:28.514544+00:00",
+  "finishedAt": "2026-10-14T22:16:30.563046+00:00",
+  "commands": [
+    {
+      "command": [
+        "dotnet",
+        "build",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/reference/Reference.csproj",
+        "--nologo",
+        "--configuration",
+        "Release",
+        "--no-incremental"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "startedAt": "2026-10-14T22:16:28.524736+00:00",
+      "finishedAt": "2026-10-14T22:16:30.228470+00:00",
+      "exitCode": 0,
+      "stdout": "  Determining projects to restore...\n  All projects are up-to-date for restore.\n  Reference -> /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/reference/bin/Release/net10.0/Reference.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:01.47\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "dotnet",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/reference/bin/Release/net10.0/Reference.dll"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "startedAt": "2026-10-14T22:16:30.228690+00:00",
+      "finishedAt": "2026-10-14T22:16:30.412136+00:00",
+      "exitCode": 0,
+      "stdout": "{\"value\":\"Changed Synthetic, \"}\n{\"value\":\"Changed Address, Synthetic C, Synthetic D, Synthetic E\"}\n{\"AgeString\":\"1 day\"}\n{\"physical\":{\"Heart\":{\"raw\":1,\"choice\":\"1 - Satisfactory\"},\"Hips\":{\"raw\":null,\"choice\":null},\"Eyes\":{\"raw\":null,\"choice\":null},\"Testes\":{\"raw\":null,\"choice\":null},\"PhysicalGeneral\":{\"raw\":null,\"choice\":null}},\"hasConcern\":false,\"persistedAggregateStatus\":false,\"examinationState\":\"Recorded\",\"repeatLabel\":\"Initial\",\"inputAfter\":{\"ExaminationCode\":\"KD03\",\"ReasonNotExamined\":null,\"IsRepeat\":false,\"Heart\":1,\"Hips\":null,\"Eyes\":null,\"Testes\":null,\"PhysicalGeneral\":null,\"DomesticViolenceConcern\":1}}\n{\"ShowAlert\":true,\"setupAlertDialogs\":true,\"ChildAlerts\":[\"SYNTHETIC CHILD ALERT \\u2014 demonstration only\",\"SYNTHETIC SECOND ALERT \\u2014 no clinical meaning\"]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/verify",
+        "--evidence-prefix",
+        "task-4-selftest-fix-self-test-collision"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "startedAt": "2026-10-14T22:16:30.419049+00:00",
+      "finishedAt": "2026-10-14T22:16:30.491812+00:00",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "Retained evidence exists; use a fresh --evidence-prefix\n"
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/reference/test-harness.py",
+        "--evidence-prefix",
+        "task-4-selftest-fix"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "startedAt": "2026-10-14T22:16:30.498412+00:00",
+      "finishedAt": "2026-10-14T22:16:30.556822+00:00",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "Retained test evidence exists; use a fresh --evidence-prefix\n"
+    }
+  ],
+  "files": {
+    "lmf/migrations/hcwp/system-feel/characterise/reference/Reference.csproj": "4a6f4a3eca04f8f6e8f177a5fbaf955670adc7e7a81a0ed093a16bfc7cf6ff05",
+    "lmf/migrations/hcwp/system-feel/characterise/reference/Legacy.cs": "9196a65b071e8a598c628e925f8811573da29115455557e224f887d511d6605f",
+    "lmf/migrations/hcwp/system-feel/characterise/reference/Compatibility.cs": "aa5175fad3c190e89377d2e6da50d296c2b3c6c5e3c8426dde28607dc17008d9",
+    "lmf/migrations/hcwp/system-feel/characterise/reference/Program.cs": "203b0286ba24113071b9dea6d8b8465318ad9ed77009ad63c0d780ab3ae0143b",
+    "lmf/migrations/hcwp/system-feel/characterise/reference/test-harness.py": "9fd2e7926bfda9f9076ece4c456cd6e587c58ef554a1e18a85c60b89ca640fcb",
+    "lmf/migrations/hcwp/system-feel/characterise/reference/run.py": "e9ebc6a36bef8496e57bb0f75c1ab9371e045941e1542ef55fe7aa497a12d551"
+  },
+  "binarySha256": "5d85c82d558e0a437a6ebda3cbc9a122d399e147a5a5cf922dce10edf48ed6f3",
+  "collisionSentinel": "lmf/migrations/hcwp/system-feel/characterise/task-4-selftest-fix-self-test-collision-reference-results.json",
+  "evidenceType": "Harness self-tests, NOT required scenario counts",
+  "checks": [
+    {
+      "check": "booleans are not numbers",
+      "passed": true
+    },
+    {
+      "check": "null differs from empty",
+      "passed": true
+    },
+    {
+      "check": "missing expected key fails",
+      "passed": true
+    },
+    {
+      "check": "extra observation keys allowed",
+      "passed": true
+    },
+    {
+      "check": "list cardinality exact",
+      "passed": true
+    },
+    {
+      "check": "ties accept reversed IDs",
+      "passed": true
+    },
+    {
+      "check": "duplicate IDs rejected",
+      "passed": true
+    },
+    {
+      "check": "excluded patient row rejected",
+      "passed": true
+    },
+    {
+      "check": "unordered multiset rejects extra rows",
+      "passed": true
+    },
+    {
+      "check": "incorrect observed count rejected",
+      "passed": true
+    },
+    {
+      "check": "empty scenario set fails closed",
+      "passed": true
+    },
+    {
+      "check": "missing scenario fails closed",
+      "passed": true
+    },
+    {
+      "check": "duplicate ID fails closed",
+      "passed": true
+    },
+    {
+      "check": "unknown operation fails closed",
+      "passed": true
+    },
+    {
+      "check": "empty expectation fails closed",
+      "passed": true
+    },
+    {
+      "check": "non-required scenario fails closed",
+      "passed": true
+    },
+    {
+      "check": "missing group fails closed",
+      "passed": true
+    },
+    {
+      "check": "current reference sources build",
+      "passed": true
+    },
+    {
+      "check": "name responds to data",
+      "passed": true
+    },
+    {
+      "check": "address responds to data",
+      "passed": true
+    },
+    {
+      "check": "age responds to clock",
+      "passed": true
+    },
+    {
+      "check": "concern responds to physical data",
+      "passed": true
+    },
+    {
+      "check": "literal false is case sensitive",
+      "passed": true
+    },
+    {
+      "check": "existing evidence rejected before writing",
+      "passed": true
+    },
+    {
+      "check": "collision creates no other prefixed evidence",
+      "passed": true
+    },
+    {
+      "check": "self-test collision rejected before checks",
+      "passed": true
+    }
+  ],
+  "passed": 26,
+  "failed": 0,
+  "exitCode": 0
+}

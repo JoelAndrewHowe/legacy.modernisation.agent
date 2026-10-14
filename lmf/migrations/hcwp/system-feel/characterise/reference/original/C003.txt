@@ -1,0 +1,21 @@
+FILE: Excerpts/WebProfile_ClientSummaryMapping.cs.txt
+================================================================
+            Mapper.CreateMap<ChildGeneral, AddressModel>();
+
+            Mapper.CreateMap<ChildGeneral, ClientSummaryModel>()
+                .ForMember(dest => dest.Fullname, act => act.ResolveUsing<StandardNameResolver>())
+                .ForMember(dest => dest.Gender, act => act.ResolveUsing<EnumResolver<LookupsUtility.GENDER>>().FromMember(source => source.Sex))
+                .ForMember(dest => dest.School, act => act.ResolveUsing<ChildCentreResolver>().FromMember(source => source.ChildCentres.FirstOrDefault(s => s.ChildLocationType == (byte)LookupsUtility.CENTRE_TYPES.SCHOOL)))
+                .ForMember(dest => dest.ExamCentre, act => act.ResolveUsing<ChildCentreResolver>().FromMember(source => source.ChildCentres.FirstOrDefault(s => s.ChildLocationType == (byte)LookupsUtility.CENTRE_TYPES.EXAM_CENTRE)))
+                .ForMember(dest => dest.TreatmentCentre, act => act.ResolveUsing<ChildCentreResolver>().FromMember(source => source.ChildCentres.FirstOrDefault(s => s.ChildLocationType == (byte)LookupsUtility.CENTRE_TYPES.TREATMENT_CENTRE)))
+                .ForMember(dest => dest.Practice, act => act.ResolveUsing<ChildCentreResolver>().FromMember(source => source.ChildCentres.FirstOrDefault(s => s.ChildLocationType == (byte)LookupsUtility.LOCATION_TYPES.PRACTICE)))
+                .ForMember(dest => dest.HealthVisitor, act => act.ResolveUsing<RelHcpResolver>().FromMember(source => source.RelHcpDemographics.FirstOrDefault(s => s.StaffType == "HV")))
+                .ForMember(dest => dest.Gp, act => act.ResolveUsing<RelHcpResolver>().FromMember(source => source.RelHcpDemographics.FirstOrDefault(s => s.StaffType == "GP")))
+                .ForMember(dest => dest.AgeString, act => act.ResolveUsing<AgeResolver>())
+                .ForMember(dest => dest.CurrentStatus, act => act.ResolveUsing<CurrentStatusResolver>().FromMember(source => source.CurrentStatus))
+                .ForMember(dest => dest.CurrentStatusCode, act => act.MapFrom(source => source.CurrentStatus))
+                .ForMember(dest => dest.Address, act => act.MapFrom(source => source))
+                .ForMember(dest => dest.FullAddress, act => act.ResolveUsing<AddressResolver>().FromMember(source => new AddressModel { Address1 = source.Address1, Address2 = source.Address2, Address3 = source.Address3, Address4 = source.Address4, Address5 = source.Address5, Postcode = source.Postcode }))
+                .ForMember(dest => dest.CurrentStatusDate, act => act.MapFrom(source => source.CurrentStatusDate))
+                .ForMember(dest => dest.ChildAlerts, act => act.MapFrom(source => source.ChildAlertCodes.Select(a => a.AlertCodes.AlertText)))
+                .IgnoreUnMapped();

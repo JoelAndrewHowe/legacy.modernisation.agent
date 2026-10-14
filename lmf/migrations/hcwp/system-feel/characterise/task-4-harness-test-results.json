@@ -1,0 +1,101 @@
+{
+  "startedAt": "2026-10-14T22:07:46.039665+00:00",
+  "evidenceType": "Harness self-tests, NOT required scenario counts",
+  "checks": [
+    {
+      "check": "booleans are not numbers",
+      "passed": true
+    },
+    {
+      "check": "null differs from empty",
+      "passed": true
+    },
+    {
+      "check": "missing expected key fails",
+      "passed": true
+    },
+    {
+      "check": "extra observation keys allowed",
+      "passed": true
+    },
+    {
+      "check": "list cardinality exact",
+      "passed": true
+    },
+    {
+      "check": "ties accept reversed IDs",
+      "passed": true
+    },
+    {
+      "check": "duplicate IDs rejected",
+      "passed": true
+    },
+    {
+      "check": "excluded patient row rejected",
+      "passed": true
+    },
+    {
+      "check": "unordered multiset rejects extra rows",
+      "passed": true
+    },
+    {
+      "check": "incorrect observed count rejected",
+      "passed": true
+    },
+    {
+      "check": "empty scenario set fails closed",
+      "passed": true
+    },
+    {
+      "check": "missing scenario fails closed",
+      "passed": true
+    },
+    {
+      "check": "duplicate ID fails closed",
+      "passed": true
+    },
+    {
+      "check": "unknown operation fails closed",
+      "passed": true
+    },
+    {
+      "check": "empty expectation fails closed",
+      "passed": true
+    },
+    {
+      "check": "non-required scenario fails closed",
+      "passed": true
+    },
+    {
+      "check": "missing group fails closed",
+      "passed": true
+    },
+    {
+      "check": "name responds to data",
+      "passed": true
+    },
+    {
+      "check": "address responds to data",
+      "passed": true
+    },
+    {
+      "check": "age responds to clock",
+      "passed": true
+    },
+    {
+      "check": "concern responds to physical data",
+      "passed": true
+    },
+    {
+      "check": "literal false is case sensitive",
+      "passed": true
+    },
+    {
+      "check": "existing evidence rejected before writing",
+      "passed": true
+    }
+  ],
+  "passed": 23,
+  "failed": 0,
+  "exitCode": 0
+}

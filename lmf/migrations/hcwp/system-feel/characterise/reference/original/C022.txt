@@ -1,0 +1,5 @@
+        public void GetKdpResults(long clientId)
+        {
+            ato = service.GetKdpExamination(clientId);
+            listOfKdpExaminationResultDelegates = ato.HcpExaminationResultToList.OrderByDescending(it => it.ExaminationDate).Select(GetNewKdpExaminationResultDelegate).ToList();
+        }

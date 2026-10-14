@@ -1,0 +1,5 @@
+        [DataMember]
+        public List<string> ChildAlerts { get; set; }
+
+        public bool ShowAlert => CurrentStatusCode == LookupsUtility.CurrentStatus_MovementOut || CurrentStatusCode == LookupsUtility.CurrentStatus_TransferredOut
+                                 || CurrentStatusCode == LookupsUtility.CurrentStatus_Died || CurrentStatusCode == LookupsUtility.CurrentStatus_Stillbirth || ChildAlerts.Any();

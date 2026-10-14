@@ -1,0 +1,12 @@
+    public class ChildCentreResolver : ValueResolver<ChildCentres, string>
+    {
+        protected override string ResolveCore(ChildCentres source)
+        {
+            return source != null ? GetChildCentreText(source) : "-";
+        }
+
+        private static string GetChildCentreText(ChildCentres childCentres)
+        {
+            return string.Format(CodeDescriptionFormat, childCentres.ChildLocationCode, childCentres.ChildLocations?.Name);
+        }
+    }

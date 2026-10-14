@@ -1,0 +1,45 @@
+        public static void ConfigureMappings()
+        {
+            #region CreateMap Model -->  Transfer Object
+            Mapper.CreateMap<ChildExamination, KdpExaminationResultTO>()
+                .ForMember(dest => dest.PkChildExaminationId, act => act.MapFrom(src => src.PkChildExaminationId))
+                .ForMember(dest => dest.ClientId, act => act.MapFrom(src => src.ClientId))
+                .ForMember(dest => dest.ExaminationCode, act => act.MapFrom(src => src.FkExaminationId))
+                .ForMember(dest => dest.OriginalExamCode, act => act.MapFrom(src => src.FkExaminationId))
+                .ForMember(dest => dest.Sector, act => act.MapFrom(src => src.Sector))
+                .ForMember(dest => dest.ExamDescription, act => act.MapFrom(src => src.ExaminationDescriptions.LongDescription))
+                .ForMember(dest => dest.IsRepeat, act => act.ResolveUsing<StringToBoolResolver>().FromMember(src => src.IsRepeat))
+                .IgnoreUnMapped();
+
+            Mapper.CreateMap<ChildExaminationGiven, KdpExaminationResultTO>()
+                 .ForMember(dest => dest.PkChildExaminationId, act => act.MapFrom(src => src.PkFkChildExamGivenId))
+                 .ForMember(dest => dest.LocationType, act => act.MapFrom(src => src.FkLocationHeldTypeId))
+                 .ForMember(dest => dest.LocationCode, act => act.MapFrom(src => src.FkChildLocationHeldCode))
+                 .ForMember(dest => dest.ExaminerType, act => act.MapFrom(src => src.FkStaffTypeExaminerId))
+                 .ForMember(dest => dest.ExaminerHcpCode, act => act.MapFrom(src => src.FkHcpExaminerCode))
+                 .ForMember(dest => dest.ExaminerCategory, act => act.MapFrom(src => src.FkExaminerCatId))
+                 .ForMember(dest => dest.LocationName, act => act.MapFrom(src => src.ChildLocations.Name))
+                 .ForMember(dest => dest.ReasonNotExamined, act => act.MapFrom(src => src.FkNotExaminedReasonId))
+                 .ForMember(dest => dest.ExaminerName, act => act.MapFrom(src => string.Join(" ", src.HealthCareProfessionals.Name1, src.HealthCareProfessionals.Name2)))
+                 .ForMember(dest => dest.Reschedule, act => act.MapFrom(src => src.RescheduleExamination))
+                 .ForMember(dest => dest.ExaminerTypeDescription, act => act.MapFrom(src => src.Examiner.Description))
+                 .ForMember(dest => dest.HeightMeasurementDeclined, act => act.MapFrom(src => src.HeightMeasurementRefused))
+                 .ForMember(dest => dest.WeightMeasurementDeclined, act => act.MapFrom(src => src.WeightMeasurementRefused))
+                 .ForMember(dest => dest.HeadMeasurementDeclined, act => act.MapFrom(src => src.HeadMeasurementRefused))
+                 .IgnoreUnMapped();
+
+            Mapper.CreateMap<ChildExaminationKdp, KdpExaminationResultTO>()
+                .ForMember(dest => dest.PkChildExaminationId, act => act.MapFrom(src => src.PkFkExamKdpGivenId))
+                .ForMember(dest => dest.ReceivingBoostSchemeService, act => act.MapFrom(src => src.ReceivingBoostScheme))
+                .ForMember(dest => dest.ReasonNotExaminedDescription, act => act.MapFrom(src => src.ChildExaminationGiven.ExamNotExaminedReason.KdpDescription))
+                .IgnoreUnMapped();
+
+            Mapper.CreateMap<ChildMeasurement, KdpExaminationResultTO>()
+                .ForMember(dest => dest.ChildMeasurementId, act => act.MapFrom(src => src.PkChildMeasurementId))
+                .ForMember(dest => dest.PkChildExaminationId, act => act.MapFrom(src => src.FkChildExaminationId))
+                .ForMember(dest => dest.ClientId, act => act.MapFrom(src => src.ClientId))
+                .ForMember(dest => dest.Sector, act => act.MapFrom(src => src.Sector))
+                .ForMember(dest => dest.ExaminationDate, act => act.MapFrom(src => src.MeasurementDate))
+                .ForMember(dest => dest.Height, act => act.MapFrom(src => src.Height))
+                .ForMember(dest => dest.Weight, act => act.MapFrom(src => src.Weight))
+                .ForMember(dest => dest.HeadCircumference, act => act.MapFrom(src => src.HeadCircumference))
