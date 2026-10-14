@@ -77,19 +77,41 @@ def enumerate_inputs():
             raise ValueError('missing linked required evidence: '+rel)
     return dict(sorted(entries.items()))
 
-def run(command, cwd, name):
+def run(command, cwd, name, retain=False):
     started = now()
     result = subprocess.run(command, cwd=cwd, text=True, capture_output=True)
-    (OUT/name).write_text(result.stdout+result.stderr)
+    output = result.stdout+result.stderr
+    if retain:
+        with (OUT/name).open('x') as log:
+            log.write(output)
     return {'command': ' '.join(command), 'cwd': str(cwd), 'startedAt': started,
-            'finishedAt': now(), 'exitCode': result.returncode, 'output': name}
+            'finishedAt': now(), 'exitCode': result.returncode,
+            'output': name if retain else output}
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--capture', action='store_true')
+    parser.add_argument('--results', help='Separate recheck JSON filename; default writes nothing')
     args = parser.parse_args()
+    if args.results and (args.capture or Path(args.results).name != args.results
+                         or not args.results.endswith('-gate-results.json')
+                         or args.results == 'input-gate-results.json'):
+        parser.error('--results must be a separate *-gate-results.json filename, without --capture')
+    retain = args.capture or bool(args.results)
+    prefix = args.results.removesuffix('-gate-results.json')+'-' if args.results else ''
     if Path.cwd().resolve() != ROOT:
         raise ValueError('run from repository root: '+str(ROOT))
+    # Preflight every destination before any evidence is written, including orphan logs.
+    destinations = []
+    if retain:
+        destinations = [OUT/(args.results or 'input-gate-results.json')] + [
+            OUT/(prefix+name) for name in ('input-hash-check.log',
+                                         'baseline-revision-check.log', 'baseline-hash-check.log')]
+    if args.capture:
+        destinations += [OUT/name for name in ('input-membership.json', 'input-files.sha256', 'input-inventory.md')]
+    existing = [str(path) for path in destinations if os.path.lexists(path)]
+    if existing:
+        raise ValueError('refusing to overwrite retained evidence: '+', '.join(existing))
     report = {'startedAt': now(), 'seedGroups': 9, 'errors': [], 'commands': []}
     entries = enumerate_inputs()
     files = {p: e['sha256'] for p, e in entries.items() if e['kind'] == 'file'}
@@ -110,15 +132,15 @@ def main():
     report['manifestReconcilesExactly'] = manifest.read_text() == expected_manifest
     # Independent second enumeration after capture, including hidden/untracked/build files.
     report['secondEnumerationMatches'] = enumerate_inputs() == entries
-    report['commands'].append(run(['sha256sum', '--check', manifest.relative_to(ROOT).as_posix()], ROOT, 'input-hash-check.log'))
+    report['commands'].append(run(['sha256sum', '--check', manifest.relative_to(ROOT).as_posix()], ROOT, prefix+'input-hash-check.log', retain))
     packet = ROOT/(BASE+'characterise/review-files.sha256')
     approval = (ROOT/(BASE+'approvals/characterise-approved.md')).read_text()
     bound = re.search(r'Review revision: `([a-f0-9]{64})`', approval)
     report['approvalRevision'] = bound.group(1) if bound else None
     report['actualReviewManifestSha256'] = digest(packet)
     report['approvalRevisionMatches'] = bool(bound and bound.group(1) == digest(packet) and 'State: approved for progression to Convert' in approval)
-    report['commands'].append(run(['sha256sum', 'characterise/review-files.sha256'], ROOT/BASE, 'baseline-revision-check.log'))
-    report['commands'].append(run(['sha256sum', '--check', 'characterise/review-files.sha256'], ROOT/BASE, 'baseline-hash-check.log'))
+    report['commands'].append(run(['sha256sum', 'characterise/review-files.sha256'], ROOT/BASE, prefix+'baseline-revision-check.log', retain))
+    report['commands'].append(run(['sha256sum', '--check', 'characterise/review-files.sha256'], ROOT/BASE, prefix+'baseline-hash-check.log', retain))
     for key in ['membershipMatches', 'allDigestsMatchSnapshot', 'manifestReconcilesExactly', 'secondEnumerationMatches', 'approvalRevisionMatches']:
         if not report[key]:
             report['errors'].append(key+' failed')
@@ -127,7 +149,9 @@ def main():
             report['errors'].append(command['command']+' failed; see '+command['output'])
     report['finishedAt'] = now()
     report['passed'] = not report['errors']
-    (OUT/'input-gate-results.json').write_text(json.dumps(report, indent=2)+'\n')
+    if retain:
+        with (OUT/(args.results or 'input-gate-results.json')).open('x') as evidence:
+            evidence.write(json.dumps(report, indent=2)+'\n')
     if args.capture:
         lines = ['# Iteration-002 verified input inventory', '',
                  'Task 1 only. No plan checkbox, approval, baseline artifact or product code changed.',
@@ -179,7 +203,7 @@ def main():
                   f'Approval recorded and calculated revision: `{report["actualReviewManifestSha256"]}` (matches: {report["approvalRevisionMatches"]}).']
         for c in report['commands']:
             lines += [f'- `{c["command"]}`, cwd `{c["cwd"]}`, {c["startedAt"]}–{c["finishedAt"]}, exit {c["exitCode"]}; full output `{c["output"]}`.']
-        lines += ['', 'Latest repeat results/timestamps/exit codes are retained in `input-gate-results.json` and the three logs. Recheck before downstream work and again before review binding. Any missing path, changed membership, unreadable input, digest or approval mismatch blocks progression; record it in gaps.md and the run plan, without refreshing iteration-001 evidence.', '']
+        lines += ['', 'Task-1 results/timestamps/exit codes are retained in `input-gate-results.json` and the three logs. Default rechecks write only stdout; use `--results task-2-input-gate-results.json` for separately retained recheck evidence/logs. Recheck before downstream work and again before review binding. Any missing path, changed membership, unreadable input, digest or approval mismatch blocks progression; record it in gaps.md and the run plan, without refreshing iteration-001 evidence.', '']
         (OUT/'input-inventory.md').write_text('\n'.join(lines))
     print(json.dumps(report))
     return 0 if report['passed'] else 1

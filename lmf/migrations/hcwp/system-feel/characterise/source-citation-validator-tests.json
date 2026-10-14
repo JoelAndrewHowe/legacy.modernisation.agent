@@ -1,0 +1,272 @@
+{
+  "timestamp": "2026-10-14T21:32:16.569483+00:00",
+  "scope": "isolated citation-validator tests; integrity subprocess mocked, not input or scenario evidence",
+  "passed": 15,
+  "failed": 0,
+  "cases": [
+    {
+      "case": "valid",
+      "passed": true,
+      "exitCode": 0,
+      "failures": []
+    },
+    {
+      "case": "empty-registry",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": null,
+          "failure": "absent/empty registry coverage"
+        }
+      ]
+    },
+    {
+      "case": "duplicate-id",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": "C001",
+          "failure": "duplicate ID"
+        }
+      ]
+    },
+    {
+      "case": "missing-record",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": "C001",
+          "failure": "missing record: behaviour.md"
+        }
+      ]
+    },
+    {
+      "case": "unused-record",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": "C999",
+          "failure": "unused record"
+        }
+      ]
+    },
+    {
+      "case": "wrong-document",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": "C001",
+          "failure": "wrong document binding: behaviour.md"
+        }
+      ]
+    },
+    {
+      "case": "non-bundle",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": "C001",
+          "failure": "not an original bundle"
+        }
+      ]
+    },
+    {
+      "case": "wrong-digest",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": "C001",
+          "failure": "declared/manifest/current digest mismatch"
+        }
+      ]
+    },
+    {
+      "case": "invalid-span",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": "C001",
+          "failure": "invalid line span"
+        }
+      ]
+    },
+    {
+      "case": "wrong-symbol",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": "C001",
+          "failure": "symbol is empty or absent from exact span"
+        }
+      ]
+    },
+    {
+      "case": "wrong-fragment",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": "C001",
+          "failure": "fragment is empty or absent from exact span"
+        }
+      ]
+    },
+    {
+      "case": "malformed-token",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": "bad",
+          "failure": "malformed token in behaviour.md"
+        },
+        {
+          "id": "bad",
+          "failure": "missing record: behaviour.md"
+        }
+      ]
+    },
+    {
+      "case": "empty-document",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": null,
+          "failure": "absent/empty coverage: gaps.md"
+        },
+        {
+          "id": "C055",
+          "failure": "unused record"
+        },
+        {
+          "id": "C056",
+          "failure": "unused record"
+        },
+        {
+          "id": "C057",
+          "failure": "unused record"
+        },
+        {
+          "id": "C058",
+          "failure": "unused record"
+        },
+        {
+          "id": "C059",
+          "failure": "unused record"
+        },
+        {
+          "id": "C060",
+          "failure": "unused record"
+        },
+        {
+          "id": "C061",
+          "failure": "unused record"
+        },
+        {
+          "id": "C062",
+          "failure": "unused record"
+        },
+        {
+          "id": "C063",
+          "failure": "unused record"
+        },
+        {
+          "id": "C064",
+          "failure": "unused record"
+        },
+        {
+          "id": "C065",
+          "failure": "unused record"
+        },
+        {
+          "id": "C066",
+          "failure": "unused record"
+        },
+        {
+          "id": "C067",
+          "failure": "unused record"
+        },
+        {
+          "id": "C068",
+          "failure": "unused record"
+        },
+        {
+          "id": "C069",
+          "failure": "unused record"
+        },
+        {
+          "id": "C070",
+          "failure": "unused record"
+        },
+        {
+          "id": "C071",
+          "failure": "unused record"
+        },
+        {
+          "id": "C072",
+          "failure": "unused record"
+        },
+        {
+          "id": "C073",
+          "failure": "unused record"
+        },
+        {
+          "id": "C074",
+          "failure": "unused record"
+        },
+        {
+          "id": "C075",
+          "failure": "unused record"
+        },
+        {
+          "id": "C076",
+          "failure": "unused record"
+        },
+        {
+          "id": "C077",
+          "failure": "unused record"
+        },
+        {
+          "id": "C078",
+          "failure": "unused record"
+        },
+        {
+          "id": "C081",
+          "failure": "unused record"
+        }
+      ]
+    },
+    {
+      "case": "unstructured-reference",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": null,
+          "failure": "unstructured source reference: gaps.md"
+        }
+      ]
+    },
+    {
+      "case": "integrity-failure",
+      "passed": true,
+      "exitCode": 1,
+      "failures": [
+        {
+          "id": null,
+          "failure": "input membership/digest/approval gate failed; citations not resolved"
+        }
+      ]
+    }
+  ]
+}

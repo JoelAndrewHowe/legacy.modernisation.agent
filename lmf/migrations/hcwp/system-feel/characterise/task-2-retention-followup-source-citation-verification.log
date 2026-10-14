@@ -1,0 +1,33 @@
+{
+  "command": "python3 lmf/migrations/hcwp/system-feel/characterise/verify-source-citations.py --evidence-prefix task-2-retention-followup",
+  "cwd": "/workspaces/legacy.modernisation.agent",
+  "startedAt": "2026-10-14T21:41:21.945386+00:00",
+  "documentCount": 3,
+  "documents": {
+    "behaviour.md": {
+      "tokenCount": 42,
+      "uniqueTokenCount": 33
+    },
+    "dependencies.md": {
+      "tokenCount": 30,
+      "uniqueTokenCount": 23
+    },
+    "gaps.md": {
+      "tokenCount": 30,
+      "uniqueTokenCount": 25
+    }
+  },
+  "totalTokenCount": 102,
+  "uniqueCitationCount": 81,
+  "resolvedCount": 81,
+  "failures": [],
+  "integrityCommands": [
+    {
+      "command": "python3 lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py --results task-2-retention-followup-gate-results.json",
+      "exitCode": 0,
+      "output": "{\"startedAt\": \"2026-10-14T21:41:21.985494+00:00\", \"seedGroups\": 9, \"errors\": [], \"commands\": [{\"command\": \"sha256sum --check lmf/migrations/hcwp/system-feel/characterise/input-files.sha256\", \"cwd\": \"/workspaces/legacy.modernisation.agent\", \"startedAt\": \"2026-10-14T21:41:23.096530+00:00\", \"finishedAt\": \"2026-10-14T21:41:23.267325+00:00\", \"exitCode\": 0, \"output\": \"task-2-retention-followup-input-hash-check.log\"}, {\"command\": \"sha256sum characterise/review-files.sha256\", \"cwd\": \"/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp\", \"startedAt\": \"2026-10-14T21:41:23.267956+00:00\", \"finishedAt\": \"2026-10-14T21:41:23.270639+00:00\", \"exitCode\": 0, \"output\": \"task-2-retention-followup-baseline-revision-check.log\"}, {\"command\": \"sha256sum --check characterise/review-files.sha256\", \"cwd\": \"/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp\", \"startedAt\": \"2026-10-14T21:41:23.270662+00:00\", \"finishedAt\": \"2026-10-14T21:41:23.275602+00:00\", \"exitCode\": 0, \"output\": \"task-2-retention-followup-baseline-hash-check.log\"}], \"files\": 1499, \"directories\": 184, \"symlinks\": 2, \"membershipMatches\": true, \"allDigestsMatchSnapshot\": true, \"manifestReconcilesExactly\": true, \"secondEnumerationMatches\": true, \"approvalRevision\": \"5f50912226b822117af68002edbb802b13cabec9d5b7545d7e01309685969699\", \"actualReviewManifestSha256\": \"5f50912226b822117af68002edbb802b13cabec9d5b7545d7e01309685969699\", \"approvalRevisionMatches\": true, \"finishedAt\": \"2026-10-14T21:41:23.275627+00:00\", \"passed\": true}\n"
+    }
+  ],
+  "finishedAt": "2026-10-14T21:41:23.383627+00:00",
+  "exitCode": 0
+}

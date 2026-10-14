@@ -1,0 +1,179 @@
+{
+  "startedAt": "2026-10-14T21:40:59.207836+00:00",
+  "tests": [
+    {
+      "name": "default writes nothing",
+      "command": [
+        "/usr/bin/python3",
+        "-c",
+        "import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 1,
+      "expectedExitCode": 0,
+      "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())\n                                                                                                                                                                                                                                                                                                                                  ~~~~~~^^\n  File \"/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py\", line 135, in main\n    report['commands'].append(run(['sha256sum', '--check', manifest.relative_to(ROOT).as_posix()], ROOT, prefix+'input-hash-check.log', retain))\n                                                           ~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/usr/lib/python3.13/pathlib/_local.py\", line 385, in relative_to\n    raise ValueError(f\"{str(self)!r} is not in the subpath of {str(other)!r}\")\nValueError: '/tmp/tmp1dygp1dk/input-files.sha256' is not in the subpath of '/workspaces/legacy.modernisation.agent'\n",
+      "retainedArtifactsUnchanged": true,
+      "passed": false
+    },
+    {
+      "name": "reserved Task-1 destination rejected",
+      "command": [
+        "/usr/bin/python3",
+        "-c",
+        "import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())",
+        "--results",
+        "input-gate-results.json"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "output": "usage: -c [-h] [--capture] [--results RESULTS]\n-c: error: --results must be a separate *-gate-results.json filename, without --capture\n",
+      "retainedArtifactsUnchanged": true,
+      "passed": true
+    },
+    {
+      "name": "existing capture rejected before writing",
+      "command": [
+        "/usr/bin/python3",
+        "-c",
+        "import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())",
+        "--capture"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())\n                                                                                                                                                                                                                                                                                                                                  ~~~~~~^^\n  File \"/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py\", line 114, in main\n    raise ValueError('refusing to overwrite retained evidence: '+', '.join(existing))\nValueError: refusing to overwrite retained evidence: /tmp/tmp1dygp1dk/input-membership.json, /tmp/tmp1dygp1dk/input-files.sha256\n",
+      "retainedArtifactsUnchanged": true,
+      "passed": true
+    },
+    {
+      "name": "first Task-2 retention succeeds",
+      "command": [
+        "/usr/bin/python3",
+        "-c",
+        "import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())",
+        "--results",
+        "task-2-input-gate-results.json"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 1,
+      "expectedExitCode": 0,
+      "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())\n                                                                                                                                                                                                                                                                                                                                  ~~~~~~^^\n  File \"/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py\", line 135, in main\n    report['commands'].append(run(['sha256sum', '--check', manifest.relative_to(ROOT).as_posix()], ROOT, prefix+'input-hash-check.log', retain))\n                                                           ~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/usr/lib/python3.13/pathlib/_local.py\", line 385, in relative_to\n    raise ValueError(f\"{str(self)!r} is not in the subpath of {str(other)!r}\")\nValueError: '/tmp/tmp1dygp1dk/input-files.sha256' is not in the subpath of '/workspaces/legacy.modernisation.agent'\n",
+      "retainedArtifactsUnchanged": true,
+      "passed": false
+    },
+    {
+      "name": "second Task-2 run cannot overwrite any retained artifact",
+      "command": [
+        "/usr/bin/python3",
+        "-c",
+        "import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())",
+        "--results",
+        "task-2-input-gate-results.json"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())\n                                                                                                                                                                                                                                                                                                                                  ~~~~~~^^\n  File \"/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py\", line 135, in main\n    report['commands'].append(run(['sha256sum', '--check', manifest.relative_to(ROOT).as_posix()], ROOT, prefix+'input-hash-check.log', retain))\n                                                           ~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/usr/lib/python3.13/pathlib/_local.py\", line 385, in relative_to\n    raise ValueError(f\"{str(self)!r} is not in the subpath of {str(other)!r}\")\nValueError: '/tmp/tmp1dygp1dk/input-files.sha256' is not in the subpath of '/workspaces/legacy.modernisation.agent'\n",
+      "retainedArtifactsUnchanged": true,
+      "passed": true
+    },
+    {
+      "name": "orphan input-hash-check.log rejected before any write",
+      "command": [
+        "/usr/bin/python3",
+        "-c",
+        "import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())",
+        "--results",
+        "orphan-gate-results.json"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())\n                                                                                                                                                                                                                                                                                                                                  ~~~~~~^^\n  File \"/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py\", line 114, in main\n    raise ValueError('refusing to overwrite retained evidence: '+', '.join(existing))\nValueError: refusing to overwrite retained evidence: /tmp/tmp1dygp1dk/orphan-input-hash-check.log\n",
+      "retainedArtifactsUnchanged": true,
+      "passed": true
+    },
+    {
+      "name": "orphan baseline-revision-check.log rejected before any write",
+      "command": [
+        "/usr/bin/python3",
+        "-c",
+        "import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())",
+        "--results",
+        "orphan-gate-results.json"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())\n                                                                                                                                                                                                                                                                                                                                  ~~~~~~^^\n  File \"/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py\", line 114, in main\n    raise ValueError('refusing to overwrite retained evidence: '+', '.join(existing))\nValueError: refusing to overwrite retained evidence: /tmp/tmp1dygp1dk/orphan-baseline-revision-check.log\n",
+      "retainedArtifactsUnchanged": true,
+      "passed": true
+    },
+    {
+      "name": "orphan baseline-hash-check.log rejected before any write",
+      "command": [
+        "/usr/bin/python3",
+        "-c",
+        "import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())",
+        "--results",
+        "orphan-gate-results.json"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())\n                                                                                                                                                                                                                                                                                                                                  ~~~~~~^^\n  File \"/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py\", line 114, in main\n    raise ValueError('refusing to overwrite retained evidence: '+', '.join(existing))\nValueError: refusing to overwrite retained evidence: /tmp/tmp1dygp1dk/orphan-baseline-hash-check.log\n",
+      "retainedArtifactsUnchanged": true,
+      "passed": true
+    },
+    {
+      "name": "default citation rerun cannot overwrite Task-2 evidence",
+      "command": [
+        "/usr/bin/python3",
+        "-c",
+        "import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/verify-source-citations.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "output": "{\"command\": \"python3 lmf/migrations/hcwp/system-feel/characterise/verify-source-citations.py\", \"cwd\": \"/workspaces/legacy.modernisation.agent\", \"startedAt\": \"2026-10-14T21:41:03.095630+00:00\", \"documentCount\": 3, \"documents\": {}, \"totalTokenCount\": 0, \"uniqueCitationCount\": 0, \"resolvedCount\": 0, \"failures\": [{\"id\": null, \"failure\": \"input membership/digest/approval gate failed; citations not resolved\"}], \"integrityCommands\": [{\"command\": \"python3 lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py --results task-2-input-gate-results.json\", \"exitCode\": 1, \"output\": \"Traceback (most recent call last):\\n  File \\\"/tmp/tmp1dygp1dk/inventory-inputs.py\\\", line 1, in <module>\\n    import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())\\n                                                                                                                                                                                                                                                                                                                                  ~~~~~~^^\\n  File \\\"/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py\\\", line 135, in main\\n    report['commands'].append(run(['sha256sum', '--check', manifest.relative_to(ROOT).as_posix()], ROOT, prefix+'input-hash-check.log', retain))\\n                                                           ~~~~~~~~~~~~~~~~~~~~^^^^^^\\n  File \\\"/usr/lib/python3.13/pathlib/_local.py\\\", line 385, in relative_to\\n    raise ValueError(f\\\"{str(self)!r} is not in the subpath of {str(other)!r}\\\")\\nValueError: '/tmp/tmp1dygp1dk/input-files.sha256' is not in the subpath of '/workspaces/legacy.modernisation.agent'\\n\"}], \"finishedAt\": \"2026-10-14T21:41:04.219925+00:00\", \"exitCode\": 1}\n",
+      "retainedArtifactsUnchanged": true,
+      "passed": false
+    },
+    {
+      "name": "distinct Task-6 citation evidence passes real gates",
+      "command": [
+        "/usr/bin/python3",
+        "-c",
+        "import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/verify-source-citations.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())",
+        "--evidence-prefix",
+        "task-6"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 1,
+      "expectedExitCode": 0,
+      "output": "{\"command\": \"python3 lmf/migrations/hcwp/system-feel/characterise/verify-source-citations.py --evidence-prefix task-6\", \"cwd\": \"/workspaces/legacy.modernisation.agent\", \"startedAt\": \"2026-10-14T21:41:04.266421+00:00\", \"documentCount\": 3, \"documents\": {}, \"totalTokenCount\": 0, \"uniqueCitationCount\": 0, \"resolvedCount\": 0, \"failures\": [{\"id\": null, \"failure\": \"input membership/digest/approval gate failed; citations not resolved\"}], \"integrityCommands\": [{\"command\": \"python3 lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py --results task-6-gate-results.json\", \"exitCode\": 1, \"output\": \"Traceback (most recent call last):\\n  File \\\"/tmp/tmp1dygp1dk/inventory-inputs.py\\\", line 1, in <module>\\n    import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())\\n                                                                                                                                                                                                                                                                                                                                  ~~~~~~^^\\n  File \\\"/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py\\\", line 135, in main\\n    report['commands'].append(run(['sha256sum', '--check', manifest.relative_to(ROOT).as_posix()], ROOT, prefix+'input-hash-check.log', retain))\\n                                                           ~~~~~~~~~~~~~~~~~~~~^^^^^^\\n  File \\\"/usr/lib/python3.13/pathlib/_local.py\\\", line 385, in relative_to\\n    raise ValueError(f\\\"{str(self)!r} is not in the subpath of {str(other)!r}\\\")\\nValueError: '/tmp/tmp1dygp1dk/input-files.sha256' is not in the subpath of '/workspaces/legacy.modernisation.agent'\\n\"}], \"finishedAt\": \"2026-10-14T21:41:05.422644+00:00\", \"exitCode\": 1}\n",
+      "retainedArtifactsUnchanged": true,
+      "passed": false
+    },
+    {
+      "name": "second Task-6 citation run preserves all evidence",
+      "command": [
+        "/usr/bin/python3",
+        "-c",
+        "import importlib.util; from pathlib import Path; s=importlib.util.spec_from_file_location('gate', '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/verify-source-citations.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.OUT=Path('/tmp/tmp1dygp1dk'); raise SystemExit(m.main())",
+        "--evidence-prefix",
+        "task-6"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "output": "CITATION GATE BLOCKED: evidence destination already exists; use a fresh --evidence-prefix\n",
+      "retainedArtifactsUnchanged": true,
+      "passed": true
+    }
+  ],
+  "originalArtifactsUnchanged": true,
+  "passed": false,
+  "finishedAt": "2026-10-14T21:41:05.485250+00:00"
+}

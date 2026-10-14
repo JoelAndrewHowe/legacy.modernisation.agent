@@ -1,0 +1,812 @@
+[
+  {
+    "id": "C001",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 101,
+    "end_line": 138,
+    "symbol": "GetClientSummary",
+    "fragment": "public ClientSummaryModel GetClientSummary(long clientId)"
+  },
+  {
+    "id": "C002",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 45,
+    "end_line": 99,
+    "symbol": "GetPersonByClientId",
+    "fragment": "public PersonTO GetPersonByClientId(long clientId)"
+  },
+  {
+    "id": "C003",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 776,
+    "end_line": 796,
+    "symbol": "Mapper.CreateMap<ChildGeneral, ClientSummaryModel>",
+    "fragment": "Mapper.CreateMap<ChildGeneral, ClientSummaryModel>()"
+  },
+  {
+    "id": "C004",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 453,
+    "end_line": 573,
+    "symbol": "ClientSummaryModel",
+    "fragment": "FILE: Contracts/ClientSummaryModel.cs"
+  },
+  {
+    "id": "C005",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 388,
+    "end_line": 398,
+    "symbol": "StandardNameResolver",
+    "fragment": "public class StandardNameResolver : ValueResolver<INameModel, string>"
+  },
+  {
+    "id": "C006",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1474,
+    "end_line": 1490,
+    "symbol": "m.ClientId",
+    "fragment": "@Html.SpanFor(m => m.ClientId)"
+  },
+  {
+    "id": "C007",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1405,
+    "end_line": 1410,
+    "symbol": "modelItem.DateOfBirth",
+    "fragment": "DoB: @Html.SpanFor(modelItem => modelItem.DateOfBirth, null, \"{0:dd-MMM-yyyy}\")"
+  },
+  {
+    "id": "C008",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 208,
+    "end_line": 229,
+    "symbol": "AddressResolver",
+    "fragment": "public class AddressResolver : ValueResolver<AddressModel, string>"
+  },
+  {
+    "id": "C009",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 437,
+    "end_line": 446,
+    "symbol": "FullAddress",
+    "fragment": "public string FullAddress"
+  },
+  {
+    "id": "C010",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1247,
+    "end_line": 1278,
+    "symbol": "SpanFor",
+    "fragment": "public static MvcHtmlString SpanFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, object htmlAttributes = null, string format = null, bool leaveBlankIfNull = false)"
+  },
+  {
+    "id": "C011",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1405,
+    "end_line": 1471,
+    "symbol": "Model.Fullname",
+    "fragment": "<span>@Model.Fullname</span>"
+  },
+  {
+    "id": "C012",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 242,
+    "end_line": 310,
+    "symbol": "AgeResolver",
+    "fragment": "public class AgeResolver : ValueResolver<ChildGeneral, string>"
+  },
+  {
+    "id": "C013",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1523,
+    "end_line": 1539,
+    "symbol": "Model.CurrentStatusCode",
+    "fragment": "@(Model.CurrentStatusCode != \"7\" ? Html.SpanFor(m => m.AgeString)  : new MvcHtmlString(\"-\") )"
+  },
+  {
+    "id": "C014",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 347,
+    "end_line": 354,
+    "symbol": "CurrentStatusResolver",
+    "fragment": "public class CurrentStatusResolver : ValueResolver<string, string>"
+  },
+  {
+    "id": "C015",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 324,
+    "end_line": 335,
+    "symbol": "ChildCentreResolver",
+    "fragment": "public class ChildCentreResolver : ValueResolver<ChildCentres, string>"
+  },
+  {
+    "id": "C016",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 186,
+    "end_line": 193,
+    "symbol": "GetChildCentreText",
+    "fragment": "private static string GetChildCentreText(ChildCentres cc)"
+  },
+  {
+    "id": "C017",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 144,
+    "end_line": 171,
+    "symbol": "GetOrganisationValue",
+    "fragment": "private static string GetOrganisationValue(IEnumerable<ChildCentres> childCentres, IUnitOfWork uow)"
+  },
+  {
+    "id": "C018",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 564,
+    "end_line": 568,
+    "symbol": "ShowAlert",
+    "fragment": "public bool ShowAlert => CurrentStatusCode == LookupsUtility.CurrentStatus_MovementOut || CurrentStatusCode == LookupsUtility.CurrentStatus_TransferredOut"
+  },
+  {
+    "id": "C019",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1340,
+    "end_line": 1385,
+    "symbol": "FILE: Web/Views/_ClientAlerts.cshtml",
+    "fragment": "FILE: Web/Views/_ClientAlerts.cshtml"
+  },
+  {
+    "id": "C020",
+    "document": "behaviour.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1633,
+    "end_line": 1636,
+    "symbol": "Model.ShowAlert",
+    "fragment": "@if (Model.ShowAlert)"
+  },
+  {
+    "id": "C021",
+    "document": "behaviour.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 6685,
+    "end_line": 6745,
+    "symbol": "GetKdpExamination",
+    "fragment": "public KdpExaminationTO GetKdpExamination(long clientId)"
+  },
+  {
+    "id": "C022",
+    "document": "behaviour.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 629,
+    "end_line": 633,
+    "symbol": "GetKdpResults",
+    "fragment": "public void GetKdpResults(long clientId)"
+  },
+  {
+    "id": "C023",
+    "document": "behaviour.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 6747,
+    "end_line": 6769,
+    "symbol": "GetKdpResultTo",
+    "fragment": "public static KdpExaminationResultTO GetKdpResultTo(ChildExamination childExamination)"
+  },
+  {
+    "id": "C024",
+    "document": "behaviour.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 6583,
+    "end_line": 6627,
+    "symbol": "ConfigureMappings",
+    "fragment": "public static void ConfigureMappings()"
+  },
+  {
+    "id": "C025",
+    "document": "behaviour.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 6583,
+    "end_line": 6683,
+    "symbol": "ConfigureMappings",
+    "fragment": "public static void ConfigureMappings()"
+  },
+  {
+    "id": "C026",
+    "document": "behaviour.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 5750,
+    "end_line": 5821,
+    "symbol": "ValidateOnSave",
+    "fragment": "public void ValidateOnSave(KdpExaminationResultTO newExaminationResult, DateTime dateOfBirth, DateTime? dateOfDeath, List<KdpExaminationResultTO> existingResults = null)"
+  },
+  {
+    "id": "C027",
+    "document": "behaviour.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 4579,
+    "end_line": 4588,
+    "symbol": "PhysicalAssessment6To8Weeks",
+    "fragment": "public static Dictionary<string, byte?> PhysicalAssessment6To8Weeks()"
+  },
+  {
+    "id": "C028",
+    "document": "behaviour.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 771,
+    "end_line": 1641,
+    "symbol": "KdpExaminationResultDelegate",
+    "fragment": ">>> FILE 6/94: Orvex.ViewModels/KdpExaminationResultDelegate.cs   [2. Delegates / view models]"
+  },
+  {
+    "id": "C029",
+    "document": "behaviour.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 247,
+    "end_line": 251,
+    "symbol": "hlxDropDownHeart",
+    "fragment": "PopulateDropDown.Populate(hlxDropDownHeart, kdpExaminationResultDelegate.PhysicalAssessment6To8WeeksList);"
+  },
+  {
+    "id": "C030",
+    "document": "behaviour.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 6218,
+    "end_line": 6222,
+    "symbol": "dest.Heart",
+    "fragment": ".ForMember(dest => dest.Heart, act => act.ResolveUsing(LookupsUtility.PhysicalAssessment6To8Weeks()).FromMember(src => src.ChildExaminationGiven.ChildExaminationKdp.Heart.ToString()))"
+  },
+  {
+    "id": "C031",
+    "document": "behaviour.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 2088,
+    "end_line": 2089,
+    "symbol": "KdpTestesBoys",
+    "fragment": "[Display(Name = nameof(KdpTestesBoys), ResourceType = typeof(Resources.Resources))]"
+  },
+  {
+    "id": "C032",
+    "document": "behaviour.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 4559,
+    "end_line": 4567,
+    "symbol": "DomesticViolenceConcern",
+    "fragment": "public static Dictionary<string, byte?> DomesticViolenceConcern()"
+  },
+  {
+    "id": "C033",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 27,
+    "end_line": 138,
+    "symbol": "PersonService",
+    "fragment": "public class PersonService : IPersonService"
+  },
+  {
+    "id": "C034",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 453,
+    "end_line": 596,
+    "symbol": "ClientSummaryModel",
+    "fragment": "FILE: Contracts/ClientSummaryModel.cs"
+  },
+  {
+    "id": "C035",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 45,
+    "end_line": 99,
+    "symbol": "GetPersonByClientId",
+    "fragment": "public PersonTO GetPersonByClientId(long clientId)"
+  },
+  {
+    "id": "C036",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 144,
+    "end_line": 171,
+    "symbol": "GetOrganisationValue",
+    "fragment": "private static string GetOrganisationValue(IEnumerable<ChildCentres> childCentres, IUnitOfWork uow)"
+  },
+  {
+    "id": "C037",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 776,
+    "end_line": 796,
+    "symbol": "Mapper.CreateMap<ChildGeneral, ClientSummaryModel>",
+    "fragment": "Mapper.CreateMap<ChildGeneral, ClientSummaryModel>()"
+  },
+  {
+    "id": "C038",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 388,
+    "end_line": 398,
+    "symbol": "StandardNameResolver",
+    "fragment": "public class StandardNameResolver : ValueResolver<INameModel, string>"
+  },
+  {
+    "id": "C039",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 208,
+    "end_line": 229,
+    "symbol": "AddressResolver",
+    "fragment": "public class AddressResolver : ValueResolver<AddressModel, string>"
+  },
+  {
+    "id": "C040",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 242,
+    "end_line": 310,
+    "symbol": "AgeResolver",
+    "fragment": "public class AgeResolver : ValueResolver<ChildGeneral, string>"
+  },
+  {
+    "id": "C041",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 347,
+    "end_line": 354,
+    "symbol": "CurrentStatusResolver",
+    "fragment": "public class CurrentStatusResolver : ValueResolver<string, string>"
+  },
+  {
+    "id": "C042",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 324,
+    "end_line": 335,
+    "symbol": "ChildCentreResolver",
+    "fragment": "public class ChildCentreResolver : ValueResolver<ChildCentres, string>"
+  },
+  {
+    "id": "C043",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 362,
+    "end_line": 377,
+    "symbol": "RelHcpResolver",
+    "fragment": "public class RelHcpResolver : ValueResolver<RelHcpDemographics, string>"
+  },
+  {
+    "id": "C044",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1610,
+    "end_line": 1623,
+    "symbol": "m.Telephone",
+    "fragment": "@Html.SpanFor(m => m.Telephone)"
+  },
+  {
+    "id": "C045",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1247,
+    "end_line": 1278,
+    "symbol": "SpanFor",
+    "fragment": "public static MvcHtmlString SpanFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, object htmlAttributes = null, string format = null, bool leaveBlankIfNull = false)"
+  },
+  {
+    "id": "C046",
+    "document": "dependencies.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1340,
+    "end_line": 1385,
+    "symbol": "FILE: Web/Views/_ClientAlerts.cshtml",
+    "fragment": "FILE: Web/Views/_ClientAlerts.cshtml"
+  },
+  {
+    "id": "C047",
+    "document": "dependencies.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 629,
+    "end_line": 633,
+    "symbol": "GetKdpResults",
+    "fragment": "public void GetKdpResults(long clientId)"
+  },
+  {
+    "id": "C048",
+    "document": "dependencies.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 6685,
+    "end_line": 6745,
+    "symbol": "GetKdpExamination",
+    "fragment": "public KdpExaminationTO GetKdpExamination(long clientId)"
+  },
+  {
+    "id": "C049",
+    "document": "dependencies.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 6747,
+    "end_line": 6769,
+    "symbol": "GetKdpResultTo",
+    "fragment": "public static KdpExaminationResultTO GetKdpResultTo(ChildExamination childExamination)"
+  },
+  {
+    "id": "C050",
+    "document": "dependencies.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 6583,
+    "end_line": 6683,
+    "symbol": "ConfigureMappings",
+    "fragment": "public static void ConfigureMappings()"
+  },
+  {
+    "id": "C051",
+    "document": "dependencies.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 4559,
+    "end_line": 4588,
+    "symbol": "DomesticViolenceConcern",
+    "fragment": "public static Dictionary<string, byte?> DomesticViolenceConcern()"
+  },
+  {
+    "id": "C052",
+    "document": "dependencies.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 247,
+    "end_line": 251,
+    "symbol": "hlxDropDownHeart",
+    "fragment": "PopulateDropDown.Populate(hlxDropDownHeart, kdpExaminationResultDelegate.PhysicalAssessment6To8WeeksList);"
+  },
+  {
+    "id": "C053",
+    "document": "dependencies.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 771,
+    "end_line": 1641,
+    "symbol": "KdpExaminationResultDelegate",
+    "fragment": ">>> FILE 6/94: Orvex.ViewModels/KdpExaminationResultDelegate.cs   [2. Delegates / view models]"
+  },
+  {
+    "id": "C054",
+    "document": "dependencies.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 5750,
+    "end_line": 5821,
+    "symbol": "ValidateOnSave",
+    "fragment": "public void ValidateOnSave(KdpExaminationResultTO newExaminationResult, DateTime dateOfBirth, DateTime? dateOfDeath, List<KdpExaminationResultTO> existingResults = null)"
+  },
+  {
+    "id": "C055",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1340,
+    "end_line": 1385,
+    "symbol": "FILE: Web/Views/_ClientAlerts.cshtml",
+    "fragment": "FILE: Web/Views/_ClientAlerts.cshtml"
+  },
+  {
+    "id": "C056",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 776,
+    "end_line": 796,
+    "symbol": "Mapper.CreateMap<ChildGeneral, ClientSummaryModel>",
+    "fragment": "Mapper.CreateMap<ChildGeneral, ClientSummaryModel>()"
+  },
+  {
+    "id": "C057",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 347,
+    "end_line": 354,
+    "symbol": "CurrentStatusResolver",
+    "fragment": "public class CurrentStatusResolver : ValueResolver<string, string>"
+  },
+  {
+    "id": "C058",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 324,
+    "end_line": 335,
+    "symbol": "ChildCentreResolver",
+    "fragment": "public class ChildCentreResolver : ValueResolver<ChildCentres, string>"
+  },
+  {
+    "id": "C059",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 45,
+    "end_line": 99,
+    "symbol": "GetPersonByClientId",
+    "fragment": "public PersonTO GetPersonByClientId(long clientId)"
+  },
+  {
+    "id": "C060",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 242,
+    "end_line": 310,
+    "symbol": "AgeResolver",
+    "fragment": "public class AgeResolver : ValueResolver<ChildGeneral, string>"
+  },
+  {
+    "id": "C061",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1523,
+    "end_line": 1539,
+    "symbol": "Model.CurrentStatusCode",
+    "fragment": "@(Model.CurrentStatusCode != \"7\" ? Html.SpanFor(m => m.AgeString)  : new MvcHtmlString(\"-\") )"
+  },
+  {
+    "id": "C062",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1247,
+    "end_line": 1278,
+    "symbol": "SpanFor",
+    "fragment": "public static MvcHtmlString SpanFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, object htmlAttributes = null, string format = null, bool leaveBlankIfNull = false)"
+  },
+  {
+    "id": "C063",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 144,
+    "end_line": 171,
+    "symbol": "GetOrganisationValue",
+    "fragment": "private static string GetOrganisationValue(IEnumerable<ChildCentres> childCentres, IUnitOfWork uow)"
+  },
+  {
+    "id": "C064",
+    "document": "gaps.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 629,
+    "end_line": 633,
+    "symbol": "GetKdpResults",
+    "fragment": "public void GetKdpResults(long clientId)"
+  },
+  {
+    "id": "C065",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 564,
+    "end_line": 568,
+    "symbol": "ShowAlert",
+    "fragment": "public bool ShowAlert => CurrentStatusCode == LookupsUtility.CurrentStatus_MovementOut || CurrentStatusCode == LookupsUtility.CurrentStatus_TransferredOut"
+  },
+  {
+    "id": "C066",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 101,
+    "end_line": 138,
+    "symbol": "GetClientSummary",
+    "fragment": "public ClientSummaryModel GetClientSummary(long clientId)"
+  },
+  {
+    "id": "C067",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1474,
+    "end_line": 1490,
+    "symbol": "m.ClientId",
+    "fragment": "@Html.SpanFor(m => m.ClientId)"
+  },
+  {
+    "id": "C068",
+    "document": "gaps.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 4559,
+    "end_line": 4588,
+    "symbol": "DomesticViolenceConcern",
+    "fragment": "public static Dictionary<string, byte?> DomesticViolenceConcern()"
+  },
+  {
+    "id": "C069",
+    "document": "gaps.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 6747,
+    "end_line": 6769,
+    "symbol": "GetKdpResultTo",
+    "fragment": "public static KdpExaminationResultTO GetKdpResultTo(ChildExamination childExamination)"
+  },
+  {
+    "id": "C070",
+    "document": "gaps.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 6685,
+    "end_line": 6745,
+    "symbol": "GetKdpExamination",
+    "fragment": "public KdpExaminationTO GetKdpExamination(long clientId)"
+  },
+  {
+    "id": "C071",
+    "document": "gaps.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 6583,
+    "end_line": 6627,
+    "symbol": "ConfigureMappings",
+    "fragment": "public static void ConfigureMappings()"
+  },
+  {
+    "id": "C072",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 453,
+    "end_line": 573,
+    "symbol": "ClientSummaryModel",
+    "fragment": "FILE: Contracts/ClientSummaryModel.cs"
+  },
+  {
+    "id": "C073",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1340,
+    "end_line": 1434,
+    "symbol": "FILE: Web/Views/_ClientAlerts.cshtml",
+    "fragment": "FILE: Web/Views/_ClientAlerts.cshtml"
+  },
+  {
+    "id": "C074",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 1523,
+    "end_line": 1539,
+    "symbol": "Resources.AgeAtDeath",
+    "fragment": "<label> @(Model.DateOfDeath.HasValue ? new MvcHtmlString(Resources.AgeAtDeath) : Html.DisplayNameFor(model => model.AgeString))</label>"
+  },
+  {
+    "id": "C075",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 324,
+    "end_line": 335,
+    "symbol": "ChildCentreResolver",
+    "fragment": "public class ChildCentreResolver : ValueResolver<ChildCentres, string>"
+  },
+  {
+    "id": "C076",
+    "document": "gaps.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 1802,
+    "end_line": 1851,
+    "symbol": "Resources.Resources.ScheduledExamResultsOptimisticLockMessage",
+    "fragment": "public string Title => string.Format(Resources.Resources.ScheduledKdpResultsEntryFormTitle, ClientId, Forename, Surname);"
+  },
+  {
+    "id": "C077",
+    "document": "gaps.md",
+    "path": "example-code/patient-banner (pseudononymised).txt",
+    "sha256": "d0365ffb8b625eeb8085bf7cb23284837525caf61126a90756b9d8e330b51713",
+    "start_line": 403,
+    "end_line": 446,
+    "symbol": "AddressModel",
+    "fragment": "[Display(Name = nameof(PostcodeLabel), ResourceType = typeof(Resources.Resources))]"
+  },
+  {
+    "id": "C078",
+    "document": "gaps.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 1910,
+    "end_line": 2170,
+    "symbol": "KdpTestesBoys",
+    "fragment": "[Display(Name = nameof(KdpTestesBoys), ResourceType = typeof(Resources.Resources))]"
+  },
+  {
+    "id": "C079",
+    "document": "behaviour.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 4049,
+    "end_line": 4082,
+    "symbol": "public enum GENDER",
+    "fragment": "NOTSPECIFIED = 9"
+  },
+  {
+    "id": "C080",
+    "document": "dependencies.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 4049,
+    "end_line": 4082,
+    "symbol": "public enum GENDER",
+    "fragment": "NOTSPECIFIED = 9"
+  },
+  {
+    "id": "C081",
+    "document": "gaps.md",
+    "path": "example-code/HCWP Core (pseudonymised) - single file.txt",
+    "sha256": "f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2",
+    "start_line": 4049,
+    "end_line": 4082,
+    "symbol": "public enum GENDER",
+    "fragment": "NOTSPECIFIED = 9"
+  }
+]

@@ -1,0 +1,116 @@
+{
+  "task": 2,
+  "role": "doer",
+  "checkboxChanged": false,
+  "validatorFindingsSupplied": [{"severity": "major", "file": "lmf/migrations/hcwp/system-feel/characterise/input-gate-results.json", "issue": "Task-2 citation integrity verification overwrote retained Task-1 command and gate timestamps", "resolution": "Restored committed Task-1 JSON; default inventory mode writes nothing; citation rechecks retain separate Task-2 results/logs", "status": "addressed"}],
+  "evidenceRetentionRegression": {
+    "command": "python3 lmf/migrations/hcwp/system-feel/characterise/test-evidence-retention.py",
+    "results": "evidence-retention-test-results.json",
+    "passed": 4,
+    "failed": 0,
+    "restoredTask1Sha256": "c7118a82739fc4590ea27ef70fab5be822f1e787c34a402a6e12442398d3d2ef",
+    "restoredTask1EqualsCommittedHead": true,
+    "checks": ["default writes no files", "Task-1 output destination rejected", "existing capture rejected", "citation verifier preserves Task-1 evidence and logs"]
+  },
+  "scope": "Characterise documents and citation evidence only; no application, baseline or approval changes",
+  "preStart": {
+    "command": "python3 lmf/migrations/hcwp/system-feel/characterise/inventory-inputs.py",
+    "cwd": "/workspaces/legacy.modernisation.agent",
+    "startedAt": "2026-10-14T21:25:28.939824+00:00",
+    "finishedAt": "2026-10-14T21:25:41.671143+00:00",
+    "exitCode": 0,
+    "seedGroups": 9,
+    "files": 1499,
+    "directories": 184,
+    "symlinks": 2,
+    "membershipMatches": true,
+    "allDigestsMatchSnapshot": true,
+    "manifestReconcilesExactly": true,
+    "secondEnumerationMatches": true,
+    "manifestSha256": "3ff28bcc423ef54f0915de0ce8f6a79f2b70cf92299c2a18805e6396156f874a",
+    "boundManifestMatches": true,
+    "approvalRevision": "5f50912226b822117af68002edbb802b13cabec9d5b7545d7e01309685969699",
+    "actualReviewManifestSha256": "5f50912226b822117af68002edbb802b13cabec9d5b7545d7e01309685969699",
+    "approvalRevisionMatches": true,
+    "commands": [
+      {
+        "command": "sha256sum --check lmf/migrations/hcwp/system-feel/characterise/input-files.sha256",
+        "cwd": "/workspaces/legacy.modernisation.agent",
+        "startedAt": "2026-10-14T21:25:41.495157+00:00",
+        "finishedAt": "2026-10-14T21:25:41.662818+00:00",
+        "exitCode": 0,
+        "checkedFileCount": 1499
+      },
+      {
+        "command": "sha256sum characterise/review-files.sha256",
+        "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+        "startedAt": "2026-10-14T21:25:41.663217+00:00",
+        "finishedAt": "2026-10-14T21:25:41.665966+00:00",
+        "exitCode": 0,
+        "revisionComparison": "match"
+      },
+      {
+        "command": "sha256sum --check characterise/review-files.sha256",
+        "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+        "startedAt": "2026-10-14T21:25:41.665990+00:00",
+        "finishedAt": "2026-10-14T21:25:41.671124+00:00",
+        "exitCode": 0,
+        "checkedFileCount": 120,
+        "result": "all baseline bound files OK"
+      }
+    ],
+    "passed": true,
+    "guardFailureBeforeRootRetry": {
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "command": "python3 system-feel/characterise/inventory-inputs.py",
+      "exitCode": 1,
+      "error": "INPUT GATE BLOCKED: run from repository root: /workspaces/legacy.modernisation.agent",
+      "resolution": "repeated from repository root before drafting; no capture/rebaseline"
+    },
+    "additionalStandaloneChecks": {
+      "inputManifestOwnDigestMatches": true,
+      "inputSha256CheckExitCode": 0,
+      "baselineReviewDigestMatches": true,
+      "baselineSha256CheckExitCode": 0,
+      "note": "Same pre-start shell invocation; per-command timestamps for independent checks are retained above from the inventory gate. No invented timestamps for the extra shell checks."
+    }
+  },
+  "manualAcceptance": {
+    "inspected": true,
+    "scenarioGroups": ["G01", "G02", "G03", "G04", "G05", "G06", "G07", "G08", "G09", "G10"],
+    "behaviour": "all included banner fields, missing formatting, web/Oracle age distinction, controlled clock/death/status, school/organisation, ShowAlert list and exact named status triggers, patient isolation, cardinality, complete date-order method, reasons/repeat/five physical fields and physical-only intentional Has concern",
+    "dependencies": "service/DTO/map/resolver/repository/lookup/resource/clock boundaries, unavailable infrastructure, excluded display shared retrieval, migrated boundary paths checked against actual inventoried files; proposed double evidence limits explicit",
+    "gaps": "SF-G01 through SF-G16 cover seed categories, baseline Q01-Q13/V01, all 88 baseline resource identities, newly discovered scheduled warnings, patient-summary resources, synthetic provenance/volume and every target enhancement",
+    "inspectionCorrections": [
+      "Corrected draft nonexistent migrated filenames to actual Domain/Extracted, Presentation/Rules and Persistence/Services paths.",
+      "Core GENDER enum and separate dictionary exist; documented their source values without pretending unavailable EnumResolver/resource prose is recovered.",
+      "Finished resource reconciliation; all 88 baseline keys occur in original source; additional scheduled warning identities retained despite excluded workflow."
+    ],
+    "sourceBaselineConflict": "none requiring replacement found; preserve KD03-only scope adapter and Q13 measurement-date overwrite",
+    "unresolvedHumanDecisions": ["synthetic Health board concept confirmation", "explicit Health board wording approval", "unavailable labels/resource formats and extraction adaptation review"],
+    "humanApprovalClaimed": false,
+    "newReferenceScenariosExecuted": false
+  },
+  "citationGate": {
+    "command": "python3 lmf/migrations/hcwp/system-feel/characterise/verify-source-citations.py",
+    "cwd": "/workspaces/legacy.modernisation.agent",
+    "startedAt": "2026-10-14T21:36:31.523409+00:00",
+    "finishedAt": "2026-10-14T21:36:32.927119+00:00",
+    "documentCount": 3,
+    "tokenCount": 102,
+    "uniqueCitationCount": 81,
+    "resolvedCount": 81,
+    "unresolvedCount": 0,
+    "exitCode": 0,
+    "results": "source-citation-results.json",
+    "log": "source-citation-verification.log",
+    "repeatedInputAndApprovalGate": "passed; exact command timestamps/counts included in results and task-2-input-gate-results.json; Task-1 input-gate-results.json preserved"
+  },
+  "validatorSelfTests": {
+    "results": "source-citation-validator-tests.json",
+    "passed": 15,
+    "failed": 0,
+    "scope": "isolated valid/rejection cases with mocked integrity subprocess; separate actual final gate passed"
+  },
+  "stop": "Task 2 evidence produced; task left unchecked as requested. No Tasks 3-6 consumed documents; no Convert/Refactor or approval creation."
+}
