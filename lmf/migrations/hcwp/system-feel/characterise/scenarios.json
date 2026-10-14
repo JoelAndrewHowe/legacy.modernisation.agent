@@ -1,0 +1,1999 @@
+{
+  "schemaVersion": 1,
+  "fixtureFile": "fixtures.json",
+  "contract": "fixture-scenario-contract.md",
+  "status": "Defined, not executed; all required; no approval or reference pass claimed",
+  "citationRegistry": "source-citations.json",
+  "citationResolution": "IDs link existing behaviour.md records, not new inline document bindings",
+  "groups": {
+    "G01": "Patient mapping/formatting all included fields",
+    "G02": "Missing optional patient values",
+    "G03": "Controlled age and deceased/status paths",
+    "G04": "Alert and no-alert visibility/status triggers",
+    "G05": "School and Organisation lookup formatting",
+    "G06": "Selected-patient isolation",
+    "G07": "Zero/one/multiple KD03 retrieval",
+    "G08": "Descending contact-date order",
+    "G09": "Explicit unspecified equal-date order",
+    "G10": "Reason/repeat/physical field values and intentional concern predicate"
+  },
+  "scenarios": [
+    {
+      "id": "SF-001",
+      "required": true,
+      "groups": [
+        "G01",
+        "G05",
+        "G06"
+      ],
+      "title": "All included fields from requested selected child; symbolic unavailable labels",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "selected",
+        "repositoryPatients": [
+          "other",
+          "selected"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {}
+      },
+      "expected": {
+        "ClientId": 101,
+        "Fullname": "Mx Synthetic, Example One",
+        "NhsNumber": "SYN-NHS-101",
+        "DateOfBirth": "2025-01-01T00:00:00",
+        "birthDateText": "01-Jan-2025",
+        "AgeString": "10 weeks",
+        "ageDisplay": "10 weeks",
+        "ageLabelResource": "AgeLabel",
+        "genderRequest": {
+          "enum": "GENDER",
+          "value": 1,
+          "member": "MALE"
+        },
+        "FullAddress": "1 Synthetic Lane, Invented District, SYN POST 1",
+        "statusRequest": {
+          "resolver": "CurrentStatusText",
+          "arguments": [
+            "SYN_ACTIVE"
+          ]
+        },
+        "School": {
+          "resource": "CodeDescriptionFormat",
+          "arguments": [
+            "SYNSCH1",
+            "Synthetic School One"
+          ]
+        },
+        "Organisation": "SYNORG1, Synthetic Organisation One",
+        "ChildAlerts": [],
+        "ShowAlert": false
+      },
+      "sourceCitationIds": [
+        "C001",
+        "C003",
+        "C004",
+        "C005",
+        "C007",
+        "C008",
+        "C012",
+        "C015",
+        "C017",
+        "C018",
+        "C079"
+      ]
+    },
+    {
+      "id": "SF-002",
+      "required": true,
+      "groups": [
+        "G02"
+      ],
+      "title": "Missing optional values preserve field-specific emptiness and absent-centre dash",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "missing",
+        "repositoryPatients": [
+          "other",
+          "missing"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {}
+      },
+      "expected": {
+        "Fullname": "",
+        "NhsNumber": null,
+        "FullAddress": "",
+        "statusText": "",
+        "School": "-",
+        "Organisation": "-",
+        "ChildAlerts": [],
+        "ShowAlert": false,
+        "genderRequest": {
+          "enum": "GENDER",
+          "value": 0,
+          "member": "NOTKNOWN"
+        }
+      },
+      "sourceCitationIds": [
+        "C005",
+        "C008",
+        "C014",
+        "C015",
+        "C017",
+        "C018",
+        "C079"
+      ]
+    },
+    {
+      "id": "SF-003",
+      "required": true,
+      "groups": [
+        "G01",
+        "G02"
+      ],
+      "title": "Name does not trim trailing separator",
+      "claim": "extracted-legacy",
+      "operation": "name",
+      "inputs": {
+        "Title": "",
+        "Surname": "Synthetic",
+        "Forename": null
+      },
+      "expected": {
+        "value": "Synthetic, "
+      },
+      "sourceCitationIds": [
+        "C005"
+      ]
+    },
+    {
+      "id": "SF-004",
+      "required": true,
+      "groups": [
+        "G02"
+      ],
+      "title": "Address discards dash but includes each nonempty line in source sequence",
+      "claim": "extracted-legacy",
+      "operation": "address",
+      "inputs": {
+        "Address1": "Synthetic A",
+        "Address2": "-",
+        "Address3": "Synthetic C",
+        "Address4": "Synthetic D",
+        "Address5": "Synthetic E",
+        "Postcode": ""
+      },
+      "expected": {
+        "value": "Synthetic A, Synthetic C, Synthetic D, Synthetic E"
+      },
+      "sourceCitationIds": [
+        "C008"
+      ]
+    },
+    {
+      "id": "SF-005",
+      "required": true,
+      "groups": [
+        "G02"
+      ],
+      "title": "Whitespace-only address line is not treated as missing",
+      "claim": "extracted-legacy",
+      "operation": "address",
+      "inputs": {
+        "Address1": " ",
+        "Address2": null,
+        "Address3": "",
+        "Address4": "-",
+        "Address5": null,
+        "Postcode": "SYN"
+      },
+      "expected": {
+        "value": " , SYN"
+      },
+      "sourceCitationIds": [
+        "C008"
+      ]
+    },
+    {
+      "id": "SF-006",
+      "required": true,
+      "groups": [
+        "G02"
+      ],
+      "title": "StaticSpan text missing/default/leave-blank branch",
+      "claim": "extracted-legacy",
+      "operation": "span-text",
+      "inputs": {
+        "value": null,
+        "leaveBlankIfNull": false,
+        "format": null
+      },
+      "expected": {
+        "text": "-"
+      },
+      "sourceCitationIds": [
+        "C010"
+      ]
+    },
+    {
+      "id": "SF-007",
+      "required": true,
+      "groups": [
+        "G02"
+      ],
+      "title": "StaticSpan text missing/default/leave-blank branch",
+      "claim": "extracted-legacy",
+      "operation": "span-text",
+      "inputs": {
+        "value": "",
+        "leaveBlankIfNull": true,
+        "format": null
+      },
+      "expected": {
+        "text": ""
+      },
+      "sourceCitationIds": [
+        "C010"
+      ]
+    },
+    {
+      "id": "SF-008",
+      "required": true,
+      "groups": [
+        "G02"
+      ],
+      "title": "StaticSpan text missing/default/leave-blank branch",
+      "claim": "extracted-legacy",
+      "operation": "span-text",
+      "inputs": {
+        "value": "Synthetic",
+        "leaveBlankIfNull": false,
+        "format": null
+      },
+      "expected": {
+        "text": "Synthetic"
+      },
+      "sourceCitationIds": [
+        "C010"
+      ]
+    },
+    {
+      "id": "SF-009",
+      "required": true,
+      "groups": [
+        "G03"
+      ],
+      "title": "Controlled age branch 1",
+      "claim": "extracted-legacy",
+      "operation": "age",
+      "inputs": {
+        "DateOfBirth": "2025-03-15T12:00:00",
+        "DateOfDeath": null,
+        "clock": "2025-03-15T12:00:00"
+      },
+      "expected": {
+        "AgeString": "0 day"
+      },
+      "sourceCitationIds": [
+        "C012"
+      ]
+    },
+    {
+      "id": "SF-010",
+      "required": true,
+      "groups": [
+        "G03"
+      ],
+      "title": "Controlled age branch 2",
+      "claim": "extracted-legacy",
+      "operation": "age",
+      "inputs": {
+        "DateOfBirth": "2025-03-14T12:00:00",
+        "DateOfDeath": null,
+        "clock": "2025-03-15T12:00:00"
+      },
+      "expected": {
+        "AgeString": "1 day"
+      },
+      "sourceCitationIds": [
+        "C012"
+      ]
+    },
+    {
+      "id": "SF-011",
+      "required": true,
+      "groups": [
+        "G03"
+      ],
+      "title": "Controlled age branch 3",
+      "claim": "extracted-legacy",
+      "operation": "age",
+      "inputs": {
+        "DateOfBirth": "2025-03-09T12:00:00",
+        "DateOfDeath": null,
+        "clock": "2025-03-15T12:00:00"
+      },
+      "expected": {
+        "AgeString": "6 days"
+      },
+      "sourceCitationIds": [
+        "C012"
+      ]
+    },
+    {
+      "id": "SF-012",
+      "required": true,
+      "groups": [
+        "G03"
+      ],
+      "title": "Controlled age branch 4",
+      "claim": "extracted-legacy",
+      "operation": "age",
+      "inputs": {
+        "DateOfBirth": "2025-03-08T12:00:00",
+        "DateOfDeath": null,
+        "clock": "2025-03-15T12:00:00"
+      },
+      "expected": {
+        "AgeString": "1 week"
+      },
+      "sourceCitationIds": [
+        "C012"
+      ]
+    },
+    {
+      "id": "SF-013",
+      "required": true,
+      "groups": [
+        "G03"
+      ],
+      "title": "Controlled age branch 5",
+      "claim": "extracted-legacy",
+      "operation": "age",
+      "inputs": {
+        "DateOfBirth": "2025-03-02T12:00:00",
+        "DateOfDeath": null,
+        "clock": "2025-03-15T12:00:00"
+      },
+      "expected": {
+        "AgeString": "1 week"
+      },
+      "sourceCitationIds": [
+        "C012"
+      ]
+    },
+    {
+      "id": "SF-014",
+      "required": true,
+      "groups": [
+        "G03"
+      ],
+      "title": "Controlled age branch 6",
+      "claim": "extracted-legacy",
+      "operation": "age",
+      "inputs": {
+        "DateOfBirth": "2025-03-01T12:00:00",
+        "DateOfDeath": null,
+        "clock": "2025-03-15T12:00:00"
+      },
+      "expected": {
+        "AgeString": "2 weeks"
+      },
+      "sourceCitationIds": [
+        "C012"
+      ]
+    },
+    {
+      "id": "SF-015",
+      "required": true,
+      "groups": [
+        "G03"
+      ],
+      "title": "Controlled age branch 7",
+      "claim": "extracted-legacy",
+      "operation": "age",
+      "inputs": {
+        "DateOfBirth": "2024-12-01T00:00:00",
+        "DateOfDeath": null,
+        "clock": "2025-03-15T12:00:00"
+      },
+      "expected": {
+        "AgeString": "14 weeks"
+      },
+      "sourceCitationIds": [
+        "C012"
+      ]
+    },
+    {
+      "id": "SF-016",
+      "required": true,
+      "groups": [
+        "G03"
+      ],
+      "title": "Controlled age branch 8",
+      "claim": "extracted-legacy",
+      "operation": "age",
+      "inputs": {
+        "DateOfBirth": "2024-11-30T00:00:00",
+        "DateOfDeath": null,
+        "clock": "2025-03-15T12:00:00"
+      },
+      "expected": {
+        "AgeString": "4 months"
+      },
+      "sourceCitationIds": [
+        "C012"
+      ]
+    },
+    {
+      "id": "SF-017",
+      "required": true,
+      "groups": [
+        "G03"
+      ],
+      "title": "Controlled age branch 9",
+      "claim": "extracted-legacy",
+      "operation": "age",
+      "inputs": {
+        "DateOfBirth": "2024-03-31T00:00:00",
+        "DateOfDeath": null,
+        "clock": "2025-03-15T12:00:00"
+      },
+      "expected": {
+        "AgeString": "1 Years 0 Months"
+      },
+      "sourceCitationIds": [
+        "C012"
+      ]
+    },
+    {
+      "id": "SF-018",
+      "required": true,
+      "groups": [
+        "G03"
+      ],
+      "title": "Controlled age branch 10",
+      "claim": "extracted-legacy",
+      "operation": "age",
+      "inputs": {
+        "DateOfBirth": "2025-01-01T00:00:00",
+        "DateOfDeath": "2025-01-08T00:00:00",
+        "clock": "2025-03-15T12:00:00"
+      },
+      "expected": {
+        "AgeString": "1 week"
+      },
+      "sourceCitationIds": [
+        "C012"
+      ]
+    },
+    {
+      "id": "SF-019",
+      "required": true,
+      "groups": [
+        "G03"
+      ],
+      "title": "Web view literal 7 suppresses computed age independently of missing status constants",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "selected",
+        "repositoryPatients": [
+          "other",
+          "selected"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {
+          "CurrentStatus": "7"
+        }
+      },
+      "expected": {
+        "AgeString": "10 weeks",
+        "ageDisplay": "-",
+        "ageLabelResource": "AgeLabel"
+      },
+      "sourceCitationIds": [
+        "C012",
+        "C013"
+      ]
+    },
+    {
+      "id": "SF-020",
+      "required": true,
+      "groups": [
+        "G03",
+        "G04"
+      ],
+      "title": "Death threshold replaces clock and selects age-at-death label",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "selected",
+        "repositoryPatients": [
+          "other",
+          "selected"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {
+          "CurrentStatus": "CurrentStatus_Died",
+          "DateOfDeath": "2025-01-08T00:00:00"
+        }
+      },
+      "expected": {
+        "AgeString": "1 week",
+        "ageDisplay": "1 week",
+        "ageLabelResource": "AgeAtDeath",
+        "ShowAlert": true,
+        "statusAlert": {
+          "headingResource": "ChildDiedAlertHeading",
+          "messageResource": "ChildDiedAlertMessage",
+          "date": "2025-01-08T00:00:00",
+          "dateFormatResource": "DateFormatStandard"
+        }
+      },
+      "sourceCitationIds": [
+        "C012",
+        "C013",
+        "C018",
+        "C019",
+        "C020"
+      ]
+    },
+    {
+      "id": "SF-021",
+      "required": true,
+      "groups": [
+        "G04"
+      ],
+      "title": "Child text alone triggers alert and preserves all mapped texts",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "alert",
+        "repositoryPatients": [
+          "other",
+          "alert"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {}
+      },
+      "expected": {
+        "ShowAlert": true,
+        "ChildAlerts": [
+          "SYNTHETIC CHILD ALERT — demonstration only",
+          "SYNTHETIC SECOND ALERT — no clinical meaning"
+        ]
+      },
+      "sourceCitationIds": [
+        "C003",
+        "C018",
+        "C019"
+      ]
+    },
+    {
+      "id": "SF-022",
+      "required": true,
+      "groups": [
+        "G04"
+      ],
+      "title": "Status alone triggers alert: CurrentStatus_MovementOut",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "selected",
+        "repositoryPatients": [
+          "other",
+          "selected"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {
+          "CurrentStatus": "CurrentStatus_MovementOut",
+          "CurrentStatusDate": "2025-03-01T00:00:00"
+        }
+      },
+      "expected": {
+        "ShowAlert": true,
+        "ChildAlerts": [],
+        "statusAlert": {
+          "headingResource": "ChildMovedOutAlertHeading",
+          "messageResource": "ChildMovedOutAlertMessage",
+          "date": "2025-03-01T00:00:00",
+          "dateFormatResource": "DateFormatStandard"
+        }
+      },
+      "sourceCitationIds": [
+        "C018",
+        "C019",
+        "C020"
+      ]
+    },
+    {
+      "id": "SF-023",
+      "required": true,
+      "groups": [
+        "G04"
+      ],
+      "title": "Status alone triggers alert: CurrentStatus_TransferredOut",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "selected",
+        "repositoryPatients": [
+          "other",
+          "selected"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {
+          "CurrentStatus": "CurrentStatus_TransferredOut",
+          "CurrentStatusDate": "2025-03-01T00:00:00"
+        }
+      },
+      "expected": {
+        "ShowAlert": true,
+        "ChildAlerts": [],
+        "statusAlert": {
+          "headingResource": "ChildTransferredOutAlertHeading",
+          "messageResource": "ChildTransferredOutAlertMessage",
+          "date": "2025-03-01T00:00:00",
+          "dateFormatResource": "DateFormatStandard"
+        }
+      },
+      "sourceCitationIds": [
+        "C018",
+        "C019",
+        "C020"
+      ]
+    },
+    {
+      "id": "SF-024",
+      "required": true,
+      "groups": [
+        "G04"
+      ],
+      "title": "Status alone triggers alert: CurrentStatus_Stillbirth",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "selected",
+        "repositoryPatients": [
+          "other",
+          "selected"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {
+          "CurrentStatus": "CurrentStatus_Stillbirth",
+          "CurrentStatusDate": "2025-03-01T00:00:00"
+        }
+      },
+      "expected": {
+        "ShowAlert": true,
+        "ChildAlerts": [],
+        "statusAlert": {
+          "headingResource": "ChildStillbornAlertHeading",
+          "messageResource": "ChildStillbornAlertMessage",
+          "date": "2025-01-01T00:00:00",
+          "dateFormatResource": "DateFormatStandard"
+        }
+      },
+      "sourceCitationIds": [
+        "C018",
+        "C019",
+        "C020"
+      ]
+    },
+    {
+      "id": "SF-025",
+      "required": true,
+      "groups": [
+        "G04"
+      ],
+      "title": "Explicit false query suppresses dialog setup, not ShowAlert condition",
+      "claim": "extracted-legacy",
+      "operation": "alert-setup",
+      "inputs": {
+        "patient": "alert",
+        "showAlertsQuery": "false"
+      },
+      "expected": {
+        "ShowAlert": true,
+        "setupAlertDialogs": false
+      },
+      "sourceCitationIds": [
+        "C019",
+        "C020"
+      ]
+    },
+    {
+      "id": "SF-026",
+      "required": true,
+      "groups": [
+        "G04"
+      ],
+      "title": "Non-false query permits alert dialog setup (markup condition only)",
+      "claim": "extracted-legacy",
+      "operation": "alert-setup",
+      "inputs": {
+        "patient": "alert",
+        "showAlertsQuery": null
+      },
+      "expected": {
+        "ShowAlert": true,
+        "setupAlertDialogs": true
+      },
+      "sourceCitationIds": [
+        "C019",
+        "C020"
+      ]
+    },
+    {
+      "id": "SF-027",
+      "required": true,
+      "groups": [
+        "G05"
+      ],
+      "title": "First SCHOOL match retained, not invented alphabetical sorting",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "selected",
+        "repositoryPatients": [
+          "other",
+          "selected"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {
+          "ChildCentres": [
+            {
+              "ChildLocationType": "SCHOOL",
+              "ChildLocationCode": "SYNSCH2",
+              "ChildLocations": {
+                "Name": "Synthetic School Two"
+              }
+            },
+            {
+              "ChildLocationType": "SCHOOL",
+              "ChildLocationCode": "SYNSCH1",
+              "ChildLocations": {
+                "Code": "SYNSCH1",
+                "Name": "Synthetic School One",
+                "Organisation": null
+              }
+            }
+          ]
+        }
+      },
+      "expected": {
+        "School": {
+          "resource": "CodeDescriptionFormat",
+          "arguments": [
+            "SYNSCH2",
+            "Synthetic School Two"
+          ]
+        },
+        "Organisation": "-"
+      },
+      "sourceCitationIds": [
+        "C003",
+        "C015",
+        "C017"
+      ]
+    },
+    {
+      "id": "SF-028",
+      "required": true,
+      "groups": [
+        "G05"
+      ],
+      "title": "School with absent linked location still passes null name to resource format",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "selected",
+        "repositoryPatients": [
+          "other",
+          "selected"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {
+          "ChildCentres": [
+            {
+              "ChildLocationType": "SCHOOL",
+              "ChildLocationCode": "SYNSCH1",
+              "ChildLocations": null
+            }
+          ]
+        }
+      },
+      "expected": {
+        "School": {
+          "resource": "CodeDescriptionFormat",
+          "arguments": [
+            "SYNSCH1",
+            null
+          ]
+        },
+        "Organisation": "-"
+      },
+      "sourceCitationIds": [
+        "C015",
+        "C017"
+      ]
+    },
+    {
+      "id": "SF-029",
+      "required": true,
+      "groups": [
+        "G05"
+      ],
+      "title": "Organisation missing branch / authority predicate 29",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "selected",
+        "repositoryPatients": [
+          "other",
+          "selected"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {
+          "ChildCentres": []
+        },
+        "authorityLocationsOverride": []
+      },
+      "expected": {
+        "Organisation": "-"
+      },
+      "sourceCitationIds": [
+        "C017"
+      ]
+    },
+    {
+      "id": "SF-030",
+      "required": true,
+      "groups": [
+        "G05"
+      ],
+      "title": "Organisation missing branch / authority predicate 30",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "selected",
+        "repositoryPatients": [
+          "other",
+          "selected"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {
+          "ChildCentres": [
+            {
+              "ChildLocationType": "HEALTH_AUTHORITY",
+              "ChildLocations": null
+            }
+          ]
+        },
+        "authorityLocationsOverride": []
+      },
+      "expected": {
+        "Organisation": "-"
+      },
+      "sourceCitationIds": [
+        "C017"
+      ]
+    },
+    {
+      "id": "SF-031",
+      "required": true,
+      "groups": [
+        "G05"
+      ],
+      "title": "Organisation missing branch / authority predicate 31",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "selected",
+        "repositoryPatients": [
+          "other",
+          "selected"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {
+          "ChildCentres": [
+            {
+              "ChildLocationType": "HEALTH_AUTHORITY",
+              "ChildLocationCode": "SYNAREA1",
+              "ChildLocations": {
+                "Code": "SYNAREA1",
+                "Name": "Synthetic Area One",
+                "Organisation": "SYNORG1"
+              }
+            }
+          ]
+        },
+        "authorityLocationsOverride": []
+      },
+      "expected": {
+        "Organisation": "-"
+      },
+      "sourceCitationIds": [
+        "C017"
+      ]
+    },
+    {
+      "id": "SF-032",
+      "required": true,
+      "groups": [
+        "G05"
+      ],
+      "title": "Organisation missing branch / authority predicate 32",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "selected",
+        "repositoryPatients": [
+          "other",
+          "selected"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {
+          "ChildCentres": [
+            {
+              "ChildLocationType": "HEALTH_AUTHORITY",
+              "ChildLocationCode": "SYNAREA1",
+              "ChildLocations": {
+                "Code": "SYNAREA1",
+                "Name": "Synthetic Area One",
+                "Organisation": "SYNORG1"
+              }
+            }
+          ]
+        },
+        "authorityLocationsOverride": [
+          {
+            "Code": "SYNORG1",
+            "Name": "Synthetic nonauthority",
+            "LocationTypes": {
+              "Authority": "N"
+            }
+          }
+        ]
+      },
+      "expected": {
+        "Organisation": "-"
+      },
+      "sourceCitationIds": [
+        "C017"
+      ]
+    },
+    {
+      "id": "SF-033",
+      "required": true,
+      "groups": [
+        "G06"
+      ],
+      "title": "Requested foreign patient summary is isolated from selected child",
+      "claim": "extracted-legacy",
+      "operation": "summary",
+      "inputs": {
+        "patient": "other",
+        "repositoryPatients": [
+          "selected",
+          "other"
+        ],
+        "authorityLocations": "authorityLocations",
+        "clock": "2025-03-15T12:00:00",
+        "patientOverrides": {}
+      },
+      "expected": {
+        "ClientId": 202,
+        "NhsNumber": "SYN-NHS-202",
+        "Fullname": "Mx Other Synthetic, Example Two",
+        "FullAddress": "2 Synthetic Lane, Invented District, SYN POST 1",
+        "ChildAlerts": [
+          "SYNTHETIC OTHER-PATIENT ALERT — isolation sentinel"
+        ],
+        "ShowAlert": true
+      },
+      "sourceCitationIds": [
+        "C001",
+        "C003",
+        "C005",
+        "C008",
+        "C018"
+      ]
+    },
+    {
+      "id": "SF-034",
+      "required": true,
+      "groups": [
+        "G06",
+        "G07"
+      ],
+      "title": "Zero selected-patient KD03 results",
+      "claim": "extracted-legacy",
+      "operation": "results",
+      "inputs": {
+        "history": "empty",
+        "ClientId": 101,
+        "scope": "KD03"
+      },
+      "expected": {
+        "count": 0,
+        "orderedDateGroups": []
+      },
+      "sourceCitationIds": [
+        "C021",
+        "C022"
+      ]
+    },
+    {
+      "id": "SF-035",
+      "required": true,
+      "groups": [
+        "G06",
+        "G07"
+      ],
+      "title": "One selected result despite other-patient sentinel",
+      "claim": "extracted-legacy",
+      "operation": "results",
+      "inputs": {
+        "history": "one",
+        "ClientId": 101,
+        "scope": "KD03"
+      },
+      "expected": {
+        "count": 1,
+        "orderedDateGroups": [
+          {
+            "date": "2025-02-28T00:00:00",
+            "idsUnordered": [
+              1001
+            ]
+          }
+        ]
+      },
+      "sourceCitationIds": [
+        "C021",
+        "C022"
+      ]
+    },
+    {
+      "id": "SF-036",
+      "required": true,
+      "groups": [
+        "G06",
+        "G07",
+        "G08",
+        "G09"
+      ],
+      "title": "23 selected KD03 results, descending dates with unordered ties",
+      "claim": "extracted-legacy",
+      "operation": "results",
+      "inputs": {
+        "history": "many",
+        "ClientId": 101,
+        "scope": "KD03"
+      },
+      "expected": {
+        "count": 23,
+        "orderedDateGroups": [
+          {
+            "date": "2025-02-28T00:00:00",
+            "idsUnordered": [
+              1001,
+              1002,
+              1003
+            ]
+          },
+          {
+            "date": "2025-02-25T00:00:00",
+            "idsUnordered": [
+              1004
+            ]
+          },
+          {
+            "date": "2025-02-24T00:00:00",
+            "idsUnordered": [
+              1005
+            ]
+          },
+          {
+            "date": "2025-02-23T00:00:00",
+            "idsUnordered": [
+              1006
+            ]
+          },
+          {
+            "date": "2025-02-22T00:00:00",
+            "idsUnordered": [
+              1007
+            ]
+          },
+          {
+            "date": "2025-02-21T00:00:00",
+            "idsUnordered": [
+              1008
+            ]
+          },
+          {
+            "date": "2025-02-20T00:00:00",
+            "idsUnordered": [
+              1009
+            ]
+          },
+          {
+            "date": "2025-02-19T00:00:00",
+            "idsUnordered": [
+              1010
+            ]
+          },
+          {
+            "date": "2025-02-18T00:00:00",
+            "idsUnordered": [
+              1011
+            ]
+          },
+          {
+            "date": "2025-02-17T00:00:00",
+            "idsUnordered": [
+              1012
+            ]
+          },
+          {
+            "date": "2025-02-16T00:00:00",
+            "idsUnordered": [
+              1013
+            ]
+          },
+          {
+            "date": "2025-02-15T00:00:00",
+            "idsUnordered": [
+              1014
+            ]
+          },
+          {
+            "date": "2025-02-14T00:00:00",
+            "idsUnordered": [
+              1015
+            ]
+          },
+          {
+            "date": "2025-02-13T00:00:00",
+            "idsUnordered": [
+              1016
+            ]
+          },
+          {
+            "date": "2025-02-12T00:00:00",
+            "idsUnordered": [
+              1017
+            ]
+          },
+          {
+            "date": "2025-02-11T00:00:00",
+            "idsUnordered": [
+              1018
+            ]
+          },
+          {
+            "date": "2025-02-10T00:00:00",
+            "idsUnordered": [
+              1019
+            ]
+          },
+          {
+            "date": "2025-02-09T00:00:00",
+            "idsUnordered": [
+              1020
+            ]
+          },
+          {
+            "date": "2025-02-08T00:00:00",
+            "idsUnordered": [
+              1021
+            ]
+          },
+          {
+            "date": "2025-02-07T00:00:00",
+            "idsUnordered": [
+              1022
+            ]
+          },
+          {
+            "date": "2025-02-06T00:00:00",
+            "idsUnordered": [
+              1023
+            ]
+          }
+        ],
+        "excludedIds": [
+          2001,
+          3001,
+          3002
+        ]
+      },
+      "sourceCitationIds": [
+        "C021",
+        "C022"
+      ]
+    },
+    {
+      "id": "SF-037",
+      "required": true,
+      "groups": [
+        "G06",
+        "G07"
+      ],
+      "title": "Legacy service includes other KDP contact; KD03-only is explicit slice adapter",
+      "claim": "extracted-legacy",
+      "operation": "results",
+      "inputs": {
+        "history": "many",
+        "ClientId": 101,
+        "scope": "all-KDP"
+      },
+      "expected": {
+        "count": 24,
+        "idsUnordered": [
+          1001,
+          1002,
+          1003,
+          1004,
+          1005,
+          1006,
+          1007,
+          1008,
+          1009,
+          1010,
+          1011,
+          1012,
+          1013,
+          1014,
+          1015,
+          1016,
+          1017,
+          1018,
+          1019,
+          1020,
+          1021,
+          1022,
+          1023,
+          3001
+        ],
+        "excludedIds": [
+          2001,
+          3002
+        ]
+      },
+      "sourceCitationIds": [
+        "C021",
+        "C022"
+      ]
+    },
+    {
+      "id": "SF-038",
+      "required": true,
+      "groups": [
+        "G09"
+      ],
+      "title": "Complete source ordering method has only contact-date descending key",
+      "claim": "extracted-legacy",
+      "operation": "ordering-contract",
+      "inputs": {
+        "citationId": "C022",
+        "registry": "source-citations.json"
+      },
+      "expected": {
+        "method": "GetKdpResults",
+        "keys": [
+          {
+            "field": "ExaminationDate",
+            "direction": "descending"
+          }
+        ],
+        "equalDateTieBreakDefined": false
+      },
+      "sourceCitationIds": [
+        "C022"
+      ]
+    },
+    {
+      "id": "SF-039",
+      "required": true,
+      "groups": [
+        "G08",
+        "G09"
+      ],
+      "title": "Permuting equal-date input must preserve date groups, no asserted ID tie order",
+      "claim": "extracted-legacy",
+      "operation": "results",
+      "inputs": {
+        "history": "many",
+        "ClientId": 101,
+        "scope": "KD03",
+        "reverseInput": true
+      },
+      "expected": {
+        "count": 23,
+        "orderedDateGroups": [
+          {
+            "date": "2025-02-28T00:00:00",
+            "idsUnordered": [
+              1001,
+              1002,
+              1003
+            ]
+          },
+          {
+            "date": "2025-02-25T00:00:00",
+            "idsUnordered": [
+              1004
+            ]
+          },
+          {
+            "date": "2025-02-24T00:00:00",
+            "idsUnordered": [
+              1005
+            ]
+          },
+          {
+            "date": "2025-02-23T00:00:00",
+            "idsUnordered": [
+              1006
+            ]
+          },
+          {
+            "date": "2025-02-22T00:00:00",
+            "idsUnordered": [
+              1007
+            ]
+          },
+          {
+            "date": "2025-02-21T00:00:00",
+            "idsUnordered": [
+              1008
+            ]
+          },
+          {
+            "date": "2025-02-20T00:00:00",
+            "idsUnordered": [
+              1009
+            ]
+          },
+          {
+            "date": "2025-02-19T00:00:00",
+            "idsUnordered": [
+              1010
+            ]
+          },
+          {
+            "date": "2025-02-18T00:00:00",
+            "idsUnordered": [
+              1011
+            ]
+          },
+          {
+            "date": "2025-02-17T00:00:00",
+            "idsUnordered": [
+              1012
+            ]
+          },
+          {
+            "date": "2025-02-16T00:00:00",
+            "idsUnordered": [
+              1013
+            ]
+          },
+          {
+            "date": "2025-02-15T00:00:00",
+            "idsUnordered": [
+              1014
+            ]
+          },
+          {
+            "date": "2025-02-14T00:00:00",
+            "idsUnordered": [
+              1015
+            ]
+          },
+          {
+            "date": "2025-02-13T00:00:00",
+            "idsUnordered": [
+              1016
+            ]
+          },
+          {
+            "date": "2025-02-12T00:00:00",
+            "idsUnordered": [
+              1017
+            ]
+          },
+          {
+            "date": "2025-02-11T00:00:00",
+            "idsUnordered": [
+              1018
+            ]
+          },
+          {
+            "date": "2025-02-10T00:00:00",
+            "idsUnordered": [
+              1019
+            ]
+          },
+          {
+            "date": "2025-02-09T00:00:00",
+            "idsUnordered": [
+              1020
+            ]
+          },
+          {
+            "date": "2025-02-08T00:00:00",
+            "idsUnordered": [
+              1021
+            ]
+          },
+          {
+            "date": "2025-02-07T00:00:00",
+            "idsUnordered": [
+              1022
+            ]
+          },
+          {
+            "date": "2025-02-06T00:00:00",
+            "idsUnordered": [
+              1023
+            ]
+          }
+        ]
+      },
+      "sourceCitationIds": [
+        "C021",
+        "C022"
+      ]
+    },
+    {
+      "id": "SF-040",
+      "required": true,
+      "groups": [
+        "G06"
+      ],
+      "title": "Other-patient result retrieval returns only its sentinel",
+      "claim": "extracted-legacy",
+      "operation": "results",
+      "inputs": {
+        "history": "many",
+        "ClientId": 202,
+        "scope": "KD03"
+      },
+      "expected": {
+        "count": 1,
+        "idsUnordered": [
+          2001
+        ],
+        "excludedIds": [
+          1001,
+          1002,
+          1003,
+          1004,
+          1005,
+          1006,
+          1007,
+          1008,
+          1009,
+          1010,
+          1011,
+          1012,
+          1013,
+          1014,
+          1015,
+          1016,
+          1017,
+          1018,
+          1019,
+          1020,
+          1021,
+          1022,
+          1023,
+          3001,
+          3002
+        ]
+      },
+      "sourceCitationIds": [
+        "C021",
+        "C022"
+      ]
+    },
+    {
+      "id": "SF-041",
+      "required": true,
+      "groups": [
+        "G10"
+      ],
+      "title": "Reason and persisted repeat map to independent presentation facets",
+      "claim": "intentional-display-predicate-over-source-values",
+      "operation": "facets",
+      "inputs": {
+        "ExaminationCode": "KD03",
+        "ReasonNotExamined": null,
+        "IsRepeat": false,
+        "Heart": null,
+        "Hips": null,
+        "Eyes": null,
+        "Testes": null,
+        "PhysicalGeneral": null,
+        "DomesticViolenceConcern": 2
+      },
+      "expected": {
+        "examinationState": "Recorded",
+        "repeatLabel": "Initial",
+        "hasConcern": false,
+        "persistedAggregateStatus": false
+      },
+      "sourceCitationIds": [
+        "C024",
+        "C025",
+        "C027",
+        "C032"
+      ]
+    },
+    {
+      "id": "SF-042",
+      "required": true,
+      "groups": [
+        "G10"
+      ],
+      "title": "Reason and persisted repeat map to independent presentation facets",
+      "claim": "intentional-display-predicate-over-source-values",
+      "operation": "facets",
+      "inputs": {
+        "ExaminationCode": "KD03",
+        "ReasonNotExamined": 1,
+        "IsRepeat": true,
+        "Heart": null,
+        "Hips": null,
+        "Eyes": null,
+        "Testes": null,
+        "PhysicalGeneral": null,
+        "DomesticViolenceConcern": 2
+      },
+      "expected": {
+        "examinationState": "Not examined",
+        "repeatLabel": "Repeat",
+        "hasConcern": false,
+        "persistedAggregateStatus": false
+      },
+      "sourceCitationIds": [
+        "C024",
+        "C025",
+        "C027",
+        "C032"
+      ]
+    },
+    {
+      "id": "SF-043",
+      "required": true,
+      "groups": [
+        "G10"
+      ],
+      "title": "Each physical field preserves choice or absent value 1",
+      "claim": "source-values-and-intentional-display-predicate",
+      "operation": "physical-values",
+      "inputs": {
+        "ExaminationCode": "KD03",
+        "Heart": 1,
+        "Hips": 1,
+        "Eyes": 1,
+        "Testes": 1,
+        "PhysicalGeneral": 1
+      },
+      "expected": {
+        "physical": {
+          "Heart": {
+            "raw": 1,
+            "choice": "1 - Satisfactory"
+          },
+          "Hips": {
+            "raw": 1,
+            "choice": "1 - Satisfactory"
+          },
+          "Eyes": {
+            "raw": 1,
+            "choice": "1 - Satisfactory"
+          },
+          "Testes": {
+            "raw": 1,
+            "choice": "1 - Satisfactory"
+          },
+          "PhysicalGeneral": {
+            "raw": 1,
+            "choice": "1 - Satisfactory"
+          }
+        },
+        "hasConcern": false
+      },
+      "sourceCitationIds": [
+        "C027",
+        "C028",
+        "C029",
+        "C030",
+        "C031"
+      ]
+    },
+    {
+      "id": "SF-044",
+      "required": true,
+      "groups": [
+        "G10"
+      ],
+      "title": "Each physical field preserves choice or absent value 2",
+      "claim": "source-values-and-intentional-display-predicate",
+      "operation": "physical-values",
+      "inputs": {
+        "ExaminationCode": "KD03",
+        "Heart": 2,
+        "Hips": 2,
+        "Eyes": 2,
+        "Testes": 2,
+        "PhysicalGeneral": 2
+      },
+      "expected": {
+        "physical": {
+          "Heart": {
+            "raw": 2,
+            "choice": "2 - Concern"
+          },
+          "Hips": {
+            "raw": 2,
+            "choice": "2 - Concern"
+          },
+          "Eyes": {
+            "raw": 2,
+            "choice": "2 - Concern"
+          },
+          "Testes": {
+            "raw": 2,
+            "choice": "2 - Concern"
+          },
+          "PhysicalGeneral": {
+            "raw": 2,
+            "choice": "2 - Concern"
+          }
+        },
+        "hasConcern": true
+      },
+      "sourceCitationIds": [
+        "C027",
+        "C028",
+        "C029",
+        "C030",
+        "C031"
+      ]
+    },
+    {
+      "id": "SF-045",
+      "required": true,
+      "groups": [
+        "G10"
+      ],
+      "title": "Each physical field preserves choice or absent value 3",
+      "claim": "source-values-and-intentional-display-predicate",
+      "operation": "physical-values",
+      "inputs": {
+        "ExaminationCode": "KD03",
+        "Heart": 3,
+        "Hips": 3,
+        "Eyes": 3,
+        "Testes": 3,
+        "PhysicalGeneral": 3
+      },
+      "expected": {
+        "physical": {
+          "Heart": {
+            "raw": 3,
+            "choice": "3 - Not assessed"
+          },
+          "Hips": {
+            "raw": 3,
+            "choice": "3 - Not assessed"
+          },
+          "Eyes": {
+            "raw": 3,
+            "choice": "3 - Not assessed"
+          },
+          "Testes": {
+            "raw": 3,
+            "choice": "3 - Not assessed"
+          },
+          "PhysicalGeneral": {
+            "raw": 3,
+            "choice": "3 - Not assessed"
+          }
+        },
+        "hasConcern": false
+      },
+      "sourceCitationIds": [
+        "C027",
+        "C028",
+        "C029",
+        "C030",
+        "C031"
+      ]
+    },
+    {
+      "id": "SF-046",
+      "required": true,
+      "groups": [
+        "G10"
+      ],
+      "title": "Each physical field preserves choice or absent value None",
+      "claim": "source-values-and-intentional-display-predicate",
+      "operation": "physical-values",
+      "inputs": {
+        "ExaminationCode": "KD03",
+        "Heart": null,
+        "Hips": null,
+        "Eyes": null,
+        "Testes": null,
+        "PhysicalGeneral": null
+      },
+      "expected": {
+        "physical": {
+          "Heart": {
+            "raw": null,
+            "choice": null
+          },
+          "Hips": {
+            "raw": null,
+            "choice": null
+          },
+          "Eyes": {
+            "raw": null,
+            "choice": null
+          },
+          "Testes": {
+            "raw": null,
+            "choice": null
+          },
+          "PhysicalGeneral": {
+            "raw": null,
+            "choice": null
+          }
+        },
+        "hasConcern": false
+      },
+      "sourceCitationIds": [
+        "C027",
+        "C028",
+        "C029",
+        "C030",
+        "C031"
+      ]
+    },
+    {
+      "id": "SF-047",
+      "required": true,
+      "groups": [
+        "G10"
+      ],
+      "title": "Concern predicate includes Heart independently",
+      "claim": "intentional-display-predicate-over-source-values",
+      "operation": "facets",
+      "inputs": {
+        "ExaminationCode": "KD03",
+        "ReasonNotExamined": null,
+        "IsRepeat": false,
+        "Heart": 2,
+        "Hips": null,
+        "Eyes": null,
+        "Testes": null,
+        "PhysicalGeneral": null,
+        "DomesticViolenceConcern": 1
+      },
+      "expected": {
+        "hasConcern": true,
+        "persistedAggregateStatus": false
+      },
+      "sourceCitationIds": [
+        "C027",
+        "C032"
+      ]
+    },
+    {
+      "id": "SF-048",
+      "required": true,
+      "groups": [
+        "G10"
+      ],
+      "title": "Concern predicate includes Hips independently",
+      "claim": "intentional-display-predicate-over-source-values",
+      "operation": "facets",
+      "inputs": {
+        "ExaminationCode": "KD03",
+        "ReasonNotExamined": null,
+        "IsRepeat": false,
+        "Heart": null,
+        "Hips": 2,
+        "Eyes": null,
+        "Testes": null,
+        "PhysicalGeneral": null,
+        "DomesticViolenceConcern": 1
+      },
+      "expected": {
+        "hasConcern": true,
+        "persistedAggregateStatus": false
+      },
+      "sourceCitationIds": [
+        "C027",
+        "C032"
+      ]
+    },
+    {
+      "id": "SF-049",
+      "required": true,
+      "groups": [
+        "G10"
+      ],
+      "title": "Concern predicate includes Eyes independently",
+      "claim": "intentional-display-predicate-over-source-values",
+      "operation": "facets",
+      "inputs": {
+        "ExaminationCode": "KD03",
+        "ReasonNotExamined": null,
+        "IsRepeat": false,
+        "Heart": null,
+        "Hips": null,
+        "Eyes": 2,
+        "Testes": null,
+        "PhysicalGeneral": null,
+        "DomesticViolenceConcern": 1
+      },
+      "expected": {
+        "hasConcern": true,
+        "persistedAggregateStatus": false
+      },
+      "sourceCitationIds": [
+        "C027",
+        "C032"
+      ]
+    },
+    {
+      "id": "SF-050",
+      "required": true,
+      "groups": [
+        "G10"
+      ],
+      "title": "Concern predicate includes Testes independently",
+      "claim": "intentional-display-predicate-over-source-values",
+      "operation": "facets",
+      "inputs": {
+        "ExaminationCode": "KD03",
+        "ReasonNotExamined": null,
+        "IsRepeat": false,
+        "Heart": null,
+        "Hips": null,
+        "Eyes": null,
+        "Testes": 2,
+        "PhysicalGeneral": null,
+        "DomesticViolenceConcern": 1
+      },
+      "expected": {
+        "hasConcern": true,
+        "persistedAggregateStatus": false
+      },
+      "sourceCitationIds": [
+        "C027",
+        "C032"
+      ]
+    },
+    {
+      "id": "SF-051",
+      "required": true,
+      "groups": [
+        "G10"
+      ],
+      "title": "Concern predicate includes PhysicalGeneral independently",
+      "claim": "intentional-display-predicate-over-source-values",
+      "operation": "facets",
+      "inputs": {
+        "ExaminationCode": "KD03",
+        "ReasonNotExamined": null,
+        "IsRepeat": false,
+        "Heart": null,
+        "Hips": null,
+        "Eyes": null,
+        "Testes": null,
+        "PhysicalGeneral": 2,
+        "DomesticViolenceConcern": 1
+      },
+      "expected": {
+        "hasConcern": true,
+        "persistedAggregateStatus": false
+      },
+      "sourceCitationIds": [
+        "C027",
+        "C032"
+      ]
+    },
+    {
+      "id": "SF-052",
+      "required": true,
+      "groups": [
+        "G10"
+      ],
+      "title": "Social/family concern names do not contribute to Has concern",
+      "claim": "intentional-display-predicate-over-source-values",
+      "operation": "facets",
+      "inputs": {
+        "ExaminationCode": "KD03",
+        "ReasonNotExamined": null,
+        "IsRepeat": false,
+        "Heart": 1,
+        "Hips": 1,
+        "Eyes": 1,
+        "Testes": 1,
+        "PhysicalGeneral": 1,
+        "DomesticViolenceConcern": 2,
+        "OnChildProtectionRegister": "Y",
+        "LookedAfterChild": "Y"
+      },
+      "expected": {
+        "hasConcern": false,
+        "persistedAggregateStatus": false
+      },
+      "sourceCitationIds": [
+        "C027",
+        "C032"
+      ]
+    },
+    {
+      "id": "SF-053",
+      "required": true,
+      "groups": [
+        "G10"
+      ],
+      "title": "Female stored Testes value is not rejected by an invented gender rule",
+      "claim": "source-values-and-intentional-display-predicate",
+      "operation": "physical-values",
+      "inputs": {
+        "ExaminationCode": "KD03",
+        "Sex": 2,
+        "Heart": null,
+        "Hips": null,
+        "Eyes": null,
+        "Testes": 2,
+        "PhysicalGeneral": null
+      },
+      "expected": {
+        "physical": {
+          "Testes": {
+            "raw": 2,
+            "choice": "2 - Concern"
+          }
+        },
+        "hasConcern": true
+      },
+      "sourceCitationIds": [
+        "C027",
+        "C028",
+        "C030",
+        "C031"
+      ]
+    }
+  ]
+}

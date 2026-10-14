@@ -1,0 +1,230 @@
+{
+  "command": "PYTHONDONTWRITEBYTECODE=1 python3 lmf/migrations/hcwp/system-feel/characterise/validate-fixture-contract.py",
+  "cwd": "/workspaces/legacy.modernisation.agent",
+  "startedAt": "2026-10-14T21:57:35.905344+00:00",
+  "finishedAt": "2026-10-14T21:57:35.907434+00:00",
+  "evidenceType": "structural contract validation, NOT reference observations",
+  "files": {
+    "fixtures.json": "c2e2775352fdce33df2ad952c64dca6c448cd27025b856b36152df754f91c442",
+    "scenarios.json": "9fb342825d1759f4d75229bb55cbb605381f8aa8049a9263206f6409482afbf2",
+    "fixture-scenario-contract.md": "30d9caf6d6ba8a0670c7f69e890f338fb3ff1229eb4e8792718427e91af42319",
+    "define-fixtures.py": "d3ec0bf01bfc739c26985f1dbec311ce1e16bfc389736723a9dbd43f5378ec80",
+    "validate-fixture-contract.py": "0ed8c2871b307cdc6330d129141f95876bdeacb574107be89a4aa26d1de2ed9c"
+  },
+  "scenarioDefinitions": 53,
+  "referenceScenariosExecuted": 0,
+  "groups": {
+    "G01": 2,
+    "G02": 7,
+    "G03": 12,
+    "G04": 7,
+    "G05": 7,
+    "G06": 7,
+    "G07": 4,
+    "G08": 2,
+    "G09": 3,
+    "G10": 13
+  },
+  "structuralChecks": [
+    {
+      "check": "nonempty v1 contracts",
+      "passed": true
+    },
+    {
+      "check": "stable unique IDs",
+      "passed": true
+    },
+    {
+      "check": "53 authored required definitions (NOT executed scenarios)",
+      "passed": true
+    },
+    {
+      "check": "all ten seed groups present",
+      "passed": true
+    },
+    {
+      "check": "exact physical field inventory",
+      "passed": true
+    },
+    {
+      "check": "provenance all categories",
+      "passed": true
+    },
+    {
+      "check": "no health-board agent approval",
+      "passed": true
+    },
+    {
+      "check": "bound input and baseline manifest identities",
+      "passed": true
+    },
+    {
+      "check": "all source citation references resolve to behaviour records",
+      "passed": true
+    },
+    {
+      "check": "expectations nonempty and operations supported",
+      "passed": true
+    },
+    {
+      "check": "summary fixture refs and unique repository IDs",
+      "passed": true
+    },
+    {
+      "check": "alert fixture refs",
+      "passed": true
+    },
+    {
+      "check": "history refs",
+      "passed": true
+    },
+    {
+      "check": "23 selected-patient KD03 stored inputs",
+      "passed": true
+    },
+    {
+      "check": "unique result IDs",
+      "passed": true
+    },
+    {
+      "check": "other patient sentinel",
+      "passed": true
+    },
+    {
+      "check": "unsupported KDP and non-KDP sentinels",
+      "passed": true
+    },
+    {
+      "check": "two locations and examiners",
+      "passed": true
+    },
+    {
+      "check": "both reason and repeat states",
+      "passed": true
+    },
+    {
+      "check": "every physical field has null/1/2/3 inputs",
+      "passed": true
+    },
+    {
+      "check": "physical values distinguish absence and not-assessed",
+      "passed": true
+    },
+    {
+      "check": "social-only false-concern stored counterexample",
+      "passed": true
+    },
+    {
+      "check": "explicit inclusive future date boundaries",
+      "passed": true
+    },
+    {
+      "check": "equal contact and recorded dates exist",
+      "passed": true
+    },
+    {
+      "check": "histories not already ordered",
+      "passed": true
+    },
+    {
+      "check": "SF-034 authored count consistent with fixture membership",
+      "passed": true
+    },
+    {
+      "check": "SF-034 authored exclusions consistent with fixture membership",
+      "passed": true
+    },
+    {
+      "check": "SF-034 date groups descend and exhaust membership",
+      "passed": true
+    },
+    {
+      "check": "SF-035 authored count consistent with fixture membership",
+      "passed": true
+    },
+    {
+      "check": "SF-035 authored exclusions consistent with fixture membership",
+      "passed": true
+    },
+    {
+      "check": "SF-035 date groups descend and exhaust membership",
+      "passed": true
+    },
+    {
+      "check": "SF-036 authored count consistent with fixture membership",
+      "passed": true
+    },
+    {
+      "check": "SF-036 authored exclusions consistent with fixture membership",
+      "passed": true
+    },
+    {
+      "check": "SF-036 date groups descend and exhaust membership",
+      "passed": true
+    },
+    {
+      "check": "SF-037 authored count consistent with fixture membership",
+      "passed": true
+    },
+    {
+      "check": "SF-037 authored exclusions consistent with fixture membership",
+      "passed": true
+    },
+    {
+      "check": "SF-037 complete authored membership",
+      "passed": true
+    },
+    {
+      "check": "SF-039 authored count consistent with fixture membership",
+      "passed": true
+    },
+    {
+      "check": "SF-039 authored exclusions consistent with fixture membership",
+      "passed": true
+    },
+    {
+      "check": "SF-039 date groups descend and exhaust membership",
+      "passed": true
+    },
+    {
+      "check": "SF-040 authored count consistent with fixture membership",
+      "passed": true
+    },
+    {
+      "check": "SF-040 authored exclusions consistent with fixture membership",
+      "passed": true
+    },
+    {
+      "check": "SF-040 complete authored membership",
+      "passed": true
+    },
+    {
+      "check": "no result expectations accidentally prescribe tie ID order",
+      "passed": true
+    },
+    {
+      "check": "source inspection is required, not runtime tie observation alone",
+      "passed": true
+    },
+    {
+      "check": "all five independent intentional concern cases",
+      "passed": true
+    },
+    {
+      "check": "no stored aggregate field in input histories",
+      "passed": true
+    },
+    {
+      "check": "deceased threshold and literal7 separately specified",
+      "passed": true
+    },
+    {
+      "check": "unavailable labels tested symbolically",
+      "passed": true
+    }
+  ],
+  "passedChecks": 49,
+  "failedChecks": 0,
+  "failures": [],
+  "exitCode": 0
+}
