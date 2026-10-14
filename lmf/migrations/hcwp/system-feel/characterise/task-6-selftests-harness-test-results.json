@@ -1,0 +1,236 @@
+{
+  "command": [
+    "lmf/migrations/hcwp/system-feel/characterise/reference/test-harness.py",
+    "--evidence-prefix",
+    "task-6-selftests"
+  ],
+  "cwd": "/workspaces/legacy.modernisation.agent",
+  "startedAt": "2026-10-14T22:41:05.086435+00:00",
+  "finishedAt": "2026-10-14T22:41:07.365024+00:00",
+  "commands": [
+    {
+      "command": [
+        "dotnet",
+        "build",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/reference/Reference.csproj",
+        "--nologo",
+        "--configuration",
+        "Release",
+        "--no-incremental"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "startedAt": "2026-10-14T22:41:05.092381+00:00",
+      "finishedAt": "2026-10-14T22:41:06.718930+00:00",
+      "exitCode": 0,
+      "stdout": "  Determining projects to restore...\n  All projects are up-to-date for restore.\n  Reference -> /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/reference/bin/Release/net10.0/Reference.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:01.42\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "dotnet",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/reference/bin/Release/net10.0/Reference.dll"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "startedAt": "2026-10-14T22:41:06.719149+00:00",
+      "finishedAt": "2026-10-14T22:41:06.951555+00:00",
+      "exitCode": 0,
+      "stdout": "{\"value\":\"Changed Synthetic, \"}\n{\"value\":\"Changed Address, Synthetic C, Synthetic D, Synthetic E\"}\n{\"AgeString\":\"1 day\"}\n{\"physical\":{\"Heart\":{\"raw\":1,\"choice\":\"1 - Satisfactory\"},\"Hips\":{\"raw\":null,\"choice\":null},\"Eyes\":{\"raw\":null,\"choice\":null},\"Testes\":{\"raw\":null,\"choice\":null},\"PhysicalGeneral\":{\"raw\":null,\"choice\":null}},\"hasConcern\":false,\"persistedAggregateStatus\":false,\"examinationState\":\"Recorded\",\"repeatLabel\":\"Initial\",\"inputAfter\":{\"ExaminationCode\":\"KD03\",\"ReasonNotExamined\":null,\"IsRepeat\":false,\"Heart\":1,\"Hips\":null,\"Eyes\":null,\"Testes\":null,\"PhysicalGeneral\":null,\"DomesticViolenceConcern\":1}}\n{\"ShowAlert\":true,\"setupAlertDialogs\":true,\"ChildAlerts\":[\"SYNTHETIC CHILD ALERT \\u2014 demonstration only\",\"SYNTHETIC SECOND ALERT \\u2014 no clinical meaning\"]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/verify"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "startedAt": "2026-10-14T22:41:06.961179+00:00",
+      "finishedAt": "2026-10-14T22:41:07.035281+00:00",
+      "exitCode": 2,
+      "stdout": "",
+      "stderr": "usage: run.py [-h] --evidence-prefix EVIDENCE_PREFIX\nrun.py: error: the following arguments are required: --evidence-prefix\n"
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/reference/run.py"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "startedAt": "2026-10-14T22:41:07.044109+00:00",
+      "finishedAt": "2026-10-14T22:41:07.105893+00:00",
+      "exitCode": 2,
+      "stdout": "",
+      "stderr": "usage: run.py [-h] --evidence-prefix EVIDENCE_PREFIX\nrun.py: error: the following arguments are required: --evidence-prefix\n"
+    },
+    {
+      "command": [
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/verify",
+        "--evidence-prefix",
+        "../invalid"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "startedAt": "2026-10-14T22:41:07.115725+00:00",
+      "finishedAt": "2026-10-14T22:41:07.187134+00:00",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "Invalid evidence prefix\n"
+    },
+    {
+      "command": [
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/verify",
+        "--evidence-prefix",
+        "task-6-selftests-self-test-collision"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "startedAt": "2026-10-14T22:41:07.195566+00:00",
+      "finishedAt": "2026-10-14T22:41:07.289832+00:00",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "Retained evidence exists; use a fresh --evidence-prefix\n"
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/reference/test-harness.py",
+        "--evidence-prefix",
+        "task-6-selftests"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "startedAt": "2026-10-14T22:41:07.298854+00:00",
+      "finishedAt": "2026-10-14T22:41:07.356249+00:00",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "Retained test evidence exists; use a fresh --evidence-prefix\n"
+    }
+  ],
+  "files": {
+    "lmf/migrations/hcwp/system-feel/characterise/reference/Reference.csproj": "4a6f4a3eca04f8f6e8f177a5fbaf955670adc7e7a81a0ed093a16bfc7cf6ff05",
+    "lmf/migrations/hcwp/system-feel/characterise/reference/Legacy.cs": "9196a65b071e8a598c628e925f8811573da29115455557e224f887d511d6605f",
+    "lmf/migrations/hcwp/system-feel/characterise/reference/Compatibility.cs": "aa5175fad3c190e89377d2e6da50d296c2b3c6c5e3c8426dde28607dc17008d9",
+    "lmf/migrations/hcwp/system-feel/characterise/reference/Program.cs": "203b0286ba24113071b9dea6d8b8465318ad9ed77009ad63c0d780ab3ae0143b",
+    "lmf/migrations/hcwp/system-feel/characterise/reference/test-harness.py": "527131e8a9604398ccdb8522f2bd46d3b333831831f5fa63ba6e8ec0ebad2ca7",
+    "lmf/migrations/hcwp/system-feel/characterise/reference/run.py": "f5a72dcb837779b806b525a612c4bf6300871f34da81d0afc7e89169006589f5"
+  },
+  "binarySha256": "c0b4d166637b360b221af8912890e5c2379011da1141c40c88047c4ee6fe4525",
+  "collisionSentinel": "lmf/migrations/hcwp/system-feel/characterise/task-6-selftests-self-test-collision-reference-results.json",
+  "evidenceType": "Harness self-tests, NOT required scenario counts",
+  "checks": [
+    {
+      "check": "booleans are not numbers",
+      "passed": true
+    },
+    {
+      "check": "null differs from empty",
+      "passed": true
+    },
+    {
+      "check": "missing expected key fails",
+      "passed": true
+    },
+    {
+      "check": "extra observation keys allowed",
+      "passed": true
+    },
+    {
+      "check": "list cardinality exact",
+      "passed": true
+    },
+    {
+      "check": "ties accept reversed IDs",
+      "passed": true
+    },
+    {
+      "check": "duplicate IDs rejected",
+      "passed": true
+    },
+    {
+      "check": "excluded patient row rejected",
+      "passed": true
+    },
+    {
+      "check": "unordered multiset rejects extra rows",
+      "passed": true
+    },
+    {
+      "check": "incorrect observed count rejected",
+      "passed": true
+    },
+    {
+      "check": "empty scenario set fails closed",
+      "passed": true
+    },
+    {
+      "check": "missing scenario fails closed",
+      "passed": true
+    },
+    {
+      "check": "duplicate ID fails closed",
+      "passed": true
+    },
+    {
+      "check": "unknown operation fails closed",
+      "passed": true
+    },
+    {
+      "check": "empty expectation fails closed",
+      "passed": true
+    },
+    {
+      "check": "non-required scenario fails closed",
+      "passed": true
+    },
+    {
+      "check": "missing group fails closed",
+      "passed": true
+    },
+    {
+      "check": "current reference sources build",
+      "passed": true
+    },
+    {
+      "check": "name responds to data",
+      "passed": true
+    },
+    {
+      "check": "address responds to data",
+      "passed": true
+    },
+    {
+      "check": "age responds to clock",
+      "passed": true
+    },
+    {
+      "check": "concern responds to physical data",
+      "passed": true
+    },
+    {
+      "check": "literal false is case sensitive",
+      "passed": true
+    },
+    {
+      "check": "explicit prefix required: verify",
+      "passed": true
+    },
+    {
+      "check": "explicit prefix required: run.py",
+      "passed": true
+    },
+    {
+      "check": "invalid prefix rejected before writes",
+      "passed": true
+    },
+    {
+      "check": "existing evidence rejected before writing",
+      "passed": true
+    },
+    {
+      "check": "collision creates no other prefixed evidence",
+      "passed": true
+    },
+    {
+      "check": "self-test collision rejected before checks",
+      "passed": true
+    }
+  ],
+  "passed": 29,
+  "failed": 0,
+  "exitCode": 0
+}
