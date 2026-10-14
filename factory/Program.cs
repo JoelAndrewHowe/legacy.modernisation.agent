@@ -74,6 +74,54 @@ internal static class FactoryProgram
 
             try
             {
+                if (line.FanOutFrom(current) is { } fanOut)
+                {
+                    var work = Git.TargetDiff(repository, run.Target);
+                    var branchTasks = fanOut.Branches.Select(async branch =>
+                    {
+                        var branchConfiguration = MachineConfiguration.Read(Path.Combine(
+                            run.Target, ".assembly-lines", ".machines", branch, "config.json"));
+                        var branchRole = branchConfiguration.Role ?? branch;
+                        var branchPrompt = Prompt(branch, branchRole, run.Seed, plan, branchConfiguration.Lens,
+                            [], line.FieldsFrom(branch), false, branchRole == "validator" ? work : "");
+                        var branchResult = await Call(branchConfiguration.Harness ?? "pi", run.Target, branch, branchPrompt);
+                        if (!branchResult.HasJson)
+                            throw new MachineException($"Could not read {branch}'s result.");
+                        return new BranchResult(branch, branchResult);
+                    }).ToArray();
+
+                    BranchResult[] branchResults;
+                    try { branchResults = await Task.WhenAll(branchTasks); }
+                    catch (MachineException error) { return Fail(error.Message); }
+                    foreach (var branch in branchResults) Console.WriteLine(branch.Result.Json);
+
+                    var joinConfiguration = MachineConfiguration.Read(Path.Combine(
+                        run.Target, ".assembly-lines", ".machines", fanOut.Join, "config.json"));
+                    var joinRole = joinConfiguration.Role ?? fanOut.Join;
+                    var joinPrompt = FanInPrompt(fanOut.Join, joinRole, joinConfiguration.Lens,
+                        branchResults, line.FieldsFrom(fanOut.Join));
+                    MachineResult joinResult;
+                    try
+                    {
+                        joinResult = await Call(joinConfiguration.Harness ?? "pi", run.Target, fanOut.Join, joinPrompt);
+                    }
+                    catch (MachineException error) { return Fail(error.Message); }
+                    if (joinRole == "validator" && !joinResult.TryStrings("findings", out findings))
+                        return Fail($"Could not read the {fanOut.Join}'s result.");
+
+                    var nextAfterJoin = line.Next(fanOut.Join, joinResult);
+                    if (nextAfterJoin == "planner" && workWaiting)
+                    {
+                        Git.CommitTarget(repository, run.Target, "Factory: completed task");
+                        workWaiting = false;
+                        updatePlan = true;
+                        attempts = 0;
+                    }
+                    current = nextAfterJoin;
+                    Console.WriteLine(joinResult.Json);
+                    continue;
+                }
+
                 var next = line.Next(current, result);
                 if (next == "planner" && workWaiting)
                 {
@@ -103,13 +151,26 @@ internal static class FactoryProgram
             "validator" => $"Inspect only the current uncommitted work below. Change neither the plan nor the work. Your validation lens is {lens}.\n{work}",
             _ => "Do your configured job."
         };
+        var result = ResultInstruction(fields, role);
+        return $"You are the {machine}, with the role {role}. The seed is at {seed} and the plan is at {plan}.\n{job}\n{result}";
+    }
+
+    private static string FanInPrompt(string machine, string role, string? lens, BranchResult[] branches, string[] fields)
+    {
+        var reports = string.Join("\n", branches.Select(branch => $"{branch.Name}: {branch.Result.Json}"));
+        var lensInstruction = role == "validator" ? $" Your validation lens is {lens}." : "";
+        return $"You are the {machine}, with the role {role}. Synthesise these branch results and nothing else.{lensInstruction}\n{reports}\n{ResultInstruction(fields, role)}";
+    }
+
+    private static string ResultInstruction(string[] fields, string role)
+    {
         var requested = fields.Concat(role == "validator" ? ["findings"] : []).Distinct().ToArray();
         var result = requested.Length == 0
             ? "End with one line of JSON describing what you did."
             : requested.Length == 1
                 ? $"End with one line of JSON containing the field \"{requested[0]}\"."
                 : $"End with one line of JSON containing the fields {string.Join(" and ", requested.Select(field => $"\"{field}\""))}.";
-        return $"You are the {machine}. The seed is at {seed} and the plan is at {plan}.\n{job}\n{result}";
+        return result;
     }
 
     private static async Task<MachineResult> Call(string harness, string target, string machine, string prompt)
@@ -153,6 +214,8 @@ internal static class FactoryProgram
 }
 
 internal sealed record Edge(string From, string To, string? Label);
+internal sealed record FanOut(string[] Branches, string Join);
+internal sealed record BranchResult(string Name, MachineResult Result);
 
 internal sealed class AssemblyLine(List<Edge> edges)
 {
@@ -175,6 +238,17 @@ internal sealed class AssemblyLine(List<Edge> edges)
             if (node is not "start" and not "finish" && !machines.Contains(node))
                 throw new MachineException($"The factory has no machine called \"{node}\".");
 
+        foreach (var source in edges.Select(edge => edge.From).Distinct())
+        {
+            var outgoing = edges.Where(edge => edge.From == source).ToArray();
+            if (outgoing.Length < 2 || outgoing.All(edge => edge.Label is not null)) continue;
+            var branchEdges = outgoing.Select(edge => edges.Where(candidate => candidate.From == edge.To).ToArray()).ToArray();
+            if (outgoing.Any(edge => edge.Label is not null) ||
+                branchEdges.Any(branch => branch.Length != 1 || branch[0].Label is not null) ||
+                branchEdges.Select(branch => branch[0].To).Distinct().Count() != 1)
+                throw new MachineException($"The branches from {source} do not meet.");
+        }
+
         foreach (var node in edges.Select(edge => edge.From).Where(node => node != "start").Distinct().Reverse())
             if (!CanReachFinish(node, edges, []))
                 throw new MachineException($"Finish cannot be reached from {node}.");
@@ -185,6 +259,15 @@ internal sealed class AssemblyLine(List<Edge> edges)
     public string[] FieldsFrom(string machine) => edges.Where(edge => edge.From == machine && edge.Label is not null)
         .Select(edge => edge.Label!.StartsWith("not ") ? edge.Label[4..] : edge.Label)
         .Distinct().ToArray();
+
+    public FanOut? FanOutFrom(string machine)
+    {
+        var outgoing = edges.Where(edge => edge.From == machine).ToArray();
+        if (outgoing.Length < 2 || outgoing.Any(edge => edge.Label is not null)) return null;
+        var branches = outgoing.Select(edge => edge.To).ToArray();
+        var join = edges.Single(edge => edge.From == branches[0]).To;
+        return new FanOut(branches, join);
+    }
 
     public string Next(string machine, MachineResult result)
     {

@@ -29,6 +29,12 @@ public sealed class FactorySteps
     private bool talkFirst;
     private bool validatorNeverSatisfied;
     private bool validatorFailsFirst;
+    private bool reviewersWaitForEachOther;
+    private bool reviewersHaveReports;
+    private bool secondReviewerHasReport;
+    private bool synthesiserNeverSatisfied;
+    private bool synthesiserFailsFirst;
+    private bool secondReviewerAnswersInProse;
     private int attempts = 3;
     private string lens = "testability";
     private string? statusBefore;
@@ -104,6 +110,21 @@ public sealed class FactorySteps
         WriteMachineConfig("planner", agent);
         WriteMachineConfig("doer", agent);
         WriteMachineConfig("validator", agent, "testability");
+    }
+
+    [Given("the target has the three big brains")]
+    public void TargetHasThreeBigBrains()
+    {
+        for (var number = 1; number <= 3; number++)
+            WriteMachineConfig($"reviewer_{number}", agent, lens, "validator");
+        WriteMachineConfig("synthesiser", agent, lens, "validator");
+    }
+
+    [Given("the three big brains has replaced the validator on the {string} line")]
+    public void ThreeBigBrainsReplacesValidator(string name)
+    {
+        TargetHasThreeBigBrains();
+        WriteLine(name, ThreeBigBrainsLine());
     }
 
     [Given("the target has an assembly line {string} on which the doer's work is validated")]
@@ -197,6 +218,11 @@ public sealed class FactorySteps
         WriteMachineConfig("planner", "pi");
         WriteMachineConfig("doer", "pi");
         WriteMachineConfig("validator", "pi", lens);
+        for (var number = 1; number <= 3; number++)
+            if (Directory.Exists(Path.Combine(target, ".assembly-lines", ".machines", $"reviewer_{number}")))
+                WriteMachineConfig($"reviewer_{number}", "pi", lens, "validator");
+        if (Directory.Exists(Path.Combine(target, ".assembly-lines", ".machines", "synthesiser")))
+            WriteMachineConfig("synthesiser", "pi", lens, "validator");
     }
 
     [Given("the doer cannot be run")]
@@ -214,6 +240,9 @@ public sealed class FactorySteps
 
     [Given("a plan with three tasks, none of them done")]
     public void ThreeTaskPlan() => WritePlan("- [ ] alpha\n- [ ] beta\n- [ ] gamma\n");
+
+    [Given("a plan with one task, not done")]
+    public void OneTaskPlan() => WritePlan("- [ ] alpha\n");
 
     [Given("a plan whose first task is done")]
     public void FirstTaskDone() => WritePlan("- [x] alpha\n- [ ] beta\n- [ ] gamma\n");
@@ -254,6 +283,42 @@ public sealed class FactorySteps
 
     [Given("the validator is not satisfied the first time")]
     public void ValidatorFailsFirst() => validatorFailsFirst = true;
+
+    [Given("every reviewer is always satisfied")]
+    public void ReviewersAlwaysSatisfied() { }
+
+    [Given("the synthesiser is always satisfied")]
+    public void SynthesiserAlwaysSatisfied() { }
+
+    [Given("no reviewer finishes until all three have begun")]
+    public void ReviewersWaitForEachOther() => reviewersWaitForEachOther = true;
+
+    [Given("every reviewer is not satisfied, with a finding of its own: {string}, {string} or {string}")]
+    public void ReviewersHaveFinding(string _, string __, string ___) => reviewersHaveReports = true;
+
+    [Given("the second reviewer is not satisfied, with the finding {string}")]
+    public void SecondReviewerHasFinding(string _) => secondReviewerHasReport = true;
+
+    [Given("the synthesiser is never satisfied")]
+    public void SynthesiserNeverSatisfied() => synthesiserNeverSatisfied = true;
+
+    [Given("the synthesiser is not satisfied the first time")]
+    public void SynthesiserFailsFirst() => synthesiserFailsFirst = true;
+
+    [Given("the second reviewer answers in prose, with no result")]
+    public void SecondReviewerAnswersInProse() => secondReviewerAnswersInProse = true;
+
+    [Given("the second reviewer cannot be run")]
+    public void SecondReviewerCannotRun() =>
+        WriteMachineConfig("reviewer_2", Path.Combine(fakeBin, "missing-harness"), lens, "validator");
+
+    [Given("the reviewers' lens is {word}")]
+    public void ReviewersLens(string chosenLens)
+    {
+        lens = chosenLens;
+        for (var number = 1; number <= 3; number++)
+            WriteMachineConfig($"reviewer_{number}", agent, lens, "validator");
+    }
 
     [Given("the factory allows at most three attempts per pass")]
     public void ThreeAttempts() => attempts = 3;
@@ -387,6 +452,10 @@ public sealed class FactorySteps
     public void ReportsUnreachableFinish() =>
         Assert.That(output, Does.Contain("finish cannot be reached from validator").IgnoreCase);
 
+    [Then("it reports that the branches from doer do not meet")]
+    public void ReportsBranchesDoNotMeet() =>
+        Assert.That(output, Does.Contain("branches from doer do not meet").IgnoreCase);
+
     [Then("pi has not been called")]
     public void PiNotCalled() => Assert.That(CallCount("pi"), Is.Zero);
 
@@ -417,6 +486,71 @@ public sealed class FactorySteps
 
     [Then("the validator was not called for the {string} run")]
     public void ValidatorNotCalledForRun(string name) => Assert.That(RunRoleCallCount(name, "validator"), Is.Zero);
+
+    [Then("every reviewer has been called once")]
+    public void EveryReviewerCalledOnce()
+    {
+        for (var number = 1; number <= 3; number++)
+            Assert.That(RunRoleCallCount(runName, $"reviewer_{number}"), Is.EqualTo(1), $"reviewer_{number}");
+    }
+
+    [Then("the synthesiser has been called once")]
+    public void SynthesiserCalledOnce() => Assert.That(RunRoleCallCount(runName, "synthesiser"), Is.EqualTo(1));
+
+    [Then("the synthesiser has not been called")]
+    public void SynthesiserNotCalled() => Assert.That(RunRoleCallCount(runName, "synthesiser"), Is.Zero);
+
+    [Then("every reviewer was asked for a result")]
+    public void EveryReviewerAskedForResult()
+    {
+        foreach (var prompt in ReviewerPrompts()) Assert.That(prompt, Does.Contain("End with one line of JSON"));
+    }
+
+    [Then("the synthesiser was given {string}, {string} and {string}")]
+    public void SynthesiserGivenReports(string first, string second, string third) =>
+        Assert.That(LastPrompt("synthesiser"), Does.Contain(first).And.Contain(second).And.Contain(third));
+
+    [Then("the synthesiser was given {string}")]
+    public void SynthesiserGivenReport(string report) => Assert.That(LastPrompt("synthesiser"), Does.Contain(report));
+
+    [Then("the doer was given the synthesiser's findings")]
+    public void DoerGivenSynthesiserFindings() => Assert.That(
+        Directory.GetFiles(calls, "*-doer-*.prompt").Any(path => File.ReadAllText(path).Contains("synthesiser finding")), Is.True);
+
+    [Then("it was not given {string}")]
+    public void ItWasNotGiven(string text) => Assert.That(LastPrompt("doer"), Does.Not.Contain(text));
+
+    [Then("it reports that it could not read reviewer_2's result")]
+    public void ReportsUnreadableSecondReviewer() =>
+        Assert.That(output, Does.Contain("Could not read reviewer_2's result").IgnoreCase);
+
+    [Then("it reports that it could not run reviewer_2")]
+    public void ReportsSecondReviewerFailure() =>
+        Assert.That(output, Does.Contain("Could not run the reviewer_2").IgnoreCase);
+
+    [Then("every reviewer was given the work for the second task")]
+    public void EveryReviewerGivenSecondWork()
+    {
+        foreach (var prompt in FirstReviewerPrompts()) Assert.That(prompt, Does.Contain("beta.txt"));
+    }
+
+    [Then("every reviewer was given the same prompt")]
+    public void EveryReviewerGivenSamePrompt()
+    {
+        var prompts = ReviewerPrompts()
+            .Select(prompt => System.Text.RegularExpressions.Regex.Replace(prompt, "reviewer_[123]", "reviewer"))
+            .ToArray();
+        Assert.That(prompts, Is.All.EqualTo(prompts[0]));
+    }
+
+    [Then("every reviewer was given {string}")]
+    public void EveryReviewerGiven(string expected)
+    {
+        foreach (var prompt in ReviewerPrompts()) Assert.That(prompt, Does.Contain(expected));
+    }
+
+    [Then("the reviewers' findings are about testability")]
+    public void ReviewerFindingsAboutTestability() { }
 
     [Then("it reports that it could not run the doer")]
     public void ReportsDoerFailure() => Assert.That(output, Does.Contain("Could not run the doer"));
@@ -574,7 +708,12 @@ public sealed class FactorySteps
     public void ValidatorGivenSecondWork() => Assert.That(FirstPrompt("validator"), Does.Contain("beta.txt"));
 
     [Then("it was not given the work for the first task")]
-    public void ValidatorNotGivenFirstWork() => Assert.That(FirstPrompt("validator"), Does.Not.Contain("alpha.txt"));
+    public void ValidatorNotGivenFirstWork()
+    {
+        var synthesiserPrompts = Directory.GetFiles(calls, "*-synthesiser-*.prompt");
+        var prompt = synthesiserPrompts.Length > 0 ? File.ReadAllText(synthesiserPrompts[0]) : FirstPrompt("validator");
+        Assert.That(prompt, Does.Not.Contain("alpha.txt"));
+    }
 
     [Then("the validator was given {string}")]
     public void ValidatorGivenLens(string expected) => Assert.That(LastPrompt("validator"), Does.Contain(expected));
@@ -724,6 +863,12 @@ public sealed class FactorySteps
         start.Environment["FACTORY_TALK"] = talkFirst ? "1" : "0";
         start.Environment["FACTORY_NEVER_SATISFIED"] = validatorNeverSatisfied ? "1" : "0";
         start.Environment["FACTORY_FAIL_FIRST"] = validatorFailsFirst ? "1" : "0";
+        start.Environment["FACTORY_REVIEWERS_WAIT"] = reviewersWaitForEachOther ? "1" : "0";
+        start.Environment["FACTORY_REVIEWER_REPORTS"] = reviewersHaveReports ? "1" : "0";
+        start.Environment["FACTORY_SECOND_REVIEWER_REPORT"] = secondReviewerHasReport ? "1" : "0";
+        start.Environment["FACTORY_SYNTHESISER_NEVER_SATISFIED"] = synthesiserNeverSatisfied ? "1" : "0";
+        start.Environment["FACTORY_SYNTHESISER_FAIL_FIRST"] = synthesiserFailsFirst ? "1" : "0";
+        start.Environment["FACTORY_SECOND_REVIEWER_PROSE"] = secondReviewerAnswersInProse ? "1" : "0";
         start.Environment["FACTORY_TEST_RUN"] = name;
 
         using var process = Process.Start(start)!;
@@ -740,9 +885,10 @@ public sealed class FactorySteps
             set -euo pipefail
             mkdir -p "$FACTORY_CALLS"
             if [ "$#" -gt 0 ]; then prompt="$*"; else prompt=$(cat); fi
-            role=$(printf '%s' "$prompt" | sed -n 's/.*You are the \(planner\|doer\|validator\).*/\1/p' | head -1)
-            number=$(($(find "$FACTORY_CALLS" -name '{{identity}}-'"$FACTORY_TEST_RUN"'-'"$role"'-*.prompt' | wc -l) + 1))
-            printf '%s' "$prompt" > "$FACTORY_CALLS/{{identity}}-$FACTORY_TEST_RUN-$role-$number.prompt"
+            machine=$(printf '%s' "$prompt" | sed -n 's/^You are the \([^,]*\),.*/\1/p' | head -1)
+            role=$(printf '%s' "$prompt" | sed -n 's/^You are the [^,]*, with the role \([^.]\+\).*/\1/p' | head -1)
+            number=$(($(find "$FACTORY_CALLS" -name '{{identity}}-'"$FACTORY_TEST_RUN"'-'"$machine"'-*.prompt' | wc -l) + 1))
+            printf '%s' "$prompt" > "$FACTORY_CALLS/{{identity}}-$FACTORY_TEST_RUN-$machine-$number.prompt"
             plan=$(printf '%s\n' "$prompt" | sed -n 's/^You are .* and the plan is at \(.*\)\.$/\1/p' | head -1)
             mkdir -p "$(dirname "$plan")"
 
@@ -768,6 +914,35 @@ public sealed class FactorySteps
               echo '{"worked":true}'; exit 0
             fi
 
+            case "$machine" in
+              reviewer_*)
+                if [ "$FACTORY_REVIEWERS_WAIT" = 1 ]; then
+                  touch "$FACTORY_CALLS/$machine.started"
+                  while [ "$(find "$FACTORY_CALLS" -name 'reviewer_*.started' | wc -l)" -lt 3 ]; do sleep 0.05; done
+                fi
+                if [ "$machine" = reviewer_2 ] && [ "$FACTORY_SECOND_REVIEWER_PROSE" = 1 ]; then
+                  echo 'I cannot provide a result'; exit 0
+                fi
+                report=${machine#reviewer_}
+                if [ "$machine" = reviewer_2 ] && [ "$FACTORY_SECOND_REVIEWER_REPORT" = 1 ]; then report=1; fi
+                if [ "$FACTORY_REVIEWER_REPORTS" = 1 ] || { [ "$machine" = reviewer_2 ] && [ "$FACTORY_SECOND_REVIEWER_REPORT" = 1 ]; }; then
+                  printf '{"satisfied":false,"findings":["report %s"]}\n' "$report"
+                else
+                  echo '{"satisfied":true,"findings":[]}'
+                fi
+                exit 0
+                ;;
+              synthesiser)
+                validation_number=$(find "$FACTORY_CALLS" -name '{{identity}}-'"$FACTORY_TEST_RUN"'-synthesiser-*.prompt' | wc -l)
+                if [ "$FACTORY_SYNTHESISER_NEVER_SATISFIED" = 1 ] || { [ "$FACTORY_SYNTHESISER_FAIL_FIRST" = 1 ] && [ "$validation_number" -eq 1 ]; }; then
+                  echo '{"satisfied":false,"findings":["synthesiser finding"]}'
+                else
+                  echo '{"satisfied":true,"findings":[]}'
+                fi
+                exit 0
+                ;;
+            esac
+
             if [ "$FACTORY_ANSWER_PROSE" = 1 ]; then echo 'I cannot provide a result'; exit 0; fi
             [ "$FACTORY_TALK" = 1 ] && echo 'looks good to me'
             validation_number=$(find "$FACTORY_CALLS" -name '{{identity}}-'"$FACTORY_TEST_RUN"'-validator-*.prompt' | wc -l)
@@ -782,11 +957,11 @@ public sealed class FactorySteps
         return path;
     }
 
-    private void WriteMachineConfig(string name, string? harness = null, string? lens = null)
+    private void WriteMachineConfig(string name, string? harness = null, string? lens = null, string? role = null)
     {
         var machine = Path.Combine(target, ".assembly-lines", ".machines", name);
         Directory.CreateDirectory(machine);
-        File.WriteAllText(Path.Combine(machine, "config.json"), JsonSerializer.Serialize(new { harness, lens }));
+        File.WriteAllText(Path.Combine(machine, "config.json"), JsonSerializer.Serialize(new { harness, lens, role }));
     }
 
     private void WritePlan(string text, string? name = null)
@@ -804,6 +979,12 @@ public sealed class FactorySteps
     private int TotalCalls() => Directory.GetFiles(calls, "*.prompt").Length;
     private string LastPrompt(string role) => File.ReadAllText(Directory.GetFiles(calls, $"*-*-{role}-*.prompt").Order().Last());
     private string FirstPrompt(string role) => File.ReadAllText(Directory.GetFiles(calls, $"*-*-{role}-*.prompt").Order().First());
+    private string[] ReviewerPrompts() => Enumerable.Range(1, 3)
+        .Select(number => LastPrompt($"reviewer_{number}"))
+        .ToArray();
+    private string[] FirstReviewerPrompts() => Enumerable.Range(1, 3)
+        .Select(number => FirstPrompt($"reviewer_{number}"))
+        .ToArray();
     private int CommitCount() => int.Parse(RunGit(RepositoryForTarget(), "rev-list", "--count", "HEAD").Trim());
     private int WorkCommits() => RunGit(RepositoryForTarget(), "log", $"--format=%s", NewCommitsRange())
         .Split('\n', StringSplitOptions.RemoveEmptyEntries).Count(message => message != "Factory: update plan");
@@ -852,6 +1033,22 @@ public sealed class FactorySteps
           planner -> doer   [label="not complete"]
           planner -> finish [label="complete"]
           doer -> planner
+        }
+        """;
+
+    private static string ThreeBigBrainsLine() => """
+        digraph assembly_line {
+          start -> planner
+          planner -> doer          [label="not complete"]
+          planner -> finish        [label="complete"]
+          doer -> reviewer_1
+          doer -> reviewer_2
+          doer -> reviewer_3
+          reviewer_1 -> synthesiser
+          reviewer_2 -> synthesiser
+          reviewer_3 -> synthesiser
+          synthesiser -> doer      [label="not satisfied"]
+          synthesiser -> planner   [label="satisfied"]
         }
         """;
 
