@@ -1,0 +1,124 @@
+#!/usr/bin/env python3
+"""Execute the exact approved contract and compare complete converted observations."""
+import argparse
+import importlib.util
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import sys
+from datetime import datetime, timezone
+import hashlib
+
+sys.dont_write_bytecode = True
+HERE = Path(__file__).resolve().parent
+PACKET = HERE.parent / 'characterise'
+ROOT = HERE.parents[4]
+spec = importlib.util.spec_from_file_location('approved_runner', PACKET / 'reference/run.py')
+reference = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(reference)
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def compare_complete(expected, actual, location='$'):
+    # Unlike the scenario subset comparator, parity allows no extra keys.
+    failures = reference.compare(expected, actual, location)
+    if isinstance(expected, dict) and isinstance(actual, dict):
+        failures += [location + ': extra key ' + k for k in actual.keys() - expected.keys()]
+        for k in expected.keys() & actual.keys():
+            failures += compare_complete(expected[k], actual[k], location + '.' + k)
+    elif isinstance(expected, list) and isinstance(actual, list):
+        for i, (a, b) in enumerate(zip(expected, actual)):
+            failures += compare_complete(a, b, f'{location}[{i}]')
+    return sorted(set(failures))
+
+
+def ordering_observation():
+    text = (HERE / 'src/PatientSummaryAndResults.cs').read_text()
+    match = re.search(r'public void GetKdpResults\(long clientId\)\s*\{([^{}]*)\}', text)
+    if not match:
+        raise ValueError('Missing/ambiguous converted ordering method')
+    keys = re.findall(r'\.(OrderByDescending|OrderBy|ThenByDescending|ThenBy)\(it => it\.(\w+)\)', match[1])
+    if not keys:
+        raise ValueError('No converted ordering keys')
+    # sourceArtifact is provenance of the port, not the inspected converted file.
+    return {'method': 'GetKdpResults',
+            'keys': [{'field': f, 'direction': 'descending' if n.endswith('Descending') else 'ascending'} for n, f in keys],
+            'equalDateTieBreakDefined': len(keys) > 1,
+            'sourceArtifact': 'reference/original/C022.txt',
+            'sourceArtifactSha256': sha(PACKET / 'reference/original/C022.txt')}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--evidence-prefix', required=True)
+    args = parser.parse_args()
+    if not re.fullmatch(r'[a-zA-Z0-9][a-zA-Z0-9_-]*', args.evidence_prefix):
+        parser.error('unsafe evidence prefix')
+    evidence = HERE / 'evidence' / args.evidence_prefix
+    if evidence.exists():
+        parser.error('Retained evidence exists; use a fresh prefix')
+    env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', DOTNET_CLI_TELEMETRY_OPTOUT='1')
+    commands, logs, observations, errors = [], [], [], []
+    report = {'startedAt': datetime.now(timezone.utc).isoformat(), 'validatorFindings': [],
+              'claim': 'Parity with approved extracted-reference observations; not Windows/Oracle execution',
+              'commands': commands}
+    def command(argv, input=None):
+        p = subprocess.run(argv, cwd=ROOT, env=env, input=input, capture_output=True, text=True)
+        commands.append({'argv': argv, 'cwd': str(ROOT), 'exitCode': p.returncode})
+        logs.append(json.dumps(commands[-1]) + '\n' + p.stdout + p.stderr)
+        if p.returncode:
+            raise ValueError('Command failed: ' + ' '.join(argv))
+        return p.stdout
+    try:
+        command([sys.executable, str(HERE / 'build.py'), '--evidence-prefix', args.evidence_prefix])
+        fixtures = json.loads((PACKET / 'fixtures.json').read_text())
+        contract = json.loads((PACKET / 'scenarios.json').read_text())
+        cases = reference.validate_contract(fixtures, contract)
+        retained = json.loads((PACKET / 'task-6-final-reference-observations.json').read_text())
+        if len(retained) != len(cases) or [x['id'] for x in retained] != [s['id'] for s in cases] or not all(x['passed'] and not x['failures'] for x in retained):
+            raise ValueError('Incomplete/nonpassing approved reference observations')
+        requests = [(s, reference.resolve(s, fixtures)) for s in cases if s['operation'] != 'ordering-contract']
+        report['dotnetVersion'] = command(['dotnet', '--version']).strip()
+        output = command(['dotnet', str(HERE / 'src/bin/Release/net10.0/Converted.dll'),
+                          '--evidence-prefix', args.evidence_prefix + '-runtime'],
+                         ''.join(json.dumps(r) + '\n' for _, r in requests))
+        lines = output.splitlines()
+        if len(lines) != len(requests):
+            raise ValueError('Missing/extra converted runtime observations')
+        actual = {s['id']: json.loads(line) for (s, _), line in zip(requests, lines)}
+        for scenario, baseline in zip(cases, retained):
+            observed = ordering_observation() if scenario['operation'] == 'ordering-contract' else actual[scenario['id']]
+            failures = compare_complete(scenario['expected'], baseline['expected'])
+            failures += reference.compare_observation(scenario['expected'], observed)
+            failures += compare_complete(baseline['observed'], observed)
+            if 'error' in observed:
+                failures.append('Converted runtime error: ' + observed['error'])
+            observations.append({'id': scenario['id'], 'groups': scenario['groups'], 'operation': scenario['operation'],
+                                 'expected': scenario['expected'], 'reference': baseline['observed'],
+                                 'converted': observed, 'passed': not failures, 'failures': failures})
+        command([sys.executable, str(HERE / 'check-prerequisites.py'), '--evidence-prefix', args.evidence_prefix + '-final'])
+    except Exception as error:
+        errors.append(repr(error))
+    counts = {'required': 53, 'executed': len(observations), 'passed': sum(x['passed'] for x in observations),
+              'failed': sum(not x['passed'] for x in observations), 'skipped': 0}
+    passed = not errors and counts['executed'] == counts['required'] and counts['passed'] > 0 and counts['failed'] == counts['skipped'] == 0
+    identities = [PACKET / p for p in ('fixtures.json', 'scenarios.json', 'task-6-final-reference-observations.json', 'reference/run.py')]
+    identities += [HERE / 'verify'] + list((HERE / 'src').glob('*.cs'))
+    report.update(counts=counts, errors=errors, passed=passed, exitCode=0 if passed else 1,
+                  finishedAt=datetime.now(timezone.utc).isoformat(), files={str(p.relative_to(ROOT)): sha(p) for p in identities})
+    # A failed prerequisite may already have created the directory. Never overwrite evidence.
+    evidence.mkdir(parents=True, exist_ok=True)
+    for name, payload in [('parity.json', json.dumps(report, indent=2)), ('observations.json', json.dumps(observations, indent=2)), ('parity.log', '\n'.join(logs))]:
+        with (evidence / name).open('x') as stream:
+            stream.write(payload + '\n')
+    print(json.dumps({'counts': counts, 'errors': errors, 'passed': passed, 'evidence': str(evidence)}))
+    return report['exitCode']
+
+
+if __name__ == '__main__':
+    sys.exit(main())
