@@ -1,0 +1,29 @@
+{
+  "scope": "Source preservation, not executable scenario parity",
+  "checks": [
+    {
+      "source": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/reference/Legacy.cs",
+      "target": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/src/PatientSummaryAndResults.cs",
+      "sourceSha256": "9196a65b071e8a598c628e925f8811573da29115455557e224f887d511d6605f",
+      "targetSha256": "1ebc3f92aabf5650cd69d9118232ed1414dd5cff40336f383e4e234f75b13890",
+      "identicalAfterDeclaredAdaptations": true
+    },
+    {
+      "source": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/reference/Compatibility.cs",
+      "target": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/src/Compatibility.cs",
+      "sourceSha256": "aa5175fad3c190e89377d2e6da50d296c2b3c6c5e3c8426dde28607dc17008d9",
+      "targetSha256": "82e304836992f0e48a8a3af533b5dfaf830026a8d6e07c7d294105d053198ed2",
+      "identicalAfterDeclaredAdaptations": true
+    },
+    {
+      "source": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/characterise/reference/Program.cs",
+      "target": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/src/ObservationAdapter.cs",
+      "sourceSha256": "203b0286ba24113071b9dea6d8b8465318ad9ed77009ad63c0d780ab3ae0143b",
+      "targetSha256": "a90e9a5ddeca8272376d2d9a2fa5049ab0d3bae8c19ed1f79b9a4401e1dd42e2",
+      "identicalAfterDeclaredAdaptations": true
+    }
+  ],
+  "passed": 3,
+  "failed": 0,
+  "skipped": 0
+}
