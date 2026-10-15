@@ -1,0 +1,13 @@
+{
+  "startedAt": "2026-10-15T15:10:02.588Z",
+  "checks": [],
+  "errors": [
+    "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('Yn dangos 11–15 o 15 canlyniad.', { exact: true }) to be visible\u001b[22m\n\n    at /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/language.mjs:44:78\n    at async check (/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/language.mjs:15:38)\n    at async file:///workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/language.mjs:39:3"
+  ],
+  "skipped": 0,
+  "browser": "156.0.8078.4",
+  "total": 1,
+  "passed": 0,
+  "failed": 1,
+  "finishedAt": "2026-10-15T15:10:36.669Z"
+}

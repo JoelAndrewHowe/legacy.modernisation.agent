@@ -1,20 +1,21 @@
 @page "/"
 @page "/record"
 @inject RecordingPageModel Model
-<PageTitle>Synthetic KD03 recording</PageTitle>
-    <h1 class="nhsw-h1">6–8-week contact (KD03)</h1>
-    <p>Record a 6–8-week contact for the selected synthetic patient. KD03 only.</p>
-    <p><a class="nhsw-link" href="/results">Back to HCWP results</a></p>
-    <p>Fixed demonstration clock: 15 March 2025. Temporary in-memory data; not clinical policy.</p>
-    <p>Fields are optional individually. General assessment alone does not count as a result. Warnings use resource identities; original localised prose is unavailable.</p>
+@inherits LocalizedComponent
+<PageTitle>@T("Synthetic KD03 recording")</PageTitle>
+    <h1 class="nhsw-h1">@T("6–8-week contact (KD03)")</h1>
+    <p>@T("Record a 6–8-week contact for the selected synthetic patient. KD03 only.")</p>
+    <p><a class="nhsw-link" href="/results">@T("Back to HCWP results")</a></p>
+    <p>@T("Fixed demonstration clock: 15 March 2025. Temporary in-memory data; not clinical policy.")</p>
+    <p>@T("Fields are optional individually. General assessment alone does not count as a result. Warnings use resource identities; original localised prose is unavailable.")</p>
     @if (Model.Error != null)
     {
         <section class="nhsw-error-summary" role="alert" aria-labelledby="error-title" tabindex="-1" @ref="errorSummary">
-            <h2 class="nhsw-h3 nhsw-error-summary__title" id="error-title">Result not saved</h2>
+            <h2 class="nhsw-h3 nhsw-error-summary__title" id="error-title">@T("Result not saved")</h2>
             <ul class="nhsw-list nhsw-error-summary__list">
             @foreach (var error in Model.Error.Split('\n', StringSplitOptions.RemoveEmptyEntries))
             {
-                <li><a class="nhsw-link" href="@("#" + RecordingFields.ErrorTarget(error))" @onclick="() => FocusField(error)" @onclick:preventDefault>@error</a></li>
+                <li><a class="nhsw-link" href="@("#" + RecordingFields.ErrorTarget(error))" @onclick="() => FocusField(error)" @onclick:preventDefault>@T(error)</a></li>
             }
             </ul>
         </section>
@@ -24,7 +25,7 @@
         <div class="nhsw-warning-callout" role="status">
             <h2 class="nhsw-warning-callout__heading">
                 <span class="nhsw-warning-callout__icon" aria-hidden="true">!</span>
-                <span class="nhsw-warning-callout__heading-text"><span class="nhsw-visually-hidden">Important: </span>Warning</span>
+                <span class="nhsw-warning-callout__heading-text"><span class="nhsw-visually-hidden">@T("Important: ")</span>@T("Warning")</span>
             </h2>
             <div class="nhsw-warning-callout__content"><p class="nhsw-body">@message.Message</p></div>
         </div>
@@ -32,34 +33,34 @@
     @if (Model.Pending != null)
     {
         <section aria-labelledby="confirmation-title" role="alert">
-            <h2 class="nhsw-h2" id="confirmation-title">Confirm another KD03 contact</h2>
+            <h2 class="nhsw-h2" id="confirmation-title">@T("Confirm another KD03 contact")</h2>
             <p>@Model.Pending.Message</p>
-            <button class="nhsw-button nhsw-button--primary nhsw-button--inline" type="button" @onclick="() => Model.Confirm(true)">Yes, continue</button>
-            <button class="nhsw-button nhsw-button--secondary nhsw-button--inline" type="button" @onclick="() => Model.Confirm(false)">No, do not save</button>
+            <button class="nhsw-button nhsw-button--primary nhsw-button--inline" type="button" @onclick="() => Model.Confirm(true)">@T("Yes, continue")</button>
+            <button class="nhsw-button nhsw-button--secondary nhsw-button--inline" type="button" @onclick="() => Model.Confirm(false)">@T("No, do not save")</button>
         </section>
     }
     <form @onsubmit="Model.Save" @onsubmit:preventDefault>
         <fieldset class="nhsw-fieldset" disabled="@(Model.Pending != null || Model.Saved)">
-            <legend class="nhsw-fieldset__legend nhsw-fieldset__legend--m">New KD03 result</legend>
+            <legend class="nhsw-fieldset__legend nhsw-fieldset__legend--m">@T("New KD03 result")</legend>
             @foreach (var field in RecordingFields.All)
             {
                 var errors = Model.Error?.Split('\n', StringSplitOptions.RemoveEmptyEntries).Where(e => RecordingFields.ErrorTarget(e) == field.Id).ToArray() ?? [];
                 var invalid = errors.Length > 0;
                 var errorId = field.Id + "-error";
                 <div class="@(invalid ? "nhsw-form-group nhsw-form-group--error" : "nhsw-form-group")" @key="field.Property">
-                    <label class="nhsw-label" for="@field.Id">@field.Label</label>
+                    <label class="nhsw-label" for="@field.Id">@T(field.Label)</label>
                     @if (invalid)
                     {
-                        <p class="nhsw-error-message" id="@errorId"><span class="nhsw-visually-hidden">Error: </span>@string.Join(" ", errors)</p>
+                        <p class="nhsw-error-message" id="@errorId"><span class="nhsw-visually-hidden">@T("Error: ")</span>@string.Join(" ", errors.Select(T))</p>
                     }
                     @if (field.Type == "select")
                     {
                         <select @ref="fieldElements[field.Id]" class="@(invalid ? "nhsw-select nhsw-is-invalid" : "nhsw-select")" aria-invalid="@(invalid ? "true" : null)" aria-describedby="@(invalid ? errorId : null)" id="@field.Id" value="@RecordingFields.Value(Model.Draft, field.Property)" @onchange="e => Model.Set(field.Property, e.Value?.ToString())">
-                            @if (field.Property != "WithdrawConsent") { <option value="">Not recorded</option> }
+                            @if (field.Property != "WithdrawConsent") { <option value="">@T("Not recorded")</option> }
                             @foreach (var option in field.Options)
                             {
                                 var parts = option.Split('|');
-                                <option value="@parts[0]">@parts[1]</option>
+                                <option value="@parts[0]">@T(parts[1])</option>
                             }
                         </select>
                     }
@@ -69,32 +70,32 @@
                     }
                 </div>
             }
-            <p>Calculated BMI: @(Model.Bmi?.ToString() ?? "Not available")</p>
-            <button class="nhsw-button nhsw-button--primary nhsw-button--inline" type="submit">Save KD03 result</button>
+            <p>@T("Calculated BMI: ")@(Model.Bmi?.ToString() ?? T("Not available"))</p>
+            <button class="nhsw-button nhsw-button--primary nhsw-button--inline" type="submit">@T("Save KD03 result")</button>
         </fieldset>
     </form>
     @if (Model.Saved)
     {
-        <p role="status">Result saved and read back from persistence.</p>
-        <p><a class="nhsw-link" href="@($"/results/{Model.Draft.PkChildExaminationId}")">View saved result details</a> or <a class="nhsw-link" href="/results">return to HCWP results</a>.</p>
+        <p role="status">@T("Result saved and read back from persistence.")</p>
+        <p><a class="nhsw-link" href="@($"/results/{Model.Draft.PkChildExaminationId}")">@T("View saved result details")</a>@T(" or ")<a class="nhsw-link" href="/results">@T("return to HCWP results")</a>.</p>
     }
-    <button class="nhsw-button nhsw-button--secondary nhsw-button--inline" type="button" @onclick="Model.NewResult">Start new result</button>
+    <button class="nhsw-button nhsw-button--secondary nhsw-button--inline" type="button" @onclick="Model.NewResult">@T("Start new result")</button>
     <section id="saved-results" aria-labelledby="saved-results-title">
-    <h2 class="nhsw-h2" id="saved-results-title">Saved results for selected patient</h2>
-    <button class="nhsw-button nhsw-button--secondary nhsw-button--inline" type="button" @onclick="Model.Reload">Reload from persistence</button>
-    @if (Model.Results.Count == 0) { <p>No saved KD03 results.</p> }
+    <h2 class="nhsw-h2" id="saved-results-title">@T("Saved results for selected patient")</h2>
+    <button class="nhsw-button nhsw-button--secondary nhsw-button--inline" type="button" @onclick="Model.Reload">@T("Reload from persistence")</button>
+    @if (Model.Results.Count == 0) { <p>@T("No saved KD03 results.")</p> }
     @foreach (var result in Model.Results)
     {
         <ResultReadback Result="result" />
     }
     </section>
-    <p>Other contacts, search, editing, appointments and recalls are not supported. Ordinary save does not withdraw patient consent. Original Windows/Oracle and PostgreSQL are unverified.</p>
+    <p>@T("Other contacts, search, editing, appointments and recalls are not supported. Ordinary save does not withdraw patient consent. Original Windows/Oracle and PostgreSQL are unverified.")</p>
 @code {
     private readonly Dictionary<string, ElementReference> fieldElements = [];
     private async Task FocusField(string error) => await fieldElements[RecordingFields.ErrorTarget(error)].FocusAsync();
     private ElementReference errorSummary;
     private string focusedError;
-    protected override void OnInitialized() => Model.Reload();
+    protected override void OnInitialized() { base.OnInitialized(); Model.Reload(); }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (Model.Error != null && Model.Error != focusedError)

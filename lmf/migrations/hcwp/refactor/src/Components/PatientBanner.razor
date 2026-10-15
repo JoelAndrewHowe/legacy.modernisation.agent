@@ -1,13 +1,14 @@
+@inherits LocalizedComponent
 @if (Patient != null)
 {
     <section aria-labelledby="patient-context-title">
-        <h2 class="nhsw-h2" id="patient-context-title">Selected synthetic patient</h2>
+        <h2 class="nhsw-h2" id="patient-context-title">@T("Selected synthetic patient")</h2>
         <dl class="nhsw-summary-list nhsw-summary-list--no-border">
             @foreach (var item in PatientBannerValues.Read(Patient))
             {
                 <div class="nhsw-summary-list__row">
-                    <dt class="nhsw-summary-list__key">@item.Label</dt>
-                    <dd class="nhsw-summary-list__value">@item.Value</dd>
+                    <dt class="nhsw-summary-list__key">@T(item.Label)</dt>
+                    <dd class="nhsw-summary-list__value">@BannerValue(item.Value)</dd>
                 </div>
             }
         </dl>
@@ -16,11 +17,11 @@
             <aside class="nhsw-warning-callout" role="alert" aria-labelledby="patient-alert-title">
                 <h2 class="nhsw-warning-callout__heading" id="patient-alert-title">
                     <span class="nhsw-warning-callout__icon" aria-hidden="true">!</span>
-                    <span class="nhsw-warning-callout__heading-text"><span class="nhsw-visually-hidden">Important: </span>Patient alert — synthetic demonstration</span>
+                    <span class="nhsw-warning-callout__heading-text"><span class="nhsw-visually-hidden">@T("Important: ")</span>@T("Patient alert — synthetic demonstration")</span>
                 </h2>
                 <div class="nhsw-warning-callout__content">
                     @foreach (var alert in Patient.Alerts) { <p class="nhsw-body">@alert</p> }
-                    @if (Patient.Alerts.Count == 0) { <p class="nhsw-body">Status alert description unavailable; legacy resource prose was not supplied.</p> }
+                    @if (Patient.Alerts.Count == 0) { <p class="nhsw-body">@T("Status alert description unavailable; legacy resource prose was not supplied.")</p> }
                 </div>
             </aside>
         }
@@ -28,8 +29,13 @@
 }
 else
 {
-    <p role="alert">Selected patient context unavailable.</p>
+    <p role="alert">@T("Selected patient context unavailable.")</p>
 }
 @code {
+    string BannerValue(string value)
+    {
+        const string suffix = " — legacy format unavailable (CodeDescriptionFormat)";
+        return value.EndsWith(suffix, StringComparison.Ordinal) ? value[..^suffix.Length] + T(suffix) : T(value);
+    }
     [Parameter] public Hcwp.Application.PatientSummary Patient { get; set; }
 }

@@ -25,7 +25,9 @@ public static class ShellChecks
         void Require(bool value) { if (!value) throw new InvalidOperationException("Shell assertion failed"); }
         ReferenceClock.Now = new DateTime(2025, 3, 15);
         var repository = new DemoPatientSummaryRepository(File.ReadAllText(fixturePath));
-        var services = new ServiceCollection().AddLogging().BuildServiceProvider();
+        var inventoryPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(fixturePath)), "Presentation", "interface-strings.cy.json");
+        var services = new ServiceCollection().AddLogging()
+            .AddSingleton(new Hcwp.Presentation.InterfaceLanguage(File.ReadAllText(inventoryPath))).BuildServiceProvider();
         await using var renderer = new HtmlRenderer(services, services.GetRequiredService<ILoggerFactory>());
         Task<string> Render(PatientSummary patient) => renderer.Dispatcher.InvokeAsync(async () =>
             (await renderer.RenderComponentAsync<PatientBanner>(ParameterView.FromDictionary(new Dictionary<string, object> { ["Patient"] = patient }))).ToHtmlString());

@@ -22,6 +22,8 @@ builder.Services.AddSingleton<IPatientSummaryRepository>(new DemoPatientSummaryR
 builder.Services.AddSingleton<PatientSummaryQuery>();
 builder.Services.AddSingleton(new LookupDouble(fixtures));
 builder.Services.AddScoped<RecordingPageModel>();
+var bilingualInventory = File.ReadAllText(Path.Combine(builder.Environment.ContentRootPath, "Presentation", "interface-strings.cy.json"));
+builder.Services.AddScoped(_ => new InterfaceLanguage(bilingualInventory));
 var app = builder.Build();
 app.UseAntiforgery();
 app.MapStaticAssets();

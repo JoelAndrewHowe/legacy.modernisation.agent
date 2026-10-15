@@ -1,12 +1,13 @@
 @page "/results/{ResultId:long}"
+@inherits LocalizedComponent
 @inject Hcwp.Application.Kd03ResultsQuery Query
 @inject NavigationManager Navigation
-<PageTitle>Result details</PageTitle>
-<h1 class="nhsw-h1">Result details</h1>
-<p><a class="nhsw-link" href="@ReturnUrl">Back to HCWP results</a></p>
+<PageTitle>@T("Result details")</PageTitle>
+<h1 class="nhsw-h1">@T("Result details")</h1>
+<p><a class="nhsw-link" href="@ReturnUrl">@T("Back to HCWP results")</a></p>
 @if (result == null)
 {
-    <p role="status">Result not found for the selected patient.</p>
+    <p role="status">@T("Result not found for the selected patient.")</p>
 }
 else
 {

@@ -1,0 +1,4 @@
+/* Bounded bilingual adaptation: allow long translated nav labels to wrap.
+   NHSW colours, focus, typography, spacing and breakpoints remain unchanged. */
+.nhsw-site-header__nav-list > li { min-width: 0; max-width: 100%; }
+.nhsw-site-header__nav-list .nhsw-site-header__nav-link { white-space: normal; overflow-wrap: anywhere; }
