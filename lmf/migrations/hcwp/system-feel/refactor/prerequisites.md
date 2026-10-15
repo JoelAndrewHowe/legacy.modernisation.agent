@@ -1,5 +1,37 @@
 # Refactor task 1 — prerequisite inspection
 
+## Fresh task-1 recheck (2026-10-15)
+
+The first unchecked task was repeated without marking it done or starting task 2.
+No validator findings were supplied; recorded as `validatorFindings: []`.
+Working-tree changes were inspected and preserved. Required context and prior
+stage evidence were revisited; no approved inputs or application files changed.
+
+Executed from `lmf/migrations/hcwp`, both exit 0:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 system-feel/convert/check-prerequisites.py --evidence-prefix refactor-task-1-recheck-prestart
+PYTHONDONTWRITEBYTECODE=1 python3 system-feel/convert/verify --evidence-prefix refactor-task-1-recheck-parity
+```
+
+Fresh nonincremental Convert build and complete parity passed: **53/53**, zero
+failures/skips/errors, .NET SDK 10.0.401. All four before/runtime/after approval
+checks passed with 1692 identical input identities. Exact approved scenario
+membership/order, every observation, and current parity-source hashes were
+additionally checked mechanically. Current human approval remains bound to
+`6a44e9fcd19299d0886b6ccb7e48457d04b89b5913326ce445dba58cb246c655`.
+
+New evidence: `system-feel/refactor/evidence/task-1-recheck/` contains the
+assessment, command output, working-tree snapshots, diff check and manifest
+binding the 17 fresh Convert gate artifacts. Detailed logs, timestamps, hashes
+and observations remain in `system-feel/convert/evidence/refactor-task-1-recheck-*`.
+Existing evidence was not overwritten. No approval was created or regenerated.
+Prerequisites pass; application regressions, browser tests and final Refactor
+gates were not rerun in this prerequisite-only task. The limitations and
+approved presentation decisions below remain in force.
+
+## Earlier task-1 inspection
+
 The first plan task remains unchecked. No validator findings were supplied after the user's findings heading (`validatorFindings: []`). No approval, approved input, application code or unrelated user change was modified. Working-tree status was inspected before work; existing factory, configuration, documentation and untracked changes were preserved.
 
 ## Executed gates

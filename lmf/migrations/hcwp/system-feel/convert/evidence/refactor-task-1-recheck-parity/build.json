@@ -1,0 +1,25 @@
+{
+  "startedAt": "2026-10-15T09:20:47.308227+00:00",
+  "scope": "Port build only; no parity claim",
+  "validatorFindings": [],
+  "sourceSha256": {
+    "src/Compatibility.cs": "82e304836992f0e48a8a3af533b5dfaf830026a8d6e07c7d294105d053198ed2",
+    "src/ObservationAdapter.cs": "a90e9a5ddeca8272376d2d9a2fa5049ab0d3bae8c19ed1f79b9a4401e1dd42e2",
+    "src/PatientSummaryAndResults.cs": "1ebc3f92aabf5650cd69d9118232ed1414dd5cff40336f383e4e234f75b13890",
+    "src/Converted.csproj": "4a6f4a3eca04f8f6e8f177a5fbaf955670adc7e7a81a0ed093a16bfc7cf6ff05"
+  },
+  "command": [
+    "dotnet",
+    "build",
+    "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/src/Converted.csproj",
+    "-c",
+    "Release",
+    "--no-incremental",
+    "--nologo"
+  ],
+  "exitCode": 0,
+  "passed": true,
+  "dotnetVersion": "10.0.401",
+  "finishedAt": "2026-10-15T09:20:48.748061+00:00",
+  "binarySha256": "88deea882d40372d72296eb05124343f18f3b9bd03aa77f0625da314d9061301"
+}
