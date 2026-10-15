@@ -26,7 +26,7 @@ async function shell(page, active = 'HCWP results') {
   assert.equal(await page.getByRole('banner').count(), 1);
   assert.equal(await page.getByRole('contentinfo').count(), 1);
   assert.equal(await page.getByRole('link', { name: 'Skip to main content', exact: true }).getAttribute('href'), new URL(page.url()).pathname + new URL(page.url()).search + '#maincontent');
-  assert.equal(await page.locator('nav [aria-current="page"]').innerText(), active);
+  assert.equal(await page.locator('nav[aria-label="Primary navigation"] [aria-current="page"]').innerText(), active);
   assert.ok(await page.getByRole('heading', { name: 'Important: Demonstration — synthetic patient data', exact: true }).isVisible());
   assert.ok(await page.getByText('SYN-NHS-101', { exact: true }).isVisible());
   assert.ok(await page.getByText('Health board', { exact: true }).isVisible());
@@ -45,7 +45,7 @@ try {
   try { await fetch(origin); throw Error('Port 5193 occupied'); }
   catch (error) { if (error.message !== 'fetch failed') throw error; }
   server = spawn('dotnet', ['run', '--no-build', '--project', path.join(root, 'src/Hcwp.csproj'), '--urls', origin],
-    { cwd: root, env: { ...process.env, ASPNETCORE_ENVIRONMENT: 'Development' }, stdio: ['ignore', 'pipe', 'pipe'] });
+    { cwd: root, env: { ...process.env, DemoHistory: 'false', ASPNETCORE_ENVIRONMENT: 'Development' }, stdio: ['ignore', 'pipe', 'pipe'] });
   server.stdout.on('data', data => serverLog += data);
   server.stderr.on('data', data => serverLog += data);
   let ready = false;

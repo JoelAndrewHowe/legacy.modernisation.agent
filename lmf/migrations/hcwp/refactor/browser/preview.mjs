@@ -53,7 +53,7 @@ try {
   try { await fetch(url); throw new Error('Port 5187 already serves HTTP; stop it before this isolated check'); }
   catch (error) { if (error.message !== 'fetch failed') throw error; }
   server = spawn('dotnet', ['run', '--no-build', '--project', path.join(root, 'src/Hcwp.csproj'), '--urls', url.slice(0, -1)],
-    { cwd: root, env: { ...process.env, ASPNETCORE_ENVIRONMENT: 'Development' }, stdio: ['ignore', 'pipe', 'pipe'] });
+    { cwd: root, env: { ...process.env, DemoHistory: 'false', ASPNETCORE_ENVIRONMENT: 'Development' }, stdio: ['ignore', 'pipe', 'pipe'] });
   server.stdout.on('data', chunk => serverLog += chunk);
   server.stderr.on('data', chunk => serverLog += chunk);
   server.on('error', error => report.errors.push(String(error)));

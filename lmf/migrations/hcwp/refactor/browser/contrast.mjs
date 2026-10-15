@@ -39,8 +39,13 @@ export async function measureContrast(page, report, state, selector, focus = fal
       return over(rgba(style.backgroundColor), background(el.parentElement));
     };
     return elements.filter(el => el.getClientRects().length).map(el => {
-      const visual = focused && el.matches('.nhsw-site-header__nav-link') ? el.querySelector('span') : el;
+      // NHSW hides the native checkbox; its adjacent label paints the box/tick/focus.
+      const checkbox = el.matches('.nhsw-checkboxes__input');
+      const visual = checkbox ? el.nextElementSibling : focused && el.matches('.nhsw-site-header__nav-link') ? el.querySelector('span') : el;
       const s = getComputedStyle(visual), bg = background(visual), outside = background(el.parentElement);
+      const box = checkbox ? getComputedStyle(visual, '::before') : s;
+      const boxBackground = checkbox ? over(rgba(box.backgroundColor), bg) : bg;
+      const tick = checkbox ? getComputedStyle(visual, '::after') : null;
       const after = getComputedStyle(visual, '::after');
       return {
         element: el.id ? `#${el.id}` : `${el.tagName.toLowerCase()}.${el.className}`,
@@ -48,14 +53,17 @@ export async function measureContrast(page, report, state, selector, focus = fal
         fontSize: parseFloat(s.fontSize), fontWeight: s.fontWeight,
         foreground: over(rgba(s.color), bg), background: bg, outside,
         control: el.matches('input, select, button, .nhsw-error-summary'),
+        checkbox, checked: checkbox && el.checked, boxBackground,
+        tickColour: checkbox ? over(rgba(tick.borderLeftColor), boxBackground) : null,
+        tickVisible: checkbox && tick.opacity === '1',
         selectIcon: el.matches('.nhsw-select') && s.backgroundImage !== 'none',
-        border: over(rgba(s.borderTopColor), bg), borderWidth: s.borderTopWidth,
-        focused, outline: s.outline, shadow: s.boxShadow,
+        border: over(rgba(box.borderTopColor), boxBackground), borderWidth: box.borderTopWidth,
+        focused, outline: box.outline, shadow: box.boxShadow,
         pseudoIndicator: after.content !== 'none' && after.content !== 'normal' && parseFloat(after.height) >= 3
           ? over(rgba(after.backgroundColor), outside) : null,
         // Current NHSW uses one solid shadow for the select/input/button focus.
         shadowColour: s.boxShadow === 'none' ? null : over(rgba(s.boxShadow.match(/rgba?\([^)]+\)/)[0]), outside),
-        outlineColour: over(rgba(s.outlineColor), outside)
+        outlineColour: over(rgba(box.outlineColor), outside)
       };
     });
   }, focus);
@@ -83,6 +91,20 @@ export async function measureContrast(page, report, state, selector, focus = fal
         outsideRatio >= 3 ? indicator : s.background, s.outside, 3, '1.4.11');
     }
     if (!s.control) continue;
+    if (s.checkbox) {
+      add(s, 'checkbox boundary / surrounding page', s.border, s.outside, 3, '1.4.11');
+      if (s.checked) {
+        assert.ok(s.tickVisible, 'Checked checkbox must paint its tick');
+        add(s, 'checkbox checked tick / box', s.tickColour, s.boxBackground, 3, '1.4.11');
+      }
+      if (focus) {
+        assert.equal(await page.locator(selector).evaluate(el => el === document.activeElement), true);
+        assert.ok(s.outline.includes('3px') && s.outline.includes('solid') && s.borderWidth === '4px', 'Checkbox focus needs the pinned outline and thicker dark edge');
+        add(s, 'checkbox focused dark edge / box', s.border, s.boxBackground, 3, '1.4.11');
+        add(s, 'checkbox focused dark edge / yellow highlight', s.border, s.outlineColour, 3, '1.4.11');
+      }
+      continue;
+    }
     if (!focus) {
       // Filled primary button is identified by its fill; outlined controls by border.
       const filled = s.element.includes('nhsw-button--primary');

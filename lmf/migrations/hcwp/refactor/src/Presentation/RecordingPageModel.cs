@@ -19,8 +19,7 @@ public sealed class RecordingPageModel(Kd03Recording recording, LookupDouble loo
     private bool? response;
     public bool Saved { get; private set; }
     public IReadOnlyList<KdpExaminationResultTO> Results { get; private set; } = [];
-    public decimal? Bmi => Draft.Height is > 0 && Draft.Weight.HasValue
-        ? Math.Min(99.99m, Math.Round(Draft.Weight.Value / ((Draft.Height.Value / 100) * (Draft.Height.Value / 100)), 2)) : null;
+    public decimal? Bmi => ResultDisplay.Bmi(Draft);
     private static KdpExaminationResultTO NewDraft() => new()
     {
         ClientId = SelectedPatient, ExaminationCode = "KD03", ExaminationDate = new(2025, 2, 19),

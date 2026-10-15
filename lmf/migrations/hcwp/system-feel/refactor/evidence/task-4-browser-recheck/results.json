@@ -1,0 +1,22 @@
+{
+  "startedAt": "2026-10-15T14:38:01.280Z",
+  "checks": [
+    {
+      "name": "23 results, 10 rows, third page and no other patient detail",
+      "status": "passed"
+    },
+    {
+      "name": "details restore list state and complete labelled groups",
+      "status": "passed"
+    }
+  ],
+  "errors": [
+    "page.waitForURL: Timeout 30000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================\n    at /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/history.mjs:64:16\n    at async check (/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/history.mjs:15:38)\n    at async file:///workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/history.mjs:54:3"
+  ],
+  "skipped": 0,
+  "browser": "156.0.8078.4",
+  "failed": 1,
+  "passed": 2,
+  "total": 3,
+  "finishedAt": "2026-10-15T14:38:35.991Z"
+}

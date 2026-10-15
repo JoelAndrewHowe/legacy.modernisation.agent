@@ -1,0 +1,69 @@
+{
+  "startedAt": "2026-10-15T14:46:01.270804+00:00",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "working-tree-before.log"
+    },
+    {
+      "argv": [
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/verify-task-3",
+        "--evidence-dir",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-4-validator/regression"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "regression.log"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "run",
+        "--project",
+        "refactor/checks",
+        "--no-build",
+        "--",
+        "--history",
+        "refactor/src/demo-fixtures.json"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "history.json"
+    },
+    {
+      "argv": [
+        "node",
+        "refactor/browser/history.mjs",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-4-validator/browser"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 1,
+      "log": "browser.log"
+    }
+  ],
+  "errors": [
+    "Command failed: node refactor/browser/history.mjs /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-4-validator/browser"
+  ],
+  "passed": false,
+  "scope": "Task 4 only; bilingual inventory, final expanded checks and final slice gate remain later tasks",
+  "suppliedValidatorFindings": [
+    {
+      "finding": "Task 4 used an unapproved status region instead of the approved Invalid filters error summary.",
+      "resolution": "Restored NHSW alert error summary headed Invalid filters with links to filter controls; browser checks cover invalid tokens, page/size fallbacks and valid-value retention.",
+      "approvedDecision": "system-feel/approvals/characterise-approved.md decision 2 (unchanged)"
+    }
+  ],
+  "history": {
+    "total": 16,
+    "passed": 16,
+    "failed": 0,
+    "skipped": 0
+  },
+  "finishedAt": "2026-10-15T14:47:03.404980+00:00"
+}

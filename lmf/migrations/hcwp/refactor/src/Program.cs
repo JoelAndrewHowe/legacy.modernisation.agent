@@ -11,6 +11,8 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 var fixtures = JsonNode.Parse(File.ReadAllText(Path.Combine(builder.Environment.ContentRootPath, "demo-fixtures.json"))).AsObject();
 ReferenceClock.Now = DateTime.Parse((string)fixtures["clock"]["now"]);
 var store = DemoData.Seed(fixtures);
+if (builder.Configuration.GetValue("DemoHistory", true))
+    DemoHistory.Seed(store, File.ReadAllText(Path.Combine(builder.Environment.ContentRootPath, "synthetic-history.json")));
 using (store.Open()) { }
 builder.Services.AddSingleton(store);
 builder.Services.AddSingleton<Kd03Recording>();

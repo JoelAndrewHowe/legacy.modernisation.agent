@@ -51,6 +51,22 @@ The matching `dist/nhsw-behaviours.js` error-summary behaviour was inspected.
 
 The historical preview/full-flow measurements below apply to the previous interface, not the new shared shell. Current revision-bound English shell/routes evidence is in `../system-feel/refactor/evidence/task-3-accessibility-passing/`: source identities, Chromium 7/7 groups, 986 contrast observations, 42 keyboard-focused links, per-link screenshots and alert-bearing component-harness accessibility snapshots at 320/1280px. See `../system-feel/refactor/task-3.md` for the validator findings, focus repairs, exact command and test-only harness boundary. This is not the later bilingual/filter gate or a full WCAG/assistive-technology audit.
 
+## Task-4 filter and pagination adaptation
+
+Reviewed at the same pinned commit: `preview/examples/checkboxes-default.html`,
+`input-hint.html`, `select-hint.html`, `pagination-numbered.html`,
+`src/components/forms/_checkboxes.scss` and `src/utilities/_focus-ring.scss`.
+Results uses the documented form-group/fieldset/legend, checkbox item/input/adjacent
+label, input and select structures. Date inputs remain native, stacked in separate
+form groups. Numbered pagination retains the documented nav/list/item/number-link,
+current-item and previous/next/title classes; decorative arrow SVGs are omitted,
+with explicit Previous page/Next page text. No CSS or vendor assets were changed.
+Task-scoped keyboard and contrast evidence is in
+`../system-feel/refactor/evidence/task-4-validator-final/`. The shared contrast
+helper measures the checkbox label's rendered box/tick/focus pseudo-elements,
+not the transparent native input. OS date popups/select menus are not independently
+audited. English-only task evidence is not the later bilingual acceptance gate.
+
 ## Executed evidence
 
 `verify-nhsw` checks approval prerequisites, asset checksums, builds, launches a

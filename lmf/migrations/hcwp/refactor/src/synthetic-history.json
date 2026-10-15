@@ -1,0 +1,289 @@
+{
+  "provenance": "Invented target-only volume fixture; not clinically typical KD03 history. No source patient data.",
+  "locations": [
+    {
+      "code": "HISTA",
+      "name": "Synthetic demonstration clinic A"
+    },
+    {
+      "code": "HISTB",
+      "name": "Synthetic demonstration clinic B"
+    }
+  ],
+  "examiners": [
+    {
+      "code": "HISTX",
+      "name": "Synthetic professional X"
+    },
+    {
+      "code": "HISTY",
+      "name": "Synthetic professional Y"
+    }
+  ],
+  "results": [
+    {
+      "id": 8001,
+      "patient": 101,
+      "date": "2025-01-01",
+      "recorded": "2025-02-01",
+      "repeat": false,
+      "reason": null,
+      "location": "HISTB",
+      "examiner": "HISTY",
+      "physical": 2
+    },
+    {
+      "id": 8002,
+      "patient": 101,
+      "date": "2025-01-01",
+      "recorded": "2025-02-01",
+      "repeat": true,
+      "reason": null,
+      "location": "HISTA",
+      "examiner": "HISTY",
+      "physical": 3
+    },
+    {
+      "id": 8003,
+      "patient": 101,
+      "date": "2025-01-02",
+      "recorded": "2025-02-01",
+      "repeat": false,
+      "reason": null,
+      "location": "HISTB",
+      "examiner": "HISTX",
+      "physical": 1
+    },
+    {
+      "id": 8004,
+      "patient": 101,
+      "date": "2025-01-02",
+      "recorded": "2025-02-01",
+      "repeat": true,
+      "reason": 1,
+      "location": "HISTA",
+      "examiner": "HISTY",
+      "physical": null
+    },
+    {
+      "id": 8005,
+      "patient": 101,
+      "date": "2025-01-02",
+      "recorded": null,
+      "repeat": false,
+      "reason": null,
+      "location": "HISTB",
+      "examiner": "HISTY",
+      "physical": 3
+    },
+    {
+      "id": 8006,
+      "patient": 101,
+      "date": "2025-01-03",
+      "recorded": "2025-02-01",
+      "repeat": true,
+      "reason": null,
+      "location": "HISTA",
+      "examiner": "HISTX",
+      "physical": 1
+    },
+    {
+      "id": 8007,
+      "patient": 101,
+      "date": "2025-01-03",
+      "recorded": "2025-02-01",
+      "repeat": false,
+      "reason": null,
+      "location": "HISTB",
+      "examiner": "HISTY",
+      "physical": 2
+    },
+    {
+      "id": 8008,
+      "patient": 101,
+      "date": "2025-01-03",
+      "recorded": "2025-02-01",
+      "repeat": true,
+      "reason": 1,
+      "location": "HISTA",
+      "examiner": "HISTY",
+      "physical": null
+    },
+    {
+      "id": 8009,
+      "patient": 101,
+      "date": "2025-01-04",
+      "recorded": "2025-02-01",
+      "repeat": false,
+      "reason": null,
+      "location": "HISTB",
+      "examiner": "HISTX",
+      "physical": 1
+    },
+    {
+      "id": 8010,
+      "patient": 101,
+      "date": "2025-01-04",
+      "recorded": null,
+      "repeat": true,
+      "reason": null,
+      "location": "HISTA",
+      "examiner": "HISTY",
+      "physical": 2
+    },
+    {
+      "id": 8011,
+      "patient": 101,
+      "date": "2025-01-04",
+      "recorded": "2025-02-01",
+      "repeat": false,
+      "reason": null,
+      "location": "HISTB",
+      "examiner": "HISTY",
+      "physical": 3
+    },
+    {
+      "id": 8012,
+      "patient": 101,
+      "date": "2025-01-05",
+      "recorded": "2025-02-01",
+      "repeat": true,
+      "reason": 1,
+      "location": "HISTA",
+      "examiner": "HISTX",
+      "physical": null
+    },
+    {
+      "id": 8013,
+      "patient": 101,
+      "date": "2025-01-05",
+      "recorded": "2025-02-01",
+      "repeat": false,
+      "reason": null,
+      "location": "HISTB",
+      "examiner": "HISTY",
+      "physical": 2
+    },
+    {
+      "id": 8014,
+      "patient": 101,
+      "date": "2025-01-05",
+      "recorded": "2025-02-01",
+      "repeat": true,
+      "reason": null,
+      "location": "HISTA",
+      "examiner": "HISTY",
+      "physical": 3
+    },
+    {
+      "id": 8015,
+      "patient": 101,
+      "date": "2025-01-06",
+      "recorded": null,
+      "repeat": false,
+      "reason": null,
+      "location": "HISTB",
+      "examiner": "HISTX",
+      "physical": 1
+    },
+    {
+      "id": 8016,
+      "patient": 101,
+      "date": "2025-01-06",
+      "recorded": "2025-02-01",
+      "repeat": true,
+      "reason": 1,
+      "location": "HISTA",
+      "examiner": "HISTY",
+      "physical": null
+    },
+    {
+      "id": 8017,
+      "patient": 101,
+      "date": "2025-01-06",
+      "recorded": "2025-02-01",
+      "repeat": false,
+      "reason": null,
+      "location": "HISTB",
+      "examiner": "HISTY",
+      "physical": 3
+    },
+    {
+      "id": 8018,
+      "patient": 101,
+      "date": "2025-01-07",
+      "recorded": "2025-02-01",
+      "repeat": true,
+      "reason": null,
+      "location": "HISTA",
+      "examiner": "HISTX",
+      "physical": 1
+    },
+    {
+      "id": 8019,
+      "patient": 101,
+      "date": "2025-01-07",
+      "recorded": "2025-02-01",
+      "repeat": false,
+      "reason": null,
+      "location": "HISTB",
+      "examiner": "HISTY",
+      "physical": 2
+    },
+    {
+      "id": 8020,
+      "patient": 101,
+      "date": "2025-01-07",
+      "recorded": null,
+      "repeat": true,
+      "reason": 1,
+      "location": "HISTA",
+      "examiner": "HISTY",
+      "physical": null
+    },
+    {
+      "id": 8021,
+      "patient": 101,
+      "date": "2025-01-08",
+      "recorded": "2025-02-01",
+      "repeat": false,
+      "reason": null,
+      "location": "HISTB",
+      "examiner": "HISTX",
+      "physical": 1
+    },
+    {
+      "id": 8022,
+      "patient": 101,
+      "date": "2025-01-08",
+      "recorded": "2025-02-01",
+      "repeat": true,
+      "reason": null,
+      "location": "HISTA",
+      "examiner": "HISTY",
+      "physical": 2
+    },
+    {
+      "id": 8023,
+      "patient": 101,
+      "date": "2025-01-08",
+      "recorded": "2025-02-01",
+      "repeat": false,
+      "reason": null,
+      "location": "HISTB",
+      "examiner": "HISTY",
+      "physical": 3
+    },
+    {
+      "id": 8024,
+      "patient": 202,
+      "date": "2025-01-09",
+      "recorded": "2025-02-01",
+      "repeat": true,
+      "reason": 1,
+      "location": "HISTA",
+      "examiner": "HISTX",
+      "physical": null
+    }
+  ]
+}

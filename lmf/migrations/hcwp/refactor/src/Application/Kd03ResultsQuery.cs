@@ -16,6 +16,8 @@ public sealed record ResultsFilter
     public int Page { get; init; } = 1;
     public int PageSize { get; init; } = 10;
 }
+public sealed record ResultChoice(string Code, string Description);
+public sealed record ResultsChoices(ResultChoice[] Locations, ResultChoice[] Examiners);
 public sealed record ResultsPage(IReadOnlyList<KdpExaminationResultTO> Rows, int Total, int Page, int PageSize)
 {
     public int Pages => Math.Max(1, (int)Math.Ceiling((double)Total / PageSize));
@@ -39,6 +41,15 @@ public sealed class Kd03ResultsQuery(Kd03Recording recording)
 
     public KdpExaminationResultTO Detail(long selectedPatient, long resultId) => Read(selectedPatient)
         .SingleOrDefault(r => r.PkChildExaminationId == resultId);
+
+    public ResultsChoices Choices(long selectedPatient)
+    {
+        var rows = Read(selectedPatient).ToList();
+        return new(rows.Where(r => !string.IsNullOrEmpty(r.LocationCode)).GroupBy(r => r.LocationCode)
+            .Select(g => new ResultChoice(g.Key, string.IsNullOrWhiteSpace(g.First().LocationName) ? "Description unavailable" : g.First().LocationName)).OrderBy(c => c.Description).ToArray(),
+            rows.Where(r => !string.IsNullOrEmpty(r.ExaminerHcpCode)).GroupBy(r => r.ExaminerHcpCode)
+            .Select(g => new ResultChoice(g.Key, string.IsNullOrWhiteSpace(g.First().ExaminerName) ? "Description unavailable" : g.First().ExaminerName)).OrderBy(c => c.Description).ToArray());
+    }
 
     public ResultsPage Search(long selectedPatient, ResultsFilter filter)
     {

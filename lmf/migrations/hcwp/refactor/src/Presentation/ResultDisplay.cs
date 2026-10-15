@@ -5,9 +5,20 @@ namespace Hcwp.Presentation;
 
 public static class ResultDisplay
 {
+    public static readonly (string Title, string[] Properties)[] Groups = [
+        ("Contact details", ["ExaminationDate", "ReasonNotExamined", "Consent", "Reschedule", "WithdrawConsent"]),
+        ("Measurements", ["Height", "Weight", "HeadCircumference", "HeightMeasurementDeclined", "WeightMeasurementDeclined", "HeadMeasurementDeclined"]),
+        ("Physical assessments", ["Heart", "Hips", "Eyes", "Testes", "PhysicalGeneral"]),
+        ("Child and family information", ["ReceivingBoostSchemeService", "LookedAfterChild", "OnChildProtectionRegister", "OnwardReferralsMade", "EvidenceOfXgm", "DomesticViolenceConcern", "CoreComponent"]),
+        ("Location and professional", ["LocationType", "LocationCode", "ExaminerCategory", "ExaminerHcpCode"]),
+        ("Recording metadata", ["Origin"])
+    ];
+    public static decimal? Bmi(KdpExaminationResultTO result) => result.Height is > 0 && result.Weight.HasValue
+        ? Math.Min(99.99m, Math.Round(result.Weight.Value / ((result.Height.Value / 100) * (result.Height.Value / 100)), 2)) : null;
     public static string Date(DateTime? date) => date?.ToString("d MMMM yyyy", System.Globalization.CultureInfo.GetCultureInfo("en-GB")) ?? "Not recorded";
     public static string Field(KdpExaminationResultTO result, RecordingField field)
     {
+        if (field.Property == "WithdrawConsent") return "Not stored with result; ordinary save does not update patient consent";
         if (field.Property == "LocationCode") return PatientBannerValues.Present(result.LocationName);
         if (field.Property == "ExaminerHcpCode") return PatientBannerValues.Present(result.ExaminerName);
         if (field.Property == "ExaminationDate") return Date(result.ExaminationDate);

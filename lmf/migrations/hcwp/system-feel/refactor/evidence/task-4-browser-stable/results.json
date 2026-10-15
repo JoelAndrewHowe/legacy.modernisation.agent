@@ -1,0 +1,22 @@
+{
+  "startedAt": "2026-10-15T14:39:49.112Z",
+  "checks": [
+    {
+      "name": "23 results, 10 rows, third page and no other patient detail",
+      "status": "passed"
+    },
+    {
+      "name": "details restore list state and complete labelled groups",
+      "status": "passed"
+    }
+  ],
+  "errors": [
+    "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('Showing 1–10 of 23 results.', { exact: true }) to be visible\u001b[22m\n\n    at range (/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/history.mjs:33:76)\n    at /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/history.mjs:69:11\n    at async check (/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/history.mjs:15:38)\n    at async file:///workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/history.mjs:54:3"
+  ],
+  "skipped": 0,
+  "browser": "156.0.8078.4",
+  "failed": 1,
+  "passed": 2,
+  "total": 3,
+  "finishedAt": "2026-10-15T14:40:24.289Z"
+}

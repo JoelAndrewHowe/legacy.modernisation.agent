@@ -15,7 +15,7 @@ async function check(name, action) { await action(); report.checks.push({ name, 
 try {
   await mkdir(evidence, { recursive: true });
   try { await fetch(url); throw Error('Port occupied'); } catch (e) { if (e.message !== 'fetch failed') throw e; }
-  server = spawn('dotnet', ['run', '--no-build', '--project', `${root}src`, '--urls', url], { stdio: ['ignore', 'pipe', 'pipe'] });
+  server = spawn('dotnet', ['run', '--no-build', '--project', `${root}src`, '--urls', url], { env: { ...process.env, DemoHistory: 'false' }, stdio: ['ignore', 'pipe', 'pipe'] });
   server.stdout.on('data', x => log += x); server.stderr.on('data', x => log += x);
   let ready = false;
   for (let i = 0; i < 150; i++) { try { ready = (await fetch(url)).ok; if (ready) break; } catch {} await sleep(100); }

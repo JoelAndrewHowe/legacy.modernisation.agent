@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+"""Task-4 history/URL/details checks plus carried-forward gates, not final bilingual acceptance."""
+import argparse
+from datetime import datetime, timezone
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+HERE = Path(__file__).resolve().parent
+TARGET = HERE.parents[1]
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--evidence-dir', required=True)
+args = parser.parse_args()
+evidence = Path(args.evidence_dir).resolve()
+if not evidence.is_relative_to(HERE / 'evidence'):
+    parser.error('Evidence must be under system-feel/refactor/evidence')
+evidence.mkdir(parents=True, exist_ok=False)
+report = dict(startedAt=datetime.now(timezone.utc).isoformat(), commands=[], errors=[], passed=False,
+              scope='Task 4 only; bilingual inventory, final expanded checks and final slice gate remain later tasks',
+              suppliedValidatorFindings=[dict(
+                  finding='Task 4 used an unapproved status region instead of the approved Invalid filters error summary.',
+                  resolution='Restored NHSW alert error summary headed Invalid filters with links to filter controls; browser checks cover invalid tokens, page/size fallbacks and valid-value retention.',
+                  approvedDecision='system-feel/approvals/characterise-approved.md decision 2 (unchanged)'),
+                  dict(finding='Results filters omitted pinned NHSW checkbox, fieldset, label, input, select and form-group patterns; narrow controls were cramped.',
+                       resolution='Adapted pinned checkbox/form patterns with explicit input-label associations, stacked date groups and library-only styling; retained GET/URL semantics and clinical wording.'),
+                  dict(finding='Pagination lacked NHSW numbered list/current-item structure and rendered adjoining undifferentiated links.',
+                       resolution='Added numbered pagination classes, ul/li structure, current-item class and previous/next treatment; retained query state and aria-current, asserted rendered current-page distinction.'),
+                  dict(finding='Task-scoped keyboard operation, visible focus and control contrast evidence was missing for checkboxes, dates and page-size select at narrow/wide widths.',
+                       resolution='Native Tab/Space/arrow/Enter flows exercise all 15 controls at 320/1280px, assert values and submission, capture focused screenshots/styles and measure actual checkbox label pseudo-elements, checked ticks, dates and select contrast. Bilingual gate remains deferred.')])
+def run(command, log):
+    p = subprocess.run(command, cwd=TARGET, capture_output=True, text=True)
+    (evidence / log).write_text(p.stdout + p.stderr)
+    report['commands'].append(dict(argv=command, cwd=str(TARGET), exitCode=p.returncode, log=log))
+    if p.returncode:
+        raise RuntimeError('Command failed: ' + ' '.join(command))
+def counts(path, minimum):
+    d = json.loads(path.read_text())
+    if not (d['passed'] >= minimum and d['total'] == d['passed'] and d['failed'] == 0 and d['skipped'] == 0):
+        raise ValueError('Empty/failed/skipped evidence: ' + str(path))
+    return {k: d[k] for k in ('total', 'passed', 'failed', 'skipped')}
+try:
+    run(['git', 'status', '--short'], 'working-tree-before.log')
+    run([str(HERE / 'verify-task-3'), '--evidence-dir', str(evidence / 'regression')], 'regression.log')
+    regression = json.loads((evidence / 'regression/results.json').read_text())
+    if regression['passed'] is not True or regression['errors']:
+        raise ValueError('Carried-forward gates failed')
+    run(['dotnet', 'run', '--project', 'refactor/checks', '--no-build', '--', '--history', 'refactor/src/demo-fixtures.json'], 'history.json')
+    report['history'] = counts(evidence / 'history.json', 16)
+    run(['node', 'refactor/browser/history.mjs', str(evidence / 'browser')], 'browser.log')
+    report['browser'] = counts(evidence / 'browser/results.json', 8)
+    run(['git', 'diff', '--check', '--', 'refactor', 'system-feel/refactor'], 'diff-check.log')
+    run(['git', 'status', '--short'], 'working-tree-after.log')
+    report['passed'] = True
+except Exception as error:
+    report['errors'].append(str(error))
+finally:
+    files = [p for folder in ('refactor/src', 'refactor/checks', 'refactor/browser')
+             for p in (TARGET / folder).rglob('*') if p.is_file()
+             and not any(part in ('bin', 'obj', 'node_modules') for part in p.relative_to(TARGET).parts)]
+    files += [Path(__file__).resolve(), HERE / 'task-4.md']
+    (evidence / 'source-identities.sha256').write_text(''.join(
+        f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.relative_to(TARGET)}\n' for p in sorted(files)))
+    report['finishedAt'] = datetime.now(timezone.utc).isoformat()
+    (evidence / 'results.json').write_text(json.dumps(report, indent=2) + '\n')
+    files = sorted(p for p in evidence.rglob('*') if p.is_file())
+    (evidence / 'evidence-identities.sha256').write_text(''.join(
+        f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.relative_to(TARGET)}\n' for p in files))
+    print(json.dumps(report))
+raise SystemExit(0 if report['passed'] else 1)

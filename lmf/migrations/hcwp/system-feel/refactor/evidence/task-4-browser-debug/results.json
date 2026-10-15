@@ -1,0 +1,26 @@
+{
+  "startedAt": "2026-10-15T14:38:51.336Z",
+  "checks": [
+    {
+      "name": "23 results, 10 rows, third page and no other patient detail",
+      "status": "passed"
+    },
+    {
+      "name": "details restore list state and complete labelled groups",
+      "status": "passed"
+    }
+  ],
+  "errors": [
+    "page.waitForURL: Timeout 30000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation until \"load\"\n============================================================\n    at /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/history.mjs:65:16\n    at async check (/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/history.mjs:15:38)\n    at async file:///workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/history.mjs:54:3"
+  ],
+  "skipped": 0,
+  "browser": "156.0.8078.4",
+  "sizeFailure": {
+    "url": "http://127.0.0.1:5194/results?state=Recorded&repeat=repeat&from=&to=&size=10",
+    "html": "<!--!--><h2 class=\"nhsw-h2\">Filter results</h2>\n    <fieldset><!--!--><legend>Examination state</legend><label><input type=\"checkbox\" name=\"state\" value=\"Recorded\"> Recorded</label><label><input type=\"checkbox\" name=\"state\" value=\"NotExamined\"> Not examined</label></fieldset><!--!-->\n    <fieldset><!--!--><legend>Initial or repeat</legend>\n        <label><input type=\"checkbox\" name=\"repeat\" value=\"initial\"> Initial</label><!--!-->\n        <label><input type=\"checkbox\" name=\"repeat\" value=\"repeat\"> Repeat</label></fieldset><!--!-->\n    <fieldset><!--!--><legend>Physical finding</legend><label><input type=\"checkbox\" name=\"finding\" value=\"Satisfactory\"> Satisfactory</label><label><input type=\"checkbox\" name=\"finding\" value=\"Concern\"> Concern</label><label><input type=\"checkbox\" name=\"finding\" value=\"NotAssessed\"> Not assessed</label><label><input type=\"checkbox\" name=\"finding\" value=\"HasConcern\"> Has concern</label></fieldset><!--!-->\n    <fieldset><!--!--><legend>Inclusive contact-date range</legend>\n        <!--!--><label for=\"from\">From contact date</label><input id=\"from\" name=\"from\" type=\"date\"><!--!-->\n        <!--!--><label for=\"to\">To contact date</label><input id=\"to\" name=\"to\" type=\"date\"></fieldset><!--!-->\n    <fieldset><!--!--><legend>Location</legend><label><input type=\"checkbox\" name=\"location\" value=\"HISTA\"> Synthetic demonstration clinic A</label><label><input type=\"checkbox\" name=\"location\" value=\"HISTB\"> Synthetic demonstration clinic B</label></fieldset><!--!-->\n    <fieldset><!--!--><legend>Examiner</legend><label><input type=\"checkbox\" name=\"examiner\" value=\"HISTX\"> Synthetic professional X </label><label><input type=\"checkbox\" name=\"examiner\" value=\"HISTY\"> Synthetic professional Y </label></fieldset><!--!-->\n    <!--!--><label for=\"size\">Results per page</label>\n    <select id=\"size\" name=\"size\"><option value=\"10\" selected=\"\">10</option><option value=\"25\">25</option><option value=\"50\">50</option></select><!--!-->\n    <!--!--><button class=\"nhsw-button nhsw-button--primary nhsw-button--inline\" type=\"submit\">Apply filters and page size</button>\n    <!--!--><a class=\"nhsw-link\" href=\"/results\">Clear all filters</a>"
+  },
+  "failed": 1,
+  "passed": 2,
+  "total": 3,
+  "finishedAt": "2026-10-15T14:39:26.081Z"
+}
