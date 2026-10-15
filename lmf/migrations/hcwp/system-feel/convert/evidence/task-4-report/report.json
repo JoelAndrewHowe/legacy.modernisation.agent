@@ -1,0 +1,170 @@
+{
+  "startedAt": "2026-10-14T23:13:25.846962+00:00",
+  "validatorFindings": [],
+  "scope": "Convert provenance and parity evidence only; independent stage review pending",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0,
+      "log": "working-tree-before.log"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/check-prerequisites.py",
+        "--evidence-prefix",
+        "task-4-report-prestart"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0,
+      "log": "prestart.log"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/test-prerequisites.py"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0,
+      "log": "approval-tests.log"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/test-parity.py"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0,
+      "log": "comparator-tests.log"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/verify",
+        "--evidence-prefix",
+        "task-4-report-parity"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0,
+      "log": "parity.log"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/check-prerequisites.py",
+        "--evidence-prefix",
+        "task-4-report-final"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0,
+      "log": "final.log"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0,
+      "log": "diff-check.log"
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0,
+      "log": "working-tree-after.log"
+    }
+  ],
+  "errors": [],
+  "passed": true,
+  "isolatedTests": {
+    "approval": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "checks": [
+        {
+          "name": "current revision accepted",
+          "passed": true
+        },
+        {
+          "name": "absent approval rejected",
+          "passed": true
+        },
+        {
+          "name": "wrong state rejected",
+          "passed": true
+        },
+        {
+          "name": "missing state rejected",
+          "passed": true
+        },
+        {
+          "name": "duplicate state rejected",
+          "passed": true
+        },
+        {
+          "name": "missing reviewer rejected",
+          "passed": true
+        },
+        {
+          "name": "missing revision rejected",
+          "passed": true
+        },
+        {
+          "name": "unrelated digest cannot substitute revision",
+          "passed": true
+        },
+        {
+          "name": "stale manifest rejected",
+          "passed": true
+        },
+        {
+          "name": "stale review rejected",
+          "passed": true
+        }
+      ]
+    },
+    "comparator": {
+      "executed": 11,
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "parity": {
+    "report": "task-4-report-parity/parity.json",
+    "observations": "task-4-report-parity/observations.json",
+    "counts": {
+      "required": 53,
+      "executed": 53,
+      "passed": 53,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "sourcePreservation": "task-2-build/port-preservation.json (current identities rechecked)",
+  "inputIntegrity": {
+    "unchanged": true,
+    "identityManifestSha256": "fc3bfbc39708ef592ac85c8df7f393254e52e3d06bb30cc66605926fa2468adb",
+    "prestart": "evidence/task-4-report-prestart/input-identities.sha256",
+    "final": "evidence/task-4-report-final/input-identities.sha256",
+    "identityCount": 1692,
+    "basis": "Approved packet reconciles input membership, all hashes and immutable iteration-001 approval"
+  },
+  "finishedAt": "2026-10-14T23:13:38.415099+00:00",
+  "artifactManifestSha256": "eebe6e53baf67d065f1559a668dc87a4a43b47cf673099702d01e46ba15e1d0c",
+  "exitCode": 0
+}
