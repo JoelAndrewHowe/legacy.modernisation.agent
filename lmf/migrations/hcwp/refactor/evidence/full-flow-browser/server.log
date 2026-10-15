@@ -15,7 +15,7 @@ info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint '/ (/)'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/ - 200 - text/html;+charset=utf-8 424.5977ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/ - 200 - text/html;+charset=utf-8 399.7166ms
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
       Request starting HTTP/1.1 GET http://127.0.0.1:5189/ - - -
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
@@ -23,33 +23,27 @@ info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint '/ (/)'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/ - 200 - text/html;+charset=utf-8 40.6070ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/ - 200 - text/html;+charset=utf-8 36.9155ms
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
       Request starting HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw.min.css - - -
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
-      Request starting HTTP/1.1 GET http://127.0.0.1:5189/_framework/blazor.web.js - - -
-info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
-      Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
-info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
-      Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
-info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
-      Sending file. Request path: '_framework/blazor.web.js'. Physical path: '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/src/obj/Debug/net10.0/compressed/36lk1expgp-{0}-9hsif5t8mt-9hsif5t8mt.gz'
-info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
-      Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
-info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/_framework/blazor.web.js - 200 55645 text/javascript 24.8009ms
-info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
       Request starting HTTP/1.1 GET http://127.0.0.1:5189/interface.css - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
       Request starting HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw-logo.svg - - -
+info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
+      Sending file. Request path: 'interface.css'. Physical path: '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/src/obj/Debug/net10.0/compressed/43chtln2m2-{0}-smgc43kfon-smgc43kfon.gz'
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
       Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
-      Sending file. Request path: 'interface.css'. Physical path: '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/src/obj/Debug/net10.0/compressed/43chtln2m2-{0}-smgc43kfon-smgc43kfon.gz'
+      Sending file. Request path: 'vendor/nhsw/nhsw-logo.svg'. Physical path: '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/src/obj/Debug/net10.0/compressed/sjht0fyr8j-{0}-5f2oytw7jt-5f2oytw7jt.gz'
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/interface.css - 200 363 text/css 1.1037ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/interface.css - 200 363 text/css 19.2427ms
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
       Request starting HTTP/1.1 GET http://127.0.0.1:5189/language.js - - -
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
@@ -59,21 +53,27 @@ info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/language.js - 200 653 text/javascript 2.1066ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/language.js - 200 653 text/javascript 0.5045ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:5189/_framework/blazor.web.js - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw-logo.svg - 200 21184 image/svg+xml 6.8217ms
 info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
       Sending file. Request path: 'vendor/nhsw/nhsw.min.css'. Physical path: '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/src/obj/Debug/net10.0/compressed/zvfkyppp2v-{0}-xgn5n5cgbn-xgn5n5cgbn.gz'
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw.min.css - 200 70934 text/css 37.7044ms
-info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
-      Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw.min.css - 200 70934 text/css 34.6702ms
 info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
-      Sending file. Request path: 'vendor/nhsw/nhsw-logo.svg'. Physical path: '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/src/obj/Debug/net10.0/compressed/sjht0fyr8j-{0}-5f2oytw7jt-5f2oytw7jt.gz'
+      Sending file. Request path: '_framework/blazor.web.js'. Physical path: '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/src/obj/Debug/net10.0/compressed/36lk1expgp-{0}-9hsif5t8mt-9hsif5t8mt.gz'
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw-logo.svg - 200 21184 image/svg+xml 8.7400ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/_framework/blazor.web.js - 200 55645 text/javascript 14.0289ms
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
       Request starting HTTP/1.1 GET http://127.0.0.1:5189/_blazor/initializers - - -
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
@@ -81,7 +81,7 @@ info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/_blazor/initializers - 200 - application/json;+charset=utf-8 5.6631ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/_blazor/initializers - 200 - application/json;+charset=utf-8 5.7288ms
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
       Request starting HTTP/1.1 POST http://127.0.0.1:5189/_blazor/negotiate?negotiateVersion=1 - - 0
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
@@ -89,9 +89,9 @@ info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 POST http://127.0.0.1:5189/_blazor/negotiate?negotiateVersion=1 - 200 316 application/json 5.0970ms
+      Request finished HTTP/1.1 POST http://127.0.0.1:5189/_blazor/negotiate?negotiateVersion=1 - 200 316 application/json 5.2596ms
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
-      Request starting HTTP/1.1 GET http://127.0.0.1:5189/_blazor?id=EtwNG-n7LuOpdIbfxQcAfQ - - -
+      Request starting HTTP/1.1 GET http://127.0.0.1:5189/_blazor?id=cXhI3z28xGMDWXIe9-UBrA - - -
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
       Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
@@ -103,7 +103,7 @@ info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw.min.css - 200 70934 text/css 1.3412ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw.min.css - 200 70934 text/css 6.4416ms
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
       Request starting HTTP/1.1 GET http://127.0.0.1:5189/ - - -
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
@@ -111,19 +111,35 @@ info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint '/ (/)'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/ - 200 - text/html;+charset=utf-8 44.3054ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/ - 200 - text/html;+charset=utf-8 27.5759ms
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
-      Request starting HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw-logo.svg - - -
+      Request starting HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw.min.css - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:5189/_framework/blazor.web.js - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
       Request starting HTTP/1.1 GET http://127.0.0.1:5189/interface.css - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
+      Sending file. Request path: 'interface.css'. Physical path: '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/src/obj/Debug/net10.0/compressed/43chtln2m2-{0}-smgc43kfon-smgc43kfon.gz'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
+      Sending file. Request path: '_framework/blazor.web.js'. Physical path: '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/src/obj/Debug/net10.0/compressed/36lk1expgp-{0}-9hsif5t8mt-9hsif5t8mt.gz'
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/_framework/blazor.web.js - 200 55645 text/javascript 7.4525ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/interface.css - 200 363 text/css 0.6655ms
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
       Request starting HTTP/1.1 GET http://127.0.0.1:5189/language.js - - -
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
-      Request starting HTTP/1.1 GET http://127.0.0.1:5189/_framework/blazor.web.js - - -
-info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
-      Request starting HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw.min.css - - -
-info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
-      Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
+      Request starting HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw-logo.svg - - -
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
       Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
@@ -131,37 +147,21 @@ info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/language.js - 200 653 text/javascript 8.2796ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/language.js - 200 653 text/javascript 0.6482ms
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
       Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
-info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
-      Sending file. Request path: 'interface.css'. Physical path: '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/src/obj/Debug/net10.0/compressed/43chtln2m2-{0}-smgc43kfon-smgc43kfon.gz'
-info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
-      Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
-info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
-      Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
-info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/interface.css - 200 363 text/css 12.5974ms
 info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
       Sending file. Request path: 'vendor/nhsw/nhsw.min.css'. Physical path: '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/src/obj/Debug/net10.0/compressed/zvfkyppp2v-{0}-xgn5n5cgbn-xgn5n5cgbn.gz'
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw.min.css - 200 70934 text/css 10.6786ms
-info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
-      Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
-info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
-      Sending file. Request path: '_framework/blazor.web.js'. Physical path: '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/src/obj/Debug/net10.0/compressed/36lk1expgp-{0}-9hsif5t8mt-9hsif5t8mt.gz'
-info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
-      Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
-info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/_framework/blazor.web.js - 200 55645 text/javascript 16.7852ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw.min.css - 200 70934 text/css 11.0358ms
 info: Microsoft.AspNetCore.StaticAssets.StaticAssetsInvoker[2]
       Sending file. Request path: 'vendor/nhsw/nhsw-logo.svg'. Physical path: '/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/src/obj/Debug/net10.0/compressed/sjht0fyr8j-{0}-5f2oytw7jt-5f2oytw7jt.gz'
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw-logo.svg - 200 21184 image/svg+xml 21.5047ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/vendor/nhsw/nhsw-logo.svg - 200 21184 image/svg+xml 2.9712ms
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
       Request starting HTTP/1.1 GET http://127.0.0.1:5189/_blazor/initializers - - -
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
@@ -169,7 +169,7 @@ info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/_blazor/initializers - 200 - application/json;+charset=utf-8 0.7318ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/_blazor/initializers - 200 - application/json;+charset=utf-8 0.7164ms
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
       Request starting HTTP/1.1 POST http://127.0.0.1:5189/_blazor/negotiate?negotiateVersion=1 - - 0
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
@@ -177,18 +177,18 @@ info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 POST http://127.0.0.1:5189/_blazor/negotiate?negotiateVersion=1 - 200 316 application/json 0.7377ms
+      Request finished HTTP/1.1 POST http://127.0.0.1:5189/_blazor/negotiate?negotiateVersion=1 - 200 316 application/json 2.3881ms
 info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
-      Request starting HTTP/1.1 GET http://127.0.0.1:5189/_blazor?id=zrxv63-dj16SXNJRzj4JrQ - - -
+      Request starting HTTP/1.1 GET http://127.0.0.1:5189/_blazor?id=aXShiUVPBA_Y2RavdJuCww - - -
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
       Executing endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/_blazor?id=zrxv63-dj16SXNJRzj4JrQ - 101 - - 163.0910ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/_blazor?id=aXShiUVPBA_Y2RavdJuCww - 101 - - 151.3424ms
 info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
       Executed endpoint 'Microsoft.AspNetCore.Routing.RouteEndpoint'
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
-      Request finished HTTP/1.1 GET http://127.0.0.1:5189/_blazor?id=EtwNG-n7LuOpdIbfxQcAfQ - 101 - - 9830.1290ms
+      Request finished HTTP/1.1 GET http://127.0.0.1:5189/_blazor?id=cXhI3z28xGMDWXIe9-UBrA - 101 - - 10170.5694ms
 info: Microsoft.Hosting.Lifetime[0]
       Application is shutting down...

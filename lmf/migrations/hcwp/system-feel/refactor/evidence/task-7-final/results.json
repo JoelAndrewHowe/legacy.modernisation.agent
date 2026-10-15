@@ -1,0 +1,232 @@
+{
+  "startedAt": "2026-10-15T16:34:15.715713+00:00",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "working-tree-before.log"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/check-prerequisites.py"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "prerequisites-before.json"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/test-verifier.py"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "verifier-tests.json"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/verify-parity.py",
+        "--evidence-dir",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-7-final/reference-convert"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "reference-convert.log"
+    },
+    {
+      "argv": [
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/verify-task-5",
+        "--evidence-dir",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-7-final/regression"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "regression.log"
+    },
+    {
+      "argv": [
+        "refactor/verify-gate"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "legacy-gate.log"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/check-prerequisites.py"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "prerequisites-after.json"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "--info"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "dotnet-info.log"
+    },
+    {
+      "argv": [
+        "node",
+        "--version"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "node-version.log"
+    },
+    {
+      "argv": [
+        "npm",
+        "ls",
+        "--prefix",
+        "refactor/browser",
+        "--depth=0"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "browser-tool-versions.log"
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "working-tree-after.log"
+    }
+  ],
+  "checks": [
+    {
+      "name": "reference-convert",
+      "total": 53,
+      "passed": 53,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/browser/alert-renderer.json",
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/browser/results.json",
+      "total": 9,
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/language-unit.json",
+      "total": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/regression/browser/results.json",
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/regression/history.json",
+      "total": 16,
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/regression/regression/banner.json",
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/regression/regression/browser/alert-renderer.json",
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/regression/regression/browser/results.json",
+      "total": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/regression/regression/flow.json",
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/regression/regression/prerequisites-and-regression/parity/conversion/results.json",
+      "total": 40,
+      "passed": 40,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/regression/regression/prerequisites-and-regression/parity/refactor/results.json",
+      "total": 40,
+      "passed": 40,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/regression/regression/prerequisites-and-regression/parity/reference/results.json",
+      "total": 40,
+      "passed": 40,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/regression/regression/prerequisites-and-regression/persistence.json",
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/regression/regression/prerequisites-and-regression/queries.json",
+      "total": 43,
+      "passed": 43,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "regression/regression/regression/prerequisites-and-regression/shared-sf/results.json",
+      "total": 34,
+      "passed": 34,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "errors": [],
+  "suppliedValidatorFindings": [],
+  "passed": true,
+  "finishedAt": "2026-10-15T16:37:48.123849+00:00",
+  "total": 16,
+  "failed": 0,
+  "skipped": 0
+}
