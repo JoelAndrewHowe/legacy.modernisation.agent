@@ -46,6 +46,15 @@ Feature: Planning
       When the factory runs the "tetris" run
       Then the plan still has those three tasks
 
+    Example: A new plan cannot prematurely complete the run
+      Given no plan
+      And the planner claims its new plan is complete
+      When the factory runs the "tetris" run
+      Then the factory refuses
+      And it reports that a planner cannot complete a run while creating its plan
+      And the doer has not been called
+      And there are no new commits
+
     @real-agent
     Example: The plan comes from the seed
       Given every machine runs pi
