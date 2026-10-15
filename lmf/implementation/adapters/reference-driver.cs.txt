@@ -35,6 +35,40 @@ foreach (var scenario in scenarios)
                 observed["classifications"] = JsonSerializer.SerializeToNode(classifications);
                 break;
             }
+            case "deviation-sequence":
+            {
+                var kind = Enum.Parse<LookupsUtility.ChildMeasurementType>(input["kind"].GetValue<string>());
+                var ranges = kind == LookupsUtility.ChildMeasurementType.Height
+                    ? new List<RangeFixture> { new("Weight", 3, 6), new("Height", 40, 60) }
+                    : new List<RangeFixture> { new("Height", 40, 60), new("Weight", 3, 6) };
+                var originals = ranges.ToArray();
+                var rangeValues = ranges.Select(row => (row.MeasurementType, row.LowerBound, row.UpperBound)).ToArray();
+                var loads = 0;
+                var lazy = new Lazy<List<RangeFixture>>(() => { loads++; return ranges; });
+                var interaction = new ExtractedInteractions { KdpExaminationResultTo = result, deviationRanges = lazy };
+                var measurements = (result.Height, result.Weight, result.HeadCircumference);
+                var warningCounts = new List<int>();
+                var rangeLoads = new List<int>();
+                var rangeSame = new List<bool>();
+                var dtoSame = new List<bool>();
+                foreach (var value in input["values"].AsArray()) {
+                    interaction.CheckDeviations(value.GetValue<decimal>(), kind);
+                    warningCounts.Add(interaction.Messenger.Warnings.Count);
+                    rangeLoads.Add(loads);
+                    rangeSame.Add(ReferenceEquals(lazy, interaction.deviationRanges) && lazy.IsValueCreated &&
+                        ReferenceEquals(ranges, lazy.Value) && ranges.Count == originals.Length &&
+                        ranges.Select((row, i) => ReferenceEquals(row, originals[i]) &&
+                            (row.MeasurementType, row.LowerBound, row.UpperBound) == rangeValues[i]).All(same => same));
+                    dtoSame.Add(ReferenceEquals(result, interaction.KdpExaminationResultTo) &&
+                        (result.Height, result.Weight, result.HeadCircumference) == measurements);
+                }
+                warnings.AddRange(interaction.Messenger.Warnings);
+                observed["warningCounts"] = JsonSerializer.SerializeToNode(warningCounts);
+                observed["rangeLoads"] = JsonSerializer.SerializeToNode(rangeLoads);
+                observed["rangeSame"] = JsonSerializer.SerializeToNode(rangeSame);
+                observed["dtoSame"] = JsonSerializer.SerializeToNode(dtoSame);
+                break;
+            }
             case "dropdown-list":
             {
                 var listDropdown = new DropdownListFixture();

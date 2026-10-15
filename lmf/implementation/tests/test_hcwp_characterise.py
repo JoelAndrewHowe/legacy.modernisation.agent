@@ -667,6 +667,29 @@ class CharacteriseTests(unittest.TestCase):
             for name in ('bmi-outside', 'unrelated', 'range-property', 'empty-property', 'null-property', 'missing-height', 'missing-weight', 'bmi-inside'):
                 self.assertEqual(name in ('bmi-outside', 'bmi-inside'), rows['KD03-bmi-event-' + name]['rangeRead'])
                 self.assertEqual(['BmiOutsidePrescribedRangeMessage'] if name == 'bmi-outside' else [], rows['KD03-bmi-event-' + name]['warnings'])
+            sequence_ids = {'KD03-deviation-sequence-height', 'KD03-deviation-sequence-weight'}
+            for identifier in sequence_ids:
+                self.assertEqual({'errors': [], 'warnings': ['OutsideExpectedRangeMessage'] * 2,
+                    'warningCounts': [1, 1, 2], 'rangeLoads': [1, 1, 1],
+                    'rangeSame': [True] * 3, 'dtoSame': [True] * 3}, rows[identifier])
+            deviation_source = stage / 'reference/ExtractedInteractions.cs'
+            original_deviation = deviation_source.read_text()
+            predicate = 'SingleOrDefault(d => d.MeasurementType == measurementType.ToString())'
+            bounds = 'deviationRange.LowerBound < value && value < deviationRange.UpperBound'
+            for old, new, failures in [
+                (predicate, 'FirstOrDefault()', sequence_ids),
+                (bounds, 'deviationRange.LowerBound <= value && value <= deviationRange.UpperBound',
+                    sequence_ids | {'KD03-deviation-40', 'KD03-deviation-60'}),
+            ]:
+                try:
+                    self.assertEqual(1, original_deviation.count(old))
+                    deviation_source.write_text(original_deviation.replace(old, new))
+                    mutant = subprocess.run([sys.executable, str(stage / 'verify.py')], capture_output=True, text=True)
+                    self.assertEqual(1, mutant.returncode, mutant.stdout + mutant.stderr)
+                    mutant_report = json.loads((stage / 'reference-report.json').read_text())
+                    self.assertEqual(failures, {row['id'] for row in mutant_report['scenarios'] if not row['matches']})
+                finally:
+                    deviation_source.write_text(original_deviation)
             self.assertEqual([], rows['KD03-deviation-50']['warnings'])
             for boundary in (40, 60):
                 self.assertEqual(['OutsideExpectedRangeMessage'], rows[f'KD03-deviation-{boundary}']['warnings'])
