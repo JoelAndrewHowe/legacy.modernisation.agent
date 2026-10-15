@@ -1,0 +1,67 @@
+{
+  "startedAt": "2026-10-15T09:11:38.572797+00:00",
+  "validatorFindings": [],
+  "claim": "Parity with approved extracted-reference observations; not Windows/Oracle execution",
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/build.py",
+        "--evidence-prefix",
+        "refactor-task-1-parity"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "dotnet",
+        "--version"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "dotnet",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/src/bin/Release/net10.0/Converted.dll",
+        "--evidence-prefix",
+        "refactor-task-1-parity-runtime"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/check-prerequisites.py",
+        "--evidence-prefix",
+        "refactor-task-1-parity-final"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0
+    }
+  ],
+  "dotnetVersion": "10.0.401",
+  "counts": {
+    "required": 53,
+    "executed": 53,
+    "passed": 53,
+    "failed": 0,
+    "skipped": 0
+  },
+  "errors": [],
+  "passed": true,
+  "exitCode": 0,
+  "finishedAt": "2026-10-15T09:11:46.063352+00:00",
+  "files": {
+    "lmf/migrations/hcwp/system-feel/characterise/fixtures.json": "c2e2775352fdce33df2ad952c64dca6c448cd27025b856b36152df754f91c442",
+    "lmf/migrations/hcwp/system-feel/characterise/scenarios.json": "9fb342825d1759f4d75229bb55cbb605381f8aa8049a9263206f6409482afbf2",
+    "lmf/migrations/hcwp/system-feel/characterise/task-6-final-reference-observations.json": "4a6cd951c3bd8e721fa8f94b73578f6cc072d0848a704443596e034016541d61",
+    "lmf/migrations/hcwp/system-feel/characterise/reference/run.py": "f5a72dcb837779b806b525a612c4bf6300871f34da81d0afc7e89169006589f5",
+    "lmf/migrations/hcwp/system-feel/convert/verify": "456ebdd0a25e5f8451c1cdc9eada20f7d7360dea682702d1ac9ff29dbedcc214",
+    "lmf/migrations/hcwp/system-feel/convert/src/Compatibility.cs": "82e304836992f0e48a8a3af533b5dfaf830026a8d6e07c7d294105d053198ed2",
+    "lmf/migrations/hcwp/system-feel/convert/src/ObservationAdapter.cs": "a90e9a5ddeca8272376d2d9a2fa5049ab0d3bae8c19ed1f79b9a4401e1dd42e2",
+    "lmf/migrations/hcwp/system-feel/convert/src/PatientSummaryAndResults.cs": "1ebc3f92aabf5650cd69d9118232ed1414dd5cff40336f383e4e234f75b13890"
+  }
+}
