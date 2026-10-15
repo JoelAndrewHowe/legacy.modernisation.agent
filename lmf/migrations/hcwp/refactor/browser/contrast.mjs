@@ -39,7 +39,9 @@ export async function measureContrast(page, report, state, selector, focus = fal
       return over(rgba(style.backgroundColor), background(el.parentElement));
     };
     return elements.filter(el => el.getClientRects().length).map(el => {
-      const s = getComputedStyle(el), bg = background(el), outside = background(el.parentElement);
+      const visual = focused && el.matches('.nhsw-site-header__nav-link') ? el.querySelector('span') : el;
+      const s = getComputedStyle(visual), bg = background(visual), outside = background(el.parentElement);
+      const after = getComputedStyle(visual, '::after');
       return {
         element: el.id ? `#${el.id}` : `${el.tagName.toLowerCase()}.${el.className}`,
         text: (el instanceof HTMLInputElement ? el.value : el.textContent).trim(),
@@ -49,6 +51,8 @@ export async function measureContrast(page, report, state, selector, focus = fal
         selectIcon: el.matches('.nhsw-select') && s.backgroundImage !== 'none',
         border: over(rgba(s.borderTopColor), bg), borderWidth: s.borderTopWidth,
         focused, outline: s.outline, shadow: s.boxShadow,
+        pseudoIndicator: after.content !== 'none' && after.content !== 'normal' && parseFloat(after.height) >= 3
+          ? over(rgba(after.backgroundColor), outside) : null,
         // Current NHSW uses one solid shadow for the select/input/button focus.
         shadowColour: s.boxShadow === 'none' ? null : over(rgba(s.boxShadow.match(/rgba?\([^)]+\)/)[0]), outside),
         outlineColour: over(rgba(s.outlineColor), outside)
@@ -67,6 +71,17 @@ export async function measureContrast(page, report, state, selector, focus = fal
     const large = s.fontSize >= 24 || (s.fontSize >= 18.6666666667 && Number(s.fontWeight) >= 700);
     add(s, 'text', s.foreground, s.background, large ? 3 : 4.5, '1.4.3');
     if (s.selectIcon) add(s, 'reviewed rendered select SVG arrow / background', [33, 43, 50], s.background, 3, '1.4.11');
+    if (focus && !s.control) {
+      assert.equal(await page.locator(selector).evaluate(el => el === document.activeElement), true);
+      const indicator = s.shadowColour ?? s.pseudoIndicator;
+      assert.ok(indicator, 'NHSW link keyboard focus needs its dark underline: ' + JSON.stringify(s));
+      // Reverse header links use the yellow fill against the dark header; the
+      // dark underline qualifies against the focused yellow text background.
+      add(s, 'link focus underline / focused background', indicator, s.background, 3, '1.4.11');
+      const outsideRatio = ratio(indicator, s.outside);
+      add(s, outsideRatio >= 3 ? 'link underline / surroundings' : 'link focused fill / surroundings',
+        outsideRatio >= 3 ? indicator : s.background, s.outside, 3, '1.4.11');
+    }
     if (!s.control) continue;
     if (!focus) {
       // Filled primary button is identified by its fill; outlined controls by border.

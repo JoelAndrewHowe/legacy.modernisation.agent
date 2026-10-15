@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+"""Task-3 shell/routes checks, not the final bilingual slice gate."""
+import argparse
+from datetime import datetime, timezone
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+HERE = Path(__file__).resolve().parent
+TARGET = HERE.parents[1]
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--evidence-dir', required=True)
+args = parser.parse_args()
+evidence = Path(args.evidence_dir).resolve()
+if not evidence.is_relative_to(HERE / 'evidence'):
+    parser.error('Evidence must be under system-feel/refactor/evidence')
+evidence.mkdir(parents=True, exist_ok=False)
+report = dict(startedAt=datetime.now(timezone.utc).isoformat(), commands=[], errors=[], passed=False,
+              scope='Task 3 only; filters, complete grouped details, fixture volume and bilingual/final checks remain later tasks')
+def sha(p):
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+def run(command, log):
+    p = subprocess.run(command, cwd=TARGET, capture_output=True, text=True)
+    (evidence / log).write_text(p.stdout + p.stderr)
+    report['commands'].append(dict(argv=command, exitCode=p.returncode, log=log))
+    if p.returncode:
+        raise RuntimeError('Command failed: ' + ' '.join(command))
+def counts(p, minimum):
+    data = json.loads(p.read_text())
+    if not (data['passed'] >= minimum and data['total'] == data['passed'] and data['failed'] == 0 and data['skipped'] == 0):
+        raise ValueError('Empty/failed/skipped evidence: ' + str(p))
+    return {k: data[k] for k in ('total', 'passed', 'failed', 'skipped')}
+try:
+    run([str(HERE / 'verify-task-2'), '--evidence-dir', str(evidence / 'prerequisites-and-regression')], 'prerequisites-and-regression.log')
+    # Only the approved target-only Welsh-health-board fixture adaptation may differ.
+    # Never rewrite Characterise inputs or change the converted organisation lookup.
+    approved = json.loads((HERE.parent / 'characterise/fixtures.json').read_text())
+    demo = json.loads((TARGET / 'refactor/src/patient-summary-fixtures.json').read_text())
+    # Approved fixture keys are verified explicitly below, not inferred from display strings.
+    selected = approved['patients']['selected']
+    alert = approved['patients']['alert']
+    assert demo['selected'] == selected and demo['alert'] == alert
+    expected_locations = json.loads(json.dumps(approved['authorityLocations']))
+    board = 'Cardiff and Vale University Health Board'
+    authorities = [location for location in expected_locations
+                   if location['Code'] == 'SYNORG1' and location['LocationTypes']['Authority'] == 'Y']
+    assert len(authorities) == 1
+    authorities[0]['Name'] = board
+    assert demo['authorityLocations'] == expected_locations
+    report['patientBannerMapping'] = dict(
+        decision='system-feel/approvals/characterise-approved.md decision 1',
+        label='Health board', authorityCode='SYNORG1', authorityName=board,
+        adaptation='Target-only authority name; synthetic patient/board association; all other graph values unchanged')
+    for name, option, fixture in [('banner', '--shell', 'patient-summary-fixtures.json'), ('flow', '--flow', 'demo-fixtures.json')]:
+        run(['dotnet', 'run', '--project', 'refactor/checks', '--no-build', '--', option, 'refactor/src/' + fixture], name + '.json')
+        report[name] = counts(evidence / (name + '.json'), 4)
+    run(['node', 'refactor/browser/shell.mjs', str(evidence / 'browser')], 'browser.log')
+    report['browser'] = counts(evidence / 'browser/results.json', 7)
+    browser = json.loads((evidence / 'browser/results.json').read_text())
+    measurements = browser['contrast']['measurements']
+    assert measurements and all(row.get('passed') is True for row in measurements if row['threshold'] is not None)
+    assert browser['keyboardFocus'] and all(row['focusVisible'] and row['visible'] for row in browser['keyboardFocus'])
+    assert {row['width'] for row in browser['alert']['layouts']} == {320, 1280}
+    run(['dotnet', '--info'], 'dotnet-info.log')
+    run(['node', '--version'], 'node-version.log')
+    run(['git', 'diff', '--check', '--', 'refactor', 'system-feel/refactor'], 'diff-check.log')
+    report['passed'] = True
+except Exception as error:
+    report['errors'].append(str(error))
+finally:
+    files = [p for folder in ('refactor/src', 'refactor/checks', 'refactor/browser')
+             for p in (TARGET / folder).rglob('*') if p.is_file()
+             and not any(part in ('bin', 'obj', 'node_modules') for part in p.relative_to(TARGET).parts)]
+    files += [Path(__file__).resolve()]
+    (evidence / 'source-identities.sha256').write_text(''.join(f'{sha(p)}  {p.relative_to(TARGET)}\n' for p in sorted(files)))
+    report['finishedAt'] = datetime.now(timezone.utc).isoformat()
+    (evidence / 'results.json').write_text(json.dumps(report, indent=2) + '\n')
+    print(json.dumps(report))
+raise SystemExit(0 if report['passed'] else 1)

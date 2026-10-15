@@ -15,6 +15,9 @@ using (store.Open()) { }
 builder.Services.AddSingleton(store);
 builder.Services.AddSingleton<Kd03Recording>();
 builder.Services.AddSingleton<Kd03ResultsQuery>();
+builder.Services.AddSingleton<IPatientSummaryRepository>(new DemoPatientSummaryRepository(
+    File.ReadAllText(Path.Combine(builder.Environment.ContentRootPath, "patient-summary-fixtures.json"))));
+builder.Services.AddSingleton<PatientSummaryQuery>();
 builder.Services.AddSingleton(new LookupDouble(fixtures));
 builder.Services.AddScoped<RecordingPageModel>();
 var app = builder.Build();

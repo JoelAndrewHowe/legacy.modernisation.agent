@@ -47,6 +47,10 @@ The matching `dist/nhsw-behaviours.js` error-summary behaviour was inspected.
   enabled for the documented local `dotnet run` demo even with its default
   Production environment. This is not production deployment verification.
 
+## Current task-3 English shell evidence
+
+The historical preview/full-flow measurements below apply to the previous interface, not the new shared shell. Current revision-bound English shell/routes evidence is in `../system-feel/refactor/evidence/task-3-accessibility-passing/`: source identities, Chromium 7/7 groups, 986 contrast observations, 42 keyboard-focused links, per-link screenshots and alert-bearing component-harness accessibility snapshots at 320/1280px. See `../system-feel/refactor/task-3.md` for the validator findings, focus repairs, exact command and test-only harness boundary. This is not the later bilingual/filter gate or a full WCAG/assistive-technology audit.
+
 ## Executed evidence
 
 `verify-nhsw` checks approval prerequisites, asset checksums, builds, launches a

@@ -1,0 +1,14 @@
+{
+  "startedAt": "2026-10-15T14:05:43.364Z",
+  "checks": [],
+  "errors": [
+    "page.waitForFunction: Timeout 30000ms exceeded.\n    at /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/shell.mjs:74:16\n    at async check (/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/shell.mjs:19:3)\n    at async file:///workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/shell.mjs:66:3"
+  ],
+  "failed": 1,
+  "skipped": 0,
+  "scope": "Task 3 English routed shell, record/save/read-back and narrow layout smoke; not final slice gate",
+  "browser": "156.0.8078.4",
+  "finishedAt": "2026-10-15T14:06:17.113Z",
+  "passed": 0,
+  "total": 1
+}

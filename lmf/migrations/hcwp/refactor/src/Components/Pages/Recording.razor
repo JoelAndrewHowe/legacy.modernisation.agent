@@ -1,10 +1,10 @@
 @page "/"
+@page "/record"
 @inject RecordingPageModel Model
 <PageTitle>Synthetic KD03 recording</PageTitle>
-<main class="nhsw-main-wrapper" id="maincontent">
-<div class="nhsw-width-container">
     <h1 class="nhsw-h1">6–8-week contact (KD03)</h1>
-    <p>Synthetic patient 101, born 1 January 2025. KD03 only.</p>
+    <p>Record a 6–8-week contact for the selected synthetic patient. KD03 only.</p>
+    <p><a class="nhsw-link" href="/results">Back to HCWP results</a></p>
     <p>Fixed demonstration clock: 15 March 2025. Temporary in-memory data; not clinical policy.</p>
     <p>Fields are optional individually. General assessment alone does not count as a result. Warnings use resource identities; original localised prose is unavailable.</p>
     @if (Model.Error != null)
@@ -14,7 +14,7 @@
             <ul class="nhsw-list nhsw-error-summary__list">
             @foreach (var error in Model.Error.Split('\n', StringSplitOptions.RemoveEmptyEntries))
             {
-                <li><a href="@("#" + RecordingFields.ErrorTarget(error))" @onclick="() => FocusField(error)" @onclick:preventDefault>@error</a></li>
+                <li><a class="nhsw-link" href="@("#" + RecordingFields.ErrorTarget(error))" @onclick="() => FocusField(error)" @onclick:preventDefault>@error</a></li>
             }
             </ul>
         </section>
@@ -73,26 +73,22 @@
             <button class="nhsw-button nhsw-button--primary nhsw-button--inline" type="submit">Save KD03 result</button>
         </fieldset>
     </form>
-    @if (Model.Saved) { <p role="status">Result saved and read back from persistence.</p> }
+    @if (Model.Saved)
+    {
+        <p role="status">Result saved and read back from persistence.</p>
+        <p><a class="nhsw-link" href="@($"/results/{Model.Draft.PkChildExaminationId}")">View saved result details</a> or <a class="nhsw-link" href="/results">return to HCWP results</a>.</p>
+    }
     <button class="nhsw-button nhsw-button--secondary nhsw-button--inline" type="button" @onclick="Model.NewResult">Start new result</button>
-    <h2 class="nhsw-h2">Saved results for patient 101</h2>
+    <section id="saved-results" aria-labelledby="saved-results-title">
+    <h2 class="nhsw-h2" id="saved-results-title">Saved results for selected patient</h2>
     <button class="nhsw-button nhsw-button--secondary nhsw-button--inline" type="button" @onclick="Model.Reload">Reload from persistence</button>
     @if (Model.Results.Count == 0) { <p>No saved KD03 results.</p> }
     @foreach (var result in Model.Results)
     {
-        <dl class="nhsw-summary-list nhsw-summary-list--no-border">
-            @foreach (var property in new[] { "PkChildExaminationId", "ClientId", "ExaminationCode", "OriginalExamCode", "ResultEnteredDate", "ChildMeasurementId", "IsRepeat", "LocationName", "ExaminerName", "ExaminerType" }.Concat(RecordingFields.All.Select(f => f.Property)))
-            {
-                <div class="nhsw-summary-list__row">
-                    <dt class="nhsw-summary-list__key">@(property switch { "PkChildExaminationId" => "Result ID", "ClientId" => "Patient ID", "ExaminationDate" => "Date", "IsRepeat" => "Repeat", _ => property })</dt>
-                    <dd class="nhsw-summary-list__value">@RecordingFields.Value(result, property)</dd>
-                </div>
-            }
-        </dl>
+        <ResultReadback Result="result" />
     }
+    </section>
     <p>Other contacts, search, editing, appointments and recalls are not supported. Ordinary save does not withdraw patient consent. Original Windows/Oracle and PostgreSQL are unverified.</p>
-</div>
-</main>
 @code {
     private readonly Dictionary<string, ElementReference> fieldElements = [];
     private async Task FocusField(string error) => await fieldElements[RecordingFields.ErrorTarget(error)].FocusAsync();

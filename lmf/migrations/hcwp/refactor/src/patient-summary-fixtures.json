@@ -1,0 +1,108 @@
+{
+  "provenance": "Target-only adaptation of system-feel/characterise/fixtures.json under approved decision 1: the SYNORG1 authority name is Cardiff and Vale University Health Board, a Welsh health board. All patient identities, addresses, schools, alerts and the association with this board are synthetic, not real records or an asserted service relationship. The board name is a public organisation name, not an invented organisation. All other approved graph values and the nonauthority sentinel are unchanged; Characterise inputs and Convert lookup/formatting remain immutable.",
+  "selected": {
+    "ClientId": 101,
+    "Title": "Mx",
+    "Surname": "Synthetic",
+    "Forename": "Example One",
+    "NhsNumber": "SYN-NHS-101",
+    "DateOfBirth": "2025-01-01T00:00:00",
+    "DateOfDeath": null,
+    "Sex": 1,
+    "CurrentStatus": "SYN_ACTIVE",
+    "CurrentStatusDate": null,
+    "Address1": "1 Synthetic Lane",
+    "Address2": "Invented District",
+    "Address3": "",
+    "Address4": null,
+    "Address5": "-",
+    "Postcode": "SYN POST 1",
+    "ChildAlertCodes": [],
+    "ChildCentres": [
+      {
+        "ChildLocationType": "SCHOOL",
+        "ChildLocationCode": "SYNSCH1",
+        "ChildLocations": {
+          "Code": "SYNSCH1",
+          "Name": "Synthetic School One",
+          "Organisation": null
+        }
+      },
+      {
+        "ChildLocationType": "HEALTH_AUTHORITY",
+        "ChildLocationCode": "SYNAREA1",
+        "ChildLocations": {
+          "Code": "SYNAREA1",
+          "Name": "Synthetic Area One",
+          "Organisation": "SYNORG1"
+        }
+      }
+    ]
+  },
+  "alert": {
+    "ClientId": 101,
+    "Title": "Mx",
+    "Surname": "Synthetic",
+    "Forename": "Example One",
+    "NhsNumber": "SYN-NHS-101",
+    "DateOfBirth": "2025-01-01T00:00:00",
+    "DateOfDeath": null,
+    "Sex": 1,
+    "CurrentStatus": "SYN_ACTIVE",
+    "CurrentStatusDate": null,
+    "Address1": "1 Synthetic Lane",
+    "Address2": "Invented District",
+    "Address3": "",
+    "Address4": null,
+    "Address5": "-",
+    "Postcode": "SYN POST 1",
+    "ChildAlertCodes": [
+      {
+        "AlertCodes": {
+          "AlertText": "SYNTHETIC CHILD ALERT \u2014 demonstration only"
+        }
+      },
+      {
+        "AlertCodes": {
+          "AlertText": "SYNTHETIC SECOND ALERT \u2014 no clinical meaning"
+        }
+      }
+    ],
+    "ChildCentres": [
+      {
+        "ChildLocationType": "SCHOOL",
+        "ChildLocationCode": "SYNSCH1",
+        "ChildLocations": {
+          "Code": "SYNSCH1",
+          "Name": "Synthetic School One",
+          "Organisation": null
+        }
+      },
+      {
+        "ChildLocationType": "HEALTH_AUTHORITY",
+        "ChildLocationCode": "SYNAREA1",
+        "ChildLocations": {
+          "Code": "SYNAREA1",
+          "Name": "Synthetic Area One",
+          "Organisation": "SYNORG1"
+        }
+      }
+    ]
+  },
+  "authorityLocations": [
+    {
+      "Code": "SYNORG1",
+      "Name": "Cardiff and Vale University Health Board",
+      "LocationTypes": {
+        "Authority": "Y"
+      }
+    },
+    {
+      "Code": "SYNORG1",
+      "Name": "Synthetic nonauthority sentinel",
+      "LocationTypes": {
+        "Authority": "N"
+      }
+    }
+  ]
+}

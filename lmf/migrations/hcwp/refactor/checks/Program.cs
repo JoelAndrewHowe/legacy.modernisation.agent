@@ -2,6 +2,8 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
+if (args.Length == 2 && args[0] == "--shell") return await ShellChecks.Run(args[1]);
+if (args.Length == 3 && args[0] == "--shell-browser-fixture") return await ShellChecks.Run(args[1], args[2]);
 if (args.Length == 1 && args[0] == "--system-feel-observe") return QueryChecks.ObserveApprovedSystemFeel();
 if (args.Length == 2 && args[0] == "--queries") return QueryChecks.Run(args[1]);
 if (args.Length == 2 && args[0] == "--flow") return FlowChecks.Run(args[1]);

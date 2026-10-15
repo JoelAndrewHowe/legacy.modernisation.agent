@@ -1,0 +1,41 @@
+@inherits LayoutComponentBase
+@inject Hcwp.Application.PatientSummaryQuery Patients
+@inject NavigationManager Navigation
+<a class="nhsw-skip-link" href="@SkipTarget" @onclick="FocusMain" @onclick:preventDefault>Skip to main content</a>
+<header class="nhsw-site-header">
+    <div class="nhsw-site-header__container"><div class="nhsw-site-header__top">
+        <div class="nhsw-site-header__brand">
+            <span class="nhsw-site-header__logo"><img src="vendor/nhsw/nhsw-logo.svg" alt="Digital Health and Care Wales / NHS Wales" /></span>
+            <span class="nhsw-site-header__title">Healthy Child Wales Programme</span>
+        </div>
+    </div></div>
+</header>
+<nav class="nhsw-site-header__nav nhsw-site-header__nav--overflow" aria-label="Primary navigation">
+    <div class="nhsw-site-header__nav-container"><ul class="nhsw-site-header__nav-list">
+        <li><NavLink class="nhsw-site-header__nav-link" ActiveClass="nhsw-site-header__nav-link--current" href="/patient-summary"><span>Patient summary</span></NavLink></li>
+        <li><a class="@(IsSummary ? "nhsw-site-header__nav-link" : "nhsw-site-header__nav-link nhsw-site-header__nav-link--current")" aria-current="@(IsSummary ? null : "page")" href="/results"><span>HCWP results</span></a></li>
+    </ul></div>
+</nav>
+<main class="nhsw-main-wrapper" id="maincontent" tabindex="-1" @ref="mainContent">
+    <div class="nhsw-width-container">
+        <div class="nhsw-warning-callout" aria-label="Demonstration notice">
+            <h2 class="nhsw-warning-callout__heading">
+                <span class="nhsw-warning-callout__icon" aria-hidden="true">!</span>
+                <span class="nhsw-warning-callout__heading-text"><span class="nhsw-visually-hidden">Important: </span>Demonstration — synthetic patient data</span>
+            </h2>
+            <div class="nhsw-warning-callout__content"><p class="nhsw-body">Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025.</p></div>
+        </div>
+        <PatientBanner Patient="@Patients.Read(RecordingPageModel.SelectedPatient)" />
+        @Body
+    </div>
+</main>
+<footer class="nhsw-site-footer"><div class="nhsw-site-footer__container">
+    <p class="nhsw-body-s nhsw-site-footer__org">Healthy Child Wales Programme — local synthetic demonstration</p>
+    <p class="nhsw-body-s nhsw-site-footer__version">Temporary in-memory storage. Original Windows/Oracle and PostgreSQL unverified.</p>
+</div></footer>
+@code {
+    string SkipTarget => new Uri(Navigation.Uri).PathAndQuery + "#maincontent";
+    ElementReference mainContent;
+    async Task FocusMain() => await mainContent.FocusAsync();
+    bool IsSummary => new Uri(Navigation.Uri).AbsolutePath == "/patient-summary";
+}

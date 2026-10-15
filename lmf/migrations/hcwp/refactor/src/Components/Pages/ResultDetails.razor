@@ -1,0 +1,18 @@
+@page "/results/{ResultId:long}"
+@inject Hcwp.Application.Kd03ResultsQuery Query
+<PageTitle>Result details</PageTitle>
+<h1 class="nhsw-h1">Result details</h1>
+<p><a class="nhsw-link" href="/results">Back to HCWP results</a></p>
+@if (result == null)
+{
+    <p role="status">Result not found for the selected patient.</p>
+}
+else
+{
+    <ResultReadback Result="result" />
+}
+@code {
+    [Parameter] public long ResultId { get; set; }
+    Orvex.TransferObjects.KdpExaminationResultTO result;
+    protected override void OnParametersSet() => result = Query.Detail(RecordingPageModel.SelectedPatient, ResultId);
+}

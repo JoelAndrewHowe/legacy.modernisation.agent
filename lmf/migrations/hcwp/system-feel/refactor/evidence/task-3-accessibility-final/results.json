@@ -1,0 +1,20 @@
+{
+  "startedAt": "2026-10-15T14:24:59.357397+00:00",
+  "commands": [
+    {
+      "argv": [
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/verify-task-2",
+        "--evidence-dir",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-3-accessibility-final/prerequisites-and-regression"
+      ],
+      "exitCode": 1,
+      "log": "prerequisites-and-regression.log"
+    }
+  ],
+  "errors": [
+    "Command failed: /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/verify-task-2 --evidence-dir /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-3-accessibility-final/prerequisites-and-regression"
+  ],
+  "passed": false,
+  "scope": "Task 3 only; filters, complete grouped details, fixture volume and bilingual/final checks remain later tasks",
+  "finishedAt": "2026-10-15T14:25:03.223158+00:00"
+}

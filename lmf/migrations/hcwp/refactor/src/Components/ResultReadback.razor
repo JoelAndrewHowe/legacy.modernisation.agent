@@ -1,0 +1,16 @@
+<dl class="nhsw-summary-list nhsw-summary-list--no-border">
+    <div class="nhsw-summary-list__row"><dt class="nhsw-summary-list__key">Contact type</dt><dd class="nhsw-summary-list__value">6–8-week contact</dd></div>
+    <div class="nhsw-summary-list__row"><dt class="nhsw-summary-list__key">Examination state</dt><dd class="nhsw-summary-list__value">@(Result.ReasonNotExamined == null ? "Recorded" : "Not examined")</dd></div>
+    <div class="nhsw-summary-list__row"><dt class="nhsw-summary-list__key">Initial or repeat</dt><dd class="nhsw-summary-list__value">@(Result.IsRepeat ? "Repeat" : "Initial")</dd></div>
+    <div class="nhsw-summary-list__row"><dt class="nhsw-summary-list__key">Recorded date</dt><dd class="nhsw-summary-list__value">@ResultDisplay.Date(Hcwp.Application.Kd03ResultsQuery.RecordedDate(Result))</dd></div>
+    @foreach (var field in RecordingFields.All)
+    {
+        <div class="nhsw-summary-list__row">
+            <dt class="nhsw-summary-list__key">@ResultDisplay.Label(field)</dt>
+            <dd class="nhsw-summary-list__value">@ResultDisplay.Field(Result, field)</dd>
+        </div>
+    }
+</dl>
+@code {
+    [Parameter, EditorRequired] public Orvex.TransferObjects.KdpExaminationResultTO Result { get; set; }
+}

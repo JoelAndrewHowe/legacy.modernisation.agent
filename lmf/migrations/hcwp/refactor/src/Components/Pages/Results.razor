@@ -1,0 +1,31 @@
+@page "/results"
+@inject Hcwp.Application.Kd03ResultsQuery Query
+<PageTitle>HCWP results</PageTitle>
+<h1 class="nhsw-h1">HCWP results</h1>
+<p><a class="nhsw-button nhsw-button--primary nhsw-button--inline" href="/record">Record result</a></p>
+@if (results.Total == 0)
+{
+    <p>No saved KD03 results for the selected patient.</p>
+}
+else
+{
+    <p>Showing @results.First–@results.Last of @results.Total results.</p>
+    @foreach (var result in results.Rows)
+    {
+        <article aria-label="@($"6–8-week contact on {ResultDisplay.Date(result.ExaminationDate)}")">
+            <h2 class="nhsw-h3">@ResultDisplay.Date(result.ExaminationDate) — 6–8-week contact</h2>
+            <dl class="nhsw-summary-list nhsw-summary-list--no-border">
+                <div class="nhsw-summary-list__row"><dt class="nhsw-summary-list__key">Examination state</dt><dd class="nhsw-summary-list__value">@(result.ReasonNotExamined == null ? "Recorded" : "Not examined")</dd></div>
+                <div class="nhsw-summary-list__row"><dt class="nhsw-summary-list__key">Location</dt><dd class="nhsw-summary-list__value">@PatientBannerValues.Present(result.LocationName)</dd></div>
+                <div class="nhsw-summary-list__row"><dt class="nhsw-summary-list__key">Examiner</dt><dd class="nhsw-summary-list__value">@PatientBannerValues.Present(result.ExaminerName)</dd></div>
+                <div class="nhsw-summary-list__row"><dt class="nhsw-summary-list__key">Initial or repeat</dt><dd class="nhsw-summary-list__value">@(result.IsRepeat ? "Repeat" : "Initial")</dd></div>
+                <div class="nhsw-summary-list__row"><dt class="nhsw-summary-list__key">Recorded date</dt><dd class="nhsw-summary-list__value">@ResultDisplay.Date(Hcwp.Application.Kd03ResultsQuery.RecordedDate(result))</dd></div>
+            </dl>
+            <p><a class="nhsw-link" href="@($"/results/{result.PkChildExaminationId}")">View details<span class="nhsw-visually-hidden"> for 6–8-week contact on @ResultDisplay.Date(result.ExaminationDate)</span></a></p>
+        </article>
+    }
+}
+@code {
+    Hcwp.Application.ResultsPage results;
+    protected override void OnParametersSet() => results = Query.Search(RecordingPageModel.SelectedPatient, new());
+}

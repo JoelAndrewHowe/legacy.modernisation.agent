@@ -1,0 +1,76 @@
+{
+  "startedAt": "2026-10-15T14:13:59.962176+00:00",
+  "commands": [
+    {
+      "argv": [
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/verify-task-2",
+        "--evidence-dir",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-3-health-board/prerequisites-and-regression"
+      ],
+      "exitCode": 0,
+      "log": "prerequisites-and-regression.log"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "run",
+        "--project",
+        "refactor/checks",
+        "--no-build",
+        "--",
+        "--shell",
+        "refactor/src/patient-summary-fixtures.json"
+      ],
+      "exitCode": 0,
+      "log": "banner.json"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "run",
+        "--project",
+        "refactor/checks",
+        "--no-build",
+        "--",
+        "--flow",
+        "refactor/src/demo-fixtures.json"
+      ],
+      "exitCode": 0,
+      "log": "flow.json"
+    },
+    {
+      "argv": [
+        "node",
+        "refactor/browser/shell.mjs",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-3-health-board/browser"
+      ],
+      "exitCode": 1,
+      "log": "browser.log"
+    }
+  ],
+  "errors": [
+    "Command failed: node refactor/browser/shell.mjs /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-3-health-board/browser"
+  ],
+  "passed": false,
+  "scope": "Task 3 only; filters, complete grouped details, fixture volume and bilingual/final checks remain later tasks",
+  "patientBannerMapping": {
+    "decision": "system-feel/approvals/characterise-approved.md decision 1",
+    "label": "Health board",
+    "authorityCode": "SYNORG1",
+    "authorityName": "Cardiff and Vale University Health Board",
+    "adaptation": "Target-only authority name; synthetic patient/board association; all other graph values unchanged"
+  },
+  "banner": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "flow": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "finishedAt": "2026-10-15T14:14:36.006635+00:00"
+}
