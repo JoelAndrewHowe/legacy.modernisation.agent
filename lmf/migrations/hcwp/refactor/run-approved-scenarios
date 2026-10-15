@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Fresh three-way parity; all generated files remain in Refactor."""
+import argparse
 import datetime
 import hashlib
 import json
@@ -9,7 +10,11 @@ import subprocess
 
 here = Path(__file__).resolve().parent
 root = here.parent
-evidence = here / 'evidence/parity'
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--evidence-dir', type=Path, default=here / 'evidence/parity')
+args = parser.parse_args()
+evidence = args.evidence_dir.resolve()
+report_path = here / 'parity-report.md' if evidence == (here / 'evidence/parity').resolve() else evidence / 'parity-report.md'
 evidence.mkdir(parents=True, exist_ok=True)
 started = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
@@ -44,6 +49,11 @@ implementations = {'reference': manifest(root / 'characterise/reference'),
                    'conversion': manifest(root / 'convert/src'),
                    'refactor': {**{'src/' + k: v for k, v in manifest(here / 'src').items()},
                                 **{'checks/' + k: v for k, v in manifest(here / 'checks').items()}}}
+# Bind linked compile inputs as well as the local application/checks sources.
+import xml.etree.ElementTree as ET
+for item in ET.parse(here / 'src/Hcwp.csproj').findall('.//Compile'):
+    linked = (here / 'src' / item.attrib['Include']).resolve()
+    implementations['refactor']['linked/' + str(linked.relative_to(root))] = sha(linked)
 # Neither approved upstream runner is changed. In particular, the reference's
 # fixed evidence destination is accommodated with a byte-identical private copy.
 stage = here / '.parity-run'
@@ -230,5 +240,8 @@ security/deployment are excluded. No full save-service or clinical certification
 is claimed. Remaining configured style, persistence and browser checks are
 separate unfinished plan tasks; this report does not declare Refactor complete.
 '''
-(here / 'parity-report.md').write_text(text)
+for key, digest in implementations['refactor'].items():
+    if key.startswith('linked/'):
+        assert sha(root / key[7:]) == digest, f'Linked source changed: {key}'
+report_path.write_text(text)
 print(json.dumps(summary))

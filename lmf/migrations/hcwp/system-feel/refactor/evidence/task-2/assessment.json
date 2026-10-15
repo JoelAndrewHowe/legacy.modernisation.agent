@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-15T09:30:42.213027+00:00",
+  "validatorFindings": [],
+  "taskMarkedDone": false,
+  "status": "blocked-post-change-input-gate",
+  "dotnetVersion": "10.0.401",
+  "checks": {
+    "query": 36,
+    "persistence": 4,
+    "approvedRegression": 40,
+    "prestartConvertParity": 53,
+    "failedOrSkippedApplicationTests": 0,
+    "postChangePrerequisitesPassed": false
+  },
+  "files": {
+    "refactor/src/Application/PatientSummary.cs": "21477f42262fb25118708033f17c0911708f8b91b249b4aede061ae91d0147f9",
+    "refactor/src/Application/Kd03ResultsQuery.cs": "d8a57fae1df340603e7f528f260ea99d7b02fd198f9c9a84e4f322615ea6c44a",
+    "refactor/src/Hcwp.csproj": "8df8b6b29ba0bb1d2eb3e450653146b3e5a00f86f6c631f6e6ff81a3f20d3d9d",
+    "refactor/src/Program.cs": "c10a43c14bf358daf3ea2f65daadbd840bc489b7ecf978669cfe4eb4e74efed9",
+    "refactor/src/Domain/Extracted/KdpExaminationResultTO.cs": "3dc70ae6a0224470941b61ec3cfa4ece6dedf6bdc5cbf30b278deed41e7befd5",
+    "refactor/checks/QueryChecks.cs": "0e88a4a00fb7fcdbfcaf3ff7a3a43c2073a552b0e028d6539acc101b45d5bbd4",
+    "refactor/checks/Program.cs": "196f5c93a9e9c530b31f06ed6f5388ee9495d68ed53c3d6f6d4af4f6847ea11a",
+    "system-feel/refactor/task-2.md": "8740b234521a652a1d6ec62487d998d3253f9f39dcd024e17024d9f2be07844f"
+  }
+}

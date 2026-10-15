@@ -28,6 +28,18 @@ public sealed class Kd03Recording
 
     public KdpExaminationTO ReadPatient(long selectedPatient) => service.GetKdpExamination(selectedPatient);
 
+    // Read-only query adapter: an unavailable selected-patient context has no
+    // visible results. Keep recording's approved missing-patient behaviour intact.
+    public IReadOnlyList<KdpExaminationResultTO> ReadResults(long selectedPatient)
+    {
+        using (var uow = new UnitOfWork(store))
+        {
+            if (!uow.Repository<Orvex.Model.ChildGeneral>().Any(p => p.ClientId == selectedPatient))
+                return Array.Empty<KdpExaminationResultTO>();
+        }
+        return ReadPatient(selectedPatient).HcpExaminationResultToList.ToList().AsReadOnly();
+    }
+
     public KdpExaminationResultTO Add(long selectedPatient, KdpExaminationResultTO draft)
     {
         Kd03Scope.EnsureNewResult(selectedPatient, draft);

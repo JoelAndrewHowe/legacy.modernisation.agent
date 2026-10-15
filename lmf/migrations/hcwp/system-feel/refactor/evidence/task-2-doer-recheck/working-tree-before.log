@@ -1,0 +1,144 @@
+ M ../../../.gitignore
+ M ../../../factory/Program.cs
+ M ../../../factory/Steps/FactorySteps.cs
+ M ../../../factory/Steps/MachineResultTests.cs
+ M ../../../factory/factory
+ M ../../../factory/spec/features/planning.feature
+ M ../../docs/tutorial-factory-lines.md
+ M .assembly-lines/characterise.dot
+ M .assembly-lines/convert.dot
+ M .assembly-lines/refactor.dot
+M  refactor/checks/Program.cs
+AM refactor/checks/QueryChecks.cs
+M  refactor/run-approved-scenarios
+ M refactor/src/Application/Kd03Recording.cs
+AM refactor/src/Application/Kd03ResultsQuery.cs
+A  refactor/src/Application/PatientSummary.cs
+M  refactor/src/Domain/Extracted/KdpExaminationResultTO.cs
+M  refactor/src/Hcwp.csproj
+M  refactor/src/Program.cs
+ D system-feel/convert/evidence/refactor-task-1-parity-final/input-identities.sha256
+ D system-feel/convert/evidence/refactor-task-1-parity-final/packet-verification.log
+ D system-feel/convert/evidence/refactor-task-1-parity-final/prerequisites.json
+ D system-feel/convert/evidence/refactor-task-1-parity-runtime/input-identities.sha256
+ D system-feel/convert/evidence/refactor-task-1-parity-runtime/packet-verification.log
+ D system-feel/convert/evidence/refactor-task-1-parity-runtime/prerequisites.json
+ D system-feel/convert/evidence/refactor-task-1-parity/build.json
+ D system-feel/convert/evidence/refactor-task-1-parity/build.log
+ D system-feel/convert/evidence/refactor-task-1-parity/input-identities.sha256
+ D system-feel/convert/evidence/refactor-task-1-parity/observations.json
+ D system-feel/convert/evidence/refactor-task-1-parity/packet-verification.log
+ D system-feel/convert/evidence/refactor-task-1-parity/parity.json
+ D system-feel/convert/evidence/refactor-task-1-parity/parity.log
+ D system-feel/convert/evidence/refactor-task-1-parity/prerequisites.json
+ D system-feel/convert/evidence/refactor-task-1-prestart/input-identities.sha256
+ D system-feel/convert/evidence/refactor-task-1-prestart/packet-verification.log
+ D system-feel/convert/evidence/refactor-task-1-prestart/prerequisites.json
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity-final/input-identities.sha256
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity-final/packet-verification.log
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity-final/prerequisites.json
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity-runtime/input-identities.sha256
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity-runtime/packet-verification.log
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity-runtime/prerequisites.json
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity/build.json
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity/build.log
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity/input-identities.sha256
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity/observations.json
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity/packet-verification.log
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity/parity.json
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity/parity.log
+ D system-feel/convert/evidence/refactor-task-1-recheck-parity/prerequisites.json
+ D system-feel/convert/evidence/refactor-task-1-recheck-prestart/input-identities.sha256
+ D system-feel/convert/evidence/refactor-task-1-recheck-prestart/packet-verification.log
+ D system-feel/convert/evidence/refactor-task-1-recheck-prestart/prerequisites.json
+AD system-feel/convert/evidence/refactor-task-2-prestart/build.json
+AD system-feel/convert/evidence/refactor-task-2-prestart/build.log
+AD system-feel/convert/evidence/refactor-task-2-prestart/input-identities.sha256
+AD system-feel/convert/evidence/refactor-task-2-prestart/observations.json
+AD system-feel/convert/evidence/refactor-task-2-prestart/packet-verification.log
+AD system-feel/convert/evidence/refactor-task-2-prestart/parity.json
+AD system-feel/convert/evidence/refactor-task-2-prestart/parity.log
+AD system-feel/convert/evidence/refactor-task-2-prestart/prerequisites.json
+ M system-feel/refactor/evidence/task-1-recheck/evidence-identities.sha256
+ M system-feel/refactor/evidence/task-1/evidence-identities.sha256
+A  system-feel/refactor/evidence/task-2/approved-scenarios.log
+A  system-feel/refactor/evidence/task-2/assessment.json
+A  system-feel/refactor/evidence/task-2/build.log
+A  system-feel/refactor/evidence/task-2/diff-check.log
+A  system-feel/refactor/evidence/task-2/input-gate-disposition.json
+A  system-feel/refactor/evidence/task-2/input-gate-failure.json
+A  system-feel/refactor/evidence/task-2/persistence.json
+A  system-feel/refactor/evidence/task-2/prerequisites.log
+A  system-feel/refactor/evidence/task-2/queries.json
+A  system-feel/refactor/evidence/task-2/revision/approved-scenarios.log
+A  system-feel/refactor/evidence/task-2/revision/build.log
+A  system-feel/refactor/evidence/task-2/revision/old-getter-build.log
+A  system-feel/refactor/evidence/task-2/revision/old-getter-exit-code.txt
+A  system-feel/refactor/evidence/task-2/revision/old-getter-negative.log
+A  system-feel/refactor/evidence/task-2/revision/parity/comparison.json
+A  system-feel/refactor/evidence/task-2/revision/parity/conversion-build.log
+A  system-feel/refactor/evidence/task-2/revision/parity/conversion-suite.jsonl
+A  system-feel/refactor/evidence/task-2/revision/parity/conversion/results.json
+A  system-feel/refactor/evidence/task-2/revision/parity/dotnet-info.log
+A  system-feel/refactor/evidence/task-2/revision/parity/parity-report.md
+A  system-feel/refactor/evidence/task-2/revision/parity/prerequisites-after.json
+A  system-feel/refactor/evidence/task-2/revision/parity/prerequisites-before.json
+A  system-feel/refactor/evidence/task-2/revision/parity/refactor-build.log
+A  system-feel/refactor/evidence/task-2/revision/parity/refactor-suite.jsonl
+A  system-feel/refactor/evidence/task-2/revision/parity/refactor/results.json
+A  system-feel/refactor/evidence/task-2/revision/parity/reference-build.log
+A  system-feel/refactor/evidence/task-2/revision/parity/reference-suite.jsonl
+A  system-feel/refactor/evidence/task-2/revision/parity/reference/results.json
+A  system-feel/refactor/evidence/task-2/revision/persistence.json
+A  system-feel/refactor/evidence/task-2/revision/queries.json
+A  system-feel/refactor/evidence/task-2/working-tree-after.txt
+ M system-feel/refactor/prerequisites.md
+AM system-feel/refactor/review-files.sha256
+AM system-feel/refactor/task-2.md
+ M ../../seeds/hcwp/refactor.md
+ M ../../templates/migration-target/.assembly-lines/characterise.dot
+ M ../../templates/migration-target/.assembly-lines/convert.dot
+ M ../../templates/migration-target/.assembly-lines/refactor.dot
+ M ../../templates/migration-target/README.md
+?? ../../../.env.openrouter.example
+?? ../../../bin/factory-dispatch
+?? ../../../bin/openrouter-reviewer
+?? "../../../example-code/patient-banner (pseudononymised).txt"
+?? ../../../factory/spec/features/plan-review.feature
+?? ../../docs/feed-forward-context.md
+?? ../../iterations/002-implement-system-feel.md
+?? .assembly-lines/.machines/code-review-architect/
+?? .assembly-lines/.machines/code-review-lead-developer/
+?? .assembly-lines/.machines/code-review-synthesiser/
+?? .assembly-lines/.machines/code-review-test-engineer/
+?? .assembly-lines/.machines/plan-review-claude-opus/
+?? .assembly-lines/.machines/plan-review-dispatch/
+?? .assembly-lines/.machines/plan-review-gpt-sol/
+?? .assembly-lines/.machines/plan-review-kimi/
+?? .assembly-lines/.machines/plan-review-synthesiser/
+?? system-feel/convert/__pycache__/
+?? system-feel/refactor/evidence/refactor-task-1-parity-final/
+?? system-feel/refactor/evidence/refactor-task-1-parity-runtime/
+?? system-feel/refactor/evidence/refactor-task-1-parity/
+?? system-feel/refactor/evidence/refactor-task-1-prestart/
+?? system-feel/refactor/evidence/refactor-task-1-recheck-parity-final/
+?? system-feel/refactor/evidence/refactor-task-1-recheck-parity-runtime/
+?? system-feel/refactor/evidence/refactor-task-1-recheck-parity/
+?? system-feel/refactor/evidence/refactor-task-1-recheck-prestart/
+?? system-feel/refactor/evidence/refactor-task-2-final/
+?? system-feel/refactor/evidence/refactor-task-2-prestart-final/
+?? system-feel/refactor/evidence/refactor-task-2-prestart-runtime/
+?? system-feel/refactor/evidence/refactor-task-2-prestart/
+?? system-feel/refactor/evidence/task-2-doer-recheck/
+?? system-feel/refactor/evidence/task-2-validator/
+?? system-feel/refactor/verify-task-2
+?? ../../seeds/context/
+?? ../../templates/migration-target/.assembly-lines/.machines/code-review-architect/
+?? ../../templates/migration-target/.assembly-lines/.machines/code-review-lead-developer/
+?? ../../templates/migration-target/.assembly-lines/.machines/code-review-synthesiser/
+?? ../../templates/migration-target/.assembly-lines/.machines/code-review-test-engineer/
+?? ../../templates/migration-target/.assembly-lines/.machines/plan-review-claude-opus/
+?? ../../templates/migration-target/.assembly-lines/.machines/plan-review-dispatch/
+?? ../../templates/migration-target/.assembly-lines/.machines/plan-review-gpt-sol/
+?? ../../templates/migration-target/.assembly-lines/.machines/plan-review-kimi/
+?? ../../templates/migration-target/.assembly-lines/.machines/plan-review-synthesiser/

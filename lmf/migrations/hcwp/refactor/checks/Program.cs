@@ -2,6 +2,8 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
+if (args.Length == 1 && args[0] == "--system-feel-observe") return QueryChecks.ObserveApprovedSystemFeel();
+if (args.Length == 2 && args[0] == "--queries") return QueryChecks.Run(args[1]);
 if (args.Length == 2 && args[0] == "--flow") return FlowChecks.Run(args[1]);
 if (args.Length == 2 && args[0] == "--persistence") return ArchitectureChecks.Run(args[1]);
 if (args.Length < 2) { Console.Error.WriteLine("Usage: Checks <approved-scenario-directory> <evidence-directory> [--observe-only] [scenario-id]"); return 2; }

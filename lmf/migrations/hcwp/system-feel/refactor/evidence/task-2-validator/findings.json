@@ -1,0 +1,28 @@
+{
+  "task": 2,
+  "markedDone": false,
+  "findings": [
+    {
+      "severity": "high",
+      "file": "lmf/migrations/hcwp/system-feel/refactor/",
+      "issue": "Task 2 is not implemented: the change adds prerequisite evidence only, with no changes under refactor/src or refactor/checks. Required patient-summary and result retrieval integration, filtering, deterministic ordering (contact date descending, recorded date descending, result ID descending), pagination and patient-safe detail lookup remain unimplemented and untested.",
+      "action": "Implement the required application/query services and executable tests covering patient isolation, filtering, ordering, pagination bounds and not-found handling; record the resulting test evidence.",
+      "disposition": "Application/query services and checks are present in the reviewable working tree. Added unavailable-patient handling and four further query assertions. Final executable evidence records 41 query, 4 persistence and 40 approved regression passes. Progression remains blocked by the separate approved-input boundary issue."
+    },
+    {
+      "severity": "high",
+      "file": "lmf/migrations/hcwp/system-feel/convert/evidence/refactor-task-2-*",
+      "issue": "Refactor evidence is stored under Convert, violating the required separation of stage evidence.",
+      "action": "Relocate the Refactor packets to system-feel/refactor/evidence/, reference them from the Refactor report and verifier, and confirm Convert verification and bound hashes remain valid.",
+      "disposition": "All Refactor packets relocated byte-for-byte; report and verifier reference new paths. Relocation mapping and per-file digests retained. Approval and Convert parity-source hashes still match. Current full Convert verification remains blocked because the approved input inventory binds the mutable application tree; no fresh passing verification is claimed."
+    },
+    {
+      "severity": "medium",
+      "file": "lmf/migrations/hcwp/system-feel/convert/evidence/refactor-task-2-final/",
+      "issue": "The final prerequisite packet lacks input-identities.sha256, although the prestart packets include it. The final packet therefore lacks the required recorded cryptographic identities for its reviewed inputs.",
+      "action": "Provide an authoritative prerequisite packet containing the reviewed input identities and binding the verified approval hash and observed Convert parity result to those inputs.",
+      "disposition": "Final authoritative historical prerequisite binding is task-2-validator/final/results.json with adjacent input-identities.sha256 and evidence-identities.sha256. Verifier checks exact reviewed membership, approval identity, before/after input identity equality, 53 observed Convert passes and current parity-source hashes. Original final packet was a failed post-change check, retained unchanged rather than falsely supplied with current passing identities."
+    }
+  ],
+  "blocker": "Operator decision required on approved immutable baseline versus mutable Refactor worktree. Current whole-tree gate fails; no human approval was authored or changed."
+}

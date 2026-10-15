@@ -14,6 +14,7 @@ var store = DemoData.Seed(fixtures);
 using (store.Open()) { }
 builder.Services.AddSingleton(store);
 builder.Services.AddSingleton<Kd03Recording>();
+builder.Services.AddSingleton<Kd03ResultsQuery>();
 builder.Services.AddSingleton(new LookupDouble(fixtures));
 builder.Services.AddScoped<RecordingPageModel>();
 var app = builder.Build();

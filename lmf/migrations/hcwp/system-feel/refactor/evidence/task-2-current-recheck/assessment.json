@@ -1,0 +1,20 @@
+{
+  "task": 2,
+  "markedDone": false,
+  "validatorFindingsSuppliedInRequest": [],
+  "action": "Reviewed and executed the existing patient-summary/query integration and its executable tests; no additional application change was necessary.",
+  "workingTree": "Inspected before execution; preserved existing application, factory, configuration and evidence changes.",
+  "prerequisites": "Current immutable-input and revision-bound human approval gate passed. The task verifier also validated the historical 53/53 Convert parity observations and their current source digests; Convert parity was not rerun.",
+  "verification": {
+    "command": "system-feel/refactor/verify-task-2 --evidence-dir system-feel/refactor/evidence/task-2-current-recheck",
+    "exitCode": 0,
+    "queryChecksPassed": 41,
+    "persistenceChecksPassed": 4,
+    "approvedThreeWayRegressionComparisonsPassed": 40,
+    "failed": 0,
+    "skipped": 0,
+    "diffCheckExitCode": 0
+  },
+  "scope": "Summary formatting, age and alerts; selected-patient KD03 isolation; AND/OR filters; inclusive dates; stable contact/recorded/ID ordering; paging bounds; safe detail lookup; read-only query persistence.",
+  "limitations": "No later plan task started. Shell/routes, URL state, demonstration history, bilingual UI, browser/accessibility checks and final slice gate remain outside this task. Evidence is extracted-reference parity with synthetic fixtures and EF InMemory, not production or PostgreSQL assurance."
+}

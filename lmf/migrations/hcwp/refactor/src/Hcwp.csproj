@@ -5,6 +5,8 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../system-feel/convert/src/PatientSummaryAndResults.cs" Link="Converted/PatientSummaryAndResults.cs" />
+    <Compile Include="../../system-feel/convert/src/Compatibility.cs" Link="Converted/Compatibility.cs" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0" />
     <Content Update="demo-fixtures.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

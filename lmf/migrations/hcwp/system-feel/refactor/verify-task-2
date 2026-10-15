@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+"""Execute task-2 checks without overwriting baseline or Convert stage evidence.
+
+The current prerequisite gate protects immutable approved inputs while allowing
+the Refactor target and assembly-line configuration to change. This is not the
+final browser/bilingual slice verifier.
+"""
+import argparse
+from datetime import datetime, timezone
+import hashlib
+import importlib.util
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+HERE = Path(__file__).resolve().parent
+TARGET = HERE.parents[1]
+ROOT = TARGET.parents[2]
+CONVERT = HERE.parent / 'convert'
+CHARACTERISE = HERE.parent / 'characterise'
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--evidence-dir', required=True)
+    args = parser.parse_args()
+    evidence = Path(args.evidence_dir).resolve()
+    if not evidence.is_relative_to(HERE / 'evidence'):
+        parser.error('Evidence must be under system-feel/refactor/evidence')
+    evidence.mkdir(parents=True, exist_ok=False)
+    report = {'startedAt': datetime.now(timezone.utc).isoformat(), 'commands': [],
+              'errors': [], 'productChecksPassed': False, 'currentPrerequisitesPassed': False}
+
+    def run(argv, name):
+        p = subprocess.run(argv, cwd=TARGET, capture_output=True, text=True,
+                           env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1', DOTNET_CLI_TELEMETRY_OPTOUT='1'))
+        (evidence / name).write_text(p.stdout + p.stderr)
+        report['commands'].append({'argv': argv, 'cwd': str(TARGET), 'exitCode': p.returncode, 'log': name})
+        return p
+
+    try:
+        # Verify relocated historical packets byte-for-byte, not their old paths.
+        relocation = json.loads((HERE / 'evidence/task-2-validator/relocation.json').read_text())
+        for name, expected in relocation['sha256'].items():
+            if sha(TARGET / name) != expected:
+                raise ValueError('Relocated evidence drift: ' + name)
+        if list((CONVERT / 'evidence').glob('refactor-task-*')):
+            raise ValueError('Refactor evidence still under Convert')
+        pre = HERE / 'evidence/refactor-task-2-prestart'
+        after = HERE / 'evidence/refactor-task-2-prestart-final'
+        identities = (pre / 'input-identities.sha256').read_bytes()
+        if identities != (after / 'input-identities.sha256').read_bytes():
+            raise ValueError('Historical before/after input identity mismatch')
+        # Authoritative historical packet: identities + approval + observed parity,
+        # never a claim that changed application inputs still match those identities.
+        (evidence / 'input-identities.sha256').write_bytes(identities)
+        spec = importlib.util.spec_from_file_location('prerequisites', CONVERT / 'check-prerequisites.py')
+        gate = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(gate)
+        approval = HERE.parent / 'approvals/characterise-approved.md'
+        binding = gate.approval_gate(approval, CHARACTERISE / 'review-files.sha256', CHARACTERISE / 'review.md')
+        for packet in (pre, after):
+            data = json.loads((packet / 'prerequisites.json').read_text())
+            if not data['passed'] or data['errors'] or any(data[k] != v for k, v in binding.items()):
+                raise ValueError('Historical approval binding invalid')
+        identity_map = dict(line.split('  ', 1)[::-1] for line in identities.decode().splitlines())
+        reviewed = dict(line.split('  ', 1)[::-1] for line in (CHARACTERISE / 'review-files.sha256').read_text().splitlines())
+        if any(identity_map.get(name) != expected for name, expected in reviewed.items()):
+            raise ValueError('Historical identities do not match the approved review manifest')
+        if len(identity_map) != len(reviewed) + 2:
+            raise ValueError('Historical input identity membership mismatch')
+        for path in (approval, CHARACTERISE / 'review-files.sha256'):
+            if identity_map[path.relative_to(ROOT).as_posix()] != sha(path):
+                raise ValueError('Recorded approval identity mismatch')
+        parity = json.loads((pre / 'parity.json').read_text())
+        if not parity['passed'] or parity['errors'] or parity['counts'] != dict(required=53, executed=53, passed=53, failed=0, skipped=0):
+            raise ValueError('Historical Convert parity incomplete')
+        observations = json.loads((pre / 'observations.json').read_text())
+        scenarios = json.loads((CHARACTERISE / 'scenarios.json').read_text())['scenarios']
+        if [x['id'] for x in observations] != [x['id'] for x in scenarios] or not all(x['passed'] and not x['failures'] for x in observations):
+            raise ValueError('Historical Convert observations incomplete')
+        for name, expected in parity['files'].items():
+            if sha(ROOT / name) != expected:
+                raise ValueError('Convert parity source drift: ' + name)
+        report['historicalPrerequisites'] = dict(binding, counts=parity['counts'],
+            scope='Verified historical prestart snapshot; current immutable-input gate is separate',
+            files={str(p.relative_to(TARGET)): sha(p) for p in
+                   (pre / 'prerequisites.json', after / 'prerequisites.json', pre / 'parity.json', pre / 'observations.json')},
+            inputIdentitiesSha256=sha(evidence / 'input-identities.sha256'))
+        # Recheck the approval and immutable inputs. The Refactor target and its
+        # assembly-line configuration are authorized mutable boundaries.
+        p = subprocess.run([sys.executable, str(HERE / 'check-prerequisites.py')],
+                           cwd=ROOT, capture_output=True, text=True,
+                           env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
+        (evidence / 'current-prerequisites.log').write_text(p.stdout + p.stderr)
+        report['commands'].append({'argv': [sys.executable, str(HERE / 'check-prerequisites.py')],
+                                   'cwd': str(ROOT), 'exitCode': p.returncode, 'log': 'current-prerequisites.log'})
+        report['currentPrerequisitesPassed'] = p.returncode == 0
+        if p.stdout:
+            report['currentPrerequisites'] = json.loads(p.stdout)
+        if p.returncode:
+            report['errors'].append('Current immutable prerequisite gate failed')
+        # Exercise the implementation after the current prerequisite check.
+        build = run(['dotnet', 'build', 'refactor/checks/Checks.csproj', '--no-incremental'], 'build.log')
+        if build.returncode:
+            raise ValueError('Checks build failed')
+        for mode in ('queries', 'persistence'):
+            p = run(['dotnet', 'run', '--project', 'refactor/checks', '--no-build', '--', '--' + mode,
+                     'refactor/src/demo-fixtures.json'], mode + '.json')
+            data = json.loads(p.stdout)
+            if p.returncode or data['total'] <= 0 or data['passed'] != data['total'] or data['failed'] or data['skipped']:
+                raise ValueError(mode + ' incomplete or failed')
+            report[mode] = {k: data[k] for k in ('total', 'passed', 'failed', 'skipped')}
+        p = run(['refactor/run-approved-scenarios', '--evidence-dir', str(evidence / 'parity')], 'approved-scenarios.log')
+        if p.returncode:
+            raise ValueError('Approved regressions failed')
+        p = run([sys.executable, str(HERE / 'verify-shared-scenarios.py'),
+                 '--evidence-dir', str(evidence / 'shared-sf')], 'shared-sf.log')
+        if p.returncode:
+            raise ValueError('Shared SF application-boundary parity failed')
+        data = json.loads(p.stdout)
+        if data['total'] <= 0 or data['passed'] != data['total'] or data['failed'] or data['skipped']:
+            raise ValueError('Shared SF application-boundary parity incomplete')
+        report['sharedScenarios'] = {k: data[k] for k in ('total', 'passed', 'failed', 'skipped')}
+        report['productChecksPassed'] = True
+    except Exception as error:
+        report['errors'].append(str(error))
+    report['passed'] = report['productChecksPassed'] and report['currentPrerequisitesPassed'] and not report['errors']
+    report['finishedAt'] = datetime.now(timezone.utc).isoformat()
+    report['exitCode'] = 0 if report['passed'] else 1
+    (evidence / 'results.json').write_text(json.dumps(report, indent=2) + '\n')
+    files = sorted(p for p in evidence.rglob('*') if p.is_file())
+    (evidence / 'evidence-identities.sha256').write_text(''.join(f'{sha(p)}  {p.relative_to(TARGET)}\n' for p in files))
+    print(json.dumps(report))
+    return report['exitCode']
+
+
+if __name__ == '__main__':
+    sys.exit(main())

@@ -24,7 +24,8 @@ additionally checked mechanically. Current human approval remains bound to
 New evidence: `system-feel/refactor/evidence/task-1-recheck/` contains the
 assessment, command output, working-tree snapshots, diff check and manifest
 binding the 17 fresh Convert gate artifacts. Detailed logs, timestamps, hashes
-and observations remain in `system-feel/convert/evidence/refactor-task-1-recheck-*`.
+and observations now reside in `system-feel/refactor/evidence/refactor-task-1-recheck-*`
+(relocated byte-for-byte during task 2; historical commands below retain their original destinations).
 Existing evidence was not overwritten. No approval was created or regenerated.
 Prerequisites pass; application regressions, browser tests and final Refactor
 gates were not rerun in this prerequisite-only task. The limitations and
@@ -45,7 +46,7 @@ python3 system-feel/convert/verify --evidence-prefix refactor-task-1-parity
 
 Both exited 0. The existing Convert verifier performed a fresh nonincremental build and executed all exact approved scenarios: **53 required/executed/passed, zero failures/skips/errors**. Its complete comparison uses approval-bound extracted-reference observations, not an ambient reference binary or regenerated reference evidence. The ordering-contract scenario inspects the converted method; the remaining 52 execute the converted runtime. SDK: .NET 10.0.401.
 
-Evidence under `system-feel/convert/evidence/`:
+Evidence now under `system-feel/refactor/evidence/` (relocated during task 2):
 
 - `refactor-task-1-prestart/`: approval, packet verification and 1692 input identities.
 - `refactor-task-1-parity/`: build, per-scenario observations, aggregate parity and command logs.
