@@ -1,0 +1,6 @@
+{
+  "harness": "openrouter-reviewer",
+  "model": "openai/gpt-6.1-sol",
+  "role": "validator",
+  "lens": "Synthesis of architect, lead-developer and lead-test-engineer code reviews. Deduplicate findings, resolve overlap, and retain only concrete blockers demonstrated by the current change and task requirements. Return satisfied true only when no blocking finding remains; keep optional improvements non-blocking."
+}

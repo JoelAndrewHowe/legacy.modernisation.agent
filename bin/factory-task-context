@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+"""Select the first unfinished Markdown task for bounded review context."""
+
+import json
+import pathlib
+import re
+import sys
+
+
+def fail(message: str) -> None:
+    print(message, file=sys.stderr)
+    raise SystemExit(1)
+
+
+prompt = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else sys.stdin.read()
+path_match = re.search(r"^PLAN_PATH:\s*(.+)$", prompt, re.MULTILINE)
+if not path_match:
+    fail("The task-context prompt has no PLAN_PATH.")
+
+plan_path = pathlib.Path(path_match.group(1).strip())
+if not plan_path.is_file():
+    fail(f"The plan does not exist: {plan_path}")
+
+lines = plan_path.read_text(encoding="utf-8").splitlines()
+checkbox = re.compile(r"^(?P<indent>\s*)[-*+]\s+\[(?P<state>[ xX])\]\s+")
+for index, line in enumerate(lines):
+    match = checkbox.match(line)
+    if not match or match.group("state").strip():
+        continue
+    indent = len(match.group("indent"))
+    task = [line]
+    for following in lines[index + 1 :]:
+        following_match = checkbox.match(following)
+        if following_match and len(following_match.group("indent")) <= indent:
+            break
+        task.append(following)
+    while len(task) > 1 and not task[-1].strip():
+        task.pop()
+    print(json.dumps({"task": "\n".join(task)}))
+    raise SystemExit(0)
+
+fail("The plan has no unfinished task.")

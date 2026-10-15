@@ -1,0 +1,6 @@
+{
+  "harness": "openrouter-reviewer",
+  "model": "anthropic/claude-opus-5.5",
+  "role": "validator",
+  "lens": "Code review as a lead developer. Inspect the current uncommitted change for correctness, clarity, maintainability, error handling and idiomatic use of the chosen stack. Check the implementation is bounded to the current task and does not weaken approved behaviour or evidence. Report actionable defects with file and observed consequence."
+}

@@ -3,4 +3,5 @@ set -euo pipefail
 
 script_path="$(readlink -f -- "${BASH_SOURCE[0]}")"
 script_dir="$(cd -- "$(dirname -- "$script_path")" && pwd)"
+export PATH="$(cd -- "$script_dir/.." && pwd)/bin:$PATH"
 exec dotnet run --project "$script_dir/Factory.csproj" -- "$@"

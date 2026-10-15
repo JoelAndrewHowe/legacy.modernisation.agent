@@ -35,6 +35,7 @@ public sealed class FactorySteps
     private bool synthesiserNeverSatisfied;
     private bool synthesiserFailsFirst;
     private bool secondReviewerAnswersInProse;
+    private bool plannerCompletesNewPlan;
     private int attempts = 3;
     private string lens = "testability";
     private string? statusBefore;
@@ -98,6 +99,9 @@ public sealed class FactorySteps
     [Given("the planner plans the tasks alpha and beta")]
     public void ConfigurePlanner() { }
 
+    [Given("the planner claims its new plan is complete")]
+    public void PlannerCompletesNewPlan() => plannerCompletesNewPlan = true;
+
     [Given("the doer does the next task in the plan")]
     public void ConfigureDoer() { }
 
@@ -125,6 +129,16 @@ public sealed class FactorySteps
     {
         TargetHasThreeBigBrains();
         WriteLine(name, ThreeBigBrainsLine());
+    }
+
+    [Given("the plan is reviewed by the three big brains before the doer on the {string} line")]
+    public void ThreeBigBrainsReviewsPlan(string name)
+    {
+        WriteMachineConfig("plan-review-dispatch", agent, role: "dispatcher");
+        for (var number = 1; number <= 3; number++)
+            WriteMachineConfig($"plan-review-reviewer_{number}", agent, lens, "validator");
+        WriteMachineConfig("plan-review-synthesiser", agent, lens, "validator");
+        WriteLine(name, PlanReviewedLine());
     }
 
     [Given("the target has an assembly line {string} on which the doer's work is validated")]
@@ -301,6 +315,9 @@ public sealed class FactorySteps
 
     [Given("the synthesiser is never satisfied")]
     public void SynthesiserNeverSatisfied() => synthesiserNeverSatisfied = true;
+
+    [Given("the plan-review synthesiser is never satisfied")]
+    public void PlanReviewSynthesiserNeverSatisfied() => synthesiserNeverSatisfied = true;
 
     [Given("the synthesiser is not satisfied the first time")]
     public void SynthesiserFailsFirst() => synthesiserFailsFirst = true;
@@ -564,6 +581,10 @@ public sealed class FactorySteps
     [Then("it reports that a target is required")]
     public void ReportsTargetRequired() => Assert.That(output, Does.Contain("A target is required"));
 
+    [Then("it reports that a planner cannot complete a run while creating its plan")]
+    public void ReportsPrematurePlannerCompletion() => Assert.That(
+        output, Does.Contain("The planner cannot complete a run while creating its plan."));
+
     [Then("there is no plan")]
     public void ThereIsNoPlan() => Assert.That(File.Exists(PlanPath()), Is.False);
 
@@ -699,6 +720,33 @@ public sealed class FactorySteps
 
     [Then("it reports that a task hit its limit")]
     public void ReportsTaskLimit() => Assert.That(output, Does.Contain("task hit its limit").IgnoreCase);
+
+    [Then("it reports that the persisted plan-review limit was reached")]
+    public void ReportsPersistedPlanReviewLimit() => Assert.That(
+        output, Does.Contain("Plan review hit its persisted limit of 3 rejections."));
+
+    [Then("three rejected plan reviews are retained")]
+    public void ThreeRejectedPlanReviewsRetained()
+    {
+        var directory = Path.Combine(factory, "runs", runName);
+        var progress = JsonDocument.Parse(File.ReadAllText(Path.Combine(directory, "progress.json"))).RootElement;
+        Assert.Multiple(() =>
+        {
+            Assert.That(progress.GetProperty("planReviewRejections").GetInt32(), Is.EqualTo(3));
+            Assert.That(Directory.GetFiles(Path.Combine(directory, "plan-reviews"), "*.json"), Has.Length.EqualTo(3));
+        });
+    }
+
+    [Then("the latest plan-review findings are retained")]
+    public void LatestPlanReviewFindingsRetained()
+    {
+        var path = Path.Combine(factory, "runs", runName, "plan-review-latest.json");
+        Assert.That(File.ReadAllText(path), Does.Contain("synthesiser finding"));
+    }
+
+    [Then("the plan-review synthesiser has been called three times")]
+    public void PlanReviewSynthesiserCalledThreeTimes() => Assert.That(
+        RunRoleCallCount(runName, "plan-review-synthesiser"), Is.EqualTo(3));
 
     [Then("it reports that the result of validator has no field {string}")]
     public void ReportsMissingResultField(string field) =>
@@ -869,6 +917,7 @@ public sealed class FactorySteps
         start.Environment["FACTORY_SYNTHESISER_NEVER_SATISFIED"] = synthesiserNeverSatisfied ? "1" : "0";
         start.Environment["FACTORY_SYNTHESISER_FAIL_FIRST"] = synthesiserFailsFirst ? "1" : "0";
         start.Environment["FACTORY_SECOND_REVIEWER_PROSE"] = secondReviewerAnswersInProse ? "1" : "0";
+        start.Environment["FACTORY_PLANNER_COMPLETES_NEW_PLAN"] = plannerCompletesNewPlan ? "1" : "0";
         start.Environment["FACTORY_TEST_RUN"] = name;
 
         using var process = Process.Start(start)!;
@@ -896,6 +945,7 @@ public sealed class FactorySteps
               if [ ! -f "$plan" ]; then
                 if [ "$FACTORY_PROSE_PLAN" = 1 ]; then printf 'alpha is pending\nbeta is pending\n' > "$plan";
                 else printf '%s\n' '- [ ] alpha' '- [ ] beta' > "$plan"; fi
+                if [ "$FACTORY_PLANNER_COMPLETES_NEW_PLAN" = 1 ]; then echo '{"complete":true}'; exit 0; fi
                 echo '{"complete":false}'; exit 0
               fi
               if printf '%s' "$prompt" | grep -q 'validated work has been committed'; then
@@ -915,25 +965,25 @@ public sealed class FactorySteps
             fi
 
             case "$machine" in
-              reviewer_*)
+              reviewer_*|plan-review-reviewer_*)
                 if [ "$FACTORY_REVIEWERS_WAIT" = 1 ]; then
                   touch "$FACTORY_CALLS/$machine.started"
                   while [ "$(find "$FACTORY_CALLS" -name 'reviewer_*.started' | wc -l)" -lt 3 ]; do sleep 0.05; done
                 fi
-                if [ "$machine" = reviewer_2 ] && [ "$FACTORY_SECOND_REVIEWER_PROSE" = 1 ]; then
+                if [[ "$machine" = *_2 ]] && [ "$FACTORY_SECOND_REVIEWER_PROSE" = 1 ]; then
                   echo 'I cannot provide a result'; exit 0
                 fi
-                report=${machine#reviewer_}
-                if [ "$machine" = reviewer_2 ] && [ "$FACTORY_SECOND_REVIEWER_REPORT" = 1 ]; then report=1; fi
-                if [ "$FACTORY_REVIEWER_REPORTS" = 1 ] || { [ "$machine" = reviewer_2 ] && [ "$FACTORY_SECOND_REVIEWER_REPORT" = 1 ]; }; then
+                report=${machine##*_}
+                if [[ "$machine" = *_2 ]] && [ "$FACTORY_SECOND_REVIEWER_REPORT" = 1 ]; then report=1; fi
+                if [ "$FACTORY_REVIEWER_REPORTS" = 1 ] || { [[ "$machine" = *_2 ]] && [ "$FACTORY_SECOND_REVIEWER_REPORT" = 1 ]; }; then
                   printf '{"satisfied":false,"findings":["report %s"]}\n' "$report"
                 else
                   echo '{"satisfied":true,"findings":[]}'
                 fi
                 exit 0
                 ;;
-              synthesiser)
-                validation_number=$(find "$FACTORY_CALLS" -name '{{identity}}-'"$FACTORY_TEST_RUN"'-synthesiser-*.prompt' | wc -l)
+              synthesiser|plan-review-synthesiser)
+                validation_number=$(find "$FACTORY_CALLS" -name '{{identity}}-'"$FACTORY_TEST_RUN"'-'"$machine"'-*.prompt' | wc -l)
                 if [ "$FACTORY_SYNTHESISER_NEVER_SATISFIED" = 1 ] || { [ "$FACTORY_SYNTHESISER_FAIL_FIRST" = 1 ] && [ "$validation_number" -eq 1 ]; }; then
                   echo '{"satisfied":false,"findings":["synthesiser finding"]}'
                 else
@@ -1049,6 +1099,25 @@ public sealed class FactorySteps
           reviewer_3 -> synthesiser
           synthesiser -> doer      [label="not satisfied"]
           synthesiser -> planner   [label="satisfied"]
+        }
+        """;
+
+    private static string PlanReviewedLine() => """
+        digraph assembly_line {
+          start -> planner
+          planner -> plan-review-dispatch   [label="not complete"]
+          planner -> finish                 [label="complete"]
+          plan-review-dispatch -> plan-review-reviewer_1
+          plan-review-dispatch -> plan-review-reviewer_2
+          plan-review-dispatch -> plan-review-reviewer_3
+          plan-review-reviewer_1 -> plan-review-synthesiser
+          plan-review-reviewer_2 -> plan-review-synthesiser
+          plan-review-reviewer_3 -> plan-review-synthesiser
+          plan-review-synthesiser -> planner [label="not satisfied"]
+          plan-review-synthesiser -> doer    [label="satisfied"]
+          doer -> validator
+          validator -> doer                  [label="not satisfied"]
+          validator -> planner               [label="satisfied"]
         }
         """;
 

@@ -1,0 +1,6 @@
+{
+  "harness": "openrouter-reviewer",
+  "model": "openai/gpt-6.1-sol",
+  "role": "validator",
+  "lens": "Synthesis of three independent plan reviews. Deduplicate findings and retain only concrete blockers tied to the seed and first unfinished task. Return satisfied true only when no blocking finding remains; optional suggestions must not become blockers."
+}

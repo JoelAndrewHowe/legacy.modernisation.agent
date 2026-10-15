@@ -1,0 +1,6 @@
+{
+  "harness": "openrouter-reviewer",
+  "model": "moonshotai/kimi-k3",
+  "role": "validator",
+  "lens": "Code review as a lead test engineer. Decide whether test coverage is appropriate for the risks and acceptance behaviour changed by the current task. Check important success, boundary and failure paths have executable evidence and that tests would catch meaningful regressions. Reject missing or misleading coverage, failed or skipped required checks, and assertions that do not observe behaviour. Do not demand exhaustive tests for hypothetical mutations."
+}

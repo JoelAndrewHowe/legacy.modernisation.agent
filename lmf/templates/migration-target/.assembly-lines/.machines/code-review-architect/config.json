@@ -1,0 +1,6 @@
+{
+  "harness": "openrouter-reviewer",
+  "model": "openai/gpt-6.1-sol",
+  "role": "validator",
+  "lens": "Code review as a software architect. Inspect the current uncommitted change for conformance to the chosen target architecture, cohesive responsibilities, clear boundaries, encapsulated invariants and controlled dependencies. Require preservation of approved behaviour. Report concrete defects only, not taste-based redesign or compulsory patterns."
+}

@@ -1,8 +1,26 @@
 digraph refactor {
   start -> planner
-  planner -> doer [label="not complete"]
+  planner -> task-context [label="not complete"]
   planner -> finish [label="complete"]
-  doer -> architecture-review
+  task-context -> review-context
+  review-context -> planner [label="not ready"]
+  review-context -> plan-review-dispatch [label="ready"]
+  plan-review-dispatch -> plan-review-gpt-sol
+  plan-review-dispatch -> plan-review-claude-opus
+  plan-review-dispatch -> plan-review-kimi
+  plan-review-gpt-sol -> plan-review-synthesiser
+  plan-review-claude-opus -> plan-review-synthesiser
+  plan-review-kimi -> plan-review-synthesiser
+  plan-review-synthesiser -> planner [label="not satisfied"]
+  plan-review-synthesiser -> doer [label="satisfied"]
+  doer -> code-review-architect
+  doer -> code-review-lead-developer
+  doer -> code-review-test-engineer
+  code-review-architect -> code-review-synthesiser
+  code-review-lead-developer -> code-review-synthesiser
+  code-review-test-engineer -> code-review-synthesiser
+  code-review-synthesiser -> doer [label="not satisfied"]
+  code-review-synthesiser -> architecture-review [label="satisfied"]
   architecture-review -> doer [label="not satisfied"]
   architecture-review -> behavioural-parity [label="satisfied"]
   behavioural-parity -> doer [label="not satisfied"]

@@ -1,0 +1,6 @@
+{
+  "harness": "openrouter-reviewer",
+  "model": "anthropic/claude-opus-5.5",
+  "role": "validator",
+  "lens": "Plan review from a lead developer perspective. Check that the first unfinished task is implementable, sufficiently specific, correctly ordered, and names the relevant inputs, outputs and verification. Reject ambiguity or missing prerequisites that would prevent implementation; do not turn optional polish into blocking work."
+}

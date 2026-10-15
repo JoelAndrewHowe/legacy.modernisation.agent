@@ -4,6 +4,14 @@ Run the Refactor stage for the accepted converted HCWP `KD03` add-and-read-back
 slice. Read `lmf/docs/vision.md`, `lmf/iterations/001-characterise-and-migrate-hcwp.md`,
 the approved `characterise/` artifacts, and the accepted `convert/` evidence.
 
+## Feed-forward context
+
+Before planning or changing user-facing code, read
+`../context/nhsw-component-library.md`, resolved relative to this seed. Treat it
+as required implementation guidance for UI tasks and record any necessary
+Blazor adaptation. It does not broaden the KD03 slice or override approved
+behaviour and executable evidence.
+
 Do not begin unless `approvals/characterise-approved.md` still covers the current
 Characterise baseline and Convert has complete matching parity evidence. Agents
 must not create human approval records or weaken upstream scenarios.

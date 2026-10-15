@@ -1,15 +1,29 @@
 # Migration assembly lines
 
-Reusable iteration-4 factory configurations based on [the LMF vision](../../docs/vision.md).
+Reusable iteration-5 factory configurations based on [the LMF vision](../../docs/vision.md).
 Copy `.assembly-lines/` into a new migration product target. These files are
 templates for `bin/factory`; the existing `lmf/implementation/lmf` CLI does not
 load DOT files. They do not modify an existing migration or its approval state.
 
 ## Lines and machines
 
-All three lines use the shared `planner` and `doer`. Each reviewer is a named
-machine with `"role": "validator"` and a specialised lens. All harnesses are
-initially `pi` and can be changed in the individual `config.json` files.
+All three lines use the shared `planner` and `doer`. Before implementation, the
+deterministic `task-context` machine extracts only the first unfinished task.
+The deterministic `review-context` machine then resolves that task's exact BDD
+scenario IDs, Gherkin tags and Markdown guidance sections. Missing, unbounded or
+stale references return to the planner before any paid review. A three-model
+OpenRouter fan-out reviews that bounded task context, not the whole plan or an
+earlier iteration narrative, and a GPT synthesiser either returns concrete
+findings to the planner or sends the accepted task to the doer. After
+implementation, another three-model fan-out reviews the uncommitted code
+against the same context as an architect, lead developer and lead test
+engineer. Existing
+stage-specific Pi reviewers still run after that synthesis succeeds.
+
+The OpenRouter models are `openai/gpt-6.1-sol`,
+`anthropic/claude-opus-5.5`, and `moonshotai/kimi-k3`. GPT-6.1 Sol also
+synthesises each set of reports. Model IDs live in the individual machine
+configuration files and can be changed without changing a line.
 
 | Line | Review stations, in order | What they look for |
 | --- | --- | --- |
@@ -22,6 +36,48 @@ accept that attempt before it returns to the planner and its product work is
 committed. Any rejection returns findings to the doer, and the next attempt
 restarts the entire review chain for that line. The attempt limit counts doer
 attempts per task, not reviewer calls.
+
+## OpenRouter setup
+
+Create an OpenRouter key, then copy the repository-root example file:
+
+```sh
+cp .env.openrouter.example .env.openrouter
+```
+
+Put the key after `OPENROUTER_API_KEY=` in `.env.openrouter`. That file is
+ignored by Git. Alternatively, export `OPENROUTER_API_KEY` in the shell that
+runs `bin/factory`. Never put a key in a machine `config.json`, seed, plan,
+prompt, or committed file. Configure an OpenRouter spending limit before a
+real run: each task normally makes four OpenRouter calls for plan review and
+four for code review, with more calls after a rejected plan or code attempt.
+The factory stops after three rejected plan-review rounds by default; change
+that explicit cost bound with `--plan-reviews N`.
+
+`bin/factory` puts this repository's `bin/` directory on `PATH`, where the
+`openrouter-reviewer`, `factory-task-context`, `factory-review-context`, and
+deterministic `factory-dispatch` harnesses live. The
+review harness sends only the generated prompt: plan reviewers receive the
+active task and resolved acceptance/guidance excerpts, code reviewers receive
+those plus the current target diff, and synthesisers receive the three JSON
+reports. The planner reads the delta seed when creating the plan; the original
+iteration remains provenance checked by executable gates rather than repeated
+prompt content.
+
+Tasks cite bounded local context in this form (paths resolve from the target):
+
+```markdown
+- [ ] Add the next bounded capability.
+  - Acceptance: `characterise/scenarios.json#CASE-001,CASE-004`
+  - Acceptance: `spec/features/workflow.feature#@next-capability`
+  - Guidance: `../../seeds/context/design-system.md#implementation-rules`
+```
+
+JSON references select objects by their `id`, Gherkin references select a tag
+or scenario-title fragment, and Markdown references select exact heading slugs.
+Every resolved source is SHA-256 identified in the reviewer context. Keep the
+complete approved suite in the deterministic completion gate even when a task
+uses only its relevant subset for fast feedback.
 
 The OO lens is deliberately confined to Refactor: Convert must be allowed to
 retain awkward legacy structure. Delivery review follows the seed's interface
@@ -48,6 +104,12 @@ conversion and stop for human review once the required evidence is ready.
 Convert seeds must require the approved reference/scenarios and permit only
 translation or necessary runtime/dependency substitutions. Refactor seeds must
 require an accepted conversion and name the permitted architectural changes.
+
+For external design systems, API conventions or similar implementation inputs,
+add a pinned, bounded context pack and require the applicable seed to read it.
+The worked pattern is documented in
+[`lmf/docs/feed-forward-context.md`](../../docs/feed-forward-context.md). Keep
+runtime assets and their checksums separate from the context summary.
 
 For HCWP, the accepted baseline is extracted legacy logic, not the unavailable
 original Windows/Oracle application. Convert is a C# runtime/dependency port;

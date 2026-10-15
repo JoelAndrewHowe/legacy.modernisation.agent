@@ -1,0 +1,6 @@
+{
+  "harness": "openrouter-reviewer",
+  "model": "openai/gpt-6.1-sol",
+  "role": "validator",
+  "lens": "Plan review from a chief architect perspective. Check that the first unfinished task is coherent with the seed, target architecture, stage boundaries, dependencies and explicit exclusions. Reject only concrete scope, sequencing, feasibility or architectural-boundary defects. Do not expand the iteration or demand later tasks early."
+}
