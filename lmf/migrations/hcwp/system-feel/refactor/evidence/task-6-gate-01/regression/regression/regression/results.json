@@ -1,0 +1,108 @@
+{
+  "startedAt": "2026-10-15T15:33:27.429836+00:00",
+  "commands": [
+    {
+      "argv": [
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/verify-task-2",
+        "--evidence-dir",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-6-gate-01/regression/regression/regression/prerequisites-and-regression"
+      ],
+      "exitCode": 0,
+      "log": "prerequisites-and-regression.log"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "run",
+        "--project",
+        "refactor/checks",
+        "--no-build",
+        "--",
+        "--shell",
+        "refactor/src/patient-summary-fixtures.json"
+      ],
+      "exitCode": 0,
+      "log": "banner.json"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "run",
+        "--project",
+        "refactor/checks",
+        "--no-build",
+        "--",
+        "--flow",
+        "refactor/src/demo-fixtures.json"
+      ],
+      "exitCode": 0,
+      "log": "flow.json"
+    },
+    {
+      "argv": [
+        "node",
+        "refactor/browser/shell.mjs",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-6-gate-01/regression/regression/regression/browser"
+      ],
+      "exitCode": 0,
+      "log": "browser.log"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "--info"
+      ],
+      "exitCode": 0,
+      "log": "dotnet-info.log"
+    },
+    {
+      "argv": [
+        "node",
+        "--version"
+      ],
+      "exitCode": 0,
+      "log": "node-version.log"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "refactor",
+        "system-feel/refactor"
+      ],
+      "exitCode": 0,
+      "log": "diff-check.log"
+    }
+  ],
+  "errors": [],
+  "passed": true,
+  "scope": "Task 3 only; filters, complete grouped details, fixture volume and bilingual/final checks remain later tasks",
+  "patientBannerMapping": {
+    "decision": "system-feel/approvals/characterise-approved.md decision 1",
+    "label": "Health board",
+    "authorityCode": "SYNORG1",
+    "authorityName": "Cardiff and Vale University Health Board",
+    "adaptation": "Target-only authority name; synthetic patient/board association; all other graph values unchanged"
+  },
+  "banner": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "flow": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0
+  },
+  "finishedAt": "2026-10-15T15:34:44.852903+00:00"
+}

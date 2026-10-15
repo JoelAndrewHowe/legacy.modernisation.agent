@@ -9,7 +9,7 @@ This is **parity with extracted legacy logic**, not the original Windows/Oracle
 application or full save service. The external plan remains unchanged/unchecked.
 This task does not certify the remaining style, persistence and browser gate.
 
-Execution: 2026-10-13T14:24:28.389515+00:00 to 2026-10-13T14:24:37.811608+00:00.
+Execution: 2026-10-15T16:28:50.509884+00:00 to 2026-10-15T16:29:01.787485+00:00.
 Approved revision (SHA-256 of `characterise/review-files.sha256`):
 `5f50912226b822117af68002edbb802b13cabec9d5b7545d7e01309685969699`.
 Source bundle SHA-256: `f381d3207ac7ef32c0408fc16f8bb5252b7ec0e5ce134453592c54dde9f900a2`.

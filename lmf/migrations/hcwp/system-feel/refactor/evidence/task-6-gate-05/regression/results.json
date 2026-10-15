@@ -1,0 +1,113 @@
+{
+  "startedAt": "2026-10-15T15:53:14.999010+00:00",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "working-tree-before.log"
+    },
+    {
+      "argv": [
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/verify-task-4",
+        "--evidence-dir",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-6-gate-05/regression/regression"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "regression.log"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "run",
+        "--project",
+        "refactor/checks",
+        "--no-build",
+        "--",
+        "--language",
+        "refactor/src/Presentation/interface-strings.cy.json"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "language-unit.json"
+    },
+    {
+      "argv": [
+        "node",
+        "refactor/browser/language.mjs",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-6-gate-05/regression/browser"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "browser.log"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "--info"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "dotnet-info.log"
+    },
+    {
+      "argv": [
+        "node",
+        "--version"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "node-version.log"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "refactor",
+        "system-feel/refactor"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "diff-check.log"
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "working-tree-after.log"
+    }
+  ],
+  "errors": [],
+  "passed": true,
+  "suppliedValidatorFindings": [],
+  "scope": "Task 5 only; expanded bilingual accessibility and final slice gates remain later tasks",
+  "inventory": {
+    "strings": 192,
+    "literalUses": 99,
+    "unresolvedResources": 162
+  },
+  "unit": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0
+  },
+  "finishedAt": "2026-10-15T15:55:46.063194+00:00"
+}

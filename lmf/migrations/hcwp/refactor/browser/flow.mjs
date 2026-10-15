@@ -28,10 +28,11 @@ try {
   await page.goto(url);
   for (let i = 0; i < 100 && frames < 2; i++) await sleep(100);
   assert.ok(frames >= 2, 'Live interactive circuit required');
-  // Initial protocol frames precede completion of DOM event attachment.
-  await sleep(800);
+  await page.locator('header[data-ready="true"]').waitFor();
+  await page.locator('form[data-ready="true"]').waitFor();
   const save = () => page.getByRole('button', { name: 'Save KD03 result', exact: true }).click();
-  const rows = () => page.locator('main dl').count();
+  const rows = () => page.locator('#saved-results section[aria-label="Contact details"]').count();
+  const savedValues = () => page.locator('#saved-results').evaluate(el => Object.fromEntries([...el.querySelectorAll('dt')].map(dt => [dt.textContent, dt.nextElementSibling.textContent])));
   const inspectState = async (state, selector) => {
     report.presentation ??= [];
     for (const width of [320, 768, 1280]) {
@@ -106,12 +107,13 @@ try {
     await page.locator('#Consent').selectOption('N');
     await save(); await page.getByText('Result saved and read back from persistence.', { exact: true }).waitFor();
     assert.equal(await rows(), 1);
-    const values = await page.locator('main dl').evaluate(el => Object.fromEntries([...el.querySelectorAll('dt')].map(dt => [dt.textContent, dt.nextElementSibling.textContent])));
-    assert.equal(values['Patient ID'], '101'); assert.equal(values.Date, '2025-02-19');
-    for (const key of ['Heart', 'Hips', 'Eyes', 'Testes', 'PhysicalGeneral']) assert.equal(values[key], '1');
-    assert.equal(values.Height, '60'); assert.equal(values.Weight, '6'); assert.equal(values.HeadCircumference, '40');
+    const values = await savedValues();
+    assert.equal(values['Contact date'], '19 February 2025');
+    for (const key of ['Heart assessment', 'Hips assessment', 'Eyes assessment', 'Testes assessment', 'General physical assessment']) assert.equal(values[key], 'Satisfactory');
+    assert.equal(values['Height (cm)'], '60'); assert.equal(values['Weight (kg)'], '6'); assert.equal(values['Head circumference (cm)'], '40');
+    for (const key of ['Patient ID', 'Result ID', 'OriginalExamCode']) assert.ok(!(key in values));
     await page.getByRole('button', { name: 'Reload from persistence' }).click();
-    assert.deepEqual(await page.locator('main dl').evaluate(el => Object.fromEntries([...el.querySelectorAll('dt')].map(dt => [dt.textContent, dt.nextElementSibling.textContent]))), values);
+    assert.deepEqual(await savedValues(), values);
     await page.locator('h1').click(); // Inspect normal saved state without retained Reload focus.
     // Disabled Save is inactive (AA contrast exemption); do not treat its opacity as flat colour.
     await inspectState('saved', 'main dt, main dd, main button:not(:disabled), main p');
@@ -134,9 +136,9 @@ try {
     await measureContrast(page, report, 'keyboard confirmation yes', 'section[aria-labelledby="confirmation-title"] .nhsw-button--primary', true);
     await page.keyboard.press('Enter');
     await page.getByText('Result saved and read back from persistence.', { exact: true }).waitFor();
-    assert.equal(await rows(), 2); assert.match(await page.locator('.nhsw-warning-callout').innerText(), /KdpContactGivenAfterMaxAge/);
-    assert.match(await page.locator('main dl').first().innerText(), /Repeat\s*True/);
-    const warning = page.locator('.nhsw-warning-callout');
+    assert.equal(await rows(), 2); assert.match(await page.locator('.nhsw-warning-callout[role="status"]').innerText(), /KdpContactGivenAfterMaxAge/);
+    assert.match(await page.locator('#saved-results section[aria-label="Contact details"]').first().innerText(), /Initial or repeat\s*Repeat/);
+    const warning = page.locator('.nhsw-warning-callout[role="status"]');
     for (const part of ['heading', 'icon', 'heading-text', 'content']) assert.equal(await warning.locator(`.nhsw-warning-callout__${part}`).count(), 1);
     assert.equal(await warning.locator('.nhsw-warning-callout__icon').getAttribute('aria-hidden'), 'true');
     await inspectState('warning', '.nhsw-warning-callout__heading-text, .nhsw-warning-callout__icon, .nhsw-warning-callout__content p');
@@ -144,7 +146,8 @@ try {
   });
   await check('fresh browser circuit reloads patient-specific saved values', async () => {
     const fresh = await browser.newContext(); const p = await fresh.newPage(); await p.goto(url);
-    await p.locator('main dl').nth(1).waitFor(); assert.equal(await p.locator('main dl').count(), 2);
+    await p.locator('form[data-ready="true"]').waitFor();
+    await p.locator('#saved-results section[aria-label="Contact details"]').nth(1).waitFor(); assert.equal(await p.locator('#saved-results section[aria-label="Contact details"]').count(), 2);
     assert.equal(await p.locator('#heart').inputValue(), ''); await fresh.close();
   });
   assert.deepEqual(errors, []); report.runtimeErrors = errors;

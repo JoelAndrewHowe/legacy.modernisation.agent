@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-10-13T14:24:17.406Z",
+  "startedAt": "2026-10-15T16:28:37.144Z",
   "scope": "Current full-flow browser gate; bounded synthetic KD03, not full accessibility certification",
   "checks": [
     {
@@ -165,6 +165,72 @@
     "measurements": [
       {
         "state": "baseline 320px",
+        "element": "h2.nhsw-warning-callout__heading",
+        "text": "!\n                Important: Demonstration — synthetic patient data",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "baseline 320px",
+        "element": "p.nhsw-body",
+        "text": "Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025.",
+        "fontSize": 16,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          249,
+          196
+        ],
+        "ratio": 13.458566414717398,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "baseline 320px",
+        "element": "#patient-context-title",
+        "text": "Selected synthetic patient",
+        "fontSize": 27,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "baseline 320px",
         "element": "h1.nhsw-h1",
         "text": "6–8-week contact (KD03)",
         "fontSize": 32,
@@ -188,7 +254,29 @@
       {
         "state": "baseline 320px",
         "element": "p.",
-        "text": "Synthetic patient 101, born 1 January 2025. KD03 only.",
+        "text": "Record a 6–8-week contact for the selected synthetic patient. KD03 only.",
+        "fontSize": 16,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "baseline 320px",
+        "element": "p.",
+        "text": "Back to HCWP results",
         "fontSize": 16,
         "fontWeight": "400",
         "kind": "text",
@@ -2717,8 +2805,8 @@
       },
       {
         "state": "baseline 320px",
-        "element": "h2.nhsw-h2",
-        "text": "Saved results for patient 101",
+        "element": "#saved-results-title",
+        "text": "Saved results for selected patient",
         "fontSize": 27,
         "fontWeight": "700",
         "kind": "text",
@@ -2827,6 +2915,72 @@
       },
       {
         "state": "baseline 768px",
+        "element": "h2.nhsw-warning-callout__heading",
+        "text": "!\n                Important: Demonstration — synthetic patient data",
+        "fontSize": 22,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "baseline 768px",
+        "element": "p.nhsw-body",
+        "text": "Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025.",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          249,
+          196
+        ],
+        "ratio": 13.458566414717398,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "baseline 768px",
+        "element": "#patient-context-title",
+        "text": "Selected synthetic patient",
+        "fontSize": 36,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "baseline 768px",
         "element": "h1.nhsw-h1",
         "text": "6–8-week contact (KD03)",
         "fontSize": 48,
@@ -2850,7 +3004,29 @@
       {
         "state": "baseline 768px",
         "element": "p.",
-        "text": "Synthetic patient 101, born 1 January 2025. KD03 only.",
+        "text": "Record a 6–8-week contact for the selected synthetic patient. KD03 only.",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "baseline 768px",
+        "element": "p.",
+        "text": "Back to HCWP results",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -5379,8 +5555,8 @@
       },
       {
         "state": "baseline 768px",
-        "element": "h2.nhsw-h2",
-        "text": "Saved results for patient 101",
+        "element": "#saved-results-title",
+        "text": "Saved results for selected patient",
         "fontSize": 36,
         "fontWeight": "700",
         "kind": "text",
@@ -5489,6 +5665,72 @@
       },
       {
         "state": "baseline 1280px",
+        "element": "h2.nhsw-warning-callout__heading",
+        "text": "!\n                Important: Demonstration — synthetic patient data",
+        "fontSize": 22,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "baseline 1280px",
+        "element": "p.nhsw-body",
+        "text": "Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025.",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          249,
+          196
+        ],
+        "ratio": 13.458566414717398,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "baseline 1280px",
+        "element": "#patient-context-title",
+        "text": "Selected synthetic patient",
+        "fontSize": 36,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "baseline 1280px",
         "element": "h1.nhsw-h1",
         "text": "6–8-week contact (KD03)",
         "fontSize": 48,
@@ -5512,7 +5754,29 @@
       {
         "state": "baseline 1280px",
         "element": "p.",
-        "text": "Synthetic patient 101, born 1 January 2025. KD03 only.",
+        "text": "Record a 6–8-week contact for the selected synthetic patient. KD03 only.",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "baseline 1280px",
+        "element": "p.",
+        "text": "Back to HCWP results",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -8041,8 +8305,8 @@
       },
       {
         "state": "baseline 1280px",
-        "element": "h2.nhsw-h2",
-        "text": "Saved results for patient 101",
+        "element": "#saved-results-title",
+        "text": "Saved results for selected patient",
         "fontSize": 36,
         "fontWeight": "700",
         "kind": "text",
@@ -8503,22 +8767,22 @@
       },
       {
         "state": "select-error 320px",
-        "element": "a.",
+        "element": "a.nhsw-link",
         "text": "1: NoResultsEnteredMessage",
         "fontSize": 16,
         "fontWeight": "400",
         "kind": "text",
         "foreground": [
           0,
-          0,
-          238
+          90,
+          168
         ],
         "background": [
           240,
           244,
           245
         ],
-        "ratio": 8.486423403300037,
+        "ratio": 6.263041507180573,
         "threshold": 4.5,
         "criterion": "1.4.3",
         "passed": true
@@ -8635,22 +8899,22 @@
       },
       {
         "state": "select-error 768px",
-        "element": "a.",
+        "element": "a.nhsw-link",
         "text": "1: NoResultsEnteredMessage",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
         "foreground": [
           0,
-          0,
-          238
+          90,
+          168
         ],
         "background": [
           240,
           244,
           245
         ],
-        "ratio": 8.486423403300037,
+        "ratio": 6.263041507180573,
         "threshold": 4.5,
         "criterion": "1.4.3",
         "passed": true
@@ -8767,22 +9031,22 @@
       },
       {
         "state": "select-error 1280px",
-        "element": "a.",
+        "element": "a.nhsw-link",
         "text": "1: NoResultsEnteredMessage",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
         "foreground": [
           0,
-          0,
-          238
+          90,
+          168
         ],
         "background": [
           240,
           244,
           245
         ],
-        "ratio": 8.486423403300037,
+        "ratio": 6.263041507180573,
         "threshold": 4.5,
         "criterion": "1.4.3",
         "passed": true
@@ -9009,22 +9273,22 @@
       },
       {
         "state": "input-error 320px",
-        "element": "a.",
+        "element": "a.nhsw-link",
         "text": "InvalidHeightMessage",
         "fontSize": 16,
         "fontWeight": "400",
         "kind": "text",
         "foreground": [
           0,
-          0,
-          238
+          90,
+          168
         ],
         "background": [
           240,
           244,
           245
         ],
-        "ratio": 8.486423403300037,
+        "ratio": 6.263041507180573,
         "threshold": 4.5,
         "criterion": "1.4.3",
         "passed": true
@@ -9119,22 +9383,22 @@
       },
       {
         "state": "input-error 768px",
-        "element": "a.",
+        "element": "a.nhsw-link",
         "text": "InvalidHeightMessage",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
         "foreground": [
           0,
-          0,
-          238
+          90,
+          168
         ],
         "background": [
           240,
           244,
           245
         ],
-        "ratio": 8.486423403300037,
+        "ratio": 6.263041507180573,
         "threshold": 4.5,
         "criterion": "1.4.3",
         "passed": true
@@ -9229,22 +9493,22 @@
       },
       {
         "state": "input-error 1280px",
-        "element": "a.",
+        "element": "a.nhsw-link",
         "text": "InvalidHeightMessage",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
         "foreground": [
           0,
-          0,
-          238
+          90,
+          168
         ],
         "background": [
           240,
           244,
           245
         ],
-        "ratio": 8.486423403300037,
+        "ratio": 6.263041507180573,
         "threshold": 4.5,
         "criterion": "1.4.3",
         "passed": true
@@ -9317,8 +9581,448 @@
       },
       {
         "state": "saved 320px",
+        "element": "p.nhsw-body",
+        "text": "Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025.",
+        "fontSize": 16,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          249,
+          196
+        ],
+        "ratio": 13.458566414717398,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Full name",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Mx Synthetic, Example One",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "NHS number",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "SYN-NHS-101",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Date of birth",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "1 January 2025",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Age",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "10 weeks",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Sex",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Male",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Address",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "1 Synthetic Lane, Invented District, SYN POST 1",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Current status",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Synthetic active status (demonstration fixture)",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "School",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Synthetic School One — legacy format unavailable (CodeDescriptionFormat)",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Health board",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "SYNORG1, Cardiff and Vale University Health Board",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
         "element": "p.",
-        "text": "Synthetic patient 101, born 1 January 2025. KD03 only.",
+        "text": "Record a 6–8-week contact for the selected synthetic patient. KD03 only.",
+        "fontSize": 16,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "p.",
+        "text": "Back to HCWP results",
         "fontSize": 16,
         "fontWeight": "400",
         "kind": "text",
@@ -9427,6 +10131,28 @@
       },
       {
         "state": "saved 320px",
+        "element": "p.",
+        "text": "View saved result details or return to HCWP results.",
+        "fontSize": 16,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
         "element": "button.nhsw-button nhsw-button--secondary nhsw-button--inline",
         "text": "Start new result",
         "fontSize": 16,
@@ -9516,7 +10242,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Result ID",
+        "text": "Contact type",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -9538,7 +10264,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "9001",
+        "text": "6–8-week contact",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -9560,7 +10286,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Patient ID",
+        "text": "Examination state",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -9582,7 +10308,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "101",
+        "text": "Recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -9604,7 +10330,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminationCode",
+        "text": "Initial or repeat",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -9626,7 +10352,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "KD03",
+        "text": "Initial",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -9648,7 +10374,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "OriginalExamCode",
+        "text": "Contact date",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -9670,7 +10396,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "KD03",
+        "text": "19 February 2025",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -9692,7 +10418,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "ResultEnteredDate",
+        "text": "Reason not examined",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -9714,359 +10440,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "2025-03-15T12:00:00.0000000",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ChildMeasurementId",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "8001",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "Repeat",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "False",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "LocationName",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminerName",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminerType",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "Date",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "2025-02-19",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "Origin",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "2",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ReasonNotExamined",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10110,7 +10484,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10154,7 +10528,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10176,7 +10550,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "WithdrawConsent",
+        "text": "Withdraw consent requested",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10198,7 +10572,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "False",
+        "text": "Not stored with result; ordinary save does not update patient consent",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10220,183 +10594,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "LocationType",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "LocationCode",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminerCategory",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminerHcpCode",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 320px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "Height",
+        "text": "Height (cm)",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10440,7 +10638,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "HeightMeasurementDeclined",
+        "text": "Height measurement declined",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10462,7 +10660,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10484,7 +10682,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Weight",
+        "text": "Weight (kg)",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10528,7 +10726,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "WeightMeasurementDeclined",
+        "text": "Weight measurement declined",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10550,7 +10748,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10572,7 +10770,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "HeadCircumference",
+        "text": "Head circumference (cm)",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10616,7 +10814,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "HeadMeasurementDeclined",
+        "text": "Head measurement declined",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10638,7 +10836,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10660,7 +10858,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Heart",
+        "text": "Calculated BMI",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10682,7 +10880,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "16.67",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10704,7 +10902,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Hips",
+        "text": "Heart assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10726,7 +10924,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10748,7 +10946,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Eyes",
+        "text": "Hips assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10770,7 +10968,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10792,7 +10990,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Testes",
+        "text": "Eyes assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10814,7 +11012,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10836,7 +11034,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "PhysicalGeneral",
+        "text": "Testes assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10858,7 +11056,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10880,7 +11078,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "ReceivingBoostSchemeService",
+        "text": "General physical assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10902,7 +11100,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10924,7 +11122,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "LookedAfterChild",
+        "text": "Receiving boost scheme service",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10946,7 +11144,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -10968,7 +11166,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "OnChildProtectionRegister",
+        "text": "Looked after child",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -10990,7 +11188,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -11012,7 +11210,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "OnwardReferralsMade",
+        "text": "On child protection register",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -11034,7 +11232,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -11056,7 +11254,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "EvidenceOfXgm",
+        "text": "Onward referrals made",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -11078,7 +11276,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -11100,7 +11298,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "DomesticViolenceConcern",
+        "text": "Evidence of XGM",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -11122,7 +11320,7 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -11144,7 +11342,7 @@
       {
         "state": "saved 320px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "CoreComponent",
+        "text": "Domestic violence assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -11166,7 +11364,315 @@
       {
         "state": "saved 320px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Core component offered",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Location type",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Location",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Examiner category",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Examiner",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Origin",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Unscheduled",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Recorded date",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 320px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "15 March 2025",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -11209,8 +11715,448 @@
       },
       {
         "state": "saved 768px",
+        "element": "p.nhsw-body",
+        "text": "Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025.",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          249,
+          196
+        ],
+        "ratio": 13.458566414717398,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Full name",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Mx Synthetic, Example One",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "NHS number",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "SYN-NHS-101",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Date of birth",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "1 January 2025",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Age",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "10 weeks",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Sex",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Male",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Address",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "1 Synthetic Lane, Invented District, SYN POST 1",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Current status",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Synthetic active status (demonstration fixture)",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "School",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Synthetic School One — legacy format unavailable (CodeDescriptionFormat)",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Health board",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "SYNORG1, Cardiff and Vale University Health Board",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
         "element": "p.",
-        "text": "Synthetic patient 101, born 1 January 2025. KD03 only.",
+        "text": "Record a 6–8-week contact for the selected synthetic patient. KD03 only.",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "p.",
+        "text": "Back to HCWP results",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -11319,6 +12265,28 @@
       },
       {
         "state": "saved 768px",
+        "element": "p.",
+        "text": "View saved result details or return to HCWP results.",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
         "element": "button.nhsw-button nhsw-button--secondary nhsw-button--inline",
         "text": "Start new result",
         "fontSize": 19,
@@ -11408,7 +12376,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Result ID",
+        "text": "Contact type",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -11430,7 +12398,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "9001",
+        "text": "6–8-week contact",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -11452,7 +12420,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Patient ID",
+        "text": "Examination state",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -11474,7 +12442,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "101",
+        "text": "Recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -11496,7 +12464,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminationCode",
+        "text": "Initial or repeat",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -11518,7 +12486,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "KD03",
+        "text": "Initial",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -11540,7 +12508,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "OriginalExamCode",
+        "text": "Contact date",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -11562,7 +12530,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "KD03",
+        "text": "19 February 2025",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -11584,7 +12552,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "ResultEnteredDate",
+        "text": "Reason not examined",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -11606,359 +12574,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "2025-03-15T12:00:00.0000000",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ChildMeasurementId",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "8001",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "Repeat",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "False",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "LocationName",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminerName",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminerType",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "Date",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "2025-02-19",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "Origin",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "2",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ReasonNotExamined",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12002,7 +12618,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12046,7 +12662,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12068,7 +12684,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "WithdrawConsent",
+        "text": "Withdraw consent requested",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12090,7 +12706,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "False",
+        "text": "Not stored with result; ordinary save does not update patient consent",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12112,183 +12728,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "LocationType",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "LocationCode",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminerCategory",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminerHcpCode",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 768px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "Height",
+        "text": "Height (cm)",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12332,7 +12772,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "HeightMeasurementDeclined",
+        "text": "Height measurement declined",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12354,7 +12794,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12376,7 +12816,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Weight",
+        "text": "Weight (kg)",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12420,7 +12860,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "WeightMeasurementDeclined",
+        "text": "Weight measurement declined",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12442,7 +12882,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12464,7 +12904,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "HeadCircumference",
+        "text": "Head circumference (cm)",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12508,7 +12948,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "HeadMeasurementDeclined",
+        "text": "Head measurement declined",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12530,7 +12970,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12552,7 +12992,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Heart",
+        "text": "Calculated BMI",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12574,7 +13014,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "16.67",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12596,7 +13036,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Hips",
+        "text": "Heart assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12618,7 +13058,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12640,7 +13080,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Eyes",
+        "text": "Hips assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12662,7 +13102,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12684,7 +13124,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Testes",
+        "text": "Eyes assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12706,7 +13146,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12728,7 +13168,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "PhysicalGeneral",
+        "text": "Testes assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12750,7 +13190,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12772,7 +13212,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "ReceivingBoostSchemeService",
+        "text": "General physical assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12794,7 +13234,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12816,7 +13256,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "LookedAfterChild",
+        "text": "Receiving boost scheme service",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12838,7 +13278,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12860,7 +13300,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "OnChildProtectionRegister",
+        "text": "Looked after child",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12882,7 +13322,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12904,7 +13344,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "OnwardReferralsMade",
+        "text": "On child protection register",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12926,7 +13366,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12948,7 +13388,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "EvidenceOfXgm",
+        "text": "Onward referrals made",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -12970,7 +13410,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -12992,7 +13432,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "DomesticViolenceConcern",
+        "text": "Evidence of XGM",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -13014,7 +13454,7 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -13036,7 +13476,7 @@
       {
         "state": "saved 768px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "CoreComponent",
+        "text": "Domestic violence assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -13058,7 +13498,315 @@
       {
         "state": "saved 768px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Core component offered",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Location type",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Location",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Examiner category",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Examiner",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Origin",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Unscheduled",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Recorded date",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 768px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "15 March 2025",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -13101,8 +13849,448 @@
       },
       {
         "state": "saved 1280px",
+        "element": "p.nhsw-body",
+        "text": "Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025.",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          249,
+          196
+        ],
+        "ratio": 13.458566414717398,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Full name",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Mx Synthetic, Example One",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "NHS number",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "SYN-NHS-101",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Date of birth",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "1 January 2025",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Age",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "10 weeks",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Sex",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Male",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Address",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "1 Synthetic Lane, Invented District, SYN POST 1",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Current status",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Synthetic active status (demonstration fixture)",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "School",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Synthetic School One — legacy format unavailable (CodeDescriptionFormat)",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Health board",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "SYNORG1, Cardiff and Vale University Health Board",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
         "element": "p.",
-        "text": "Synthetic patient 101, born 1 January 2025. KD03 only.",
+        "text": "Record a 6–8-week contact for the selected synthetic patient. KD03 only.",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "p.",
+        "text": "Back to HCWP results",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -13211,6 +14399,28 @@
       },
       {
         "state": "saved 1280px",
+        "element": "p.",
+        "text": "View saved result details or return to HCWP results.",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
         "element": "button.nhsw-button nhsw-button--secondary nhsw-button--inline",
         "text": "Start new result",
         "fontSize": 19,
@@ -13300,7 +14510,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Result ID",
+        "text": "Contact type",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -13322,7 +14532,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "9001",
+        "text": "6–8-week contact",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -13344,7 +14554,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Patient ID",
+        "text": "Examination state",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -13366,7 +14576,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "101",
+        "text": "Recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -13388,7 +14598,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminationCode",
+        "text": "Initial or repeat",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -13410,7 +14620,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "KD03",
+        "text": "Initial",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -13432,7 +14642,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "OriginalExamCode",
+        "text": "Contact date",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -13454,7 +14664,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "KD03",
+        "text": "19 February 2025",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -13476,7 +14686,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "ResultEnteredDate",
+        "text": "Reason not examined",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -13498,359 +14708,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "2025-03-15T12:00:00.0000000",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ChildMeasurementId",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "8001",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "Repeat",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "False",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "LocationName",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminerName",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminerType",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "Date",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "2025-02-19",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "Origin",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "2",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ReasonNotExamined",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -13894,7 +14752,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -13938,7 +14796,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -13960,7 +14818,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "WithdrawConsent",
+        "text": "Withdraw consent requested",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -13982,7 +14840,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "False",
+        "text": "Not stored with result; ordinary save does not update patient consent",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14004,183 +14862,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "LocationType",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "LocationCode",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminerCategory",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "ExaminerHcpCode",
-        "fontSize": 19,
-        "fontWeight": "700",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 3,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dd.nhsw-summary-list__value",
-        "text": "",
-        "fontSize": 19,
-        "fontWeight": "400",
-        "kind": "text",
-        "foreground": [
-          33,
-          43,
-          50
-        ],
-        "background": [
-          240,
-          244,
-          245
-        ],
-        "ratio": 13.022154216636173,
-        "threshold": 4.5,
-        "criterion": "1.4.3",
-        "passed": true
-      },
-      {
-        "state": "saved 1280px",
-        "element": "dt.nhsw-summary-list__key",
-        "text": "Height",
+        "text": "Height (cm)",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14224,7 +14906,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "HeightMeasurementDeclined",
+        "text": "Height measurement declined",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14246,7 +14928,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14268,7 +14950,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Weight",
+        "text": "Weight (kg)",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14312,7 +14994,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "WeightMeasurementDeclined",
+        "text": "Weight measurement declined",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14334,7 +15016,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14356,7 +15038,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "HeadCircumference",
+        "text": "Head circumference (cm)",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14400,7 +15082,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "HeadMeasurementDeclined",
+        "text": "Head measurement declined",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14422,7 +15104,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "N",
+        "text": "No",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14444,7 +15126,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Heart",
+        "text": "Calculated BMI",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14466,7 +15148,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "16.67",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14488,7 +15170,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Hips",
+        "text": "Heart assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14510,7 +15192,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14532,7 +15214,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Eyes",
+        "text": "Hips assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14554,7 +15236,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14576,7 +15258,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "Testes",
+        "text": "Eyes assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14598,7 +15280,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14620,7 +15302,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "PhysicalGeneral",
+        "text": "Testes assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14642,7 +15324,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "1",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14664,7 +15346,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "ReceivingBoostSchemeService",
+        "text": "General physical assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14686,7 +15368,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Satisfactory",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14708,7 +15390,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "LookedAfterChild",
+        "text": "Receiving boost scheme service",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14730,7 +15412,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14752,7 +15434,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "OnChildProtectionRegister",
+        "text": "Looked after child",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14774,7 +15456,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14796,7 +15478,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "OnwardReferralsMade",
+        "text": "On child protection register",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14818,7 +15500,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14840,7 +15522,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "EvidenceOfXgm",
+        "text": "Onward referrals made",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14862,7 +15544,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14884,7 +15566,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "DomesticViolenceConcern",
+        "text": "Evidence of XGM",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14906,7 +15588,7 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -14928,7 +15610,7 @@
       {
         "state": "saved 1280px",
         "element": "dt.nhsw-summary-list__key",
-        "text": "CoreComponent",
+        "text": "Domestic violence assessment",
         "fontSize": 19,
         "fontWeight": "700",
         "kind": "text",
@@ -14950,7 +15632,315 @@
       {
         "state": "saved 1280px",
         "element": "dd.nhsw-summary-list__value",
-        "text": "",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Core component offered",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Location type",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Location",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Examiner category",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Examiner",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Not recorded",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Origin",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "Unscheduled",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dt.nhsw-summary-list__key",
+        "text": "Recorded date",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          240,
+          244,
+          245
+        ],
+        "ratio": 13.022154216636173,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "saved 1280px",
+        "element": "dd.nhsw-summary-list__value",
+        "text": "15 March 2025",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -15588,6 +16578,72 @@
       {
         "state": "warning 320px",
         "element": "span.nhsw-warning-callout__heading-text",
+        "text": "Important: Demonstration — synthetic patient data",
+        "fontSize": 19,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 320px",
+        "element": "p.nhsw-body",
+        "text": "Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025.",
+        "fontSize": 16,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          249,
+          196
+        ],
+        "ratio": 13.458566414717398,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 320px",
+        "element": "span.nhsw-warning-callout__icon",
+        "text": "!",
+        "fontSize": 16,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          255,
+          235,
+          59
+        ],
+        "background": [
+          33,
+          43,
+          50
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 320px",
+        "element": "span.nhsw-warning-callout__heading-text",
         "text": "Important: Warning",
         "fontSize": 19,
         "fontWeight": "700",
@@ -15654,6 +16710,72 @@
       {
         "state": "warning 768px",
         "element": "span.nhsw-warning-callout__heading-text",
+        "text": "Important: Demonstration — synthetic patient data",
+        "fontSize": 22,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 768px",
+        "element": "p.nhsw-body",
+        "text": "Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025.",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          249,
+          196
+        ],
+        "ratio": 13.458566414717398,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 768px",
+        "element": "span.nhsw-warning-callout__icon",
+        "text": "!",
+        "fontSize": 16,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          255,
+          235,
+          59
+        ],
+        "background": [
+          33,
+          43,
+          50
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 768px",
+        "element": "span.nhsw-warning-callout__heading-text",
         "text": "Important: Warning",
         "fontSize": 22,
         "fontWeight": "700",
@@ -15677,6 +16799,72 @@
         "state": "warning 768px",
         "element": "p.nhsw-body",
         "text": "KdpContactGivenAfterMaxAge",
+        "fontSize": 19,
+        "fontWeight": "400",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          249,
+          196
+        ],
+        "ratio": 13.458566414717398,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 1280px",
+        "element": "span.nhsw-warning-callout__icon",
+        "text": "!",
+        "fontSize": 16,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          255,
+          235,
+          59
+        ],
+        "background": [
+          33,
+          43,
+          50
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 4.5,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 1280px",
+        "element": "span.nhsw-warning-callout__heading-text",
+        "text": "Important: Demonstration — synthetic patient data",
+        "fontSize": 22,
+        "fontWeight": "700",
+        "kind": "text",
+        "foreground": [
+          33,
+          43,
+          50
+        ],
+        "background": [
+          255,
+          235,
+          59
+        ],
+        "ratio": 11.809914165633215,
+        "threshold": 3,
+        "criterion": "1.4.3",
+        "passed": true
+      },
+      {
+        "state": "warning 1280px",
+        "element": "p.nhsw-body",
+        "text": "Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025.",
         "fontSize": 19,
         "fontWeight": "400",
         "kind": "text",
@@ -15771,11 +16959,11 @@
   },
   "runtimeErrors": [],
   "passed": 6,
-  "finishedAt": "2026-10-13T14:24:28.321Z",
+  "finishedAt": "2026-10-15T16:28:50.423Z",
   "sourceHashes": {
-    "browser/flow.mjs": "b17f9216467f69fb1bf627dfd89aa67a0d23d6f86cfdb93f3081f1945045e153",
-    "browser/contrast.mjs": "0fe79afe889ecd4cac27b91dd41b335427ca1c0bd848678693a2b3438608547e",
-    "src/Components/Pages/Recording.razor": "09a0e6f7064f4e600a68b73f1ed7aefde3544808d53286924ff7058da0b54892",
+    "browser/flow.mjs": "9788f3ae517ea2caea9b85cb45afec45b2f419c236975b10381ebcc0362037f9",
+    "browser/contrast.mjs": "1c7615a7a60173d81497c0b668e36f8057f2a5d6a719ea5e2716c53e727d2cf1",
+    "src/Components/Pages/Recording.razor": "fe074c1f8b4a13d1c4b5930b3e711c866f1184e6bfae459f50e512a34c3eaf96",
     "src/wwwroot/vendor/nhsw/nhsw.min.css": "117106cd1129ddfc0dae636d123d9123583c8f3970ebad63e2295d63bb502d99"
   }
 }

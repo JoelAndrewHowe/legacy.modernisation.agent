@@ -6,7 +6,7 @@
 @inject Hcwp.Application.PatientSummaryQuery Patients
 @inject NavigationManager Navigation
 <a class="nhsw-skip-link" href="@SkipTarget" @onclick="FocusMain" @onclick:preventDefault>@T("Skip to main content")</a>
-<header class="nhsw-site-header">
+<header class="nhsw-site-header" data-ready="@ready.ToString().ToLowerInvariant()">
     <div class="nhsw-site-header__container"><div class="nhsw-site-header__top">
         <div class="nhsw-site-header__brand">
             <span class="nhsw-site-header__logo"><img src="vendor/nhsw/nhsw-logo.svg" alt="@T("Digital Health and Care Wales / NHS Wales")" /></span>
@@ -45,6 +45,7 @@
     <p class="nhsw-body-s nhsw-site-footer__version">@T("Temporary in-memory storage. Original Windows/Oracle and PostgreSQL unverified.")</p>
 </div></footer>
 @code {
+    bool ready;
     string T(string text) => Language.Text(text);
     protected override void OnInitialized() => Language.Changed += RefreshLanguage;
     void RefreshLanguage() => _ = InvokeAsync(StateHasChanged);
@@ -55,6 +56,8 @@
         {
             Language.Select(await JS.InvokeAsync<string>("hcwpLanguage.read"));
             await JS.InvokeVoidAsync("hcwpLanguage.apply", Language.Code);
+            ready = true;
+            StateHasChanged();
         }
     }
     async Task ChangeLanguage(string code)

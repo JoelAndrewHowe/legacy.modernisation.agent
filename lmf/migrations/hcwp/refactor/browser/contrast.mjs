@@ -61,8 +61,10 @@ export async function measureContrast(page, report, state, selector, focus = fal
         focused, outline: box.outline, shadow: box.boxShadow,
         pseudoIndicator: after.content !== 'none' && after.content !== 'normal' && parseFloat(after.height) >= 3
           ? over(rgba(after.backgroundColor), outside) : null,
-        // Current NHSW uses one solid shadow for the select/input/button focus.
-        shadowColour: s.boxShadow === 'none' ? null : over(rgba(s.boxShadow.match(/rgba?\([^)]+\)/)[0]), outside),
+        // NHSW pagination uses yellow top AND dark bottom shadows. Measure the
+        // qualifying final dark portion, not its intentionally low-contrast yellow top.
+        shadowColours: s.boxShadow === 'none' ? [] : s.boxShadow.match(/rgba?\([^)]+\)/g).map(colour => over(rgba(colour), outside)),
+        shadowColour: s.boxShadow === 'none' ? null : over(rgba(s.boxShadow.match(/rgba?\([^)]+\)/g).at(-1)), outside),
         outlineColour: over(rgba(box.outlineColor), outside)
       };
     });
@@ -81,14 +83,17 @@ export async function measureContrast(page, report, state, selector, focus = fal
     if (s.selectIcon) add(s, 'reviewed rendered select SVG arrow / background', [33, 43, 50], s.background, 3, '1.4.11');
     if (focus && !s.control) {
       assert.equal(await page.locator(selector).evaluate(el => el === document.activeElement), true);
-      const indicator = s.shadowColour ?? s.pseudoIndicator;
-      assert.ok(indicator, 'NHSW link keyboard focus needs its dark underline: ' + JSON.stringify(s));
-      // Reverse header links use the yellow fill against the dark header; the
-      // dark underline qualifies against the focused yellow text background.
-      add(s, 'link focus underline / focused background', indicator, s.background, 3, '1.4.11');
-      const outsideRatio = ratio(indicator, s.outside);
-      add(s, outsideRatio >= 3 ? 'link underline / surroundings' : 'link focused fill / surroundings',
-        outsideRatio >= 3 ? indicator : s.background, s.outside, 3, '1.4.11');
+      const indicators = [...s.shadowColours, ...(s.pseudoIndicator ? [s.pseudoIndicator] : [])];
+      assert.ok(indicators.length, 'NHSW link keyboard focus needs a painted indicator: ' + JSON.stringify(s));
+      // Composite NHSW indicators can use yellow against a retained current-page
+      // blue fill and dark against the surrounding page. Neither colour alone
+      // has to contrast against both neighbours. Retain all computed candidates.
+      const best = (colours, background) => colours.reduce((a, b) => ratio(a, background) >= ratio(b, background) ? a : b);
+      const inside = best(indicators, s.background);
+      const outside = best([...indicators, s.background], s.outside);
+      rows.push({ state, element: s.element, kind: 'painted link focus candidates', colours: indicators, shadow: s.shadow, threshold: null });
+      add(s, 'link focus indicator / focused background', inside, s.background, 3, '1.4.11');
+      add(s, 'link focus indicator or fill / surroundings', outside, s.outside, 3, '1.4.11');
     }
     if (!s.control) continue;
     if (s.checkbox) {

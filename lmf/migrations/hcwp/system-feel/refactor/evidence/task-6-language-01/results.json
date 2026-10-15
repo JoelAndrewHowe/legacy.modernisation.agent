@@ -1,0 +1,34 @@
+{
+  "startedAt": "2026-10-15T15:25:49.942Z",
+  "checks": [
+    {
+      "name": "English default, Welsh document language and list URL retained",
+      "status": "passed"
+    },
+    {
+      "name": "Welsh survives reload and detail-return restores page/filter",
+      "status": "passed"
+    },
+    {
+      "name": "Unsaved draft retained across both switches and internal navigation",
+      "status": "passed"
+    },
+    {
+      "name": "Bilingual narrow/wide shell and recording labels without overflow",
+      "status": "passed"
+    },
+    {
+      "name": "Welsh invalid-filter fallback, localized summary and unchanged URL",
+      "status": "passed"
+    }
+  ],
+  "errors": [
+    "locator.getAttribute: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('tbody a').first()\u001b[22m\n\n    at /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/language.mjs:108:72\n    at async check (/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/language.mjs:16:38)\n    at async file:///workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/refactor/browser/language.mjs:96:3"
+  ],
+  "skipped": 0,
+  "browser": "156.0.8078.4",
+  "total": 6,
+  "passed": 5,
+  "failed": 1,
+  "finishedAt": "2026-10-15T15:26:35.037Z"
+}

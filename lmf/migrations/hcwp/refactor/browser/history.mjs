@@ -34,13 +34,17 @@ try {
   async function range(text) { await page.getByText(text, { exact: true }).waitFor(); }
   await check('23 results, 10 rows, third page and no other patient detail', async () => {
     await page.goto(origin + '/results'); await range('Showing 1–10 of 23 results.');
+    await page.locator('header[data-ready="true"]').waitFor();
+    await page.locator('form[data-ready="true"]').waitFor();
     assert.equal(await page.locator('article').count(), 10);
     await page.getByRole('link', { name: 'Page 3', exact: true }).click();
     await range('Showing 21–23 of 23 results.');
     assert.equal(await page.locator('nav[aria-label="Results pages"] .nhsw-pagination__list > .nhsw-pagination__item--current [aria-current="page"]').innerText(), '3');
     assert.equal(await page.locator('.nhsw-pagination__list > li').count(), 3);
+    await page.locator('h1').click(); // Compare neutral current-page styling, not retained click focus.
     const colours = await page.locator('.nhsw-pagination__number-link').evaluateAll(links => links.map(el => getComputedStyle(el).backgroundColor));
-    assert.notEqual(colours[2], colours[0], 'Current page must be visually distinct');
+    report.paginationColours = colours;
+    assert.notEqual(colours[2], colours[0], 'Current page must be visually distinct: ' + JSON.stringify(colours));
     await page.reload(); await range('Showing 21–23 of 23 results.');
     await page.screenshot({ path: path.join(evidence, 'third-page.png'), fullPage: true });
   });

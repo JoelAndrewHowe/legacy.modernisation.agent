@@ -1,0 +1,28 @@
+{
+  "task": "Extend existing checks and implement system-feel/refactor/verify",
+  "planMarkedDone": false,
+  "suppliedValidatorFindings": [],
+  "currentPassingEvidence": "system-feel/refactor/evidence/task-6-gate-06/results.json",
+  "gatePassed": true,
+  "countedSuites": 16,
+  "failed": 0,
+  "skipped": 0,
+  "referenceConvertCases": 53,
+  "approvedRegressionCasesPerImplementation": 40,
+  "bilingualChromiumChecks": 9,
+  "gateContractTests": 19,
+  "legacyGate": "system-feel/refactor/evidence/task-6-gate-06/legacy-evidence/gate-results.json",
+  "documentation": "system-feel/refactor/task-6.md",
+  "observedIssuesAddressed": [
+    "Await interactive initialization instead of prerendered HTML",
+    "Use article-based results and scope current-page assertions to primary navigation or pagination as appropriate",
+    "Scope persisted recording assertions independently of patient banner and grouped readback",
+    "Assert human-readable saved values without internal clinical-content identifiers",
+    "Handle repeat confirmation before recording validation and asynchronous field focus",
+    "Sample neutral pagination separately from retained click focus",
+    "Measure all painted NHSW composite focus-shadow portions against adjacent colours without lowering thresholds",
+    "Retain failed and passing fixed-path legacy evidence in fresh slice packets",
+    "Reject hidden legacy command failures/skips, empty or invalid nested counts, malformed checks and runtime errors independently of outer summary counters"
+  ],
+  "remaining": "Final task's review/report, parity versus intentional-enhancement separation and limitations assessment; no iteration-completion claim"
+}

@@ -1,0 +1,1976 @@
+- main:
+  - 'heading "Pwysig: Arddangosiad — data claf synthetig" [level=2]'
+  - paragraph: "Arddangosiad lleol yn unig. Nid at ddefnydd clinigol. Cloc sefydlog: 15 Mawrth 2025."
+  - region "Claf synthetig a ddewiswyd":
+    - heading "Claf synthetig a ddewiswyd" [level=2]
+    - term: Enw llawn
+    - definition: Mx Synthetic, Example One
+    - term: Rhif GIG
+    - definition: SYN-NHS-101
+    - term: Dyddiad geni
+    - definition: 1 January 2025
+    - term: Oedran
+    - definition: 10 weeks
+    - term: Rhyw
+    - definition: Gwryw
+    - term: Cyfeiriad
+    - definition: 1 Synthetic Lane, Invented District, SYN POST 1
+    - term: Statws cyfredol
+    - definition: Statws gweithredol synthetig (gosodiad arddangos)
+    - term: Ysgol
+    - definition: Synthetic School One — fformat etifeddol ddim ar gael (CodeDescriptionFormat)
+    - term: Bwrdd iechyd
+    - definition: SYNORG1, Cardiff and Vale University Health Board
+  - heading "Cyswllt 6–8 wythnos (KD03)" [level=1]
+  - paragraph: Cofnodwch gyswllt 6–8 wythnos ar gyfer y claf synthetig a ddewiswyd. KD03 yn unig.
+  - paragraph:
+    - link "Yn ôl i ganlyniadau Rhaglen Plant Iach Cymru":
+      - /url: /results
+  - paragraph: "Cloc arddangos sefydlog: 15 Mawrth 2025. Data dros dro yn y cof; nid polisi clinigol."
+  - paragraph: Mae pob maes yn ddewisol ar wahân. Nid yw asesiad cyffredinol yn unig yn cyfrif fel canlyniad. Mae rhybuddion yn defnyddio dynodwyr adnoddau; nid yw'r geiriad lleol gwreiddiol ar gael.
+  - group "Canlyniad KD03 newydd":
+    - text: Canlyniad KD03 newydd Dyddiad cyswllt
+    - textbox "Dyddiad cyswllt": 2025-02-19
+    - text: Tarddiad
+    - combobox "Tarddiad":
+      - option "Heb ei gofnodi"
+      - option "Wedi'i drefnu"
+      - option "Heb ei drefnu" [selected]
+      - option "Symud i mewn"
+      - option "Diwygiad"
+      - option "Anhysbys"
+    - text: Rheswm dros beidio ag archwilio
+    - combobox "Rheswm dros beidio ag archwilio":
+      - option "Heb ei gofnodi" [selected]
+      - option "Ni ddaethpwyd â'r plentyn"
+      - option "Plentyn sâl neu anghydweithredol"
+      - option "Gwrthodwyd yr archwiliad"
+      - option "Rhiant / gofalwr ddim yn bresennol"
+      - option "Ddim yn ofynnol"
+    - text: Cydsyniad
+    - combobox "Cydsyniad":
+      - option "Heb ei gofnodi" [selected]
+      - option "Ie"
+      - option "Na"
+    - text: Aildrefnu
+    - combobox "Aildrefnu":
+      - option "Heb ei gofnodi"
+      - option "Ie"
+      - option "Na" [selected]
+    - text: Tynnu cydsyniad yn ôl (nid yw cadw arferol yn diweddaru cydsyniad y claf)
+    - combobox "Tynnu cydsyniad yn ôl (nid yw cadw arferol yn diweddaru cydsyniad y claf)":
+      - option "Na" [selected]
+      - option "Ie"
+    - text: Math o leoliad
+    - combobox "Math o leoliad":
+      - option "Heb ei gofnodi" [selected]
+      - option "Meddygfa"
+      - option "Clinig"
+      - option "Ysgol"
+      - option "Gartref"
+      - option "Ysbyty"
+      - option "Cyswllt ffôn"
+      - option "Rhithwir"
+    - text: "Cod lleoliad (meddygfa synthetig: SYNLOC)"
+    - 'textbox "Cod lleoliad (meddygfa synthetig: SYNLOC)"'
+    - text: Categori archwiliwr
+    - combobox "Categori archwiliwr":
+      - option "Heb ei gofnodi" [selected]
+      - option "Categori archwiliwr synthetig"
+    - text: "Cod archwiliwr (synthetig: SYN001; heb ei ddefnyddio: SYN002)"
+    - 'textbox "Cod archwiliwr (synthetig: SYN001; heb ei ddefnyddio: SYN002)"'
+    - text: Taldra (cm)
+    - spinbutton "Taldra (cm)"
+    - text: Gwrthodwyd mesur taldra (mae newid y naill ffordd neu'r llall yn clirio'r taldra)
+    - combobox "Gwrthodwyd mesur taldra (mae newid y naill ffordd neu'r llall yn clirio'r taldra)":
+      - option "Heb ei gofnodi"
+      - option "Ie"
+      - option "Na" [selected]
+    - text: Pwysau (kg)
+    - spinbutton "Pwysau (kg)"
+    - text: Gwrthodwyd mesur pwysau (mae newid y naill ffordd neu'r llall yn clirio'r pwysau)
+    - combobox "Gwrthodwyd mesur pwysau (mae newid y naill ffordd neu'r llall yn clirio'r pwysau)":
+      - option "Heb ei gofnodi"
+      - option "Ie"
+      - option "Na" [selected]
+    - text: Cylchedd y pen (cm; terfyn maes o dan 100, terfyn cadw o dan 1000)
+    - spinbutton "Cylchedd y pen (cm; terfyn maes o dan 100, terfyn cadw o dan 1000)"
+    - text: Gwrthodwyd mesur y pen (mae newid y naill ffordd neu'r llall yn clirio cylchedd y pen)
+    - combobox "Gwrthodwyd mesur y pen (mae newid y naill ffordd neu'r llall yn clirio cylchedd y pen)":
+      - option "Heb ei gofnodi"
+      - option "Ie"
+      - option "Na" [selected]
+    - text: Asesiad y galon
+    - combobox "Asesiad y galon":
+      - option "Heb ei gofnodi" [selected]
+      - option "Boddhaol"
+      - option "Pryder"
+      - option "Heb ei asesu"
+    - text: Asesiad y cluniau
+    - combobox "Asesiad y cluniau":
+      - option "Heb ei gofnodi" [selected]
+      - option "Boddhaol"
+      - option "Pryder"
+      - option "Heb ei asesu"
+    - text: Asesiad y llygaid
+    - combobox "Asesiad y llygaid":
+      - option "Heb ei gofnodi" [selected]
+      - option "Boddhaol"
+      - option "Pryder"
+      - option "Heb ei asesu"
+    - text: Asesiad y ceilliau (label bechgyn; dim rheol gwrthod ar sail rhyw)
+    - combobox "Asesiad y ceilliau (label bechgyn; dim rheol gwrthod ar sail rhyw)":
+      - option "Heb ei gofnodi" [selected]
+      - option "Boddhaol"
+      - option "Pryder"
+      - option "Heb ei asesu"
+    - text: Asesiad corfforol cyffredinol
+    - combobox "Asesiad corfforol cyffredinol":
+      - option "Heb ei gofnodi" [selected]
+      - option "Boddhaol"
+      - option "Pryder"
+      - option "Heb ei asesu"
+    - text: Yn derbyn gwasanaeth cynllun boost
+    - combobox "Yn derbyn gwasanaeth cynllun boost":
+      - option "Heb ei gofnodi" [selected]
+      - option "Ie"
+      - option "Na"
+      - option "Anhysbys"
+    - text: Plentyn sy'n derbyn gofal
+    - combobox "Plentyn sy'n derbyn gofal":
+      - option "Heb ei gofnodi" [selected]
+      - option "Ie"
+      - option "Na"
+      - option "Anhysbys"
+    - text: Ar y gofrestr amddiffyn plant
+    - combobox "Ar y gofrestr amddiffyn plant":
+      - option "Heb ei gofnodi" [selected]
+      - option "Ie"
+      - option "Na"
+      - option "Anhysbys"
+    - text: Atgyfeiriadau ymlaen wedi'u gwneud
+    - combobox "Atgyfeiriadau ymlaen wedi'u gwneud":
+      - option "Heb ei gofnodi" [selected]
+      - option "Ie"
+      - option "Na"
+    - text: Tystiolaeth o XGM
+    - combobox "Tystiolaeth o XGM":
+      - option "Heb ei gofnodi" [selected]
+      - option "XGM wedi'i arsylwi"
+      - option "XGM wedi'i ddatgelu"
+      - option "XGM ddim yn bresennol"
+      - option "Heb ei archwilio"
+    - text: Asesiad trais domestig
+    - combobox "Asesiad trais domestig":
+      - option "Heb ei gofnodi" [selected]
+      - option "Asesiad wedi'i gwblhau"
+      - option "Asesiad heb ei gwblhau"
+    - text: Elfen graidd a gynigiwyd
+    - combobox "Elfen graidd a gynigiwyd":
+      - option "Heb ei gofnodi" [selected]
+      - option "Cyffredinol"
+      - option "Ychwanegol"
+      - option "Ychwanegol a Mwy"
+      - option "Dwys"
+      - option "Dwys a Mwy"
+    - paragraph: "BMI wedi'i gyfrifo: Ddim ar gael"
+    - button "Cadw canlyniad KD03"
+  - button "Dechrau canlyniad newydd"
+  - region "Canlyniadau a gadwyd ar gyfer y claf a ddewiswyd":
+    - heading "Canlyniadau a gadwyd ar gyfer y claf a ddewiswyd" [level=2]
+    - button "Ail-lwytho o'r storfa"
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Cychwynnol
+      - term: Dyddiad cyswllt
+      - definition: 8 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Boddhaol
+      - term: Asesiad y cluniau
+      - definition: Boddhaol
+      - term: Asesiad y llygaid
+      - definition: Boddhaol
+      - term: Asesiad y ceilliau
+      - definition: Boddhaol
+      - term: Asesiad corfforol cyffredinol
+      - definition: Boddhaol
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic B
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional X
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Ailadrodd
+      - term: Dyddiad cyswllt
+      - definition: 8 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Pryder
+      - term: Asesiad y cluniau
+      - definition: Pryder
+      - term: Asesiad y llygaid
+      - definition: Pryder
+      - term: Asesiad y ceilliau
+      - definition: Pryder
+      - term: Asesiad corfforol cyffredinol
+      - definition: Pryder
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic A
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Cychwynnol
+      - term: Dyddiad cyswllt
+      - definition: 8 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Heb ei asesu
+      - term: Asesiad y cluniau
+      - definition: Heb ei asesu
+      - term: Asesiad y llygaid
+      - definition: Heb ei asesu
+      - term: Asesiad y ceilliau
+      - definition: Heb ei asesu
+      - term: Asesiad corfforol cyffredinol
+      - definition: Heb ei asesu
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic B
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Ailadrodd
+      - term: Dyddiad cyswllt
+      - definition: 7 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Boddhaol
+      - term: Asesiad y cluniau
+      - definition: Boddhaol
+      - term: Asesiad y llygaid
+      - definition: Boddhaol
+      - term: Asesiad y ceilliau
+      - definition: Boddhaol
+      - term: Asesiad corfforol cyffredinol
+      - definition: Boddhaol
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic A
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional X
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Cychwynnol
+      - term: Dyddiad cyswllt
+      - definition: 7 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Pryder
+      - term: Asesiad y cluniau
+      - definition: Pryder
+      - term: Asesiad y llygaid
+      - definition: Pryder
+      - term: Asesiad y ceilliau
+      - definition: Pryder
+      - term: Asesiad corfforol cyffredinol
+      - definition: Pryder
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic B
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Heb ei archwilio
+      - term: Cychwynnol neu ailadrodd
+      - definition: Ailadrodd
+      - term: Dyddiad cyswllt
+      - definition: 7 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Ni ddaethpwyd â'r plentyn
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Heb ei gofnodi
+      - term: Asesiad y cluniau
+      - definition: Heb ei gofnodi
+      - term: Asesiad y llygaid
+      - definition: Heb ei gofnodi
+      - term: Asesiad y ceilliau
+      - definition: Heb ei gofnodi
+      - term: Asesiad corfforol cyffredinol
+      - definition: Heb ei gofnodi
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic A
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: Not recorded
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Cychwynnol
+      - term: Dyddiad cyswllt
+      - definition: 6 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Boddhaol
+      - term: Asesiad y cluniau
+      - definition: Boddhaol
+      - term: Asesiad y llygaid
+      - definition: Boddhaol
+      - term: Asesiad y ceilliau
+      - definition: Boddhaol
+      - term: Asesiad corfforol cyffredinol
+      - definition: Boddhaol
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic B
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional X
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: Not recorded
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Heb ei archwilio
+      - term: Cychwynnol neu ailadrodd
+      - definition: Ailadrodd
+      - term: Dyddiad cyswllt
+      - definition: 6 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Ni ddaethpwyd â'r plentyn
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Heb ei gofnodi
+      - term: Asesiad y cluniau
+      - definition: Heb ei gofnodi
+      - term: Asesiad y llygaid
+      - definition: Heb ei gofnodi
+      - term: Asesiad y ceilliau
+      - definition: Heb ei gofnodi
+      - term: Asesiad corfforol cyffredinol
+      - definition: Heb ei gofnodi
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic A
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Cychwynnol
+      - term: Dyddiad cyswllt
+      - definition: 6 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Heb ei asesu
+      - term: Asesiad y cluniau
+      - definition: Heb ei asesu
+      - term: Asesiad y llygaid
+      - definition: Heb ei asesu
+      - term: Asesiad y ceilliau
+      - definition: Heb ei asesu
+      - term: Asesiad corfforol cyffredinol
+      - definition: Heb ei asesu
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic B
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Heb ei archwilio
+      - term: Cychwynnol neu ailadrodd
+      - definition: Ailadrodd
+      - term: Dyddiad cyswllt
+      - definition: 5 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Ni ddaethpwyd â'r plentyn
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Heb ei gofnodi
+      - term: Asesiad y cluniau
+      - definition: Heb ei gofnodi
+      - term: Asesiad y llygaid
+      - definition: Heb ei gofnodi
+      - term: Asesiad y ceilliau
+      - definition: Heb ei gofnodi
+      - term: Asesiad corfforol cyffredinol
+      - definition: Heb ei gofnodi
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic A
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional X
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Cychwynnol
+      - term: Dyddiad cyswllt
+      - definition: 5 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Pryder
+      - term: Asesiad y cluniau
+      - definition: Pryder
+      - term: Asesiad y llygaid
+      - definition: Pryder
+      - term: Asesiad y ceilliau
+      - definition: Pryder
+      - term: Asesiad corfforol cyffredinol
+      - definition: Pryder
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic B
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Ailadrodd
+      - term: Dyddiad cyswllt
+      - definition: 5 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Heb ei asesu
+      - term: Asesiad y cluniau
+      - definition: Heb ei asesu
+      - term: Asesiad y llygaid
+      - definition: Heb ei asesu
+      - term: Asesiad y ceilliau
+      - definition: Heb ei asesu
+      - term: Asesiad corfforol cyffredinol
+      - definition: Heb ei asesu
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic A
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Cychwynnol
+      - term: Dyddiad cyswllt
+      - definition: 4 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Boddhaol
+      - term: Asesiad y cluniau
+      - definition: Boddhaol
+      - term: Asesiad y llygaid
+      - definition: Boddhaol
+      - term: Asesiad y ceilliau
+      - definition: Boddhaol
+      - term: Asesiad corfforol cyffredinol
+      - definition: Boddhaol
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic B
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional X
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Ailadrodd
+      - term: Dyddiad cyswllt
+      - definition: 4 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Pryder
+      - term: Asesiad y cluniau
+      - definition: Pryder
+      - term: Asesiad y llygaid
+      - definition: Pryder
+      - term: Asesiad y ceilliau
+      - definition: Pryder
+      - term: Asesiad corfforol cyffredinol
+      - definition: Pryder
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic A
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: Not recorded
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Cychwynnol
+      - term: Dyddiad cyswllt
+      - definition: 4 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Heb ei asesu
+      - term: Asesiad y cluniau
+      - definition: Heb ei asesu
+      - term: Asesiad y llygaid
+      - definition: Heb ei asesu
+      - term: Asesiad y ceilliau
+      - definition: Heb ei asesu
+      - term: Asesiad corfforol cyffredinol
+      - definition: Heb ei asesu
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic B
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Ailadrodd
+      - term: Dyddiad cyswllt
+      - definition: 3 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Boddhaol
+      - term: Asesiad y cluniau
+      - definition: Boddhaol
+      - term: Asesiad y llygaid
+      - definition: Boddhaol
+      - term: Asesiad y ceilliau
+      - definition: Boddhaol
+      - term: Asesiad corfforol cyffredinol
+      - definition: Boddhaol
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic A
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional X
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Cychwynnol
+      - term: Dyddiad cyswllt
+      - definition: 3 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Pryder
+      - term: Asesiad y cluniau
+      - definition: Pryder
+      - term: Asesiad y llygaid
+      - definition: Pryder
+      - term: Asesiad y ceilliau
+      - definition: Pryder
+      - term: Asesiad corfforol cyffredinol
+      - definition: Pryder
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic B
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Heb ei archwilio
+      - term: Cychwynnol neu ailadrodd
+      - definition: Ailadrodd
+      - term: Dyddiad cyswllt
+      - definition: 3 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Ni ddaethpwyd â'r plentyn
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Heb ei gofnodi
+      - term: Asesiad y cluniau
+      - definition: Heb ei gofnodi
+      - term: Asesiad y llygaid
+      - definition: Heb ei gofnodi
+      - term: Asesiad y ceilliau
+      - definition: Heb ei gofnodi
+      - term: Asesiad corfforol cyffredinol
+      - definition: Heb ei gofnodi
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic A
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Cychwynnol
+      - term: Dyddiad cyswllt
+      - definition: 2 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Boddhaol
+      - term: Asesiad y cluniau
+      - definition: Boddhaol
+      - term: Asesiad y llygaid
+      - definition: Boddhaol
+      - term: Asesiad y ceilliau
+      - definition: Boddhaol
+      - term: Asesiad corfforol cyffredinol
+      - definition: Boddhaol
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic B
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional X
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Heb ei archwilio
+      - term: Cychwynnol neu ailadrodd
+      - definition: Ailadrodd
+      - term: Dyddiad cyswllt
+      - definition: 2 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Ni ddaethpwyd â'r plentyn
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Heb ei gofnodi
+      - term: Asesiad y cluniau
+      - definition: Heb ei gofnodi
+      - term: Asesiad y llygaid
+      - definition: Heb ei gofnodi
+      - term: Asesiad y ceilliau
+      - definition: Heb ei gofnodi
+      - term: Asesiad corfforol cyffredinol
+      - definition: Heb ei gofnodi
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic A
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Cychwynnol
+      - term: Dyddiad cyswllt
+      - definition: 2 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Heb ei asesu
+      - term: Asesiad y cluniau
+      - definition: Heb ei asesu
+      - term: Asesiad y llygaid
+      - definition: Heb ei asesu
+      - term: Asesiad y ceilliau
+      - definition: Heb ei asesu
+      - term: Asesiad corfforol cyffredinol
+      - definition: Heb ei asesu
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic B
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: Not recorded
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Cychwynnol
+      - term: Dyddiad cyswllt
+      - definition: 1 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Pryder
+      - term: Asesiad y cluniau
+      - definition: Pryder
+      - term: Asesiad y llygaid
+      - definition: Pryder
+      - term: Asesiad y ceilliau
+      - definition: Pryder
+      - term: Asesiad corfforol cyffredinol
+      - definition: Pryder
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic B
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+    - region "Manylion cyswllt":
+      - heading "Manylion cyswllt" [level=2]
+      - term: Math o gyswllt
+      - definition: Cyswllt 6–8 wythnos
+      - term: Cyflwr yr archwiliad
+      - definition: Wedi'i gofnodi
+      - term: Cychwynnol neu ailadrodd
+      - definition: Ailadrodd
+      - term: Dyddiad cyswllt
+      - definition: 1 January 2025
+      - term: Rheswm dros beidio ag archwilio
+      - definition: Heb ei gofnodi
+      - term: Cydsyniad
+      - definition: Ie
+      - term: Aildrefnu
+      - definition: Na
+      - term: Cais i dynnu cydsyniad yn ôl
+      - definition: Heb ei storio gyda'r canlyniad; nid yw cadw arferol yn diweddaru cydsyniad y claf
+    - region "Mesuriadau":
+      - heading "Mesuriadau" [level=2]
+      - term: Taldra (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur taldra
+      - definition: Na
+      - term: Pwysau (kg)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur pwysau
+      - definition: Na
+      - term: Cylchedd y pen (cm)
+      - definition: Heb ei gofnodi
+      - term: Gwrthodwyd mesur y pen
+      - definition: Na
+      - term: BMI wedi'i gyfrifo
+      - definition: Ddim ar gael
+    - region "Asesiadau corfforol":
+      - heading "Asesiadau corfforol" [level=2]
+      - term: Asesiad y galon
+      - definition: Heb ei asesu
+      - term: Asesiad y cluniau
+      - definition: Heb ei asesu
+      - term: Asesiad y llygaid
+      - definition: Heb ei asesu
+      - term: Asesiad y ceilliau
+      - definition: Heb ei asesu
+      - term: Asesiad corfforol cyffredinol
+      - definition: Heb ei asesu
+    - region "Gwybodaeth am y plentyn a'r teulu":
+      - heading "Gwybodaeth am y plentyn a'r teulu" [level=2]
+      - term: Yn derbyn gwasanaeth cynllun boost
+      - definition: Anhysbys
+      - term: Plentyn sy'n derbyn gofal
+      - definition: Na
+      - term: Ar y gofrestr amddiffyn plant
+      - definition: Na
+      - term: Atgyfeiriadau ymlaen wedi'u gwneud
+      - definition: Na
+      - term: Tystiolaeth o XGM
+      - definition: Heb ei archwilio
+      - term: Asesiad trais domestig
+      - definition: Asesiad heb ei gwblhau
+      - term: Elfen graidd a gynigiwyd
+      - definition: Cyffredinol
+    - region "Lleoliad a gweithiwr proffesiynol":
+      - heading "Lleoliad a gweithiwr proffesiynol" [level=2]
+      - term: Math o leoliad
+      - definition: Clinig
+      - term: Lleoliad
+      - definition: Synthetic demonstration clinic A
+      - term: Categori archwiliwr
+      - definition: Categori archwiliwr synthetig
+      - term: Archwiliwr
+      - definition: Synthetic professional Y
+    - region "Metadata cofnodi":
+      - heading "Metadata cofnodi" [level=2]
+      - term: Tarddiad
+      - definition: Heb ei drefnu
+      - term: Dyddiad cofnodi
+      - definition: 1 February 2025
+  - paragraph: Ni chefnogir cysylltiadau eraill, chwilio, golygu, apwyntiadau nac ail-alw. Nid yw cadw arferol yn tynnu cydsyniad y claf yn ôl. Nid yw Windows/Oracle gwreiddiol na PostgreSQL wedi'u dilysu.

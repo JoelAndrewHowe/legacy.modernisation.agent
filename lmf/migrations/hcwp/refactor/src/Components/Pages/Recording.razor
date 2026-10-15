@@ -39,7 +39,7 @@
             <button class="nhsw-button nhsw-button--secondary nhsw-button--inline" type="button" @onclick="() => Model.Confirm(false)">@T("No, do not save")</button>
         </section>
     }
-    <form @onsubmit="Model.Save" @onsubmit:preventDefault>
+    <form data-ready="@ready.ToString().ToLowerInvariant()" @onsubmit="Model.Save" @onsubmit:preventDefault>
         <fieldset class="nhsw-fieldset" disabled="@(Model.Pending != null || Model.Saved)">
             <legend class="nhsw-fieldset__legend nhsw-fieldset__legend--m">@T("New KD03 result")</legend>
             @foreach (var field in RecordingFields.All)
@@ -93,11 +93,13 @@
 @code {
     private readonly Dictionary<string, ElementReference> fieldElements = [];
     private async Task FocusField(string error) => await fieldElements[RecordingFields.ErrorTarget(error)].FocusAsync();
+    private bool ready;
     private ElementReference errorSummary;
     private string focusedError;
     protected override void OnInitialized() { base.OnInitialized(); Model.Reload(); }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (firstRender) { ready = true; StateHasChanged(); }
         if (Model.Error != null && Model.Error != focusedError)
         {
             focusedError = Model.Error;

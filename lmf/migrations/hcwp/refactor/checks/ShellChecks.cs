@@ -59,8 +59,13 @@ public static class ShellChecks
         if (browserFixturePath != null)
         {
             // Test-only document: real component + approved alert graph, never a product route/switch.
-            var banner = await Render(new PatientSummaryQuery(new AlertRepository(repository)).Read(101));
-            File.WriteAllText(browserFixturePath, "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link rel=\"stylesheet\" href=\"/vendor/nhsw/nhsw.min.css\"><title>Alert fixture presentation harness</title></head><body><main class=\"nhsw-main-wrapper\"><div class=\"nhsw-width-container\">" + banner + "</div></main></body></html>");
+            foreach (var code in new[] { "en", "cy" })
+            {
+                services.GetRequiredService<Hcwp.Presentation.InterfaceLanguage>().Select(code);
+                var banner = await Render(new PatientSummaryQuery(new AlertRepository(repository)).Read(101));
+                var output = code == "en" ? browserFixturePath : browserFixturePath + ".cy.html";
+                File.WriteAllText(output, "<!doctype html><html lang=\"" + code + "\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><link rel=\"stylesheet\" href=\"/vendor/nhsw/nhsw.min.css\"><title>Alert fixture presentation harness</title></head><body><main class=\"nhsw-main-wrapper\"><div class=\"nhsw-width-container\">" + banner + "</div></main></body></html>");
+            }
         }
         var failed = checks.Count(x => JsonSerializer.SerializeToElement(x).GetProperty("status").GetString() == "failed");
         Console.WriteLine(JsonSerializer.Serialize(new { total = checks.Count, passed = checks.Count - failed, failed, skipped = 0, results = checks }));

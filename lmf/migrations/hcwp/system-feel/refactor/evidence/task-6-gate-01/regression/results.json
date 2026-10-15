@@ -1,0 +1,68 @@
+{
+  "startedAt": "2026-10-15T15:33:27.256406+00:00",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "working-tree-before.log"
+    },
+    {
+      "argv": [
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/verify-task-4",
+        "--evidence-dir",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-6-gate-01/regression/regression"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "regression.log"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "run",
+        "--project",
+        "refactor/checks",
+        "--no-build",
+        "--",
+        "--language",
+        "refactor/src/Presentation/interface-strings.cy.json"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "language-unit.json"
+    },
+    {
+      "argv": [
+        "node",
+        "refactor/browser/language.mjs",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-6-gate-01/regression/browser"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 1,
+      "log": "browser.log"
+    }
+  ],
+  "errors": [
+    "Command failed: node refactor/browser/language.mjs /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-6-gate-01/regression/browser"
+  ],
+  "passed": false,
+  "suppliedValidatorFindings": [],
+  "scope": "Task 5 only; expanded bilingual accessibility and final slice gates remain later tasks",
+  "inventory": {
+    "strings": 192,
+    "literalUses": 99,
+    "unresolvedResources": 162
+  },
+  "unit": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0
+  },
+  "finishedAt": "2026-10-15T15:36:15.896483+00:00"
+}

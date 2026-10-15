@@ -1,0 +1,72 @@
+{
+  "total": 16,
+  "passed": 16,
+  "failed": 0,
+  "skipped": 0,
+  "results": [
+    {
+      "name": "default demonstration has 23 selected results and three pages",
+      "status": "passed"
+    },
+    {
+      "name": "other patient retained and inaccessible from selected details",
+      "status": "passed"
+    },
+    {
+      "name": "lookup descriptions only from selected history",
+      "status": "passed"
+    },
+    {
+      "name": "URL all facets round trip and multiple OR selections",
+      "status": "passed"
+    },
+    {
+      "name": "invalid enum numeric injection and unavailable lookups ignored",
+      "status": "passed"
+    },
+    {
+      "name": "duplicate and reversed range safe",
+      "status": "passed"
+    },
+    {
+      "name": "unknown query cannot inject return location",
+      "status": "passed"
+    },
+    {
+      "name": "omitted page resets after filter and size submission",
+      "status": "passed"
+    },
+    {
+      "name": "inclusive history boundaries",
+      "status": "passed"
+    },
+    {
+      "name": "combined filters AND and physical facets OR",
+      "status": "passed"
+    },
+    {
+      "name": "empty and excessive page resolve without disclosure",
+      "status": "passed"
+    },
+    {
+      "name": "complete detail inventory grouped exactly once",
+      "status": "passed"
+    },
+    {
+      "name": "every detail field render is explicit with no raw lookup codes",
+      "status": "passed"
+    },
+    {
+      "name": "unknown saved lookup value uses honest fallback",
+      "status": "passed"
+    },
+    {
+      "name": "calculated BMI matches approved bounded display",
+      "status": "passed"
+    },
+    {
+      "name": "read filters details do not change persistence",
+      "status": "passed"
+    }
+  ]
+}

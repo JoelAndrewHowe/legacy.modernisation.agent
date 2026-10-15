@@ -1,0 +1,1976 @@
+- main:
+  - 'heading "Important: Demonstration — synthetic patient data" [level=2]'
+  - paragraph: "Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025."
+  - region "Selected synthetic patient":
+    - heading "Selected synthetic patient" [level=2]
+    - term: Full name
+    - definition: Mx Synthetic, Example One
+    - term: NHS number
+    - definition: SYN-NHS-101
+    - term: Date of birth
+    - definition: 1 January 2025
+    - term: Age
+    - definition: 10 weeks
+    - term: Sex
+    - definition: Male
+    - term: Address
+    - definition: 1 Synthetic Lane, Invented District, SYN POST 1
+    - term: Current status
+    - definition: Synthetic active status (demonstration fixture)
+    - term: School
+    - definition: Synthetic School One — legacy format unavailable (CodeDescriptionFormat)
+    - term: Health board
+    - definition: SYNORG1, Cardiff and Vale University Health Board
+  - heading "6–8-week contact (KD03)" [level=1]
+  - paragraph: Record a 6–8-week contact for the selected synthetic patient. KD03 only.
+  - paragraph:
+    - link "Back to HCWP results":
+      - /url: /results
+  - paragraph: "Fixed demonstration clock: 15 March 2025. Temporary in-memory data; not clinical policy."
+  - paragraph: Fields are optional individually. General assessment alone does not count as a result. Warnings use resource identities; original localised prose is unavailable.
+  - group "New KD03 result":
+    - text: New KD03 result Contact date
+    - textbox "Contact date": 2025-02-19
+    - text: Origin
+    - combobox "Origin":
+      - option "Not recorded"
+      - option "Scheduled"
+      - option "Unscheduled" [selected]
+      - option "Movement In"
+      - option "Amendment"
+      - option "Not Known"
+    - text: Reason not examined
+    - combobox "Reason not examined":
+      - option "Not recorded" [selected]
+      - option "Was not brought"
+      - option "Unwell or uncooperative child"
+      - option "Examination refused"
+      - option "Parent / Carer not present"
+      - option "Not required"
+    - text: Consent
+    - combobox "Consent":
+      - option "Not recorded" [selected]
+      - option "Yes"
+      - option "No"
+    - text: Reschedule
+    - combobox "Reschedule":
+      - option "Not recorded"
+      - option "Yes"
+      - option "No" [selected]
+    - text: Withdraw consent (ordinary save does not update patient consent)
+    - combobox "Withdraw consent (ordinary save does not update patient consent)":
+      - option "No" [selected]
+      - option "Yes"
+    - text: Location type
+    - combobox "Location type":
+      - option "Not recorded" [selected]
+      - option "GP Surgery"
+      - option "Clinic"
+      - option "School"
+      - option "At Home"
+      - option "Hospital"
+      - option "Telephone Contact"
+      - option "Virtual"
+    - text: "Location code (synthetic surgery: SYNLOC)"
+    - 'textbox "Location code (synthetic surgery: SYNLOC)"'
+    - text: Examiner category
+    - combobox "Examiner category":
+      - option "Not recorded" [selected]
+      - option "Synthetic examiner category"
+    - text: "Examiner code (synthetic: SYN001; unused: SYN002)"
+    - 'textbox "Examiner code (synthetic: SYN001; unused: SYN002)"'
+    - text: Height (cm)
+    - spinbutton "Height (cm)"
+    - text: Height measurement declined (changing either way clears height)
+    - combobox "Height measurement declined (changing either way clears height)":
+      - option "Not recorded"
+      - option "Yes"
+      - option "No" [selected]
+    - text: Weight (kg)
+    - spinbutton "Weight (kg)"
+    - text: Weight measurement declined (changing either way clears weight)
+    - combobox "Weight measurement declined (changing either way clears weight)":
+      - option "Not recorded"
+      - option "Yes"
+      - option "No" [selected]
+    - text: Head circumference (cm; field limit below 100, save limit below 1000)
+    - spinbutton "Head circumference (cm; field limit below 100, save limit below 1000)"
+    - text: Head measurement declined (changing either way clears head circumference)
+    - combobox "Head measurement declined (changing either way clears head circumference)":
+      - option "Not recorded"
+      - option "Yes"
+      - option "No" [selected]
+    - text: Heart assessment
+    - combobox "Heart assessment":
+      - option "Not recorded" [selected]
+      - option "Satisfactory"
+      - option "Concern"
+      - option "Not assessed"
+    - text: Hips assessment
+    - combobox "Hips assessment":
+      - option "Not recorded" [selected]
+      - option "Satisfactory"
+      - option "Concern"
+      - option "Not assessed"
+    - text: Eyes assessment
+    - combobox "Eyes assessment":
+      - option "Not recorded" [selected]
+      - option "Satisfactory"
+      - option "Concern"
+      - option "Not assessed"
+    - text: Testes assessment (boys label; no gender rejection rule)
+    - combobox "Testes assessment (boys label; no gender rejection rule)":
+      - option "Not recorded" [selected]
+      - option "Satisfactory"
+      - option "Concern"
+      - option "Not assessed"
+    - text: General physical assessment
+    - combobox "General physical assessment":
+      - option "Not recorded" [selected]
+      - option "Satisfactory"
+      - option "Concern"
+      - option "Not assessed"
+    - text: Receiving boost scheme service
+    - combobox "Receiving boost scheme service":
+      - option "Not recorded" [selected]
+      - option "Yes"
+      - option "No"
+      - option "Not Known"
+    - text: Looked after child
+    - combobox "Looked after child":
+      - option "Not recorded" [selected]
+      - option "Yes"
+      - option "No"
+      - option "Not Known"
+    - text: On child protection register
+    - combobox "On child protection register":
+      - option "Not recorded" [selected]
+      - option "Yes"
+      - option "No"
+      - option "Not Known"
+    - text: Onward referrals made
+    - combobox "Onward referrals made":
+      - option "Not recorded" [selected]
+      - option "Yes"
+      - option "No"
+    - text: Evidence of XGM
+    - combobox "Evidence of XGM":
+      - option "Not recorded" [selected]
+      - option "XGM observed"
+      - option "XGM disclosed"
+      - option "XGM not present"
+      - option "Not examined"
+    - text: Domestic violence assessment
+    - combobox "Domestic violence assessment":
+      - option "Not recorded" [selected]
+      - option "Assessment completed"
+      - option "Assessment not completed"
+    - text: Core component offered
+    - combobox "Core component offered":
+      - option "Not recorded" [selected]
+      - option "Universal"
+      - option "Enhanced"
+      - option "Enhanced Plus"
+      - option "Intensive"
+      - option "Intensive Plus"
+    - paragraph: "Calculated BMI: Not available"
+    - button "Save KD03 result"
+  - button "Start new result"
+  - region "Saved results for selected patient":
+    - heading "Saved results for selected patient" [level=2]
+    - button "Reload from persistence"
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Initial
+      - term: Contact date
+      - definition: 8 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Satisfactory
+      - term: Hips assessment
+      - definition: Satisfactory
+      - term: Eyes assessment
+      - definition: Satisfactory
+      - term: Testes assessment
+      - definition: Satisfactory
+      - term: General physical assessment
+      - definition: Satisfactory
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic B
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional X
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Repeat
+      - term: Contact date
+      - definition: 8 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Concern
+      - term: Hips assessment
+      - definition: Concern
+      - term: Eyes assessment
+      - definition: Concern
+      - term: Testes assessment
+      - definition: Concern
+      - term: General physical assessment
+      - definition: Concern
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic A
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Initial
+      - term: Contact date
+      - definition: 8 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Not assessed
+      - term: Hips assessment
+      - definition: Not assessed
+      - term: Eyes assessment
+      - definition: Not assessed
+      - term: Testes assessment
+      - definition: Not assessed
+      - term: General physical assessment
+      - definition: Not assessed
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic B
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Repeat
+      - term: Contact date
+      - definition: 7 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Satisfactory
+      - term: Hips assessment
+      - definition: Satisfactory
+      - term: Eyes assessment
+      - definition: Satisfactory
+      - term: Testes assessment
+      - definition: Satisfactory
+      - term: General physical assessment
+      - definition: Satisfactory
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic A
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional X
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Initial
+      - term: Contact date
+      - definition: 7 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Concern
+      - term: Hips assessment
+      - definition: Concern
+      - term: Eyes assessment
+      - definition: Concern
+      - term: Testes assessment
+      - definition: Concern
+      - term: General physical assessment
+      - definition: Concern
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic B
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Not examined
+      - term: Initial or repeat
+      - definition: Repeat
+      - term: Contact date
+      - definition: 7 January 2025
+      - term: Reason not examined
+      - definition: Was not brought
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Not recorded
+      - term: Hips assessment
+      - definition: Not recorded
+      - term: Eyes assessment
+      - definition: Not recorded
+      - term: Testes assessment
+      - definition: Not recorded
+      - term: General physical assessment
+      - definition: Not recorded
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic A
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: Not recorded
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Initial
+      - term: Contact date
+      - definition: 6 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Satisfactory
+      - term: Hips assessment
+      - definition: Satisfactory
+      - term: Eyes assessment
+      - definition: Satisfactory
+      - term: Testes assessment
+      - definition: Satisfactory
+      - term: General physical assessment
+      - definition: Satisfactory
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic B
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional X
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: Not recorded
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Not examined
+      - term: Initial or repeat
+      - definition: Repeat
+      - term: Contact date
+      - definition: 6 January 2025
+      - term: Reason not examined
+      - definition: Was not brought
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Not recorded
+      - term: Hips assessment
+      - definition: Not recorded
+      - term: Eyes assessment
+      - definition: Not recorded
+      - term: Testes assessment
+      - definition: Not recorded
+      - term: General physical assessment
+      - definition: Not recorded
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic A
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Initial
+      - term: Contact date
+      - definition: 6 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Not assessed
+      - term: Hips assessment
+      - definition: Not assessed
+      - term: Eyes assessment
+      - definition: Not assessed
+      - term: Testes assessment
+      - definition: Not assessed
+      - term: General physical assessment
+      - definition: Not assessed
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic B
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Not examined
+      - term: Initial or repeat
+      - definition: Repeat
+      - term: Contact date
+      - definition: 5 January 2025
+      - term: Reason not examined
+      - definition: Was not brought
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Not recorded
+      - term: Hips assessment
+      - definition: Not recorded
+      - term: Eyes assessment
+      - definition: Not recorded
+      - term: Testes assessment
+      - definition: Not recorded
+      - term: General physical assessment
+      - definition: Not recorded
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic A
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional X
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Initial
+      - term: Contact date
+      - definition: 5 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Concern
+      - term: Hips assessment
+      - definition: Concern
+      - term: Eyes assessment
+      - definition: Concern
+      - term: Testes assessment
+      - definition: Concern
+      - term: General physical assessment
+      - definition: Concern
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic B
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Repeat
+      - term: Contact date
+      - definition: 5 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Not assessed
+      - term: Hips assessment
+      - definition: Not assessed
+      - term: Eyes assessment
+      - definition: Not assessed
+      - term: Testes assessment
+      - definition: Not assessed
+      - term: General physical assessment
+      - definition: Not assessed
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic A
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Initial
+      - term: Contact date
+      - definition: 4 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Satisfactory
+      - term: Hips assessment
+      - definition: Satisfactory
+      - term: Eyes assessment
+      - definition: Satisfactory
+      - term: Testes assessment
+      - definition: Satisfactory
+      - term: General physical assessment
+      - definition: Satisfactory
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic B
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional X
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Repeat
+      - term: Contact date
+      - definition: 4 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Concern
+      - term: Hips assessment
+      - definition: Concern
+      - term: Eyes assessment
+      - definition: Concern
+      - term: Testes assessment
+      - definition: Concern
+      - term: General physical assessment
+      - definition: Concern
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic A
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: Not recorded
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Initial
+      - term: Contact date
+      - definition: 4 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Not assessed
+      - term: Hips assessment
+      - definition: Not assessed
+      - term: Eyes assessment
+      - definition: Not assessed
+      - term: Testes assessment
+      - definition: Not assessed
+      - term: General physical assessment
+      - definition: Not assessed
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic B
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Repeat
+      - term: Contact date
+      - definition: 3 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Satisfactory
+      - term: Hips assessment
+      - definition: Satisfactory
+      - term: Eyes assessment
+      - definition: Satisfactory
+      - term: Testes assessment
+      - definition: Satisfactory
+      - term: General physical assessment
+      - definition: Satisfactory
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic A
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional X
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Initial
+      - term: Contact date
+      - definition: 3 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Concern
+      - term: Hips assessment
+      - definition: Concern
+      - term: Eyes assessment
+      - definition: Concern
+      - term: Testes assessment
+      - definition: Concern
+      - term: General physical assessment
+      - definition: Concern
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic B
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Not examined
+      - term: Initial or repeat
+      - definition: Repeat
+      - term: Contact date
+      - definition: 3 January 2025
+      - term: Reason not examined
+      - definition: Was not brought
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Not recorded
+      - term: Hips assessment
+      - definition: Not recorded
+      - term: Eyes assessment
+      - definition: Not recorded
+      - term: Testes assessment
+      - definition: Not recorded
+      - term: General physical assessment
+      - definition: Not recorded
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic A
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Initial
+      - term: Contact date
+      - definition: 2 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Satisfactory
+      - term: Hips assessment
+      - definition: Satisfactory
+      - term: Eyes assessment
+      - definition: Satisfactory
+      - term: Testes assessment
+      - definition: Satisfactory
+      - term: General physical assessment
+      - definition: Satisfactory
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic B
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional X
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Not examined
+      - term: Initial or repeat
+      - definition: Repeat
+      - term: Contact date
+      - definition: 2 January 2025
+      - term: Reason not examined
+      - definition: Was not brought
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Not recorded
+      - term: Hips assessment
+      - definition: Not recorded
+      - term: Eyes assessment
+      - definition: Not recorded
+      - term: Testes assessment
+      - definition: Not recorded
+      - term: General physical assessment
+      - definition: Not recorded
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic A
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Initial
+      - term: Contact date
+      - definition: 2 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Not assessed
+      - term: Hips assessment
+      - definition: Not assessed
+      - term: Eyes assessment
+      - definition: Not assessed
+      - term: Testes assessment
+      - definition: Not assessed
+      - term: General physical assessment
+      - definition: Not assessed
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic B
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: Not recorded
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Initial
+      - term: Contact date
+      - definition: 1 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Concern
+      - term: Hips assessment
+      - definition: Concern
+      - term: Eyes assessment
+      - definition: Concern
+      - term: Testes assessment
+      - definition: Concern
+      - term: General physical assessment
+      - definition: Concern
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic B
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+    - region "Contact details":
+      - heading "Contact details" [level=2]
+      - term: Contact type
+      - definition: 6–8-week contact
+      - term: Examination state
+      - definition: Recorded
+      - term: Initial or repeat
+      - definition: Repeat
+      - term: Contact date
+      - definition: 1 January 2025
+      - term: Reason not examined
+      - definition: Not recorded
+      - term: Consent
+      - definition: "Yes"
+      - term: Reschedule
+      - definition: "No"
+      - term: Withdraw consent requested
+      - definition: Not stored with result; ordinary save does not update patient consent
+    - region "Measurements":
+      - heading "Measurements" [level=2]
+      - term: Height (cm)
+      - definition: Not recorded
+      - term: Height measurement declined
+      - definition: "No"
+      - term: Weight (kg)
+      - definition: Not recorded
+      - term: Weight measurement declined
+      - definition: "No"
+      - term: Head circumference (cm)
+      - definition: Not recorded
+      - term: Head measurement declined
+      - definition: "No"
+      - term: Calculated BMI
+      - definition: Not available
+    - region "Physical assessments":
+      - heading "Physical assessments" [level=2]
+      - term: Heart assessment
+      - definition: Not assessed
+      - term: Hips assessment
+      - definition: Not assessed
+      - term: Eyes assessment
+      - definition: Not assessed
+      - term: Testes assessment
+      - definition: Not assessed
+      - term: General physical assessment
+      - definition: Not assessed
+    - region "Child and family information":
+      - heading "Child and family information" [level=2]
+      - term: Receiving boost scheme service
+      - definition: Not Known
+      - term: Looked after child
+      - definition: "No"
+      - term: On child protection register
+      - definition: "No"
+      - term: Onward referrals made
+      - definition: "No"
+      - term: Evidence of XGM
+      - definition: Not examined
+      - term: Domestic violence assessment
+      - definition: Assessment not completed
+      - term: Core component offered
+      - definition: Universal
+    - region "Location and professional":
+      - heading "Location and professional" [level=2]
+      - term: Location type
+      - definition: Clinic
+      - term: Location
+      - definition: Synthetic demonstration clinic A
+      - term: Examiner category
+      - definition: Synthetic examiner category
+      - term: Examiner
+      - definition: Synthetic professional Y
+    - region "Recording metadata":
+      - heading "Recording metadata" [level=2]
+      - term: Origin
+      - definition: Unscheduled
+      - term: Recorded date
+      - definition: 1 February 2025
+  - paragraph: Other contacts, search, editing, appointments and recalls are not supported. Ordinary save does not withdraw patient consent. Original Windows/Oracle and PostgreSQL are unverified.

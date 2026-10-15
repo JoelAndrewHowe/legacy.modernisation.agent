@@ -1,0 +1,5 @@
+{
+  "finding": "Post-execution inventory check found gate-run.log checksum stale: verify-gate hashed its caller's still-open redirected stdout before printing the final report.",
+  "observedAtUtc": "2026-10-13T14:14:25.769619+00:00",
+  "repair": "Exclude the actively written caller transcript gate-run.log from the evidence inventory; retain the transcript and all completed check logs. No scenario, assertion or implementation behaviour changed."
+}

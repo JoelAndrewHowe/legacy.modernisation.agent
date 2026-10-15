@@ -1,0 +1,105 @@
+- main:
+  - 'heading "Important: Demonstration — synthetic patient data" [level=2]'
+  - paragraph: "Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025."
+  - region "Selected synthetic patient":
+    - heading "Selected synthetic patient" [level=2]
+    - term: Full name
+    - definition: Mx Synthetic, Example One
+    - term: NHS number
+    - definition: SYN-NHS-101
+    - term: Date of birth
+    - definition: 1 January 2025
+    - term: Age
+    - definition: 10 weeks
+    - term: Sex
+    - definition: Male
+    - term: Address
+    - definition: 1 Synthetic Lane, Invented District, SYN POST 1
+    - term: Current status
+    - definition: Synthetic active status (demonstration fixture)
+    - term: School
+    - definition: Synthetic School One — legacy format unavailable (CodeDescriptionFormat)
+    - term: Health board
+    - definition: SYNORG1, Cardiff and Vale University Health Board
+  - heading "Result details" [level=1]
+  - paragraph:
+    - link "Back to HCWP results":
+      - /url: /results?size=10&page=2
+  - region "Contact details":
+    - heading "Contact details" [level=2]
+    - term: Contact type
+    - definition: 6–8-week contact
+    - term: Examination state
+    - definition: Recorded
+    - term: Initial or repeat
+    - definition: Initial
+    - term: Contact date
+    - definition: 5 January 2025
+    - term: Reason not examined
+    - definition: Not recorded
+    - term: Consent
+    - definition: "Yes"
+    - term: Reschedule
+    - definition: "No"
+    - term: Withdraw consent requested
+    - definition: Not stored with result; ordinary save does not update patient consent
+  - region "Measurements":
+    - heading "Measurements" [level=2]
+    - term: Height (cm)
+    - definition: Not recorded
+    - term: Height measurement declined
+    - definition: "No"
+    - term: Weight (kg)
+    - definition: Not recorded
+    - term: Weight measurement declined
+    - definition: "No"
+    - term: Head circumference (cm)
+    - definition: Not recorded
+    - term: Head measurement declined
+    - definition: "No"
+    - term: Calculated BMI
+    - definition: Not available
+  - region "Physical assessments":
+    - heading "Physical assessments" [level=2]
+    - term: Heart assessment
+    - definition: Concern
+    - term: Hips assessment
+    - definition: Concern
+    - term: Eyes assessment
+    - definition: Concern
+    - term: Testes assessment
+    - definition: Concern
+    - term: General physical assessment
+    - definition: Concern
+  - region "Child and family information":
+    - heading "Child and family information" [level=2]
+    - term: Receiving boost scheme service
+    - definition: Not Known
+    - term: Looked after child
+    - definition: "No"
+    - term: On child protection register
+    - definition: "No"
+    - term: Onward referrals made
+    - definition: "No"
+    - term: Evidence of XGM
+    - definition: Not examined
+    - term: Domestic violence assessment
+    - definition: Assessment not completed
+    - term: Core component offered
+    - definition: Universal
+  - region "Location and professional":
+    - heading "Location and professional" [level=2]
+    - term: Location type
+    - definition: Clinic
+    - term: Location
+    - definition: Synthetic demonstration clinic B
+    - term: Examiner category
+    - definition: Synthetic examiner category
+    - term: Examiner
+    - definition: Synthetic professional Y
+  - region "Recording metadata":
+    - heading "Recording metadata" [level=2]
+    - term: Origin
+    - definition: Unscheduled
+    - term: Recorded date
+    - definition: 1 February 2025

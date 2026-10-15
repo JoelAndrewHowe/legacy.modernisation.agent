@@ -1,0 +1,119 @@
+ M ../../../.gitignore
+ M ../../../factory/Program.cs
+ M ../../../factory/Steps/FactorySteps.cs
+ M ../../../factory/Steps/MachineResultTests.cs
+ M ../../../factory/factory
+ M ../../../factory/spec/features/planning.feature
+ M ../../docs/tutorial-factory-lines.md
+ M .assembly-lines/characterise.dot
+ M .assembly-lines/convert.dot
+ M .assembly-lines/refactor.dot
+ M refactor/browser/flow.mjs
+ M refactor/browser/history.mjs
+ M refactor/browser/language.mjs
+ M refactor/checks/ShellChecks.cs
+ M refactor/evidence/full-flow-browser.log
+ M refactor/evidence/full-flow-browser/baseline-1280.html
+ M refactor/evidence/full-flow-browser/baseline-1280.png
+ M refactor/evidence/full-flow-browser/baseline-320.html
+ M refactor/evidence/full-flow-browser/baseline-320.png
+ M refactor/evidence/full-flow-browser/baseline-768.html
+ M refactor/evidence/full-flow-browser/baseline-768.png
+ M refactor/evidence/full-flow-browser/confirmation-1280.html
+ M refactor/evidence/full-flow-browser/confirmation-1280.png
+ M refactor/evidence/full-flow-browser/confirmation-320.html
+ M refactor/evidence/full-flow-browser/confirmation-320.png
+ M refactor/evidence/full-flow-browser/confirmation-768.html
+ M refactor/evidence/full-flow-browser/confirmation-768.png
+ M refactor/evidence/full-flow-browser/input-error-1280.html
+ M refactor/evidence/full-flow-browser/input-error-1280.png
+ M refactor/evidence/full-flow-browser/input-error-320.html
+ M refactor/evidence/full-flow-browser/input-error-320.png
+ M refactor/evidence/full-flow-browser/input-error-768.html
+ M refactor/evidence/full-flow-browser/input-error-768.png
+ M refactor/evidence/full-flow-browser/repeat-warning.png
+ M refactor/evidence/full-flow-browser/results.json
+ M refactor/evidence/full-flow-browser/saved-1280.html
+ M refactor/evidence/full-flow-browser/saved-1280.png
+ M refactor/evidence/full-flow-browser/saved-320.html
+ M refactor/evidence/full-flow-browser/saved-320.png
+ M refactor/evidence/full-flow-browser/saved-768.html
+ M refactor/evidence/full-flow-browser/saved-768.png
+ M refactor/evidence/full-flow-browser/saved.png
+ M refactor/evidence/full-flow-browser/select-error-1280.html
+ M refactor/evidence/full-flow-browser/select-error-1280.png
+ M refactor/evidence/full-flow-browser/select-error-320.html
+ M refactor/evidence/full-flow-browser/select-error-320.png
+ M refactor/evidence/full-flow-browser/select-error-768.html
+ M refactor/evidence/full-flow-browser/select-error-768.png
+ M refactor/evidence/full-flow-browser/server.log
+ M refactor/evidence/full-flow-browser/warning-1280.html
+ M refactor/evidence/full-flow-browser/warning-1280.png
+ M refactor/evidence/full-flow-browser/warning-320.html
+ M refactor/evidence/full-flow-browser/warning-320.png
+ M refactor/evidence/full-flow-browser/warning-768.html
+ M refactor/evidence/full-flow-browser/warning-768.png
+ M refactor/evidence/full-flow-build.log
+ M refactor/evidence/full-flow-source.sha256
+ M refactor/evidence/gate-results.json
+ M refactor/evidence/gate-style.log
+ M refactor/evidence/parity/comparison.json
+ M refactor/evidence/parity/conversion-build.log
+ M refactor/evidence/parity/refactor-build.log
+ M refactor/evidence/parity/reference-build.log
+ M refactor/parity-report.md
+ M refactor/src/Components/MainLayout.razor
+ M refactor/src/Components/Pages/Recording.razor
+ M ../../seeds/hcwp/refactor.md
+ M ../../templates/migration-target/.assembly-lines/characterise.dot
+ M ../../templates/migration-target/.assembly-lines/convert.dot
+ M ../../templates/migration-target/.assembly-lines/refactor.dot
+ M ../../templates/migration-target/README.md
+?? ../../../.env.openrouter.example
+?? ../../../bin/factory-dispatch
+?? ../../../bin/openrouter-reviewer
+?? "../../../example-code/patient-banner (pseudononymised).txt"
+?? ../../../factory/spec/features/plan-review.feature
+?? ../../docs/feed-forward-context.md
+?? ../../iterations/002-implement-system-feel.md
+?? .assembly-lines/.machines/code-review-architect/
+?? .assembly-lines/.machines/code-review-lead-developer/
+?? .assembly-lines/.machines/code-review-synthesiser/
+?? .assembly-lines/.machines/code-review-test-engineer/
+?? .assembly-lines/.machines/plan-review-claude-opus/
+?? .assembly-lines/.machines/plan-review-dispatch/
+?? .assembly-lines/.machines/plan-review-gpt-sol/
+?? .assembly-lines/.machines/plan-review-kimi/
+?? .assembly-lines/.machines/plan-review-synthesiser/
+?? system-feel/refactor/__pycache__/verifycpython-313.pyc
+?? system-feel/refactor/evidence/task-6-gate-01/
+?? system-feel/refactor/evidence/task-6-gate-02/
+?? system-feel/refactor/evidence/task-6-gate-03/
+?? system-feel/refactor/evidence/task-6-gate-04/
+?? system-feel/refactor/evidence/task-6-language-01/
+?? system-feel/refactor/evidence/task-6-language-02/
+?? system-feel/refactor/evidence/task-6-language-03/
+?? system-feel/refactor/evidence/task-6-language-04/
+?? system-feel/refactor/evidence/task-6-language-05/
+?? system-feel/refactor/evidence/task-6-language-06/
+?? system-feel/refactor/evidence/task-6-language-07/
+?? system-feel/refactor/evidence/task-6-language-08/
+?? system-feel/refactor/evidence/task-6-language-09/
+?? system-feel/refactor/evidence/task-6-language-10/
+?? system-feel/refactor/evidence/task-6-language-11/
+?? system-feel/refactor/evidence/task-6-language-12/
+?? system-feel/refactor/evidence/task-6-parity-01/
+?? system-feel/refactor/task-6.md
+?? system-feel/refactor/test-verifier.py
+?? system-feel/refactor/verify
+?? system-feel/refactor/verify-parity.py
+?? ../../seeds/context/
+?? ../../templates/migration-target/.assembly-lines/.machines/code-review-architect/
+?? ../../templates/migration-target/.assembly-lines/.machines/code-review-lead-developer/
+?? ../../templates/migration-target/.assembly-lines/.machines/code-review-synthesiser/
+?? ../../templates/migration-target/.assembly-lines/.machines/code-review-test-engineer/
+?? ../../templates/migration-target/.assembly-lines/.machines/plan-review-claude-opus/
+?? ../../templates/migration-target/.assembly-lines/.machines/plan-review-dispatch/
+?? ../../templates/migration-target/.assembly-lines/.machines/plan-review-gpt-sol/
+?? ../../templates/migration-target/.assembly-lines/.machines/plan-review-kimi/
+?? ../../templates/migration-target/.assembly-lines/.machines/plan-review-synthesiser/

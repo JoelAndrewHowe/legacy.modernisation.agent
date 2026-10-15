@@ -1,0 +1,72 @@
+{
+  "startedAt": "2026-10-15T15:44:48.731557+00:00",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "working-tree-before.log"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/check-prerequisites.py"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "prerequisites-before.json"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/test-verifier.py"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "verifier-tests.json"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/verify-parity.py",
+        "--evidence-dir",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-6-gate-03/reference-convert"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "reference-convert.log"
+    },
+    {
+      "argv": [
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/verify-task-5",
+        "--evidence-dir",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-6-gate-03/regression"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 1,
+      "log": "regression.log"
+    }
+  ],
+  "checks": [
+    {
+      "name": "reference-convert",
+      "total": 53,
+      "passed": 53,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "errors": [
+    "Command failed: /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/verify-task-5 --evidence-dir /workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-6-gate-03/regression"
+  ],
+  "suppliedValidatorFindings": [],
+  "passed": false,
+  "finishedAt": "2026-10-15T15:46:01.352895+00:00",
+  "total": 1,
+  "failed": 1,
+  "skipped": 0
+}

@@ -1,0 +1,119 @@
+#!/usr/bin/env python3
+"""Slice gate. Execute checks freshly; fail closed on empty, failed or skipped evidence."""
+import argparse
+from datetime import datetime, timezone
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import shutil
+
+HERE = Path(__file__).resolve().parent
+TARGET = HERE.parents[1]
+
+
+def require_counts(data, minimum=1):
+    keys = ('total', 'passed', 'failed', 'skipped')
+    if any(type(data.get(k)) is not int for k in keys):
+        raise ValueError('Missing/noninteger aggregate counts')
+    if not (data['total'] >= minimum and data['passed'] == data['total'] and data['failed'] == data['skipped'] == 0):
+        raise ValueError('Empty, incomplete, failed or skipped evidence')
+    if data.get('error') or data.get('errors') or data.get('runtimeErrors'):
+        raise ValueError('Evidence contains runtime errors')
+    return {k: data[k] for k in keys}
+
+
+def require_legacy_checks(data):
+    """Validate individual legacy checks, not merely their summary counters."""
+    if any(type(data.get(k)) is not int or data[k] != 0 for k in ('failed', 'skipped')):
+        raise ValueError('Existing Refactor gate failed or skipped')
+    if data.get('error') or data.get('errors') or data.get('runtimeErrors'):
+        raise ValueError('Existing Refactor gate contains runtime errors')
+    checks = data.get('checks')
+    if not isinstance(checks, list) or not checks:
+        raise ValueError('Existing Refactor gate has no checks')
+    for check in checks:
+        if not isinstance(check, dict) or not check.get('name'):
+            raise ValueError('Malformed legacy check')
+        if 'status' in check:
+            if check['status'] != 'passed':
+                raise ValueError('Legacy command did not pass: ' + check['name'])
+        else:
+            passed = check.get('passed')
+            require_counts(dict(check, total=passed))
+        if check.get('error') or check.get('errors') or check.get('runtimeErrors'):
+            raise ValueError('Legacy check contains runtime errors')
+    return len(checks)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--evidence-dir', help='Fresh directory beneath system-feel/refactor/evidence (default: UTC timestamp)')
+    args = parser.parse_args()
+    dest = Path(args.evidence_dir).resolve() if args.evidence_dir else HERE / 'evidence' / datetime.now(timezone.utc).strftime('slice-%Y%m%dT%H%M%S%fZ')
+    if not dest.is_relative_to(HERE / 'evidence'):
+        parser.error('Refactor-owned evidence required')
+    dest.mkdir(parents=True, exist_ok=False)
+    report = dict(startedAt=datetime.now(timezone.utc).isoformat(), commands=[], checks=[], errors=[], suppliedValidatorFindings=[], passed=False)
+    def run(argv, name):
+        result = subprocess.run(argv, cwd=TARGET, capture_output=True, text=True, env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
+        (dest / name).write_text(result.stdout + result.stderr)
+        report['commands'].append(dict(argv=argv, cwd=str(TARGET), exitCode=result.returncode, log=name))
+        if result.returncode:
+            raise ValueError('Command failed: ' + ' '.join(argv))
+    try:
+        run(['git', 'status', '--short'], 'working-tree-before.log')
+        run([sys.executable, str(HERE / 'check-prerequisites.py')], 'prerequisites-before.json')
+        run([sys.executable, str(HERE / 'test-verifier.py')], 'verifier-tests.json')
+        run([sys.executable, str(HERE / 'verify-parity.py'), '--evidence-dir', str(dest / 'reference-convert')], 'reference-convert.log')
+        report['checks'].append(dict(name='reference-convert', **require_counts(json.loads((dest / 'reference-convert/results.json').read_text()), 53)))
+        run([str(HERE / 'verify-task-5'), '--evidence-dir', str(dest / 'regression')], 'regression.log')
+        regression = json.loads((dest / 'regression/results.json').read_text())
+        if regression['passed'] is not True or regression['errors']:
+            raise ValueError('Carried-forward gate failed')
+        # Inspect every nested count-bearing suite, not just the top-level boolean.
+        for path in sorted((dest / 'regression').rglob('*.json')):
+            try:
+                data = json.loads(path.read_text())
+            except json.JSONDecodeError:
+                continue  # Command transcripts are retained separately from authoritative reports.
+            if isinstance(data, dict) and 'total' in data and 'skipped' in data:
+                report['checks'].append(dict(name=str(path.relative_to(dest)), **require_counts(data)))
+        require_counts(json.loads((dest / 'regression/browser/results.json').read_text()), 9)
+        try:
+            run(['refactor/verify-gate'], 'legacy-gate.log')
+        finally:
+            # Preserve failed as well as passing fixed-path legacy outputs.
+            legacy_dest = dest / 'legacy-evidence'
+            legacy_dest.mkdir()
+            for path in (TARGET / 'refactor/evidence').iterdir():
+                if path.name.startswith(('full-flow-', 'gate-')):
+                    if path.is_dir():
+                        shutil.copytree(path, legacy_dest / path.name)
+                    else:
+                        shutil.copy2(path, legacy_dest / path.name)
+        legacy = json.loads((legacy_dest / 'gate-results.json').read_text())
+        require_legacy_checks(legacy)
+        (dest / 'legacy-gate-results.json').write_text(json.dumps(legacy, indent=2) + '\n')
+        run([sys.executable, str(HERE / 'check-prerequisites.py')], 'prerequisites-after.json')
+        run(['dotnet', '--info'], 'dotnet-info.log')
+        run(['node', '--version'], 'node-version.log')
+        run(['npm', 'ls', '--prefix', 'refactor/browser', '--depth=0'], 'browser-tool-versions.log')
+        run(['git', 'status', '--short'], 'working-tree-after.log')
+        report['passed'] = True
+    except Exception as error:
+        report['errors'].append(str(error))
+    finally:
+        report.update(finishedAt=datetime.now(timezone.utc).isoformat(), total=len(report['checks']), failed=0 if report['passed'] else 1, skipped=0)
+        files = [p for folder in ('refactor', 'system-feel/refactor') for p in (TARGET / folder).rglob('*') if p.is_file() and not {'evidence', 'bin', 'obj', 'node_modules', '__pycache__', '.parity-run'} & set(p.relative_to(TARGET).parts)]
+        (dest / 'source-identities.sha256').write_text(''.join(f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.relative_to(TARGET)}\n' for p in sorted(files)))
+        (dest / 'results.json').write_text(json.dumps(report, indent=2) + '\n')
+        (dest / 'evidence-identities.sha256').write_text(''.join(f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.relative_to(TARGET)}\n' for p in sorted(dest.rglob('*')) if p.is_file() and not {'bin', 'obj'} & set(p.relative_to(dest).parts)))
+        print(json.dumps(report))
+    return 0 if report['passed'] else 1
+
+
+if __name__ == '__main__':
+    sys.exit(main())

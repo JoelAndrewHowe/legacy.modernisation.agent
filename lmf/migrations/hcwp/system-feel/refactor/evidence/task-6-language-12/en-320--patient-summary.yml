@@ -1,0 +1,28 @@
+- main:
+  - 'heading "Important: Demonstration — synthetic patient data" [level=2]'
+  - paragraph: "Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025."
+  - region "Selected synthetic patient":
+    - heading "Selected synthetic patient" [level=2]
+    - term: Full name
+    - definition: Mx Synthetic, Example One
+    - term: NHS number
+    - definition: SYN-NHS-101
+    - term: Date of birth
+    - definition: 1 January 2025
+    - term: Age
+    - definition: 10 weeks
+    - term: Sex
+    - definition: Male
+    - term: Address
+    - definition: 1 Synthetic Lane, Invented District, SYN POST 1
+    - term: Current status
+    - definition: Synthetic active status (demonstration fixture)
+    - term: School
+    - definition: Synthetic School One — legacy format unavailable (CodeDescriptionFormat)
+    - term: Health board
+    - definition: SYNORG1, Cardiff and Vale University Health Board
+  - heading "Patient summary" [level=1]
+  - paragraph: The selected synthetic patient's context is shown above. Patient search and switching are not offered.
+  - paragraph:
+    - link "View HCWP results":
+      - /url: /results

@@ -1,0 +1,136 @@
+{
+  "startedAt": "2026-10-15T15:53:15.186662+00:00",
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/check-prerequisites.py"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0,
+      "log": "current-prerequisites.log"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "build",
+        "refactor/checks/Checks.csproj",
+        "--no-incremental"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "build.log"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "run",
+        "--project",
+        "refactor/checks",
+        "--no-build",
+        "--",
+        "--queries",
+        "refactor/src/demo-fixtures.json"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "queries.json"
+    },
+    {
+      "argv": [
+        "dotnet",
+        "run",
+        "--project",
+        "refactor/checks",
+        "--no-build",
+        "--",
+        "--persistence",
+        "refactor/src/demo-fixtures.json"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "persistence.json"
+    },
+    {
+      "argv": [
+        "refactor/run-approved-scenarios",
+        "--evidence-dir",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-6-gate-05/regression/regression/regression/prerequisites-and-regression/parity"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "approved-scenarios.log"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/verify-shared-scenarios.py",
+        "--evidence-dir",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/refactor/evidence/task-6-gate-05/regression/regression/regression/prerequisites-and-regression/shared-sf"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp",
+      "exitCode": 0,
+      "log": "shared-sf.log"
+    }
+  ],
+  "errors": [],
+  "productChecksPassed": true,
+  "currentPrerequisitesPassed": true,
+  "historicalPrerequisites": {
+    "approvalSha256": "49838b9d07bc8a6699221b65b540d770d416318ebabd2d21be8e7050b93dddc0",
+    "reviewManifestSha256": "6a44e9fcd19299d0886b6ccb7e48457d04b89b5913326ce445dba58cb246c655",
+    "reviewSha256": "b5d76bd805491ca02bf48b4d0b52490884d3717c8a25f634fa72517db7b1fa4b",
+    "counts": {
+      "required": 53,
+      "executed": 53,
+      "passed": 53,
+      "failed": 0,
+      "skipped": 0
+    },
+    "scope": "Verified historical prestart snapshot; current immutable-input gate is separate",
+    "files": {
+      "system-feel/refactor/evidence/refactor-task-2-prestart/prerequisites.json": "3d7b556b77d4037ada000bb3bf669f50d182f5ab17674122fede2d7dd159be19",
+      "system-feel/refactor/evidence/refactor-task-2-prestart-final/prerequisites.json": "7d4a8daac6c9de1b6ee8bc01768756f8a8dec8497372fefa9da9edb24a730c73",
+      "system-feel/refactor/evidence/refactor-task-2-prestart/parity.json": "3eefd39751ddaf00d53c0b5260e1ccc2c7e8f62e7a610a5d1d5869ac0ef713e6",
+      "system-feel/refactor/evidence/refactor-task-2-prestart/observations.json": "dafdc6036ff133ff6c53c6817bb2107fb519a46dcc395de92130d7c403b5c056"
+    },
+    "inputIdentitiesSha256": "fc3bfbc39708ef592ac85c8df7f393254e52e3d06bb30cc66605926fa2468adb"
+  },
+  "currentPrerequisites": {
+    "passed": true,
+    "errors": [],
+    "mutableBoundaries": [
+      "lmf/migrations/hcwp/refactor",
+      "lmf/migrations/hcwp/.assembly-lines"
+    ],
+    "scope": "Current immutable inputs and approval; Refactor target/configuration are authorized mutable boundaries",
+    "approvalSha256": "49838b9d07bc8a6699221b65b540d770d416318ebabd2d21be8e7050b93dddc0",
+    "reviewManifestSha256": "6a44e9fcd19299d0886b6ccb7e48457d04b89b5913326ce445dba58cb246c655",
+    "reviewSha256": "b5d76bd805491ca02bf48b4d0b52490884d3717c8a25f634fa72517db7b1fa4b",
+    "immutableInventoryEntries": 418,
+    "immutableReviewEntries": 570,
+    "mutableInventoryEntries": 1265,
+    "mutableReviewEntries": 1120
+  },
+  "queries": {
+    "total": 43,
+    "passed": 43,
+    "failed": 0,
+    "skipped": 0
+  },
+  "persistence": {
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0
+  },
+  "sharedScenarios": {
+    "total": 34,
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0
+  },
+  "passed": true,
+  "finishedAt": "2026-10-15T15:53:41.822319+00:00",
+  "exitCode": 0
+}

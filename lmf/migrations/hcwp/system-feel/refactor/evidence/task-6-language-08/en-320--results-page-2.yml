@@ -1,0 +1,248 @@
+- main:
+  - 'heading "Important: Demonstration — synthetic patient data" [level=2]'
+  - paragraph: "Local demonstration only. Not for clinical use. Fixed clock: 15 March 2025."
+  - region "Selected synthetic patient":
+    - heading "Selected synthetic patient" [level=2]
+    - term: Full name
+    - definition: Mx Synthetic, Example One
+    - term: NHS number
+    - definition: SYN-NHS-101
+    - term: Date of birth
+    - definition: 1 January 2025
+    - term: Age
+    - definition: 10 weeks
+    - term: Sex
+    - definition: Male
+    - term: Address
+    - definition: 1 Synthetic Lane, Invented District, SYN POST 1
+    - term: Current status
+    - definition: Synthetic active status (demonstration fixture)
+    - term: School
+    - definition: Synthetic School One — legacy format unavailable (CodeDescriptionFormat)
+    - term: Health board
+    - definition: SYNORG1, Cardiff and Vale University Health Board
+  - heading "HCWP results" [level=1]
+  - paragraph:
+    - link "Record result":
+      - /url: /record
+  - group "Filter results":
+    - text: Filter results
+    - group "Examination state":
+      - text: Examination state
+      - checkbox "Recorded"
+      - text: Recorded
+      - checkbox "Not examined"
+      - text: Not examined
+    - group "Initial or repeat":
+      - text: Initial or repeat
+      - checkbox "Initial"
+      - text: Initial
+      - checkbox "Repeat"
+      - text: Repeat
+    - group "Physical finding":
+      - text: Physical finding
+      - checkbox "Satisfactory"
+      - text: Satisfactory
+      - checkbox "Concern"
+      - text: Concern
+      - checkbox "Not assessed"
+      - text: Not assessed
+      - checkbox "Has concern"
+      - text: Has concern
+    - group "Inclusive contact-date range":
+      - text: Inclusive contact-date range From contact date
+      - textbox "From contact date"
+      - text: To contact date
+      - textbox "To contact date"
+    - group "Location":
+      - text: Location
+      - checkbox "Synthetic demonstration clinic A"
+      - text: Synthetic demonstration clinic A
+      - checkbox "Synthetic demonstration clinic B"
+      - text: Synthetic demonstration clinic B
+    - group "Examiner":
+      - text: Examiner
+      - checkbox "Synthetic professional X"
+      - text: Synthetic professional X
+      - checkbox "Synthetic professional Y"
+      - text: Synthetic professional Y
+    - text: Results per page
+    - combobox "Results per page":
+      - option "10" [selected]
+      - option "25"
+      - option "50"
+    - button "Apply filters and page size"
+    - link "Clear all filters":
+      - /url: /results
+  - region "Active filters":
+    - heading "Active filters" [level=2]
+    - paragraph: None
+  - status: Showing 11–20 of 23 results.
+  - article "6–8-week contact on 5 January 2025":
+    - heading "5 January 2025 — 6–8-week contact" [level=2]
+    - term: Examination state
+    - definition: Recorded
+    - term: Location
+    - definition: Synthetic demonstration clinic B
+    - term: Examiner
+    - definition: Synthetic professional Y
+    - term: Initial or repeat
+    - definition: Initial
+    - term: Recorded date
+    - definition: 1 February 2025
+    - paragraph:
+      - link "View details for 6–8-week contact on 5 January 2025":
+        - /url: /results/8013?size=10&page=2
+  - article "6–8-week contact on 5 January 2025":
+    - heading "5 January 2025 — 6–8-week contact" [level=2]
+    - term: Examination state
+    - definition: Not examined
+    - term: Location
+    - definition: Synthetic demonstration clinic A
+    - term: Examiner
+    - definition: Synthetic professional X
+    - term: Initial or repeat
+    - definition: Repeat
+    - term: Recorded date
+    - definition: 1 February 2025
+    - paragraph:
+      - link "View details for 6–8-week contact on 5 January 2025":
+        - /url: /results/8012?size=10&page=2
+  - article "6–8-week contact on 4 January 2025":
+    - heading "4 January 2025 — 6–8-week contact" [level=2]
+    - term: Examination state
+    - definition: Recorded
+    - term: Location
+    - definition: Synthetic demonstration clinic B
+    - term: Examiner
+    - definition: Synthetic professional Y
+    - term: Initial or repeat
+    - definition: Initial
+    - term: Recorded date
+    - definition: 1 February 2025
+    - paragraph:
+      - link "View details for 6–8-week contact on 4 January 2025":
+        - /url: /results/8011?size=10&page=2
+  - article "6–8-week contact on 4 January 2025":
+    - heading "4 January 2025 — 6–8-week contact" [level=2]
+    - term: Examination state
+    - definition: Recorded
+    - term: Location
+    - definition: Synthetic demonstration clinic B
+    - term: Examiner
+    - definition: Synthetic professional X
+    - term: Initial or repeat
+    - definition: Initial
+    - term: Recorded date
+    - definition: 1 February 2025
+    - paragraph:
+      - link "View details for 6–8-week contact on 4 January 2025":
+        - /url: /results/8009?size=10&page=2
+  - article "6–8-week contact on 4 January 2025":
+    - heading "4 January 2025 — 6–8-week contact" [level=2]
+    - term: Examination state
+    - definition: Recorded
+    - term: Location
+    - definition: Synthetic demonstration clinic A
+    - term: Examiner
+    - definition: Synthetic professional Y
+    - term: Initial or repeat
+    - definition: Repeat
+    - term: Recorded date
+    - definition: Not recorded
+    - paragraph:
+      - link "View details for 6–8-week contact on 4 January 2025":
+        - /url: /results/8010?size=10&page=2
+  - article "6–8-week contact on 3 January 2025":
+    - heading "3 January 2025 — 6–8-week contact" [level=2]
+    - term: Examination state
+    - definition: Not examined
+    - term: Location
+    - definition: Synthetic demonstration clinic A
+    - term: Examiner
+    - definition: Synthetic professional Y
+    - term: Initial or repeat
+    - definition: Repeat
+    - term: Recorded date
+    - definition: 1 February 2025
+    - paragraph:
+      - link "View details for 6–8-week contact on 3 January 2025":
+        - /url: /results/8008?size=10&page=2
+  - article "6–8-week contact on 3 January 2025":
+    - heading "3 January 2025 — 6–8-week contact" [level=2]
+    - term: Examination state
+    - definition: Recorded
+    - term: Location
+    - definition: Synthetic demonstration clinic B
+    - term: Examiner
+    - definition: Synthetic professional Y
+    - term: Initial or repeat
+    - definition: Initial
+    - term: Recorded date
+    - definition: 1 February 2025
+    - paragraph:
+      - link "View details for 6–8-week contact on 3 January 2025":
+        - /url: /results/8007?size=10&page=2
+  - article "6–8-week contact on 3 January 2025":
+    - heading "3 January 2025 — 6–8-week contact" [level=2]
+    - term: Examination state
+    - definition: Recorded
+    - term: Location
+    - definition: Synthetic demonstration clinic A
+    - term: Examiner
+    - definition: Synthetic professional X
+    - term: Initial or repeat
+    - definition: Repeat
+    - term: Recorded date
+    - definition: 1 February 2025
+    - paragraph:
+      - link "View details for 6–8-week contact on 3 January 2025":
+        - /url: /results/8006?size=10&page=2
+  - article "6–8-week contact on 2 January 2025":
+    - heading "2 January 2025 — 6–8-week contact" [level=2]
+    - term: Examination state
+    - definition: Not examined
+    - term: Location
+    - definition: Synthetic demonstration clinic A
+    - term: Examiner
+    - definition: Synthetic professional Y
+    - term: Initial or repeat
+    - definition: Repeat
+    - term: Recorded date
+    - definition: 1 February 2025
+    - paragraph:
+      - link "View details for 6–8-week contact on 2 January 2025":
+        - /url: /results/8004?size=10&page=2
+  - article "6–8-week contact on 2 January 2025":
+    - heading "2 January 2025 — 6–8-week contact" [level=2]
+    - term: Examination state
+    - definition: Recorded
+    - term: Location
+    - definition: Synthetic demonstration clinic B
+    - term: Examiner
+    - definition: Synthetic professional X
+    - term: Initial or repeat
+    - definition: Initial
+    - term: Recorded date
+    - definition: 1 February 2025
+    - paragraph:
+      - link "View details for 6–8-week contact on 2 January 2025":
+        - /url: /results/8003?size=10&page=2
+  - navigation "Results pages":
+    - link "Previous page":
+      - /url: /results?size=10&page=1
+    - list:
+      - listitem:
+        - link "Page 1":
+          - /url: /results?size=10&page=1
+          - text: "1"
+      - listitem:
+        - link "Page 2":
+          - /url: /results?size=10&page=2
+          - text: "2"
+      - listitem:
+        - link "Page 3":
+          - /url: /results?size=10&page=3
+          - text: "3"
+    - link "Next page":
+      - /url: /results?size=10&page=3
