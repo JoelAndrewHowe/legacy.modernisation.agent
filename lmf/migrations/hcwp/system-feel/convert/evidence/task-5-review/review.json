@@ -1,0 +1,384 @@
+{
+  "startedAt": "2026-10-15T09:04:38.324922+00:00",
+  "validatorFindings": [],
+  "scope": "Doer mechanical Convert review; no task marking or human approval",
+  "checks": [
+    {
+      "name": "fresh-report",
+      "passed": true
+    },
+    {
+      "name": "report passes without errors",
+      "passed": true
+    },
+    {
+      "name": "approval test counts",
+      "passed": true
+    },
+    {
+      "name": "comparator test counts",
+      "passed": true
+    },
+    {
+      "name": "report binds artifact manifest",
+      "passed": true
+    },
+    {
+      "name": "artifact manifest nonempty",
+      "passed": true
+    },
+    {
+      "name": "all artifact identities current",
+      "passed": true
+    },
+    {
+      "name": "approval/input gate -prestart",
+      "passed": true
+    },
+    {
+      "name": "approval/input gate -parity",
+      "passed": true
+    },
+    {
+      "name": "approval/input gate -parity-runtime",
+      "passed": true
+    },
+    {
+      "name": "approval/input gate -parity-final",
+      "passed": true
+    },
+    {
+      "name": "approval/input gate -final",
+      "passed": true
+    },
+    {
+      "name": "immutable inputs unchanged",
+      "passed": true
+    },
+    {
+      "name": "fresh nonincremental build",
+      "passed": true
+    },
+    {
+      "name": "current binary identity",
+      "passed": true
+    },
+    {
+      "name": "build source src/Compatibility.cs",
+      "passed": true
+    },
+    {
+      "name": "build source src/ObservationAdapter.cs",
+      "passed": true
+    },
+    {
+      "name": "build source src/PatientSummaryAndResults.cs",
+      "passed": true
+    },
+    {
+      "name": "build source src/Converted.csproj",
+      "passed": true
+    },
+    {
+      "name": "port preservation counts",
+      "passed": true
+    },
+    {
+      "name": "preserved source PatientSummaryAndResults.cs",
+      "passed": true
+    },
+    {
+      "name": "preserved source Compatibility.cs",
+      "passed": true
+    },
+    {
+      "name": "preserved source ObservationAdapter.cs",
+      "passed": true
+    },
+    {
+      "name": "complete parity counts",
+      "passed": true
+    },
+    {
+      "name": "exact scenario membership and order",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-001",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-002",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-003",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-004",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-005",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-006",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-007",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-008",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-009",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-010",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-011",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-012",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-013",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-014",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-015",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-016",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-017",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-018",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-019",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-020",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-021",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-022",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-023",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-024",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-025",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-026",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-027",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-028",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-029",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-030",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-031",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-032",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-033",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-034",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-035",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-036",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-037",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-038",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-039",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-040",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-041",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-042",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-043",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-044",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-045",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-046",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-047",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-048",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-049",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-050",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-051",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-052",
+      "passed": true
+    },
+    {
+      "name": "exact observation SF-053",
+      "passed": true
+    },
+    {
+      "name": "runtime-missing-gate-rejected",
+      "passed": true
+    },
+    {
+      "name": "evidence-reuse-rejected",
+      "passed": true
+    },
+    {
+      "name": "reuse preserves every retained file",
+      "passed": true
+    },
+    {
+      "name": "diff-check",
+      "passed": true
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/produce-report.py",
+        "--evidence-prefix",
+        "task-5-review-bundle"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "dotnet",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/src/bin/Release/net10.0/Converted.dll"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 2
+    },
+    {
+      "argv": [
+        "/usr/bin/python3",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert/produce-report.py",
+        "--evidence-prefix",
+        "task-5-review-bundle"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 2
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "/workspaces/legacy.modernisation.agent/lmf/migrations/hcwp/system-feel/convert"
+      ],
+      "cwd": "/workspaces/legacy.modernisation.agent",
+      "exitCode": 0
+    }
+  ],
+  "errors": [],
+  "passed": true,
+  "artifactCount": 45,
+  "inputIdentityCount": 1692,
+  "retainedFileCount": 30,
+  "finishedAt": "2026-10-15T09:04:51.059759+00:00",
+  "bundle": "task-5-review-bundle",
+  "exitCode": 0
+}
